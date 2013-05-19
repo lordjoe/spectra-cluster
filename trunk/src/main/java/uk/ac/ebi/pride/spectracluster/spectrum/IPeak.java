@@ -12,7 +12,7 @@ import com.lordjoe.algorithms.*;
 public interface IPeak extends Equivalent<IPeak>{
 
     public static final double SMALL_MZ_DIFFERENCE = 0.002;
-    public static final double SMALL_INTENSITY_DIFFERENCE = 0.01;
+    public static final double SMALL_INTENSITY_DIFFERENCE = 0.1;
 
     /**
      * Peak m/z
