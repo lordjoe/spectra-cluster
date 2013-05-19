@@ -7,10 +7,10 @@ import com.lordjoe.algorithms.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class Peak implements IPeak, Comparable<IPeak>  {
+public class Peak implements IPeak, Comparable<IPeak> {
 
     private final double massChargeRatio;
-    private   double intensity;
+    private double intensity;
     private int count;
 
     public Peak(double massChargeRatio, double intensity) {
@@ -47,9 +47,9 @@ public class Peak implements IPeak, Comparable<IPeak>  {
 
     @Override
     public int compareTo(IPeak o) {
-        if (getMz() != o.getMz())
+        if (Math.abs(getMz() - o.getMz()) > SMALL_MZ_DIFFERENCE)
             return Double.compare(getMz(), o.getMz());
-        if (getIntensity() != o.getIntensity())
+        if (Math.abs(getIntensity()- o.getIntensity()) > SMALL_INTENSITY_DIFFERENCE)
             return Double.compare(getIntensity(), o.getIntensity());
         return 0;
     }
@@ -62,8 +62,20 @@ public class Peak implements IPeak, Comparable<IPeak>  {
      */
     @Override
     public boolean equivalent(IPeak other) {
-        if (true) throw new UnsupportedOperationException("Fix This");
-        return false;
+         return compareTo(other) == 0;
+    }
+
+    /**
+     * return exactly what an MGF would use
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+
+        String item = String.format("%10.5f", getMz()).trim();
+        String item2 = String.format("%8.2f", getIntensity()).trim();
+        return item + "\t" + item2;
     }
 
 
