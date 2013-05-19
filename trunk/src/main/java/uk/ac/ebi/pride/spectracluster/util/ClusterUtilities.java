@@ -1,10 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.MultiSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.SingleSpectrum;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -31,17 +30,17 @@ public class ClusterUtilities {
      * @param id !null or empty id
      * @return !null cluster
      */
-    public static ISpectralCluster getCluster(String id,int charge) {
-        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
-        if(ret != null)   {    // already exists
-            if(ret.getCharge() != charge)
-                throw new IllegalStateException("cannot change charge on a cluster");
-            return ret;
-        }
-        ret = new MultiSpectrumCluster(id, charge);
-        ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
-        return ret;
-    }
+//    public static ISpectralCluster getCluster(String id,int charge) {
+//        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
+//        if(ret != null)   {    // already exists
+//            if(ret.getPrecursorCharge() != charge)
+//                throw new IllegalStateException("cannot change charge on a cluster");
+//            return ret;
+//        }
+//        ret = new SpectralCluster(id, charge);
+//        ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
+//        return ret;
+//    }
 
     /**
      * get a cluster given an id building it as needed
@@ -49,19 +48,19 @@ public class ClusterUtilities {
      * @param id !null or empty id
      * @return !null cluster
      */
-    public static ISpectralCluster getCLuster(String id, double mz, int charge, IPeak[] peaks) {
-        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
-          if(ret != null)   {    // already exists
-              if(ret.getCharge() != charge)
-                  throw new IllegalStateException("cannot change charge on a cluster");
-              throw new UnsupportedOperationException("Is this a legal case??"); // ToDo better check spectra ...
-             // return ret;
-          }
-         ret = new SingleSpectrum(id, mz, charge, peaks).asCluster();
-         ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
-         return ret;
-    }
-
+//    public static ISpectralCluster getCLuster(String id, double mz, int charge, IPeak[] peaks) {
+//        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
+//          if(ret != null)   {    // already exists
+//              if(ret.getCharge() != charge)
+//                  throw new IllegalStateException("cannot change charge on a cluster");
+//              throw new UnsupportedOperationException("Is this a legal case??"); // ToDo better check spectra ...
+//             // return ret;
+//          }
+//         ret = new SingleSpectrum(id, mz, charge, peaks).asCluster();
+//         ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
+//         return ret;
+//    }
+//
     /**
      * binn the mz range finding the highest peaks in each bin
      * @param peaks   !null original peaks
@@ -95,7 +94,7 @@ public class ClusterUtilities {
                 // saves the highest intensity peaks up to  maxPerBin
                 // because the comparison is on intensity
                   hightestInBin =new PriorityQueue<IPeak>(maxPerBin,
-                                        IPeak.BY_INTENSITY);
+                          PeakIntensityComparator.getInstance());
                 higheseEachBin[bin] = hightestInBin;
             }
 

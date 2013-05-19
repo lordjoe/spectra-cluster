@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import com.lordjoe.algorithms.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.ISpecClusterPeak
  *
@@ -7,17 +9,20 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface IPeak {
+public interface IPeak extends Equivalent<IPeak>{
+
+    public static final double SMALL_MZ_DIFFERENCE = 0.002;
+    public static final double SMALL_INTENSITY_DIFFERENCE = 0.003;
 
     /**
      * Peak m/z
      */
     public double getMz();
 
-    /**
-     * Set peak m/z
-     */
-    public void setMz(double mz);
+//    /**
+//     * Set peak m/z
+//     */
+//    public void setMz(double mz);
 
     /**
      * Peak intensity

@@ -1,5 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,7 +10,7 @@ import java.util.List;
 
 /**
  * PeptideSepctrumMatch represents a peptide and a spectrum match
- *
+ * <p/>
  * todo: implement quality measure
  * todo: implement equals and hashcode
  *
@@ -80,4 +83,55 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     public void setQualityMeasure(double qualityMeasure) {
         this.qualityMeasure = qualityMeasure;
     }
+
+    /**
+     * make a cluster contaiming a single spectrum - this
+     * @return
+     */
+    public ISpectralCluster asCluster() {
+        SpectralCluster ret = new SpectralCluster(getId());
+        ret.addSpectra(this);
+        return ret;
+    }
+
+    @Override
+     /**
+      * write out the data as an MGF file
+      *
+      * @param out place to append
+      */
+     public void appendMGF(Appendable out) {
+         int indent = 0;
+
+         try {
+             out.append("BEGIN IONS");
+             out.append("\n");
+
+             out.append("TITLE=" + getId());
+             out.append("\n");
+
+             double precursorCharge = getPrecursorCharge();
+             double massChargeRatio = getPrecursorMz();
+
+             out.append("PEPMASS=" + massChargeRatio);
+             out.append("\n");
+
+             out.append("CHARGE=" + precursorCharge);
+             if (precursorCharge > 0)
+                 out.append("+");
+             out.append("\n");
+
+               for ( IPeak peak : getPeaks()) {
+                   out.append(peak.toString());
+                 out.append("\n");
+             }
+             out.append("END IONS");
+             out.append("\n");
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+
+         }
+
+     }
+
 }
