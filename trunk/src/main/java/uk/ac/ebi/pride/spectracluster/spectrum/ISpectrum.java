@@ -25,11 +25,6 @@ public interface ISpectrum {
     public double getPrecursorMz();
 
     /**
-     * Get precursor intensity
-     */
-    public double getPrecursorIntensity();
-
-    /**
      * get charge - mixed charge
      */
     public double getPrecursorCharge();

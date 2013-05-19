@@ -87,21 +87,18 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * Create consensus spectrum with weighted m/z, total charge and total intensity
      */
     protected PeptideSpectrumMatch createConsensusSpectrum(Collection<ISpectrum> spectra, List<IPeak> filteredSpectrum) {
-        double weightedMz = 0.0;
-        double totalIntensity = 0.0;
+        double totalMz = 0.0;
         double totalCharge = 0.0;
 
         for (ISpectrum spectrum : spectra) {
-            weightedMz += spectrum.getPrecursorMz() * spectrum.getPrecursorIntensity();
-            // update the average intensity
-            totalIntensity += spectrum.getPrecursorIntensity();
+            totalMz += spectrum.getPrecursorMz();
             // update the average charge
             totalCharge += spectrum.getPrecursorCharge();
         }
 
-        weightedMz /= totalIntensity;
+        totalMz /= spectra.size();
 
-        return new PeptideSpectrumMatch(null, null, totalCharge / spectra.size(), weightedMz, totalIntensity, filteredSpectrum);
+        return new PeptideSpectrumMatch(null, null, totalCharge / spectra.size(), totalMz, filteredSpectrum);
     }
 
     /**

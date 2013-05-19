@@ -22,7 +22,6 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     private String peptide;
     private double precursorCharge;
     private double precursorMz;
-    private double precursorIntensity;
     private double totalIntensity;
     /**
      * for calculate similarity between spectra, all peaks should be sorted by intensity
@@ -38,7 +37,6 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
             this.peptide = null;
         }
         this.precursorCharge = spectrum.getPrecursorCharge();
-        this.precursorIntensity = spectrum.getPrecursorIntensity();
         this.precursorMz = spectrum.getPrecursorMz();
 
         for (IPeak peak : spectrum.getPeaks()) {
@@ -50,13 +48,11 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
                                 String peptide,
                                 double precursorCharge,
                                 double precursorMz,
-                                double precursorIntensity,
                                 List<IPeak> peaks) {
         this.id = id;
         this.peptide = peptide;
         this.precursorCharge = precursorCharge;
         this.precursorMz = precursorMz;
-        this.precursorIntensity = precursorIntensity;
         this.qualityMeasure = -1;
         setPeaks(peaks);
     }
@@ -71,10 +67,6 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     public double getPrecursorMz() {
         return precursorMz;
-    }
-
-    public double getPrecursorIntensity() {
-        return precursorIntensity;
     }
 
     public double getPrecursorCharge() {
