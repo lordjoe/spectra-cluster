@@ -70,7 +70,7 @@ public class ClusterUtilities {
      * @param maxPerBin maximim peaks to retain
      * @return
      */
-    public static IPeak[] getHighestInBins(IPeak[] peaks,
+    public static List<IPeak> getHighestInBins(List<IPeak> peaks,
                                                       double minMZ,
                                                       double maxMZ,
                                                       double binSize,
@@ -82,8 +82,7 @@ public class ClusterUtilities {
         PriorityQueue<IPeak>[]  higheseEachBin =
                 (PriorityQueue<IPeak>[])new PriorityQueue[binner.getNumberBins()];
         // for all peaks
-        for (int i = 0; i < peaks.length; i++) {
-            IPeak pk = peaks[i];
+        for (IPeak pk : peaks) {
             // bin mz
             int bin = binner.asBin(pk.getMz()) ;
 
@@ -113,9 +112,7 @@ public class ClusterUtilities {
                  holder.addAll(hightestInBin);
         }
         // back to an array
-        IPeak[] ret = new IPeak[holder.size()];
-        holder.toArray(ret);
-        return ret;
+         return holder;
 
     }
 }
