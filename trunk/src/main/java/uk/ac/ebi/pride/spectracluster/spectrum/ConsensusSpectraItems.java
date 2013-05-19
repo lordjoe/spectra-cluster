@@ -8,9 +8,9 @@ import java.util.*;
  * @author Steve Lewis
  * @date 19/05/13
  */
-public class ConcensusSpectraItems {
-    public static ConcensusSpectraItems[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = ConcensusSpectraItems.class;
+public class ConsensusSpectraItems {
+    public static ConsensusSpectraItems[] EMPTY_ARRAY = {};
+    public static Class THIS_CLASS = ConsensusSpectraItems.class;
 
     private ISpectrum concensus;
     private List<ISpectrum> spectra;
