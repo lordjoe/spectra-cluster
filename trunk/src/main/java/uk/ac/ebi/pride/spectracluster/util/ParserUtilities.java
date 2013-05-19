@@ -417,6 +417,10 @@ public class ParserUtilities {
         return null; // give up
     }
 
+    public static ConsensusSpectraItems[] readClusters(File file) {
+        throw new UnsupportedOperationException("Fix this");
+    }
+
     public static void main(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
