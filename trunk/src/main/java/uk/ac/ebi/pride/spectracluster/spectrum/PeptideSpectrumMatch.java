@@ -30,12 +30,28 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     private final List<IPeak> peaks = new ArrayList<IPeak>();
     private double qualityMeasure;
 
+    public PeptideSpectrumMatch(ISpectrum spectrum) {
+        this.id = spectrum.getId();
+        if (spectrum instanceof IPeptideSpectrumMatch) {
+            this.peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+        } else {
+            this.peptide = null;
+        }
+        this.precursorCharge = spectrum.getPrecursorCharge();
+        this.precursorIntensity = spectrum.getPrecursorIntensity();
+        this.precursorMz = spectrum.getPrecursorMz();
+
+        for (IPeak peak : spectrum.getPeaks()) {
+            this.peaks.add(new Peak(peak.getMz(), peak.getIntensity(), peak.getCount()));
+        }
+    }
+
     public PeptideSpectrumMatch(String id,
                                 String peptide,
                                 double precursorCharge,
                                 double precursorMz,
                                 double precursorIntensity,
-                                Collection<IPeak> peaks) {
+                                List<IPeak> peaks) {
         this.id = id;
         this.peptide = peptide;
         this.precursorCharge = precursorCharge;
@@ -96,6 +112,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     /**
      * make a cluster contaiming a single spectrum - this
+     *
      * @return
      */
     public ISpectralCluster asCluster() {
@@ -105,73 +122,73 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     }
 
     @Override
-     /**
-      * write out the data as an MGF file
-      *
-      * @param out place to append
-      */
-     public void appendMGF(Appendable out) {
-         int indent = 0;
+    /**
+     * write out the data as an MGF file
+     *
+     * @param out place to append
+     */
+    public void appendMGF(Appendable out) {
+        int indent = 0;
 
-         try {
-             out.append("BEGIN IONS");
-             out.append("\n");
+        try {
+            out.append("BEGIN IONS");
+            out.append("\n");
 
-             out.append("TITLE=" + getId());
-             out.append("\n");
+            out.append("TITLE=" + getId());
+            out.append("\n");
 
-             double precursorCharge = getPrecursorCharge();
-             double massChargeRatio = getPrecursorMz();
+            double precursorCharge = getPrecursorCharge();
+            double massChargeRatio = getPrecursorMz();
 
-             out.append("PEPMASS=" + massChargeRatio);
-             out.append("\n");
+            out.append("PEPMASS=" + massChargeRatio);
+            out.append("\n");
 
-             out.append("CHARGE=" + precursorCharge);
-             if (precursorCharge > 0)
-                 out.append("+");
-             out.append("\n");
+            out.append("CHARGE=" + precursorCharge);
+            if (precursorCharge > 0)
+                out.append("+");
+            out.append("\n");
 
-               for ( IPeak peak : getPeaks()) {
-                   out.append(peak.toString());
-                 out.append("\n");
-             }
-             out.append("END IONS");
-             out.append("\n");
-         } catch (IOException e) {
-             throw new RuntimeException(e);
-
-         }
-
-     }
-
-
-        /**
-         * like equals but weaker - says other is equivalent to this
-         *
-         * @param o poiibly null other object
-         * @return true if other is "similar enough to this"
-         */
-        public boolean equivalent(ISpectrum o) {
-            if(o == this)
-                 return true;
-             if(o.getPrecursorMz() != getPrecursorMz()) {
-                 return false;
-             }
-            IPeak[] peaks = getPeaks().toArray(new IPeak[0]);
-            IPeak[] peaks1 = o.getPeaks().toArray(new IPeak[0]);
-            if(peaks.length != peaks1.length) {
-                  return false;
-              }
-
-            for (int i = 0; i < peaks1.length; i++) {
-                IPeak pk0 = peaks1[i];
-                IPeak pk1 = peaks1[i];
-                if(!pk0.equivalent(pk1))
-                    return false;
+            for (IPeak peak : getPeaks()) {
+                out.append(peak.toString());
+                out.append("\n");
             }
+            out.append("END IONS");
+            out.append("\n");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
 
-             return true;
         }
+
+    }
+
+
+    /**
+     * like equals but weaker - says other is equivalent to this
+     *
+     * @param o poiibly null other object
+     * @return true if other is "similar enough to this"
+     */
+    public boolean equivalent(ISpectrum o) {
+        if (o == this)
+            return true;
+        if (o.getPrecursorMz() != getPrecursorMz()) {
+            return false;
+        }
+        IPeak[] peaks = getPeaks().toArray(new IPeak[0]);
+        IPeak[] peaks1 = o.getPeaks().toArray(new IPeak[0]);
+        if (peaks.length != peaks1.length) {
+            return false;
+        }
+
+        for (int i = 0; i < peaks1.length; i++) {
+            IPeak pk0 = peaks1[i];
+            IPeak pk1 = peaks1[i];
+            if (!pk0.equivalent(pk1))
+                return false;
+        }
+
+        return true;
+    }
 
 
 }
