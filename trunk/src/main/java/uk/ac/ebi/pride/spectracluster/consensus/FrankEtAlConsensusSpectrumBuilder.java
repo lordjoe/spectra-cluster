@@ -55,8 +55,11 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             return null;
 
         // if there's only one spectrum in the list, return this spectrum
-        if (spectra.size() == 1)
-            return spectra.get(0);
+        if (spectra.size() == 1) {
+            ISpectrum singleSpectrumConsensusSpectrum = new PeptideSpectrumMatch(spectra.get(0));
+            intensityNormalizer.normalizeSpectrum(singleSpectrumConsensusSpectrum);
+            return singleSpectrumConsensusSpectrum;
+        }
 
         // add the peaks from all spectra to the consensus spectrum
         List<IPeak> allPeaks = addAllPeaks(spectra);
