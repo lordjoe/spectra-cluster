@@ -272,24 +272,32 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
             ListIterator<IPeak> peakIter = peaks.listIterator();
 
-            IPeak currentPeak;
+            IPeak nextPeak;
             IPeak previousPeak;
             while (peakIter.hasNext()) {
-                currentPeak = peakIter.next();
                 if (peakIter.hasPrevious()) {
+                    // step backward one element
                     previousPeak = peakIter.previous();
 
-                    if (previousPeak.getMz() <= currentPeak.getMz() + range) {
+                    // step forward two elements
+                    peakIter.next();
+                    nextPeak = peakIter.next();
+
+                    if (previousPeak.getMz() + range >= nextPeak.getMz()) {
                         // calculate the new weighted m/z
-                        double weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + currentPeak.getIntensity() * currentPeak.getMz()) / (previousPeak.getIntensity() + currentPeak.getIntensity());
+                        double weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + nextPeak.getIntensity() * nextPeak.getMz()) / (previousPeak.getIntensity() + nextPeak.getIntensity());
 
-                        Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + currentPeak.getIntensity(), previousPeak.getCount() + currentPeak.getCount());
+                        Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + nextPeak.getIntensity(), previousPeak.getCount() + nextPeak.getCount());
 
+                        peakIter.previous();
+                        peakIter.previous();
                         peakIter.remove();
 
                         peakIter.next();
                         peakIter.set(mergedPeak);
                     }
+                } else {
+                    peakIter.next();
                 }
             }
         }
