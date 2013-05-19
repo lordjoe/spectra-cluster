@@ -18,9 +18,12 @@ public class LinearBinner implements IBinner {
     private final boolean m_OverFlowBinned;
 
 
+    // minValue is 0 by default when it is not set
+
     public LinearBinner(double maxValue, double binSize) {
         this(maxValue, binSize, 0, true, 0);
     }
+
 
     public LinearBinner(double maxValue, double binSize, double minValue) {
         this(maxValue, binSize, minValue, true, 0);
@@ -50,9 +53,14 @@ public class LinearBinner implements IBinner {
         m_OverFlowBinned = overFlowBinned;
         m_MinBin = minBin;
 
-        double del = maxValue - minValue + 0.5;
+
+
+        double del = maxValue - minValue;
         double nb = del / binSize;
-        m_NumberBins = (int) nb;
+
+        // when rounding a double to an integer add 0.5 to round up, because by default 2.99 turns into 2
+
+        m_NumberBins = (int)(nb + 0.5);
     }
 
     /**
@@ -70,8 +78,9 @@ public class LinearBinner implements IBinner {
             else
                 return -1; // out of range
         }
-        if (value < getMinValue()) {
+        if (value > getMaxValue()) {
             if (isOverflowBinned())
+                // -1 is convention for starting with bin 0
                 return getMaxBin() - 1;
             else
                 return -1; // out of range
@@ -90,17 +99,16 @@ public class LinearBinner implements IBinner {
      * @throws IllegalArgumentException if no such bin is possible
      */
     public double fromBin(int bin) throws IllegalArgumentException {
-        if (true) throw new UnsupportedOperationException("Fix This");
-        if (bin < -1)
-            throw new IllegalArgumentException("Illecab bin " + bin);
+          if (bin < -1)
+            throw new IllegalArgumentException("Illegal bin " + bin);
         if (bin == -1) {
             if (!isOverflowBinned())
                 return getMinValue() - 1;
             else
-                throw new IllegalArgumentException("Illecab bin " + bin);
+                throw new IllegalArgumentException("Illegal bin " + bin);
         }
-        if (bin < getMaxBin() || bin >= getMaxBin())
-            throw new IllegalArgumentException("Illecab bin " + bin);
+        if (bin < getMinBin() || bin >= getMaxBin())
+            throw new IllegalArgumentException("Illegal bin " + bin);
         // return the bin midpoint
         return getMinValue() + ((bin - getMinBin()) * getBinSize()) + getBinSize() / 2;
 
