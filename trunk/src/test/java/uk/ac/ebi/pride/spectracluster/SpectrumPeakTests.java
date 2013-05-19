@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster;
 import java.util.*;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.SpectrumPeakTests
@@ -23,7 +23,7 @@ public class SpectrumPeakTests {
         for (int i = 0; i < MAX_PEAKS; i++) {
             double mz = 1000 - i;
             double intensity = 100 * RND.nextDouble();
-            holder.add(new SpecClusterPeak(mz, intensity));
+            holder.add(new Peak(mz, intensity));
 
         }
 

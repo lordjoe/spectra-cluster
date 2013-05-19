@@ -16,7 +16,7 @@ import java.util.*;
  * @date 5/12/13
  */
 public class ParserTests {
-    public static final String MGF_RESOURCE = "res://mgf/7962salivaryglandhealthycontrol.mgf";
+    public static final String MGF_RESOURCE = "res://7962salivaryglandhealthycontrol.mgf";
 
     public static final String[] PEPMASS_STRINGS = {
             "PEPMASS=459.17000000000002 8795.7734375",
@@ -43,7 +43,7 @@ public class ParserTests {
         LineNumberReader inp = ParserUtilities.getDescribedReader(MGF_RESOURCE);
         Assert.assertNotNull(inp);  // make sure it exists
         int number_scans = 1;
-        ISpectralCluster spectralCluster = ParserUtilities.readMGFScan(inp);
+        ISpectrum spectralCluster = ParserUtilities.readMGFScan(inp);
         String id = spectralCluster.getId();
         Assert.assertEquals(number_scans, Integer.parseInt(id));
 
@@ -52,10 +52,10 @@ public class ParserTests {
             id = spectralCluster.getId();
             Assert.assertNotNull(id);  // make sure it exists
             Assert.assertEquals(number_scans, Integer.parseInt(id));
-            String label = spectralCluster.getTitle();
+            String label = spectralCluster.getId();
             Assert.assertNotNull(label);  // make sure it exists
 
-            IPeak[] peaks = spectralCluster.getPeaks();
+            IPeak[] peaks = spectralCluster.getPeaks().toArray(new IPeak[0]);
             if (peaks.length < 2)
                 Assert.assertTrue(peaks.length > 2);  // make there are some peaks
 
@@ -87,7 +87,7 @@ public class ParserTests {
      */
     protected void testMGFStream(final LineNumberReader inp) {
         Set<String> seenIds = new HashSet<String>();
-        ISpectralCluster ISpectralCluster = ParserUtilities.readMGFScan(inp);
+        ISpectrum ISpectralCluster = ParserUtilities.readMGFScan(inp);
         String id = ISpectralCluster.getId();
 
         while (ISpectralCluster != null) {
@@ -96,10 +96,10 @@ public class ParserTests {
             Assert.assertTrue(!seenIds.contains(id));   // make sure is is unique
             seenIds.add(id);
             Assert.assertNotNull(id);  // make sure it exists
-            String label = ISpectralCluster.getTitle();
+            String label = ISpectralCluster.getId();
             Assert.assertNotNull(label);  // make sure it exists
 
-            IPeak[] peaks = ISpectralCluster.getPeaks();
+            IPeak[] peaks = ISpectralCluster.getPeaks().toArray(new IPeak[0]);
             if (peaks.length < 2)
                 Assert.assertTrue(peaks.length > 2);  // make there are some peaks
 
@@ -400,14 +400,13 @@ public class ParserTests {
         Assert.assertEquals(1, scs.length);
         ISpectralCluster sc = scs[0];
         Assert.assertEquals("1234", sc.getId());
-        Assert.assertEquals(2, sc.getCharge());
+        Assert.assertEquals(2, sc.getPrecursorCharge());
         Assert.assertEquals(2, sc.getClusteredSpectraCount());
-        ISpectrum[] clusteredSpectra = sc.getClusteredSpectra();
-        Assert.assertEquals(sc.getClusteredSpectraCount(), clusteredSpectra.length);
-        for (int i = 0; i < clusteredSpectra.length; i++) {
-            ISpectrum scc = clusteredSpectra[i];
-            Assert.assertEquals(2, scc.getPrecursorCharge());
-            IPeak[] peaks = scc.getPeaks();
+        List<ISpectrum> clusteredSpectra = sc.getClusteredSpectra();
+        Assert.assertEquals(sc.getClusteredSpectraCount(), clusteredSpectra.size());
+        for ( ISpectrum scc : clusteredSpectra) {
+              Assert.assertEquals(2, scc.getPrecursorCharge());
+            IPeak[] peaks = scc.getPeaks().toArray(new IPeak[0]);
             Assert.assertTrue(peaks.length > 10);
         }
     }

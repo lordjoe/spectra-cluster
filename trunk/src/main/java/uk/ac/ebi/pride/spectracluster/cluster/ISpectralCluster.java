@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster {
+public interface ISpectralCluster extends Equivalent<ISpectralCluster> {
 
     /**
      * Get cluster id
