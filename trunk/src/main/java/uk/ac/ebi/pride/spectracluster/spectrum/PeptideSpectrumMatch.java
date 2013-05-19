@@ -134,4 +134,34 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
      }
 
+
+        /**
+         * like equals but weaker - says other is equivalent to this
+         *
+         * @param o poiibly null other object
+         * @return true if other is "similar enough to this"
+         */
+        public boolean equivalent(ISpectrum o) {
+            if(o == this)
+                 return true;
+             if(o.getPrecursorMz() != getPrecursorMz()) {
+                 return false;
+             }
+            IPeak[] peaks = getPeaks().toArray(new IPeak[0]);
+            IPeak[] peaks1 = o.getPeaks().toArray(new IPeak[0]);
+            if(peaks.length != peaks1.length) {
+                  return false;
+              }
+
+            for (int i = 0; i < peaks1.length; i++) {
+                IPeak pk0 = peaks1[i];
+                IPeak pk1 = peaks1[i];
+                if(!pk0.equivalent(pk1))
+                    return false;
+            }
+
+             return true;
+        }
+
+
 }
