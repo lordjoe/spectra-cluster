@@ -83,7 +83,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     /**
      * Create consensus spectrum with weighted m/z, total charge and total intensity
      */
-    private PeptideSpectrumMatch createConsensusSpectrum(Collection<ISpectrum> spectra, List<IPeak> filteredSpectrum) {
+    protected PeptideSpectrumMatch createConsensusSpectrum(Collection<ISpectrum> spectra, List<IPeak> filteredSpectrum) {
         double weightedMz = 0.0;
         double totalIntensity = 0.0;
         double totalCharge = 0.0;
@@ -106,7 +106,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * top 5 peaks per 100 Da
      */
     // todo  using ClusterUtilities.getHighestInBins
-    private List<IPeak> filterSpectrum(List<IPeak> mergedConsensusSpectrum) {
+    protected List<IPeak> filterSpectrum(List<IPeak> mergedConsensusSpectrum) {
         // expect to keep 1% - just a wild guess
         List<IPeak> filteredSpectrum = new ArrayList<IPeak>(mergedConsensusSpectrum.size() / 100);
 
@@ -135,7 +135,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         return filteredSpectrum;
     }
 
-    private void adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
+    protected void adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
         for (IPeak p : mergedConsensusSpectrum) {
             double peakProbability = (double) p.getCount() / numberOfSpectra;
             double newIntensity = p.getIntensity() * (0.95 + 0.05 * Math.pow(1 + peakProbability, 5));
@@ -147,7 +147,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * Adds all peaks from the passed List of
      * spectra to the consensus spectrum.
      */
-    private List<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
+    protected List<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
         List<IPeak> allPeaks = new ArrayList<IPeak>();
 
         // process the spectra
@@ -191,7 +191,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * @param spectra
      * @return
      */
-    private Collection<IPeak> originalAddAllPeaks(Collection<ISpectrum> spectra) {
+    protected Collection<IPeak> originalAddAllPeaks(Collection<ISpectrum> spectra) {
         // initialize the consensus spectrum - expect 2000 peaks for the beginning
         Map<Double, IPeak> consensusSpectrum = new HashMap<Double, IPeak>(2000);
 
@@ -255,7 +255,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     /**
      * @param consensusSpectrum
      */
-    private List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
+    protected List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
         // convert the spectrum into a list of Peaks
         List<IPeak> peaks = new ArrayList<IPeak>(consensusSpectrum);
 
