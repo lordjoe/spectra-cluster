@@ -10,7 +10,6 @@ import java.util.*;
  * by Frank etl al. (2008) JPR.
  *
  * @author jg
- *
  */
 public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
     /**
@@ -29,7 +28,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
     private IntensityNormalizer intensityNormalizer;
 
-    public FrankEtAlConsensusSpectrumBuilder( ) {
+    public FrankEtAlConsensusSpectrumBuilder() {
         this(new TotalIntensityNormalizer());
     }
 
@@ -42,25 +41,26 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     }
 
     public ISpectrum buildConsensusSpectrum(ISpectrum... spectra) {
-          // make sure something sensible was passed
+        // make sure something sensible was passed
         if (spectra.length == 0)
-              return null;
+            return null;
         if (spectra.length == 1)
-              return spectra[0];
-          return  buildConsensusSpectrum(Arrays.asList(spectra));
+            return spectra[0];
+        return buildConsensusSpectrum(Arrays.asList(spectra));
     }
 
-    public ISpectrum buildConsensusSpectrum(Collection<ISpectrum> spectra) {
+    public ISpectrum buildConsensusSpectrum(List<ISpectrum> spectra) {
         // make sure something sensible was passed
         if (spectra == null || spectra.isEmpty())
             return null;
 
         // if there's only one spectrum in the list, return this spectrum
         if (spectra.size() == 1)
-            return spectra.iterator().next();
+            return spectra.get(0);
 
         // add the peaks from all spectra to the consensus spectrum
-        Collection<IPeak> allPeaks = addAllPeaks(spectra);
+        List<IPeak> allPeaks = addAllPeaks(spectra);
+        // Note alllPeaks is sorted by MZ
 
         // merge identical peaks in the consensus spectrum
         List<IPeak> mergedConsensusSpectrum = mergeIdenticalPeaks(allPeaks);
@@ -89,29 +89,23 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         double totalCharge = 0.0;
 
         for (ISpectrum spectrum : spectra) {
-            // calculate the weighted mz
-            if (weightedMz == 0) {
-                weightedMz = spectrum.getPrecursorMz();
-            } else {
-                weightedMz =
-                        ( (weightedMz * totalIntensity) + (spectrum.getPrecursorMz() * spectrum.getPrecursorIntensity()) )
-                                / (totalIntensity + spectrum.getPrecursorIntensity());
-            }
-
+            weightedMz += spectrum.getPrecursorMz() * spectrum.getPrecursorIntensity();
             // update the average intensity
             totalIntensity += spectrum.getPrecursorIntensity();
             // update the average charge
             totalCharge += spectrum.getPrecursorCharge();
         }
 
-        return new PeptideSpectrumMatch(null, null, totalCharge/spectra.size(), weightedMz, totalIntensity, filteredSpectrum);
+        weightedMz /= totalIntensity;
+
+        return new PeptideSpectrumMatch(null, null, totalCharge / spectra.size(), weightedMz, totalIntensity, filteredSpectrum);
     }
 
     /**
      * Filters the passed spectrum keeping only the
      * top 5 peaks per 100 Da
-     *
      */
+    // todo  using ClusterUtilities.getHighestInBins
     private List<IPeak> filterSpectrum(List<IPeak> mergedConsensusSpectrum) {
         // expect to keep 1% - just a wild guess
         List<IPeak> filteredSpectrum = new ArrayList<IPeak>(mergedConsensusSpectrum.size() / 100);
@@ -153,13 +147,56 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * Adds all peaks from the passed List of
      * spectra to the consensus spectrum.
      */
-    private Collection<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
+    private List<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
+        List<IPeak> allPeaks = new ArrayList<IPeak>();
+
+        // process the spectra
+        for (ISpectrum spectrum : spectra) {
+            allPeaks.addAll(spectrum.getPeaks());
+        }
+
+        if (allPeaks.size() == 0)
+            return allPeaks;
+        // sort by m/z allPeaks
+        Collections.sort(allPeaks, PeakMzComparator.getInstance());
+        List<IPeak> returnedPeaks = new ArrayList<IPeak>();
+        IPeak start = null;
+        for (IPeak allPeak : allPeaks) {
+            if (allPeak.getIntensity() == 0)
+                continue;
+            if (start == null) {    // grab a peak
+                start = allPeak;
+                continue;
+            }
+            // re have a peak - start and another peak allpeak - do we merge
+            double diff = allPeak.getMz() - start.getMz();
+            if (diff < 0.00001) {
+                double intensity = start.getIntensity() + allPeak.getIntensity();
+                int count = start.getCount() + allPeak.getCount();
+                double mz = start.getMz();
+                start = new Peak(mz, intensity, count);
+            } else {
+                returnedPeaks.add(start); // not merging
+                start = allPeak;  //  start is next peak
+            }
+
+        }
+        return returnedPeaks;
+
+    }
+
+    /**
+     * old code compare
+     *
+     * @param spectra
+     * @return
+     */
+    private Collection<IPeak> originalAddAllPeaks(Collection<ISpectrum> spectra) {
         // initialize the consensus spectrum - expect 2000 peaks for the beginning
         Map<Double, IPeak> consensusSpectrum = new HashMap<Double, IPeak>(2000);
 
         // process the spectra
         for (ISpectrum spectrum : spectra) {
-
             // process the current spectrum's peaks
             for (IPeak peak : spectrum.getPeaks()) {
                 double mz = peak.getMz();
@@ -183,16 +220,49 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         return consensusSpectrum.values();
     }
 
+//    /**
+//     * @param consensusSpectrum
+//     */
+//    private List<IPeak> mergeIdenticalPeaks(List<IPeak> peaks, double range) {
+//        ListIterator<IPeak> peakIter = peaks.listIterator();
+//        List<IPeak> returned = new ArrayList<IPeak>();
+//        IPeak currentPeak;
+//        IPeak previousPeak;
+//        while (peakIter.hasNext()) {
+//            currentPeak = peakIter.next();
+//            if (peakIter.hasPrevious()) {
+//                previousPeak = peakIter.previous();
+//
+//                if (previousPeak.getMz() <= currentPeak.getMz() + range) {
+//                    // calculate the new weighted m/z
+//                    double weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + currentPeak.getIntensity() * currentPeak.getMz()) / (previousPeak.getIntensity() + currentPeak.getIntensity());
+//
+//                    Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + currentPeak.getIntensity(), previousPeak.getCount() + currentPeak.getCount());
+//
+//                    returned.add(mergedPeak);
+//                } else {
+//                    returned.add(currentPeak);
+//                }
+//
+//            } else {
+//                returned.add(currentPeak);
+//            }
+//        }
+//        return returned;
+//    }
+
+
     /**
      * @param consensusSpectrum
      */
-    private List<IPeak> mergeIdenticalPeaks(Collection<IPeak> consensusSpectrum) {
+    private List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
         // convert the spectrum into a list of Peaks
         List<IPeak> peaks = new ArrayList<IPeak>(consensusSpectrum);
 
         // sort the list according to m/z values
         // only need to sort once
-        Collections.sort(peaks, PeakMzComparator.getInstance());
+        // NOt needed because the input is already sorted
+        //   Collections.sort(peaks, PeakMzComparator.getInstance());
 
         // based on the set range
         for (double range = DEFUALT_MZ_THRESHOLD_STEP; range <= DEFAULT_FINAL_MZ_THRESHOLD; range += DEFUALT_MZ_THRESHOLD_STEP) {
