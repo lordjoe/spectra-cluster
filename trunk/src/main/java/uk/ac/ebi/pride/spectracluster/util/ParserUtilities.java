@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-
-
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -25,37 +23,38 @@ public class ParserUtilities {
 
     /**
      * See ParserTests for an example
-      *
+     *
      * @param inp !null reader
      * @return
      */
     public static ISpectralCluster[] readSpectralCluster(String inp) {
         return readSpectralCluster(new File(inp));
     }
-    /**
-      * See ParserTests for an example
-       *
-      * @param inp !null reader
-      * @return
-      */
-     public static ISpectralCluster[] readSpectralCluster(File inp) {
-         try {
-             return readSpectralCluster(new LineNumberReader(new FileReader(inp)) );
-         } catch (FileNotFoundException e) {
-             throw new UnsupportedOperationException(e);
-         }
-     }
 
     /**
      * See ParserTests for an example
-      *
+     *
+     * @param inp !null reader
+     * @return
+     */
+    public static ISpectralCluster[] readSpectralCluster(File inp) {
+        try {
+            return readSpectralCluster(new LineNumberReader(new FileReader(inp)));
+        } catch (FileNotFoundException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    /**
+     * See ParserTests for an example
+     *
      * @param inp !null reader
      * @return
      */
     public static ISpectralCluster[] readSpectralCluster(LineNumberReader inp) {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         ISpectralCluster cls = readSpectralCluster(inp, null);
-        while(cls != null) {
+        while (cls != null) {
             holder.add(cls);
             cls = readSpectralCluster(inp, null);
         }
@@ -63,7 +62,7 @@ public class ParserUtilities {
         ISpectralCluster[] ret = new ISpectralCluster[holder.size()];
         holder.toArray(ret);
         return ret;
-     }
+    }
 
     /**
      * See ParserTests for an example
@@ -72,7 +71,7 @@ public class ParserUtilities {
      * @param line
      * @return
      */
-    public static  ISpectralCluster readSpectralCluster(LineNumberReader inp, String line) {
+    public static ISpectralCluster readSpectralCluster(LineNumberReader inp, String line) {
         ISpectralCluster ret = null;
         try {
             if (line == null)
@@ -81,13 +80,13 @@ public class ParserUtilities {
                 if (line.startsWith(BEGIN_CLUSTER)) {
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
-                    ret = new SpectralCluster(id );
+                    ret = new SpectralCluster(id);
                     break;
                 }
                 // naked spectrum
                 if (line.startsWith(BEGIN_IONS)) {
                     ISpectrum internal = readMGFScan(inp, line);
-                    ret = new SpectralCluster(internal.getId() );
+                    ret = new SpectralCluster(internal.getId());
                     ret.addSpectra(internal);
                     return ret;
                 }
@@ -109,6 +108,51 @@ public class ParserUtilities {
         }
         return null; // nothing found or incloplete
     }
+
+
+    /**
+     * See ParserTests for an example
+     *
+     * @param inp
+     * @param line
+     * @return
+     */
+    public static ConsensusSpectraItems readConsensusSpectraItems(LineNumberReader inp, String line) {
+        ConsensusSpectraItems ret = new ConsensusSpectraItems();
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        ISpectrum concensus = null;
+        try {
+            if (line == null)
+                line = inp.readLine();
+            while (line != null) {
+                if (line.startsWith(BEGIN_CLUSTER)) {
+                    break;
+                }
+                line = inp.readLine();
+            }
+
+            line = inp.readLine();
+            while (line != null) {
+                concensus = readMGFScan(inp, line);
+                break;
+            }
+            while (line != null) {
+
+                line = inp.readLine();
+                if (line.startsWith(END_CLUSTER))
+                      break;
+                ISpectrum first = readMGFScan(inp, line);
+                if (first != null)
+                    holder.add(first);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ret.setConcensus(concensus);
+        ret.setSpectra(holder);
+        return ret; // nothing found or incloplete
+    }
+
 
     /**
      * take a line like BEGIN CLUSTER Charge=2 Id=VVXVXVVX  return id
@@ -178,7 +222,7 @@ public class ParserUtilities {
             ISpectrum ret;
 
             double massToChargeCalledPpMass = 0;
-            int charge = 1;
+            double dcharge = 1;
             String title = null;
             while (line != null) {
 
@@ -212,7 +256,7 @@ public class ParserUtilities {
                 }
 
                 // give up on lines not starting with a letter
-                if(!Character.isLetterOrDigit(line.charAt(0)))  {
+                if (!Character.isLetterOrDigit(line.charAt(0))) {
                     line = inp.readLine();
                     continue;
 
@@ -232,7 +276,7 @@ public class ParserUtilities {
                     }
                     if (line.startsWith("CHARGE=")) {
                         line = line.replace("+", "");
-                        charge = Integer.parseInt(line.substring("CHARGE=".length()));
+                        dcharge = Double.parseDouble(line.substring("CHARGE=".length()));
                         line = inp.readLine();
                         continue;
                     }
@@ -258,27 +302,25 @@ public class ParserUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if (END_IONS.equals(line)) {
-                    IPeak[] peaks = new IPeak[holder.size()];
-                    holder.toArray(peaks);
-                    double mz = massToChargeCalledPpMass;
+                      double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
                     double precursorIntensity = 0;
-                     String peptide = null;
+                    String peptide = null;
 
-                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
-                             title,
-                             peptide,
-                              charge,
-                             mz,
-                             precursorIntensity ,
-                             Arrays.asList(peaks)
-                     );
-                      return spectrum ;
+                    PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
+                            title,
+                            peptide,
+                            dcharge,
+                            mz,
+                            precursorIntensity,
+                            holder
+                    );
+                    return spectrum;
                 } else {
                     line = line.replace("\t", " ");
                     String[] items = line.split(" ");
                     // not sure we should let other ceses go but this is safer
-                    if (items.length == 2) {
+                    if (items.length >= 2) {
                         try {
                             double peakMass = Double.parseDouble(items[0].trim());
                             float peakIntensity = Float.parseFloat(items[1].trim());
@@ -418,25 +460,50 @@ public class ParserUtilities {
     }
 
     public static ConsensusSpectraItems[] readClusters(File file) {
-        throw new UnsupportedOperationException("Fix this");
+        List<ConsensusSpectraItems> holder = new ArrayList<ConsensusSpectraItems>();
+
+        try {
+            LineNumberReader inp = new LineNumberReader(new FileReader(file));
+
+            String line = inp.readLine();
+            while (line != null) {
+                ConsensusSpectraItems cluster = readConsensusSpectraItems(inp, line);
+                holder.add(cluster);
+                line = inp.readLine();
+            }
+
+
+            ConsensusSpectraItems[] ret = new ConsensusSpectraItems[holder.size()];
+            holder.toArray(ret);
+            return ret;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             boolean isMGF = arg.toLowerCase().endsWith(".mgf");
+
+            ConsensusSpectraItems[] items = readClusters(new File(arg));
+            for (int j = 0; j < items.length; j++) {
+                ConsensusSpectraItems item = items[j];
+
+            }
+
             ISpectralCluster[] scs = readSpectralCluster(arg);
             for (int j = 0; j < scs.length; j++) {
                 ISpectralCluster sc = scs[j];
                 StringBuilder sb = new StringBuilder();
-                if(isMGF)
+                if (isMGF)
                     sc.appendSpectra(sb);
                 else
                     sc.append(sb);
 
                 System.out.println(sb.toString());
             }
-          }
+        }
     }
 
 }
