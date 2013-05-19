@@ -1,6 +1,10 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -51,7 +55,7 @@ public class ParserTests {
             String label = spectralCluster.getTitle();
             Assert.assertNotNull(label);  // make sure it exists
 
-            ISpecClusterPeak[] peaks = spectralCluster.getPeaks();
+            IPeak[] peaks = spectralCluster.getPeaks();
             if (peaks.length < 2)
                 Assert.assertTrue(peaks.length > 2);  // make there are some peaks
 
@@ -95,7 +99,7 @@ public class ParserTests {
             String label = ISpectralCluster.getTitle();
             Assert.assertNotNull(label);  // make sure it exists
 
-            ISpecClusterPeak[] peaks = ISpectralCluster.getPeaks();
+            IPeak[] peaks = ISpectralCluster.getPeaks();
             if (peaks.length < 2)
                 Assert.assertTrue(peaks.length > 2);  // make there are some peaks
 
@@ -402,8 +406,8 @@ public class ParserTests {
         Assert.assertEquals(sc.getClusteredSpectraCount(), clusteredSpectra.length);
         for (int i = 0; i < clusteredSpectra.length; i++) {
             ISpectrum scc = clusteredSpectra[i];
-            Assert.assertEquals(2, scc.getCharge());
-            ISpecClusterPeak[] peaks = scc.getPeaks();
+            Assert.assertEquals(2, scc.getPrecursorCharge());
+            IPeak[] peaks = scc.getPeaks();
             Assert.assertTrue(peaks.length > 10);
         }
     }

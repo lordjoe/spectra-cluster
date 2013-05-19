@@ -1,7 +1,8 @@
 package com.lordjoe.hadoopsimulator;
 
-import com.lordjoe.hadoop.*;
-import com.lordjoe.hadoopsimulator.*;
+import com.lordjoe.hadoop.ITextMapper;
+import com.lordjoe.hadoop.ITextReducer;
+import com.lordjoe.hadoop.TextKeyValue;
 
 import java.util.*;
 
@@ -12,9 +13,6 @@ import java.util.*;
  * @date 5/15/13
  */
 public class HadoopJob implements IHadoopJob {
-    public static HadoopJob[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = HadoopJob.class;
-
     private final ITextMapper m_Mapper;
     private final ITextReducer m_Reducer;
 
@@ -32,7 +30,6 @@ public class HadoopJob implements IHadoopJob {
     }
 
 
-    @Override
     public List<TextKeyValue> runJob(List<TextKeyValue> input, Properties config) {
 
         // map step
