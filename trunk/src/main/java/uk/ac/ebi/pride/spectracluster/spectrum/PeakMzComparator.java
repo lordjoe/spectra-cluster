@@ -28,7 +28,7 @@ public class PeakMzComparator implements Comparator<IPeak> {
         }
 
         if (o1.getMz() != o2.getMz()) {
-            return o2.getMz() < o1.getMz() ? -1 : 1;
+            return o1.getMz() < o2.getMz() ? -1 : 1;
         }
 
         return 0;
