@@ -1,11 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-import uk.ac.ebi.pride.spectracluster.MultiSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.SingleSpectrum;
-import uk.ac.ebi.pride.spectracluster.SpecClusterPeak;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+
+
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
 import java.util.*;
@@ -74,7 +73,7 @@ public class ParserUtilities {
      * @return
      */
     public static  ISpectralCluster readSpectralCluster(LineNumberReader inp, String line) {
-        MultiSpectrumCluster ret = null;
+        ISpectralCluster ret = null;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -82,20 +81,22 @@ public class ParserUtilities {
                 if (line.startsWith(BEGIN_CLUSTER)) {
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
-                    ret = new MultiSpectrumCluster(id, charge);
+                    ret = new SpectralCluster(id );
                     break;
                 }
                 // naked spectrum
                 if (line.startsWith(BEGIN_IONS)) {
-                    ISpectralCluster internal = readMGFScan(inp, line);
-                    return internal;
+                    ISpectrum internal = readMGFScan(inp, line);
+                    ret = new SpectralCluster(internal.getId() );
+                    ret.addSpectra(internal);
+                    return ret;
                 }
                 line = inp.readLine();
             }
 
             line = inp.readLine();
             while (line != null) {
-                ISpectralCluster internal = readMGFScan(inp, line);
+                ISpectrum internal = readMGFScan(inp, line);
                 if (internal != null)
                     ret.addSpectra(internal);
 
@@ -161,7 +162,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static ISpectralCluster readMGFScan(LineNumberReader inp) {
+    public static ISpectrum readMGFScan(LineNumberReader inp) {
         return readMGFScan(inp, null);
     }
 
@@ -170,11 +171,11 @@ public class ParserUtilities {
      * @param line if non null the firat line of the stricture
      * @return
      */
-    public static ISpectralCluster readMGFScan(LineNumberReader inp, String line) {
+    public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
         try {
             if (line == null)
                 line = inp.readLine();
-            SingleSpectrum ret;
+            ISpectrum ret;
 
             double massToChargeCalledPpMass = 0;
             int charge = 1;
@@ -261,10 +262,18 @@ public class ParserUtilities {
                     holder.toArray(peaks);
                     double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
+                    double precursorIntensity = 0;
+                     String peptide = null;
 
-
-                    ret = new SingleSpectrum(title, mz, charge, peaks);
-                    return ret.asCluster();
+                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
+                             title,
+                             peptide,
+                              charge,
+                             mz,
+                             precursorIntensity ,
+                             Arrays.asList(peaks)
+                     );
+                      return spectrum ;
                 } else {
                     line = line.replace("\t", " ");
                     String[] items = line.split(" ");
@@ -273,7 +282,7 @@ public class ParserUtilities {
                         try {
                             double peakMass = Double.parseDouble(items[0].trim());
                             float peakIntensity = Float.parseFloat(items[1].trim());
-                            SpecClusterPeak added = new SpecClusterPeak(peakMass, peakIntensity);
+                            Peak added = new Peak(peakMass, peakIntensity);
                             holder.add(added);
                         } catch (NumberFormatException e) {
                             // I am not happy but I guess we can forgive a little bad data
@@ -339,7 +348,7 @@ public class ParserUtilities {
      */
     public static void guaranteeMGFParse(InputStream is) {
         LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
-        ISpectralCluster scan = readMGFScan(inp, null);
+        ISpectrum scan = readMGFScan(inp, null);
         while (scan != null) {
             scan = readMGFScan(inp, null);
         }

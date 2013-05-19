@@ -24,7 +24,10 @@ import java.util.List;
 public class TotalIntensityNormalizer implements IntensityNormalizer {
 	private static final double DEFAULT_TOTAL_INTENSITY = 1000;
 
-	public void normalizeSpectrum(ISpectrum spectrum) {
+    public TotalIntensityNormalizer() {
+    }
+
+    public void normalizeSpectrum(ISpectrum spectrum) {
 		// get the max intensity
 		Double specTotalIntensity = 0.0;
 		

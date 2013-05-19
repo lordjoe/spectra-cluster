@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster
@@ -19,6 +19,29 @@ public interface ISpectralCluster {
     public String getId();
 
     /**
+     * concensus spectrum MZ
+     *
+     * @return
+     */
+    public double getPrecursorMz();
+
+
+    /**
+     * concensus spectrum Charge
+     *
+     * @return
+     */
+    public double getPrecursorCharge();
+
+
+    /**
+     * concensus spectrum Charge
+     *
+     * @return
+     */
+    public List<IPeak> getPeaks();
+
+    /**
      * Get consensus spectrum
      */
     public ISpectrum getConsensusSpectrum();
@@ -26,7 +49,7 @@ public interface ISpectralCluster {
     /**
      * all internally spectrum
      */
-    public Collection<ISpectrum> getClusteredSpectra();
+    public List<ISpectrum> getClusteredSpectra();
 
     /**
      * count of internal spectrum
@@ -42,5 +65,11 @@ public interface ISpectralCluster {
      * Remove an array of spectrum from cluster
      */
     public void removeSpectra(ISpectrum... removed);
+
+
+    public void append(Appendable out);
+
+
+    public void appendSpectra(Appendable out) ;
 
 }

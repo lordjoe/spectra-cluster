@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
@@ -39,11 +39,14 @@ public interface ISpectrum {
      *
      * @return !null array of peaks
      */
-    public Collection<IPeak> getPeaks();
+    public List<IPeak> getPeaks();
 
     /**
      * Replace existing peaks with a new collection of peaks
      */
     public void setPeaks(Collection<IPeak> peaks);
+
+
+    public void appendMGF(Appendable out);
 
 }

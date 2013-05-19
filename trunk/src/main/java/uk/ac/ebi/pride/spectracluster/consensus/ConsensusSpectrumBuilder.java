@@ -21,4 +21,14 @@ public interface ConsensusSpectrumBuilder {
 	 * @return A list of Peaks sorted according to their intensities.
 	 */
 	public ISpectrum buildConsensusSpectrum(Collection<ISpectrum> spectra);
+
+
+    /**
+ 	 * Creates a consensus spectrum based on the
+ 	 * passed list of spectra.
+ 	 * @param spectra A list of spectra as sorted peak lists according to intensity.
+ 	 * @return A list of Peaks sorted according to their intensities.
+ 	 */
+    public ISpectrum buildConsensusSpectrum(ISpectrum... spectra);
+
 }
