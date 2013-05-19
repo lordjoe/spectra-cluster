@@ -304,7 +304,6 @@ public class ParserUtilities {
                 if (END_IONS.equals(line)) {
                       double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
-                    double precursorIntensity = 0;
                     String peptide = null;
 
                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
@@ -312,7 +311,6 @@ public class ParserUtilities {
                             peptide,
                             dcharge,
                             mz,
-                            precursorIntensity,
                             holder
                     );
                     return spectrum;
