@@ -23,6 +23,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     private double precursorCharge;
     private double precursorMz;
     private double precursorIntensity;
+    private double totalIntensity;
     /**
      * for calculate similarity between spectra, all peaks should be sorted by intensity
      */
@@ -64,6 +65,10 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         return precursorCharge;
     }
 
+    public double getTotalIntensity() {
+        return totalIntensity;
+    }
+
     public List<IPeak> getPeaks() {
         return new ArrayList<IPeak>(peaks);
     }
@@ -72,8 +77,13 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         this.peaks.clear();
         if (peaks != null) {
             this.peaks.addAll(peaks);
-            Collections.sort(this.peaks, PeakIntensityComparator.getInstance());
+            Collections.sort(this.peaks, PeakMzComparator.getInstance());
         }
+        totalIntensity = 0;
+        for (IPeak peak : peaks) {
+            totalIntensity += peak.getIntensity();
+        }
+
     }
 
     public double getQualityMeasure() {
