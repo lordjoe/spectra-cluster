@@ -396,7 +396,8 @@ public class ParserUtilities {
 
         // maybe a resource
         if (des.startsWith("res://")) {
-            InputStream inputStream = ParserUtilities.class.getResourceAsStream(des.substring("res://".length()));
+            String substring = des.substring("res://".length());
+            InputStream inputStream = ParserUtilities.class.getResourceAsStream(substring);
             if (inputStream == null)
                 return null;
             return new LineNumberReader(new InputStreamReader(inputStream));
