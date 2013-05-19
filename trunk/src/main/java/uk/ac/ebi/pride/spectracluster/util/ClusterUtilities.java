@@ -77,7 +77,7 @@ public class ClusterUtilities {
                                                       int maxPerBin)
     {
         // handles the binning as am object
-        LinearBinner binner = new LinearBinner(maxMZ,minMZ,binSize);
+        LinearBinner binner = new LinearBinner(maxMZ,binSize,minMZ);
         /// these will keep the highest values
         PriorityQueue<IPeak>[]  higheseEachBin =
                 (PriorityQueue<IPeak>[])new PriorityQueue[binner.getNumberBins()];
