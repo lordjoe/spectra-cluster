@@ -1,6 +1,10 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,20 +19,18 @@ import java.util.List;
  */
 
 public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectrum> ,Equivalent<ISpectrum> {
-    public static SingleSpectrum[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = SingleSpectrum.class;
 
-    private final String m_Id;
-    private final double m_MassChargeRatio;
-    private final int m_Charge;
-    private String m_Peptide;
-    private final List<ISpecClusterPeak> m_Peaks  = new ArrayList<ISpecClusterPeak>();
+    private final String id;
+    private final double massChargeRatio;
+    private final int charge;
+    private String peptide;
+    private final List<IPeak> peaks = new ArrayList<IPeak>();
 
-    public SingleSpectrum(String id, double massChargeRatio, int charge, ISpecClusterPeak[] peaks) {
-        m_Id = id;
-        m_MassChargeRatio = massChargeRatio;
-        m_Charge = charge;
-        m_Peaks.addAll(Arrays.asList(peaks)) ;
+    public SingleSpectrum(String id, double massChargeRatio, int charge, IPeak[] peaks) {
+        this.id = id;
+        this.massChargeRatio = massChargeRatio;
+        this.charge = charge;
+        this.peaks.addAll(Arrays.asList(peaks)) ;
     }
 
     /**
@@ -36,11 +38,10 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      * this guarantees that they are
      * @return
      */
-    @Override
     public ISpectralCluster asCluster()
     {
-        MultiSpectrumCluster cluster = new MultiSpectrumCluster(getId(),getCharge()) ;
-        cluster.mergeClusters(this);
+        MultiSpectrumCluster cluster = new MultiSpectrumCluster(getId(), getPrecursorCharge()) ;
+        cluster.addSpectra(this);
         return cluster;
     }
     /**
@@ -48,16 +49,14 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @return !null id
      */
-    @Override
     public String getId() {
-        return m_Id;
+        return id;
     }
 
     /**
        * usfful label - frequently the same as the id
        * @return   !null title
        */
-     @Override
       public String getTitle()
      {
          return getId();
@@ -68,13 +67,12 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      * return scored peptide - maybe null
      * @return
      */
-    @Override
     public String getPeptide() {
-        return m_Peptide;
+        return peptide;
     }
 
     public void setPeptide(String peptide) {
-        m_Peptide = peptide;
+        this.peptide = peptide;
     }
 
     /**
@@ -82,9 +80,8 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @return
      */
-    @Override
-    public double getMassChargeRatio() {
-         return m_MassChargeRatio;
+    public double getPrecursorMz() {
+         return massChargeRatio;
     }
 
     /**
@@ -92,9 +89,8 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @return
      */
-    @Override
-    public int getCharge() {
-        return m_Charge;
+    public int getPrecursorCharge() {
+        return charge;
     }
 
     /**
@@ -102,9 +98,8 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @return !null array of peaks
      */
-    @Override
-    public ISpecClusterPeak[] getPeaks() {
-         return m_Peaks.toArray(ISpecClusterPeak.EMPTY_ARRAY);
+    public IPeak[] getPeaks() {
+         return peaks.toArray(new IPeak[peaks.size()]);
     }
 
 
@@ -113,7 +108,6 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @return
      */
-    @Override
     public double getQualityMeasure() {
         if (true) throw new UnsupportedOperationException("Fix This");
         return 0;
@@ -126,15 +120,14 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
        * @param o
        * @return
        */
-    @Override
      public int compareTo(ISpectrum o) {
          if(o == this)
              return 0;
-         if(o.getMassChargeRatio() != getMassChargeRatio()) {
-             return getMassChargeRatio() < o.getMassChargeRatio() ? -1 : 1;
+         if(o.getPrecursorMz() != getPrecursorMz()) {
+             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
          }
-        ISpecClusterPeak[] peaks = getPeaks();
-        ISpecClusterPeak[] peaks1 = o.getPeaks();
+        IPeak[] peaks = getPeaks();
+        IPeak[] peaks1 = o.getPeaks();
         if(peaks.length != peaks1.length) {
               return peaks.length < peaks1.length ? -1 : 1;
           }
@@ -145,25 +138,24 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
     /**
      * like equals but weaker - says other is equivalent to this
      *
-     * @param other poiibly null other object
+     * @param o poiibly null other object
      * @return true if other is "similar enough to this"
      */
-    @Override
     public boolean equivalent(ISpectrum o) {
         if(o == this)
              return true;
-         if(o.getMassChargeRatio() != getMassChargeRatio()) {
+         if(o.getPrecursorMz() != getPrecursorMz()) {
              return false;
          }
-        ISpecClusterPeak[] peaks = getPeaks();
-        ISpecClusterPeak[] peaks1 = o.getPeaks();
+        IPeak[] peaks = getPeaks();
+        IPeak[] peaks1 = o.getPeaks();
         if(peaks.length != peaks1.length) {
               return false;
           }
 
         for (int i = 0; i < peaks1.length; i++) {
-            ISpecClusterPeak pk0 = peaks1[i];
-            ISpecClusterPeak pk1 = peaks1[i];
+            IPeak pk0 = peaks1[i];
+            IPeak pk1 = peaks1[i];
             if(!pk0.equivalent(pk1))
                 return false;
         }
@@ -176,7 +168,6 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
      *
      * @param out place to append
      */
-    @Override
     public void appendMGF(Appendable out) {
         int indent = 0;
 
@@ -187,8 +178,8 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
             out.append("TITLE=" + getId());
             out.append("\n");
 
-            int precursorCharge = getCharge();
-            double massChargeRatio = getMassChargeRatio();
+            int precursorCharge = getPrecursorCharge();
+            double massChargeRatio = getPrecursorMz();
 
             out.append("PEPMASS=" + massChargeRatio);
             out.append("\n");
@@ -198,9 +189,9 @@ public class SingleSpectrum implements IPeptideSpectrumMatch,Comparable<ISpectru
                 out.append("+");
             out.append("\n");
 
-            ISpecClusterPeak[] peaks = getPeaks();
+            IPeak[] peaks = getPeaks();
             for (int i = 0; i < peaks.length; i++) {
-                ISpecClusterPeak peak = peaks[i];
+                IPeak peak = peaks[i];
                 out.append(peak.toString());
                 out.append("\n");
             }

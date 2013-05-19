@@ -1,19 +1,23 @@
-package uk.ac.ebi.pride.spectracluster;
+package uk.ac.ebi.pride.spectracluster.util;
 
+
+import uk.ac.ebi.pride.spectracluster.MultiSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.SingleSpectrum;
+import uk.ac.ebi.pride.spectracluster.SpecClusterPeak;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 import java.io.*;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.ParserUtilities
+ * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
  * Classes for reading clusters
  *
  * @author Steve Lewis
  * @date 5/12/13
  */
 public class ParserUtilities {
-    public static ParserUtilities[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = ParserUtilities.class;
 
     public static final String BEGIN_IONS = "BEGIN IONS";
     public static final String END_IONS = "END IONS";
@@ -93,7 +97,7 @@ public class ParserUtilities {
             while (line != null) {
                 ISpectralCluster internal = readMGFScan(inp, line);
                 if (internal != null)
-                    ret.mergeClusters(internal);
+                    ret.addSpectra(internal);
 
                 line = inp.readLine();
                 if (line.startsWith(END_CLUSTER))
@@ -195,7 +199,7 @@ public class ParserUtilities {
 
 //            line = inp.readLine();
 
-            List<ISpecClusterPeak> holder = new ArrayList<ISpecClusterPeak>();
+            List<IPeak> holder = new ArrayList<IPeak>();
 
             // add scan items
             while (line != null) {
@@ -253,7 +257,7 @@ public class ParserUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if (END_IONS.equals(line)) {
-                    ISpecClusterPeak[] peaks = new ISpecClusterPeak[holder.size()];
+                    IPeak[] peaks = new IPeak[holder.size()];
                     holder.toArray(peaks);
                     double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
@@ -331,7 +335,7 @@ public class ParserUtilities {
     /**
      * parse an mgf file - used in testing
      *
-     * @param filename !null open inputstream
+     * @param is !null open inputstream
      */
     public static void guaranteeMGFParse(InputStream is) {
         LineNumberReader inp = new LineNumberReader(new InputStreamReader(is));
@@ -383,7 +387,7 @@ public class ParserUtilities {
 
         // maybe a resource
         if (des.startsWith("res://")) {
-            InputStream inputStream = THIS_CLASS.getResourceAsStream(des.substring("res://".length()));
+            InputStream inputStream = ParserUtilities.class.getResourceAsStream(des.substring("res://".length()));
             if (inputStream == null)
                 return null;
             return new LineNumberReader(new InputStreamReader(inputStream));

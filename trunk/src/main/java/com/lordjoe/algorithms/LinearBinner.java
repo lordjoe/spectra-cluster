@@ -63,7 +63,6 @@ public class LinearBinner implements IBinner {
      * @return either a valid bin number or -1 if  isOverflowBinned() is false and the
      *         data is outside the range handled
      */
-    @Override
     public int asBin(double value) {
         if (value < getMinValue()) {
             if (isOverflowBinned())
@@ -90,7 +89,6 @@ public class LinearBinner implements IBinner {
      * @return a number which when sent to asBin will return bin
      * @throws IllegalArgumentException if no such bin is possible
      */
-    @Override
     public double fromBin(int bin) throws IllegalArgumentException {
         if (true) throw new UnsupportedOperationException("Fix This");
         if (bin < -1)
@@ -114,7 +112,6 @@ public class LinearBinner implements IBinner {
      *
      * @return as above
      */
-    @Override
     public double getMinValue() {
          return m_MinValue;
     }
@@ -125,7 +122,6 @@ public class LinearBinner implements IBinner {
      *
      * @return as above
      */
-    @Override
     public double getMaxValue() {
         return m_MaxValue;
     }
@@ -135,7 +131,6 @@ public class LinearBinner implements IBinner {
      *
      * @return as above
      */
-    @Override
     public int getMinBin() {
         return m_MinBin;
     }
@@ -146,7 +141,6 @@ public class LinearBinner implements IBinner {
      *
      * @return as above
      */
-    @Override
     public int getMaxBin() {
         return getMinBin() + getNumberBins();
     }
@@ -158,7 +152,6 @@ public class LinearBinner implements IBinner {
      *
      * @return
      */
-    @Override
     public boolean isOverflowBinned() {
         return m_OverFlowBinned;
     }

@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.*;
 import java.util.*;
@@ -14,24 +17,22 @@ import java.util.*;
  * @date 5/10/13
  */
 public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpectralCluster>, Equivalent<ISpectralCluster> {
-    public static MultiSpectrumCluster[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = MultiSpectrumCluster.class;
 
-    private final String m_Id;
-    private double m_MassChargeRatio;
-    private final int m_Charge;
-    private final Map<String, ISpectrum> m_Clusters = new HashMap<String, ISpectrum>();
-    private final List<ISpecClusterPeak> m_Peaks = new ArrayList<ISpecClusterPeak>();
-    private boolean m_Dirty;
+    private final String id;
+    private double massChargeRatio;
+    private final int charge;
+    private final Map<String, ISpectrum> clusters = new HashMap<String, ISpectrum>();
+    private final List<IPeak> peaks = new ArrayList<IPeak>();
+    private boolean dirty;
 
     public MultiSpectrumCluster(String id, int charge) {
-        m_Id = id;
-        m_Charge = charge;
+        this.id = id;
+        this.charge = charge;
     }
 
     public MultiSpectrumCluster(String id, double massChargeRatio, int charge) {
         this(id, charge);
-        m_MassChargeRatio = massChargeRatio;
+        this.massChargeRatio = massChargeRatio;
     }
 
     /**
@@ -40,7 +41,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public ISpectralCluster asCluster() {
         return this;
     }
@@ -50,9 +50,8 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return !null id
      */
-    @Override
     public String getId() {
-        return m_Id;
+        return id;
     }
 
     /**
@@ -60,7 +59,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return !null title
      */
-    @Override
     public String getTitle() {
         return getId();
     }
@@ -71,14 +69,13 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public double getMassChargeRatio() {
         guaranteeClean();  // build concensus as needed
-        return m_MassChargeRatio;
+        return massChargeRatio;
     }
 
     protected void setMassChargeRatio(double massChargeRatio) {
-        m_MassChargeRatio = massChargeRatio;
+        this.massChargeRatio = massChargeRatio;
     }
 
     /**
@@ -86,9 +83,8 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public int getCharge() {
-        return m_Charge;
+        return charge;
     }
 
     /**
@@ -96,10 +92,9 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return !null array of peaks
      */
-    @Override
-    public ISpecClusterPeak[] getPeaks() {
+    public IPeak[] getPeaks() {
         guaranteeClean();  // build concensus as needed
-        return m_Peaks.toArray(ISpecClusterPeak.EMPTY_ARRAY);
+        return peaks.toArray(new IPeak[peaks.size()]);
     }
 
     /**
@@ -107,9 +102,9 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public ISpectrum[] getClusteredSpectra() {
-        return m_Clusters.values().toArray(ISpectrum.EMPTY_ARRAY);
+        Collection<ISpectrum> spectra = clusters.values();
+        return spectra.toArray(new ISpectrum[spectra.size()]);
     }
 
     /**
@@ -117,9 +112,8 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public int getClusteredSpectraCount() {
-        return m_Clusters.size();
+        return clusters.size();
     }
 
     /**
@@ -127,7 +121,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @return
      */
-    @Override
     public double getQualityMeasure() {
         guaranteeClean();  // build concensus as needed
         if (true) throw new UnsupportedOperationException("Fix This");
@@ -138,12 +131,10 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
     /**
      * @param merged
      */
-    @Override
-    public void mergeClusters(ISpectrum... merged) {
+    public void addSpectra(ISpectrum... merged) {
         setDirty(true);
-        for (int i = 0; i < merged.length; i++) {
-            ISpectrum sc = merged[i];
-            m_Clusters.put(sc.getId(), sc);
+        for (ISpectrum sc : merged) {
+            clusters.put(sc.getId(), sc);
         }
 
     }
@@ -153,22 +144,20 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @param removed
      */
-    @Override
-    public void removeClusters(ISpectrum... removed) {
+    public void removeSpectra(ISpectrum... removed) {
         setDirty(true);
-        for (int i = 0; i < removed.length; i++) {
-            ISpectrum sc = removed[i];
-            m_Clusters.remove(sc.getId());
+        for (ISpectrum sc : removed) {
+            clusters.remove(sc.getId());
         }
 
     }
 
     protected boolean isDirty() {
-        return m_Dirty;
+        return dirty;
     }
 
     protected void setDirty(boolean dirty) {
-        m_Dirty = dirty;
+        this.dirty = dirty;
     }
 
     protected void guaranteeClean() {
@@ -176,11 +165,11 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
             setDirty(false);
             // only one cluster - use it
             if (getClusteredSpectraCount() == 1) {
-                ISpectrum[] scs = m_Clusters.values().toArray(ISpectrum.EMPTY_ARRAY);
+                ISpectrum[] scs = getClusteredSpectra();
                 ISpectrum sc0 = scs[0];
-                m_MassChargeRatio = sc0.getMassChargeRatio();
-                m_Peaks.clear();
-                m_Peaks.addAll(Arrays.asList(sc0.getPeaks()));
+                massChargeRatio = sc0.getPrecursorMz();
+                peaks.clear();
+                peaks.addAll(Arrays.asList(sc0.getPeaks()));
 
             } else {
                 // not sure what to do here
@@ -195,7 +184,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      * @param o
      * @return
      */
-    @Override
     public int compareTo(ISpectralCluster o) {
         if (o == this)
             return 0;
@@ -213,10 +201,9 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
     /**
      * like equals but weaker - says other is equivalent to this
      *
-     * @param other poiibly null other object
+     * @param o poiibly null other object
      * @return true if other is "similar enough to this"
      */
-    @Override
     public boolean equivalent(ISpectralCluster o) {
         if (o == this)
             return true;
@@ -225,7 +212,7 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
         if (getClusteredSpectraCount() == 1) {     //  todo Rui - make the algorithm
             double del = o.getMassChargeRatio() - getMassChargeRatio();
             double abs = Math.abs(del);
-            if (abs > ISpecClusterPeak.SMALL_MZ_DIFFERENCE) {
+            if (abs > IPeak.SMALL_MZ_DIFFERENCE) {
                 return false;
             }
 
@@ -237,14 +224,14 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
         }
         if (spc1.length <= 1) {
 
-            ISpecClusterPeak[] peaks = getPeaks();
-            ISpecClusterPeak[] peaks1 = o.getPeaks();
+            IPeak[] peaks = getPeaks();
+            IPeak[] peaks1 = o.getPeaks();
             if (peaks.length != peaks1.length) {
                 return false;
             }
             for (int i = 0; i < peaks1.length; i++) {
-                ISpecClusterPeak pk0 = peaks[i];
-                ISpecClusterPeak pk1 = peaks1[i];
+                IPeak pk0 = peaks[i];
+                IPeak pk1 = peaks1[i];
                 if (!pk0.equivalent(pk1))
                     return false;
             }
@@ -268,7 +255,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @param out place to append
      */
-    @Override
     public void append(Appendable out) {
         int indent = 0;
 
@@ -297,6 +283,7 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
 
     /**
      * do not add begin and end cluster - useful for rebuilding a mgf
+     *
      * @param out
      */
     public void appendSpectra(Appendable out) {
@@ -314,7 +301,6 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
      *
      * @param out place to append
      */
-    @Override
     public void appendMGF(Appendable out) {
         int indent = 0;
 
@@ -336,9 +322,9 @@ public class MultiSpectrumCluster implements ISpectralCluster, Comparable<ISpect
                 out.append("+");
             out.append("\n");
 
-            ISpecClusterPeak[] peaks = getPeaks();
+            IPeak[] peaks = getPeaks();
             for (int i = 0; i < peaks.length; i++) {
-                ISpecClusterPeak peak = peaks[i];
+                IPeak peak = peaks[i];
                 out.append(peak.toString());
                 out.append("\n");
             }

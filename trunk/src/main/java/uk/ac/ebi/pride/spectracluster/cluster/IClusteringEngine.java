@@ -1,21 +1,24 @@
-package uk.ac.ebi.pride.spectracluster;
+package uk.ac.ebi.pride.spectracluster.cluster;
+
+import java.util.Collection;
 
 /**
- * uk.ac.ebi.pride.spectracluster.IClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
  *
  * This object does the clusters
  * @author Steve Lewis
+ * @author Rui Wang
  * @date 10/05/13
  */
 public interface IClusteringEngine {
-    public static IClusteringEngine[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = IClusteringEngine.class;
 
-    public ISpectralCluster[] getClusters();
+    /**
+     * Get clustered clusters
+     */
+    public Collection<ISpectralCluster> getClusters();
 
     /**
      * add some clusters
-     * @param cluster
      */
     public void addClusters(ISpectralCluster... cluster);
 
@@ -24,6 +27,5 @@ public interface IClusteringEngine {
      * @return true is  anything happened
      */
     public boolean mergeClusters();
-
 
 }

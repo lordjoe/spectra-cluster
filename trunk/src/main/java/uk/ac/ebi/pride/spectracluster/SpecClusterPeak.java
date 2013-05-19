@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster;
 
-import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 /**
  * uk.ac.ebi.pride.spectracluster.SpecClusterPeak
@@ -8,10 +8,7 @@ import com.lordjoe.algorithms.*;
  * @author Steve Lewis
  * @date 10/05/13
  */
-public class SpecClusterPeak implements ISpecClusterPeak {
-    public static SpecClusterPeak[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = SpecClusterPeak.class;
-
+public class SpecClusterPeak implements IPeak {
 
     private final double m_MassChargeRatio;
     private final int m_Count;
@@ -39,12 +36,10 @@ public class SpecClusterPeak implements ISpecClusterPeak {
         m_Intensity = intensity;
     }
 
-    @Override
-    public double getMassChargeRatio() {
+    public double getMz() {
         return m_MassChargeRatio;
     }
 
-    @Override
     public double getIntensity() {
           return m_Intensity;
     }
@@ -54,18 +49,16 @@ public class SpecClusterPeak implements ISpecClusterPeak {
      *
      * @return
      */
-    @Override
     public int getCount() {
          return m_Count;
     }
 
 
-    @Override
-    public int compareTo(ISpecClusterPeak o) {
+    public int compareTo(IPeak o) {
         if(o == this)
             return 0;
-        if(o.getMassChargeRatio() != getMassChargeRatio()) {
-            return getMassChargeRatio() < o.getMassChargeRatio() ? -1 : 1;
+        if(o.getMz() != getMz()) {
+            return getMz() < o.getMz() ? -1 : 1;
         }
         if(o.getIntensity() != getIntensity()) {
              return getIntensity() < o.getIntensity() ? -1 : 1;
@@ -83,11 +76,10 @@ public class SpecClusterPeak implements ISpecClusterPeak {
      * @param other poiibly null other object
      * @return true if other is "similar enough to this"
      */
-    @Override
-    public boolean equivalent(ISpecClusterPeak other) {
+    public boolean equivalent(IPeak other) {
         if (other == null)
             return false;
-        if(Math.abs((getMassChargeRatio() - other.getMassChargeRatio())) > SMALL_MZ_DIFFERENCE)
+        if(Math.abs((getMz() - other.getMz())) > SMALL_MZ_DIFFERENCE)
             return false;
          // we dont care about intensity or count
          return true;
@@ -100,7 +92,7 @@ public class SpecClusterPeak implements ISpecClusterPeak {
     @Override
     public String toString() {
 
-        String item = String.format("%10.5f",  getMassChargeRatio()).trim();
+        String item = String.format("%10.5f",  getMz()).trim();
         String item2 = String.format("%8.2f",  getIntensity()).trim();
         return item + "\t" + item2;
      }
