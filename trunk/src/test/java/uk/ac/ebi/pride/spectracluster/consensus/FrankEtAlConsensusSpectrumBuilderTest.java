@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
@@ -69,9 +68,8 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             IPeak peak1 = peaks1.get(i);
             IPeak peak2 = peaks2.get(i);
 
-            Assert.assertEquals(peak1.getMz(), peak2.getMz(), IPeak.SMALL_MZ_DIFFERENCE);
-     //       assertSame("Peaks have different m/z", peak1.getMz(), peak2.getMz());
-            Assert.assertEquals(peak1.getIntensity(), peak2.getIntensity(), IPeak.SMALL_INTENSITY_DIFFERENCE);
+            assertEquals(peak1.getMz(), peak2.getMz(), IPeak.SMALL_MZ_DIFFERENCE);
+            assertEquals(peak1.getIntensity(), peak2.getIntensity(), IPeak.SMALL_INTENSITY_DIFFERENCE);
             assertSame("Peaks have different count", peak1.getCount(), peak2.getCount());
         }
     }
