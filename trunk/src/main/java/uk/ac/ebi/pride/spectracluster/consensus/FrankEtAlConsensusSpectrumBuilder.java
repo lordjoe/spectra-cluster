@@ -162,6 +162,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         Collections.sort(allPeaks, PeakMzComparator.getInstance());
         List<IPeak> returnedPeaks = new ArrayList<IPeak>();
         IPeak start = null;
+        int index = 0;
         for (IPeak allPeak : allPeaks) {
             if (allPeak.getIntensity() == 0)
                 continue;
@@ -180,8 +181,9 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
                 returnedPeaks.add(start); // not merging
                 start = allPeak;  //  start is next peak
             }
-
+            index++;
         }
+        returnedPeaks.add(start); //  add last peak
         return returnedPeaks;
 
     }

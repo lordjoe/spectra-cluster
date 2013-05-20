@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+
 
 /**
  * @author Rui Wang
@@ -44,6 +44,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     public void testBuildConsensusSpectrum() throws Exception {
         // iterate over all clusters
         TotalIntensityNormalizer totalIntensityNormalizer = new TotalIntensityNormalizer();
+        int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
@@ -53,26 +54,15 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             jpeaks = jSpectrumBuilder.buildConsensusSpectrum(spectra1);
             Collections.sort(jpeaks, PeakMzComparator.getInstance());
             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
+            ISpectrum newConsensusSpectrum = newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
 
-            ISpectrum newConsensusSpectrum = null;
-            switch (spectra.size()) {
-                case 1:
-                    newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
-                    break;
-                case 2:
-                    newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
-                    break;
-                case 5:
-                    newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
-                    break;
-                default:
-                    newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
-                    break;
+            if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks)) {
+                // repeat and debug failures - if you are here it will fail
+                boolean failure = areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
+                Assert.assertTrue(failure);
             }
+
+            index++; // track where we are
         }
     }
 
@@ -84,18 +74,32 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         return ret;
     }
 
-    private void areConsensusSpectraSimilar(ISpectrum originalConcensus, ISpectrum newConcensus, List<IPeak> jpeaks) {
+    private boolean areConsensusSpectraSimilar(ISpectrum originalConcensus, ISpectrum newConcensus, List<IPeak> jpeaks) {
         // check average m/z
         assertEquals(originalConcensus.getPrecursorMz(), newConcensus.getPrecursorMz(), 0.1);
 
 
         // check all the peaks
-        List<IPeak> peaks1 = originalConcensus.getPeaks();
-        List<IPeak> peaks2 = newConcensus.getPeaks();
+        List<IPeak> originalConcensusPeaks = originalConcensus.getPeaks();
+        List<IPeak> newConcensusPeaks = newConcensus.getPeaks();
+        // compare concensus spectra
+        if (!arePeaksSimilar(originalConcensusPeaks, newConcensusPeaks)) {
+            boolean failure = arePeaksSimilar(originalConcensusPeaks, newConcensusPeaks); // try again so we can walk through the code
+            Assert.assertTrue(failure);
+        }
 
-        // try using the recalculated peaks
-        peaks1 = jpeaks;
 
+               // compare concensus spectra
+        if (!arePeaksSimilar(newConcensusPeaks, jpeaks)) {
+            boolean failure = arePeaksSimilar(newConcensusPeaks, jpeaks);   // try again so we can walk through the code
+            Assert.assertTrue(failure);
+        }
+
+
+        return true; // all ok
+    }
+
+    private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
         double total1 = 0;
         double total2 = 0;
         for (int i = 0; i < peaks1.size(); i++) {
@@ -110,16 +114,33 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         // 2 we should compare without failing so we can look hard at the differenece
 
         // check the size of the peaks
-        Assert.assertEquals(peaks1.size(), peaks2.size());
+        if (peaks1.size() != peaks2.size())
+            return false;
 
+        double del = 0;
+        // only look at MZ
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);
             IPeak peak2 = peaks2.get(i);
 
-            assertEquals(peak1.getMz(), peak2.getMz(), IPeak.SMALL_MZ_DIFFERENCE);
-            assertEquals(peak1.getIntensity(), peak2.getIntensity(), IPeak.SMALL_INTENSITY_DIFFERENCE);
-            assertEquals(peak1.getCount(), peak2.getCount());
+            del = Math.abs(peak1.getMz() - peak2.getMz());
+            if (del > IPeak.SMALL_MZ_DIFFERENCE)
+                return false; // fail
         }
+
+        // repeat for intensity
+        for (int i = 0; i < peaks1.size(); i++) {
+            IPeak peak1 = peaks1.get(i);
+            IPeak peak2 = peaks2.get(i);
+
+            del = Math.abs(peak1.getIntensity() - peak2.getIntensity());
+            if (del > IPeak.SMALL_INTENSITY_DIFFERENCE)
+                return false; // fail
+            if (peak1.getCount() != peak2.getCount())
+                return false;
+        }
+
+        return true;
     }
 
 }
