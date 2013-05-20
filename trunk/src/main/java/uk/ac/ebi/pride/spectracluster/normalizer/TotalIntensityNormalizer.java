@@ -27,28 +27,41 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
     public TotalIntensityNormalizer() {
     }
 
+    @Override
     public void normalizeSpectrum(ISpectrum spectrum) {
+
+		// create the new spectrum
+		List<IPeak> normalizedSpectrum =  normalizePeaks(spectrum.getPeaks());
+		
+         spectrum.setPeaks(normalizedSpectrum);
+	}
+
+    @Override
+    public List<IPeak> normalizePeaks(List<IPeak> peaks) {
 		// get the max intensity
 		Double specTotalIntensity = 0.0;
-		
-		for (IPeak p : spectrum.getPeaks()) {
+
+ 		// create the new spectrum
+		List<IPeak> normalizedSpectrum = new ArrayList<IPeak>(peaks.size());
+
+
+		for (IPeak p : peaks) {
 			specTotalIntensity += p.getIntensity();
         }
-		
+
 		// if there's no suitable max intensity, return the unchanged spectrum
 		if (specTotalIntensity <= 0)
-			return;
-		
+			return normalizedSpectrum;
+
 		// calculate the ratio
 		double ratio = DEFAULT_TOTAL_INTENSITY / specTotalIntensity;
-		
-		// create the new spectrum
-		List<IPeak> normalizedSpectrum = new ArrayList<IPeak>(spectrum.getPeaks().size());
-		
-		for (IPeak p : spectrum.getPeaks()) {
+
+
+		for (IPeak p : peaks) {
 			normalizedSpectrum.add(new Peak(p.getMz(), p.getIntensity() * ratio));
         }
 
-        spectrum.setPeaks(normalizedSpectrum);
+        return normalizedSpectrum;
 	}
+
 }

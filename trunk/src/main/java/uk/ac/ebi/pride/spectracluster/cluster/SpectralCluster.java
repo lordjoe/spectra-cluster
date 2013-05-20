@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SpectralCluster implements ISpectralCluster, Comparable<ISpectralCl
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(String id ) {
-        this(id,new FrankEtAlConsensusSpectrumBuilder());
+        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
     public SpectralCluster(String id, ConsensusSpectrumBuilder consensusSpectrumBuilder) {
