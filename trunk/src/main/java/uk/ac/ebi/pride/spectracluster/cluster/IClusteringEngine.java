@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
@@ -14,8 +14,9 @@ public interface IClusteringEngine {
 
     /**
      * Get clustered clusters
+     * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
-    public Collection<ISpectralCluster> getClusters();
+    public List<ISpectralCluster> getClusters();
 
     /**
      * add some clusters

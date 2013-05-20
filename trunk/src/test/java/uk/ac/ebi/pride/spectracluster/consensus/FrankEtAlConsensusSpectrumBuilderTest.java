@@ -43,35 +43,34 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     @Test
     public void testBuildConsensusSpectrum() throws Exception {
         // iterate over all clusters
+        TotalIntensityNormalizer totalIntensityNormalizer = new TotalIntensityNormalizer();
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
             List<IPeak> jpeaks;
             List<List<IPeak>> spectra1;
+            spectra1 = asListOfLists(spectra);
+            jpeaks = jSpectrumBuilder.buildConsensusSpectrum(spectra1);
+            Collections.sort(jpeaks, PeakMzComparator.getInstance());
+            jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
             ISpectrum newConsensusSpectrum = null;
             switch (spectra.size()) {
                 case 1:
                     newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum);
+                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
                     break;
                 case 2:
                     newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    spectra1 = asListOfLists(spectra);
-                    jpeaks = jSpectrumBuilder.buildConsensusSpectrum(spectra1);
-                    Collections.sort(jpeaks, PeakMzComparator.getInstance());
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum);
+                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
                     break;
                 case 5:
                     newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    spectra1 = asListOfLists(spectra);
-                    jpeaks = jSpectrumBuilder.buildConsensusSpectrum(spectra1);
-                    Collections.sort(jpeaks, PeakMzComparator.getInstance());
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum);
+                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
                     break;
                 default:
                     newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
-                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum);
+                    areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum, jpeaks);
                     break;
             }
         }
@@ -85,14 +84,30 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         return ret;
     }
 
-    private void areConsensusSpectraSimilar(ISpectrum consensusSpectrum1, ISpectrum consensusSpectrum2) {
+    private void areConsensusSpectraSimilar(ISpectrum originalConcensus, ISpectrum newConcensus, List<IPeak> jpeaks) {
         // check average m/z
-        assertEquals(consensusSpectrum1.getPrecursorMz(), consensusSpectrum2.getPrecursorMz(), 0.1);
+        assertEquals(originalConcensus.getPrecursorMz(), newConcensus.getPrecursorMz(), 0.1);
+
 
         // check all the peaks
-        List<IPeak> peaks1 = consensusSpectrum1.getPeaks();
-        List<IPeak> peaks2 = consensusSpectrum2.getPeaks();
+        List<IPeak> peaks1 = originalConcensus.getPeaks();
+        List<IPeak> peaks2 = newConcensus.getPeaks();
 
+        // try using the recalculated peaks
+        peaks1 = jpeaks;
+
+        double total1 = 0;
+        double total2 = 0;
+        for (int i = 0; i < peaks1.size(); i++) {
+            IPeak peak1 = peaks1.get(i);
+            total1 += peak1.getIntensity();
+            IPeak peak2 = peaks2.get(i);
+            total2 += peak2.getIntensity();
+        }
+
+        // Note -
+        // We need to compare all three spectra
+        // 2 we should compare without failing so we can look hard at the differenece
 
         // check the size of the peaks
         Assert.assertEquals(peaks1.size(), peaks2.size());

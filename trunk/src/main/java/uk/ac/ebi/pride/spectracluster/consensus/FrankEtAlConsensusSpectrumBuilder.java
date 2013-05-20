@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.normalizer.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -29,7 +30,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     private IntensityNormalizer intensityNormalizer;
 
     public FrankEtAlConsensusSpectrumBuilder() {
-        this(new TotalIntensityNormalizer());
+        this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }
 
     public FrankEtAlConsensusSpectrumBuilder(IntensityNormalizer intensityNormalizer) {
