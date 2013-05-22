@@ -129,9 +129,10 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
 
             // take the 5 highest peaks
-            for (int i = peakBuffer.size() - 1, counter = 0; i >= 0 && counter < 5; i--, counter++)
+            for (int i = 0; i < Math.min(5,peakBuffer.size()); i++) {
                 filteredSpectrum.add(peakBuffer.get(i));
-        }
+             }
+          }
 
         return filteredSpectrum;
     }

@@ -21,7 +21,7 @@ public class Defaults {
 
     private Class<? extends SimilarityChecker> similarityCheckerClass = FrankEtAlDotProduct.class;
 
-    private Class<? extends IClusteringEngine> clusteringEngineClass = StupidClusteringEngine.class;
+    private Class<? extends IClusteringEngine> clusteringEngineClass = NullClusteringEngine.class;
 
 
 
