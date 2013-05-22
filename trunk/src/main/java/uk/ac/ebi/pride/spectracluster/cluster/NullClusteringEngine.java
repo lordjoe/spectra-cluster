@@ -3,12 +3,13 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.StupidClusteringEngine
- *
+ * uk.ac.ebi.pride.spectracluster.cluster.NullClusteringEngine
+ *    this version of the clustering engine never does anything - simply
+ *    returns the clusters passed in
  * @author Steve Lewis
  * @date 20/05/13
  */
-public class StupidClusteringEngine implements IClusteringEngine {
+public class NullClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();

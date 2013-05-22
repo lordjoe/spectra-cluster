@@ -22,6 +22,12 @@ public final class PeakIntensityComparator implements Comparator<IPeak> {
         return instance;
     }
 
+    /**
+     * this version of the comparator puts the highest intensity peaks at the top
+     * @param o1
+     * @param o2
+     * @return
+     */
     public int compare(IPeak o1, IPeak o2) {
         if (o1 == null) {
             return o2 == null ? 0 : -1;
