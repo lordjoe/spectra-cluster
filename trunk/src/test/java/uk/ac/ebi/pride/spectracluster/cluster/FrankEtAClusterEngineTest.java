@@ -1,30 +1,30 @@
-package uk.ac.ebi.pride.spectracluster.consensus;
+package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.normalizer.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.File;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class FrankEtAlConsensusSpectrumBuilderTest {
+public class FrankEtAClusterEngineTest {
     private ConsensusSpectraItems[] consensusSpectraItems;
      private ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {
         // load a file contains a list of clusters
-        URL url = FrankEtAlConsensusSpectrumBuilderTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
+        URL url = FrankEtAClusterEngineTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
@@ -32,6 +32,13 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
 
         consensusSpectraItems = ParserUtilities.readClusters(inputFile);
 
+        url = FrankEtAClusterEngineTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.mgf");
+        if (url == null) {
+            throw new IllegalStateException("no file for input found!");
+        }
+        inputFile = new File(url.toURI());
+
+      //  consensusSpectraItems = ParserUtilities.guaranteeMGFParse(inputFile);
 
 
         // create an instance of consensus spectrum builder
@@ -41,8 +48,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     @Test
     public void testBuildConsensusSpectrum() throws Exception {
         // iterate over all clusters
-        TotalIntensityNormalizer totalIntensityNormalizer = new TotalIntensityNormalizer();
-        int index = 0;
+          int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();

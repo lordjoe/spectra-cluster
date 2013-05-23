@@ -37,14 +37,27 @@ public class ParserTests {
         }
     }
 
+    @Test
+      public void testScansRead() {
+          LineNumberReader inp = ParserUtilities.getDescribedReader(MGF_RESOURCE);
+          Assert.assertNotNull(inp);  // make sure it exists
+          int number_scans = 1;
+          ISpectrum[] spectralClusters = ParserUtilities.readMGFScans(inp);
+
+
+          Assert.assertEquals(4663, spectralClusters.length);
+
+      }
+
 
     @Test
     public void testMGFRead() {
         LineNumberReader inp = ParserUtilities.getDescribedReader(MGF_RESOURCE);
         Assert.assertNotNull(inp);  // make sure it exists
-        int number_scans = 1;
+
         ISpectrum spectralCluster = ParserUtilities.readMGFScan(inp);
         String id = spectralCluster.getId();
+        int number_scans = 1;
         Assert.assertEquals(number_scans, Integer.parseInt(id));
 
         while (spectralCluster != null) {
@@ -400,12 +413,12 @@ public class ParserTests {
         Assert.assertEquals(1, scs.length);
         ISpectralCluster sc = scs[0];
         Assert.assertEquals("1234", sc.getId());
-        Assert.assertEquals(2, sc.getPrecursorCharge());
+        Assert.assertEquals(2, sc.getPrecursorCharge(),0.001);
         Assert.assertEquals(2, sc.getClusteredSpectraCount());
         List<ISpectrum> clusteredSpectra = sc.getClusteredSpectra();
         Assert.assertEquals(sc.getClusteredSpectraCount(), clusteredSpectra.size());
         for ( ISpectrum scc : clusteredSpectra) {
-              Assert.assertEquals(2, scc.getPrecursorCharge());
+              Assert.assertEquals(2, scc.getPrecursorCharge(),0.001);
             IPeak[] peaks = scc.getPeaks().toArray(new IPeak[0]);
             Assert.assertTrue(peaks.length > 10);
         }

@@ -206,9 +206,26 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static ISpectrum readMGFScan(LineNumberReader inp) {
-        return readMGFScan(inp, null);
-    }
+    public static ISpectrum[] readMGFScans(LineNumberReader inp) {
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        ISpectrum spectrum = readMGFScan(  inp);
+        while(spectrum != null)  {
+            holder.add(spectrum) ;
+            spectrum = readMGFScan(  inp);
+        }
+        ISpectrum[] ret = new ISpectrum[holder.size()];
+        holder.toArray(ret);
+        return ret;
+     }
+
+
+    /**
+      * @param inp !null reader
+      * @return
+      */
+     public static ISpectrum readMGFScan(LineNumberReader inp) {
+         return readMGFScan(inp, null);
+     }
 
     /**
      * @param inp  !null reader
