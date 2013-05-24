@@ -24,7 +24,11 @@ import java.util.List;
 public class TotalIntensityNormalizer implements IntensityNormalizer {
 	private static final double DEFAULT_TOTAL_INTENSITY = 1000;
 
-    public TotalIntensityNormalizer() {
+    /**
+     * Use Defaults which builds with reflection
+     * Set the class with Defaults.setNormalizerClass
+     */
+    private TotalIntensityNormalizer() {
     }
 
     @Override
