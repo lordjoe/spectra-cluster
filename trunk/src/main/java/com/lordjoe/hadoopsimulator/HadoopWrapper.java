@@ -11,10 +11,11 @@ import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
+import uk.ac.ebi.pride.spectracluster.hadoop.*;
 
 /**
  * com.lordjoe.hadoopsimulator.HadoopWrapper
- *
+ *    Wrapper class to allow an ITextMapper and ITextReducer to run on the cluster
  * @author Steve Lewis
  * @date 23/05/13
  */
@@ -24,11 +25,17 @@ public class HadoopWrapper extends Configured implements Tool {
     private static ITextReducer m_Reducer;
 
     private final String m_Name;
+    private final Properties m_AddedProps;
 
     public HadoopWrapper(String name, ITextMapper mapper, ITextReducer reducer) {
+        this(name, mapper, reducer, new Properties());
+    }
+
+    public HadoopWrapper(String name, ITextMapper mapper, ITextReducer reducer, Properties p) {
         m_Name = name;
         m_Mapper = mapper;
         m_Reducer = reducer;
+        m_AddedProps = p;
     }
 
     public static ITextMapper getMapper() {
@@ -39,9 +46,22 @@ public class HadoopWrapper extends Configured implements Tool {
         return m_Reducer;
     }
 
+    /**
+     * copy the properties from the config to a Properties to be used by non-Hadoop aware code
+     *
+     * @param context
+     * @param conFigProps
+     */
     public static void fillInProperties(TaskAttemptContext context, Properties conFigProps) {
-        Configuration configuration = context.getConfiguration();
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        Configuration conf = context.getConfiguration();
+        Iterator it = conf.iterator();
+        while (it.hasNext()) {
+
+            Map.Entry next = (Map.Entry) it.next();
+            String key = next.getKey().toString();
+            String value = next.getValue().toString();
+            conFigProps.setProperty(key, value);
+        }
     }
 
 
@@ -146,7 +166,8 @@ public class HadoopWrapper extends Configured implements Tool {
 
         Job job = new Job(conf, "word count");
         conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
-        job.setJarByClass(HadoopWrapper.class);
+
+          job.setJarByClass(HadoopWrapper.class);
         job.setMapperClass(WrappedMapper.class);
         job.setReducerClass(WrappedReducer.class);
 
@@ -155,6 +176,7 @@ public class HadoopWrapper extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
+        job.setInputFormatClass(LineTextInputFormat.class);
 
 
         if (otherArgs.length > 1) {
@@ -193,16 +215,42 @@ public class HadoopWrapper extends Configured implements Tool {
     public int run(final String[] args) throws Exception {
         Configuration conf = getConf();
         if (conf == null)
-            conf =new Configuration();
-          return runJob(conf, args);
+            conf = new Configuration();
+           // copy added properties into conf importantly this might set a file system
+        for(String key : m_AddedProps.stringPropertyNames())   {
+            conf.set(key,m_AddedProps.getProperty(key));
+        }
+        return runJob(conf, args);
     }
 
 
+    public static final String HADOOP_MACHINE =  "hadoop-master-03.ebi.ac.uk";
+    public static final int HADOOP_PORT = 54310;
+
+    private static void usage() {
+        System.out.println("usage inputfile1 <inputfile2> <inputfile3> ... outputdirectory");
+     }
+    /**
+     * Sample of use
+     * args might be /user/slewis/hadoop/test/books/pg135.txt /user/slewis/hadoop/test/output1
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
+        if(args.length < 2) {
+            usage();
+            return;
+        }
         String title = "Word Count";
         ITextMapper mapper = new WordCount.WordMapper();
         ITextReducer reducer = new WordCount.WordCountReducer();
-        HadoopWrapper wrapper = new HadoopWrapper(title,mapper,reducer);
-        ToolRunner.run(wrapper, args);
-    }
+
+        Properties added = new Properties();
+        // This line runs the job on the cluster - omitting it runs the job locallty
+        added.setProperty("fs.default.name","hdfs://" + HADOOP_MACHINE + ":" + HADOOP_PORT);
+
+        HadoopWrapper wrapper = new HadoopWrapper(title, mapper, reducer, added);
+
+        wrapper.run(args);
+     }
 }
