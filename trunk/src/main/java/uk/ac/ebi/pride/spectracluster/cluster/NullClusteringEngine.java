@@ -13,6 +13,10 @@ public class NullClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+
+    public NullClusteringEngine() {
+    }
+
     /**
      * Get clustered clusters
      * SLewis - I think a guarantee that they are sorted by MZ is useful

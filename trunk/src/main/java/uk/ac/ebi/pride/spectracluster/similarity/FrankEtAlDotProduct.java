@@ -36,8 +36,16 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 	 *
 	 */
 	public enum AlgorithmVersion{JPR_2008, NAT_METH_2011};
-	
-	private double mzRange = 0.5;
+
+    /**
+      * Use Defaults which builds with reflection
+      * Set the class with Defaults.setSimilarityCheckerClass
+      */
+
+    private FrankEtAlDotProduct() {
+    }
+
+    private double mzRange = 0.5;
 	/**
 	 * The algorithm version to use. By
 	 * default the version described in

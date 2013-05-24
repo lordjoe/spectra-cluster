@@ -29,7 +29,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
     private IntensityNormalizer intensityNormalizer;
 
-    public FrankEtAlConsensusSpectrumBuilder() {
+
+    /**
+      * Use Defaults which builds with reflection
+      * Set the class with Defaults.setConsensusSpectrumBuilderClass
+      */
+    private FrankEtAlConsensusSpectrumBuilder() {
         this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }
 
