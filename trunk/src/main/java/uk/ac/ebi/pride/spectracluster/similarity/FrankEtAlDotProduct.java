@@ -35,7 +35,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 	 * @author jg
 	 *
 	 */
-	public enum AlgorithmVersion{JPR_2008, NAT_METH_2011};
+	public enum AlgorithmVersion{JPR_2008, NAT_METH_2011}
 
     /**
       * Use Defaults which builds with reflection

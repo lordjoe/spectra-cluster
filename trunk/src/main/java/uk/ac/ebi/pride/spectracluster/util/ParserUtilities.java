@@ -96,7 +96,7 @@ public class ParserUtilities {
             line = inp.readLine();
             while (line != null) {
                 ISpectrum internal = readMGFScan(inp, line);
-                if (internal != null)
+                if (internal != null && ret != null)
                     ret.addSpectra(internal);
 
                 line = inp.readLine();
@@ -132,15 +132,14 @@ public class ParserUtilities {
             }
 
             line = inp.readLine();
-            while (line != null) {
+            if (line != null) {
                 concensus = readMGFScan(inp, line);
-                break;
             }
             while (line != null) {
 
                 line = inp.readLine();
                 if (line.startsWith(END_CLUSTER))
-                      break;
+                    break;
                 ISpectrum first = readMGFScan(inp, line);
                 if (first != null)
                     holder.add(first);
@@ -208,35 +207,36 @@ public class ParserUtilities {
      */
     public static IPeptideSpectrumMatch[] readMGFScans(LineNumberReader inp) {
         List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
-        IPeptideSpectrumMatch spectrum = readMGFScan(  inp);
-        while(spectrum != null)  {
-            holder.add(spectrum) ;
-            spectrum = readMGFScan(  inp);
+        IPeptideSpectrumMatch spectrum = readMGFScan(inp);
+        while (spectrum != null) {
+            holder.add(spectrum);
+            spectrum = readMGFScan(inp);
         }
         IPeptideSpectrumMatch[] ret = new IPeptideSpectrumMatch[holder.size()];
         holder.toArray(ret);
         return ret;
-     }
+    }
+
     /**
-       * @param inp !null existing file
-       * @return !null array of spectra
-       */
-      public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
-          try {
-              return readMGFScans(new LineNumberReader(new FileReader(inp)));
-          } catch (FileNotFoundException e) {
-              throw new RuntimeException(e);
-          }
-      }
+     * @param inp !null existing file
+     * @return !null array of spectra
+     */
+    public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
+        try {
+            return readMGFScans(new LineNumberReader(new FileReader(inp)));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     /**
-      * @param inp !null reader
-      * @return
-      */
-     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp) {
-         return readMGFScan(inp, null);
-     }
+     * @param inp !null reader
+     * @return
+     */
+    public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp) {
+        return readMGFScan(inp, null);
+    }
 
     /**
      * @param inp  !null reader
@@ -329,7 +329,7 @@ public class ParserUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if (END_IONS.equals(line)) {
-                      double mz = massToChargeCalledPpMass;
+                    double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
                     String peptide = null;
 

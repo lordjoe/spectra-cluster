@@ -42,7 +42,7 @@ public class ClusteringMain {
         }
         List<ISpectralCluster> scs = ClusterUtilities.asClusters(holder);
         IClusteringEngine engine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        engine.addClusters(scs.toArray(new ISpectralCluster[0]));
+        engine.addClusters(scs.toArray(new ISpectralCluster[scs.size()]));
 
         int tryNumber = 0;
         while (tryNumber++ < MAX_RECLUSTERING_TRYS) {
@@ -51,9 +51,9 @@ public class ClusteringMain {
                 break;
         }
         List<ISpectralCluster> output = engine.getClusters();
-        for (ISpectralCluster iSpectralCluster : output) {
-            
-        }
+//        for (ISpectralCluster sc : output) {
+//
+//        }
     }
 
     public static void usage() {

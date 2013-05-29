@@ -15,7 +15,8 @@ import java.io.*;
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.MGFInputFormat
  * Splitter that reads mgf files
-  * nice enough to put the begin and end tags on separate lines
+ * nice enough to put the begin and end tags on separate lines
+ *
  * @author Steve Lewis
  * @date 24/05/13
  */
@@ -84,20 +85,19 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
             m_RealFile = fs.open(split.getPath());
             if (codec != null) {
                 CompressionInputStream inputStream = codec.createInputStream(m_RealFile);
-                m_Input = new LineReader( inputStream );
+                m_Input = new LineReader(inputStream);
                 m_End = Long.MAX_VALUE;
-            }
-            else {
+            } else {
                 if (m_Start != 0) {
                     skipFirstLine = true;
                     --m_Start;
                     m_RealFile.seek(m_Start);
                 }
-                m_Input = new LineReader( m_RealFile);
+                m_Input = new LineReader(m_RealFile);
             }
             // not at the beginning so go to first line
             if (skipFirstLine) {  // skip first line and re-establish "m_Start".
-                m_Start += m_Input.readLine(buffer) ;
+                m_Start += m_Input.readLine(buffer);
             }
 
             current = m_Start;
@@ -175,8 +175,7 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
                 key = null;
                 value = null;
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         }
@@ -207,4 +206,5 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
                 m_Input.close();
             }
         }
-    }}
+    }
+}

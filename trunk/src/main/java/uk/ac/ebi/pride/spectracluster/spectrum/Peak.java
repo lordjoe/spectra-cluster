@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.*;
-
 /**
  * @author Steve Lewis
  * @author Rui Wang
