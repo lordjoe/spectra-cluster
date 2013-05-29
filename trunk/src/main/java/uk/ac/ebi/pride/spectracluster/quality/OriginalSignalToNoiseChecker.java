@@ -50,10 +50,17 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
         double median = 0.0;
 
         // check if there's an even number of peaks
-        if (nPeaks %2 == 0)
-            median = (intensities.get((int) nPeaks / 2 - 1) + intensities.get((int) nPeaks / 2)) / 2;
-        else
-            median = intensities.get((int) (nPeaks / 2));
+        if (nPeaks %2 == 0) {
+            int index1 = (int) nPeaks / 2 - 1;
+            Double intensity1 = intensities.get(index1);
+            int index2 = (int) nPeaks / 2;
+            Double intensity2 = intensities.get(index2);
+            median = (intensity1 + intensity2) / 2;
+        }
+        else    {
+            int index = (int) nPeaks / 2;
+            median = intensities.get(index);
+        }
 
         return highestPeakIntensity / median;
     }
