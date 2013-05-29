@@ -183,7 +183,7 @@ public class ParserUtilities {
         for (int i = 0; i < split.length; i++) {
             String s = split[i];
             if (s.startsWith("Charge=")) {
-                return Integer.parseInt(s.substring("Charge=".length()));
+                return (int)(0.5 + Double.parseDouble(s.substring("Charge=".length())));
             }
         }
         throw new IllegalArgumentException("no Charge= part in " + line);
@@ -244,6 +244,7 @@ public class ParserUtilities {
      * @return
      */
     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
+        String titleLine = null;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -292,6 +293,7 @@ public class ParserUtilities {
 
                 if (line.contains("=")) {
                     if (line.startsWith("TITLE=")) {
+                        titleLine = line; // we may look for sequences later
                         title = buildMGFTitle(line);
                         line = inp.readLine();
                         continue;
@@ -340,6 +342,8 @@ public class ParserUtilities {
                             mz,
                             holder
                     );
+                    if (titleLine != null)
+                        handleTitleLine(spectrum, titleLine);
                     return spectrum;
                 } else {
                     line = line.replace("\t", " ");
@@ -366,6 +370,16 @@ public class ParserUtilities {
             return null; // or should an exception be thrown - we did not hit an END IONS tag
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    protected static void handleTitleLine(PeptideSpectrumMatch spectrum, String titleLine) {
+        String tl = titleLine.substring("Title=".length());
+        String[] items = tl.split(",");
+        for (int i = 0; i < items.length; i++) {
+            String item = items[i];
+           // if(item.startsWith(""))
         }
 
     }

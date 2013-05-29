@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 /**
  * Assesses the similarity between two
@@ -21,5 +21,5 @@ public interface SimilarityChecker {
 	 * @param spectrum2 The second spectrum to compare. The list of Peaks MUST be sorted according to intensity.
 	 * @return A score indicating the similarity between the two passed spectra.
 	 */
-	public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2);
+	public double assessSimilarity(IPeptideSpectrumMatch spectrum1, IPeptideSpectrumMatch spectrum2);
 }

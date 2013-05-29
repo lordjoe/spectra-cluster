@@ -3,9 +3,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Assesses the similarity between two
@@ -22,11 +20,7 @@ import java.util.List;
  * todo: this class needs to be reviewed
  *
  */
-public class FrankEtAlDotProduct implements SimilarityChecker {
-
-    public static final int NUMBER_COMPARED_PEAKS = 15;
-
-    public static final double DEFAULT_MZ_RANGE = 0.5;
+public class FrankEtAlDotProductOld implements SimilarityChecker {
 	/**
 	 * The logger to use.
 	 */
@@ -44,7 +38,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
       * Set the class with Defaults.setSimilarityCheckerClass
       */
 
-    public FrankEtAlDotProduct() {
+    public FrankEtAlDotProductOld() {
     }
 
     private double mzRange = 0.5;
@@ -61,7 +55,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 	 */
 	public double assessSimilarity(IPeptideSpectrumMatch spectrum1, IPeptideSpectrumMatch spectrum2) {
 		// initialize the number of peaks to use with 15
-		int k = NUMBER_COMPARED_PEAKS;
+		int k = 15;
 		switch (version) {
 			case NAT_METH_2011:
 				k = calculateK2011(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz());
@@ -72,10 +66,13 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 		}
 		
 		// get the k highest peaks from every spectrum
-		List<IPeak> kHighestPeaks1 = spectrum1.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
-		List<IPeak> kHighestPeaks2 = spectrum2.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
+		List<IPeak> kHighestPeaks1 = getHighestPeaks(new ArrayList<IPeak>(spectrum1.getPeaks()), k);
+		List<IPeak> kHighestPeaks2 = getHighestPeaks(new ArrayList<IPeak>(spectrum2.getPeaks()), k);
 		
-
+		// order the two peak lists based on their m/z values
+		Collections.sort(kHighestPeaks1, PeakMzComparator.getINSTANCE());
+		Collections.sort(kHighestPeaks2, PeakMzComparator.getINSTANCE());
+		
 		// create two intensity vectors
 		List<Double> intensities1 = new ArrayList<Double>(k*2);
 		List<Double> intensities2 = new ArrayList<Double>(k*2);
@@ -168,6 +165,23 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 		return normalizedDotProduct;
 	}
 
+	/**
+	 * Returns the k highest peaks in a
+	 * List of peaks.
+	 * @param peakList
+	 * @param k
+	 * @return
+	 */
+	private List<IPeak> getHighestPeaks(List<IPeak> peakList, int k) {
+		//Collections.sort(peakList, PeakIntensityComparator.getInstance());
+		
+		List<IPeak> highestPeaks = new ArrayList<IPeak>(k);
+		
+		for (int index = 0; index < k && index < peakList.size(); index++)
+			highestPeaks.add(peakList.get(peakList.size() - 1 - index));
+		
+		return highestPeaks;
+	}
 
 	/**
 	 * Calculate k by using 15 per 1000 Da of
@@ -182,15 +196,15 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 			Double charge1, Double charge2) {
 		// if any of the required values is missing, return 15
 		if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-			return NUMBER_COMPARED_PEAKS;
+			return 15;
 		
 		// take 15 peaks / 1000Da peptide mass
 		double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 			
-		int k = NUMBER_COMPARED_PEAKS * (int) (peptideMass / 1000);
+		int k = 15 * (int) (peptideMass / 1000);
 		
 		if (peptideMass % 1000 > 0)
-			k += NUMBER_COMPARED_PEAKS;
+			k += 15;
 		
 		return k;
 	}
@@ -204,7 +218,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 	private int calculateK2011(Double precursor1, Double precursor2) {
 		// if any of the required values is missing, return 15
 		if (precursor1 == null || precursor2 == null)
-			return NUMBER_COMPARED_PEAKS;
+			return 15;
 		
 		// use m/z / 50
 		int k = (int) ( (precursor1 / 50 + precursor2 / 50) / 2 );

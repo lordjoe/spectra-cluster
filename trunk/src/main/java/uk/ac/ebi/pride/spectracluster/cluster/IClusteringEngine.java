@@ -27,6 +27,6 @@ public interface IClusteringEngine {
      * clusters are merged in the internal collection
      * @return true is  anything happened
      */
-    public boolean mergeClusters();
+    public boolean mergeClusters(List<ISpectralCluster> clusters);
 
 }
