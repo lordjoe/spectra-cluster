@@ -15,6 +15,7 @@ public class ClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+    private final List<ISpectralCluster> clustersToAdd = new ArrayList<ISpectralCluster>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
 
@@ -26,8 +27,8 @@ public class ClusteringEngine implements IClusteringEngine {
 
     protected void guaranteeClean() {
         if (isDirty()) {
-            Collections.sort(clusters, spectrumComparator);
-            clusterDirtyClusters();
+            Collections.sort(clustersToAdd, spectrumComparator);
+            addToClusters();
             setDirty(false);
         }
     }
@@ -56,28 +57,20 @@ public class ClusteringEngine implements IClusteringEngine {
     @Override
     public void addClusters(ISpectralCluster... cluster) {
         if (cluster != null) {
-            clusters.addAll(Arrays.asList(cluster));
+            clustersToAdd.addAll(Arrays.asList(cluster));
             setDirty(true);
         }
 
     }
 
-    /**
-     * Initial clustering if there is any clusters contains
-     * ony one spectrum
-     * <p/>
-     * todo: this needs to be reviewed
-     */
-    private void clusterDirtyClusters() {
-        List<ISpectralCluster> clustered = new ArrayList<ISpectralCluster>();
-
-        for (ISpectralCluster currCluster : clusters) {
+    private void addToClusters() {
+        for (ISpectralCluster clusterToAdd : clustersToAdd) {
             ISpectralCluster mostSimilarCluster = null;
             double highestSimilarityScore = 0;
 
             // find the cluster with the highest similarity score
-            for (ISpectralCluster cluster : clustered) {
-                double similarityScore = similarityChecker.assessSimilarity(cluster.getConsensusSpectrum(), currCluster.getConsensusSpectrum());
+            for (ISpectralCluster cluster : clusters) {
+                double similarityScore = similarityChecker.assessSimilarity(cluster.getConsensusSpectrum(), clusterToAdd.getConsensusSpectrum());
 
                 if (similarityScore >= similarityChecker.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
                     highestSimilarityScore = similarityScore;
@@ -87,15 +80,14 @@ public class ClusteringEngine implements IClusteringEngine {
 
             // add to cluster
             if (mostSimilarCluster != null) {
-                ISpectrum[] clusteredSpectra = new ISpectrum[currCluster.getClusteredSpectra().size()];
-                mostSimilarCluster.addSpectra(currCluster.getClusteredSpectra().toArray(clusteredSpectra));
+                ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
+                mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
             } else {
-                clustered.add(currCluster);
+                clusters.add(clusterToAdd);
             }
         }
 
-        clusters.clear();
-        clusters.addAll(clustered);
+        clustersToAdd.clear();
     }
 
     /**
@@ -169,8 +161,6 @@ public class ClusteringEngine implements IClusteringEngine {
     private boolean demergeNoneFittingSpectra() {
         boolean noneFittingSpectraFound = false;
 
-        List<ISpectralCluster> allNoneFittingSpectra = new ArrayList<ISpectralCluster>();
-
         for (ISpectralCluster cluster : clusters) {
             List<ISpectrum> noneFittingSpectra = findNoneFittingSpectra(cluster);
             if (!noneFittingSpectra.isEmpty()) {
@@ -180,12 +170,10 @@ public class ClusteringEngine implements IClusteringEngine {
                 cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
 
                 for (ISpectrum noneFittingSpectrum : noneFittingSpectra) {
-                    allNoneFittingSpectra.add(noneFittingSpectrum.asCluster());
+                    clustersToAdd.add(noneFittingSpectrum.asCluster());
                 }
             }
         }
-
-        clusters.addAll(allNoneFittingSpectra);
 
         return noneFittingSpectraFound;
     }
