@@ -23,6 +23,17 @@ public class ClusterUtilities {
     }
 
     /**
+     * return the peaks sorted by intensity
+     * @param sc
+     * @return
+     */
+    public static List<IPeak>  peaksByIntensity(ISpectrum sc)
+    {
+        List<IPeak> peaks = sc.getPeaks();
+        Collections.sort(peaks,PeakIntensityComparator.INSTANCE);
+        return peaks;
+    }
+    /**
       * return a list of all spectra in the list of clusters sorted by charge then mz
       * @param clusters !null list of clusters
       * @return   !null list of spectra

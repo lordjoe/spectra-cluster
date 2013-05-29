@@ -81,6 +81,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     private boolean areConsensusSpectraSimilar(ISpectrum originalConcensus, ISpectrum newConcensus) {
         // check average m/z
         assertEquals(originalConcensus.getPrecursorMz(), newConcensus.getPrecursorMz(), 0.1);
+        assertEquals(originalConcensus.getPrecursorCharge(), newConcensus.getPrecursorCharge(), 0.01);
 
 
         // check all the peaks
