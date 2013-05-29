@@ -114,7 +114,7 @@ public class ClusteringEngine implements IClusteringEngine {
         boolean noneFittingSpectraFound = demergeNoneFittingSpectra();
 
         // set dirty state
-        dirty = noneFittingSpectraFound;
+        setDirty(noneFittingSpectraFound);
 
         return merged || noneFittingSpectraFound;
     }
