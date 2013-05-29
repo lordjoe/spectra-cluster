@@ -8,7 +8,7 @@ import com.lordjoe.algorithms.Equivalent;
  * @author Steve Lewis
  * @date 15/05/13
  */
-public interface IPeptideSpectrumMatch extends ISpectrum, Equivalent<ISpectrum> {
+public interface IPeptideSpectrumMatch extends ISpectrum {
     /**
      * return scored peptide - maybe null
      */
