@@ -71,19 +71,6 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         return DEFAULT_SIMILARITY_THRESHOLD;
     }
 
-    /**
-     * who knows why Johannes does this but we can as well
-     *
-     * @param p1
-     * @return
-     */
-    protected static double johannesIntensityConverted(IPeak p1) {
-        double intensity = p1.getIntensity();
-        double intensity2 = 1 + Math.log(intensity);
-        return intensity2;
-
-    }
-
 
     /**
      * Assesses the spectra's similarity using
@@ -123,8 +110,8 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
             double mass_difference = mz2 - mz1;
             if (Math.abs(mass_difference) <= mzRange) {
-                double match1 = johannesIntensityConverted(peak1);
-                double match2 = johannesIntensityConverted(peak2);
+                double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
+                double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
                 MatchingProducts++;
                 dotProduct += match1 * match2;
                 t++;
@@ -135,7 +122,10 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             }
         }
         // normalize the dot product
-        double normalizedDotProduct = dotProduct / Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
+        double denom = Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
+        if(denom == 0)
+            return 0;
+        double normalizedDotProduct = dotProduct / denom;
 
         return normalizedDotProduct;
 
