@@ -10,7 +10,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectrum {
+public interface ISpectrum extends Comparable<ISpectrum> {
 
     /**
      * globally unique id

@@ -28,7 +28,7 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
      * Use Defaults which builds with reflection
      * Set the class with Defaults.setNormalizerClass
      */
-    private TotalIntensityNormalizer() {
+    public TotalIntensityNormalizer() {
     }
 
     @Override

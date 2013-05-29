@@ -4,8 +4,9 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.NullClusteringEngine
- *    this version of the clustering engine never does anything - simply
- *    returns the clusters passed in
+ * this version of the clustering engine never does anything - simply
+ * returns the clusters passed in
+ *
  * @author Steve Lewis
  * @date 20/05/13
  */
@@ -17,13 +18,23 @@ public class NullClusteringEngine implements IClusteringEngine {
     public NullClusteringEngine() {
     }
 
+
+    protected void guaranteeClean() {
+        if (isDirty()) {
+            Collections.sort(clusters);  // sort by mz
+            setDirty(false);
+        }
+    }
+
     /**
      * Get clustered clusters
      * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
     @Override
     public List<ISpectralCluster> getClusters() {
-          return new ArrayList<ISpectralCluster>(clusters) ;
+        guaranteeClean();
+        ArrayList<ISpectralCluster> scs = new ArrayList<ISpectralCluster>(clusters);
+        return scs;
     }
 
     public boolean isDirty() {
@@ -43,6 +54,7 @@ public class NullClusteringEngine implements IClusteringEngine {
             ISpectralCluster sc = cluster[i];
             clusters.add(sc);
         }
+        setDirty(true);
 
     }
 
@@ -53,7 +65,7 @@ public class NullClusteringEngine implements IClusteringEngine {
      */
     @Override
     public boolean mergeClusters() {
-        setDirty(false);
+        guaranteeClean();
         return false;
     }
 }

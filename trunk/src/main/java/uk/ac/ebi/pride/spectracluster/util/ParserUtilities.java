@@ -206,24 +206,35 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static ISpectrum[] readMGFScans(LineNumberReader inp) {
-        List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        ISpectrum spectrum = readMGFScan(  inp);
+    public static IPeptideSpectrumMatch[] readMGFScans(LineNumberReader inp) {
+        List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
+        IPeptideSpectrumMatch spectrum = readMGFScan(  inp);
         while(spectrum != null)  {
             holder.add(spectrum) ;
             spectrum = readMGFScan(  inp);
         }
-        ISpectrum[] ret = new ISpectrum[holder.size()];
+        IPeptideSpectrumMatch[] ret = new IPeptideSpectrumMatch[holder.size()];
         holder.toArray(ret);
         return ret;
      }
+    /**
+       * @param inp !null existing file
+       * @return !null array of spectra
+       */
+      public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
+          try {
+              return readMGFScans(new LineNumberReader(new FileReader(inp)));
+          } catch (FileNotFoundException e) {
+              throw new RuntimeException(e);
+          }
+      }
 
 
     /**
       * @param inp !null reader
       * @return
       */
-     public static ISpectrum readMGFScan(LineNumberReader inp) {
+     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp) {
          return readMGFScan(inp, null);
      }
 
@@ -232,11 +243,10 @@ public class ParserUtilities {
      * @param line if non null the firat line of the stricture
      * @return
      */
-    public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
+    public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
         try {
             if (line == null)
                 line = inp.readLine();
-            ISpectrum ret;
 
             double massToChargeCalledPpMass = 0;
             double dcharge = 1;

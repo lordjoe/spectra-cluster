@@ -15,7 +15,8 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
 
 /**
  * com.lordjoe.hadoopsimulator.HadoopWrapper
- *    Wrapper class to allow an ITextMapper and ITextReducer to run on the cluster
+ * Wrapper class to allow an ITextMapper and ITextReducer to run on the cluster
+ *
  * @author Steve Lewis
  * @date 23/05/13
  */
@@ -25,6 +26,7 @@ public class HadoopWrapper extends Configured implements Tool {
     private static ITextReducer m_Reducer;
 
     private final String m_Name;
+    private Class<? extends InputFormat> m_InputFormatClass = LineTextInputFormat.class;
     private final Properties m_AddedProps;
 
     public HadoopWrapper(String name, ITextMapper mapper, ITextReducer reducer) {
@@ -36,6 +38,18 @@ public class HadoopWrapper extends Configured implements Tool {
         m_Mapper = mapper;
         m_Reducer = reducer;
         m_AddedProps = p;
+    }
+
+    public String getName() {
+        return m_Name;
+    }
+
+    public Class<? extends InputFormat> getInputFormatClass() {
+        return m_InputFormatClass;
+    }
+
+    public void setInputFormatClass(Class<? extends InputFormat> inputFormatClass) {
+        m_InputFormatClass = inputFormatClass;
     }
 
     public static ITextMapper getMapper() {
@@ -164,10 +178,10 @@ public class HadoopWrapper extends Configured implements Tool {
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
 
-        Job job = new Job(conf, "word count");
+        Job job = new Job(conf, getName());
         conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
 
-          job.setJarByClass(HadoopWrapper.class);
+        job.setJarByClass(HadoopWrapper.class);
         job.setMapperClass(WrappedMapper.class);
         job.setReducerClass(WrappedReducer.class);
 
@@ -177,6 +191,7 @@ public class HadoopWrapper extends Configured implements Tool {
         job.setOutputValueClass(Text.class);
 
         job.setInputFormatClass(LineTextInputFormat.class);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
 
         if (otherArgs.length > 1) {
@@ -216,28 +231,30 @@ public class HadoopWrapper extends Configured implements Tool {
         Configuration conf = getConf();
         if (conf == null)
             conf = new Configuration();
-           // copy added properties into conf importantly this might set a file system
-        for(String key : m_AddedProps.stringPropertyNames())   {
-            conf.set(key,m_AddedProps.getProperty(key));
+        // copy added properties into conf importantly this might set a file system
+        for (String key : m_AddedProps.stringPropertyNames()) {
+            conf.set(key, m_AddedProps.getProperty(key));
         }
         return runJob(conf, args);
     }
 
 
-    public static final String HADOOP_MACHINE =  "hadoop-master-03.ebi.ac.uk";
+    public static final String HADOOP_MACHINE = "hadoop-master-03.ebi.ac.uk";
     public static final int HADOOP_PORT = 54310;
 
     private static void usage() {
         System.out.println("usage inputfile1 <inputfile2> <inputfile3> ... outputdirectory");
-     }
+    }
+
     /**
      * Sample of use
      * args might be /user/slewis/hadoop/test/books/pg135.txt /user/slewis/hadoop/test/output1
+     *
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        if(args.length < 2) {
+        if (args.length < 2) {
             usage();
             return;
         }
@@ -247,10 +264,10 @@ public class HadoopWrapper extends Configured implements Tool {
 
         Properties added = new Properties();
         // This line runs the job on the cluster - omitting it runs the job locallty
-        added.setProperty("fs.default.name","hdfs://" + HADOOP_MACHINE + ":" + HADOOP_PORT);
+        added.setProperty("fs.default.name", "hdfs://" + HADOOP_MACHINE + ":" + HADOOP_PORT);
 
         HadoopWrapper wrapper = new HadoopWrapper(title, mapper, reducer, added);
 
         wrapper.run(args);
-     }
+    }
 }

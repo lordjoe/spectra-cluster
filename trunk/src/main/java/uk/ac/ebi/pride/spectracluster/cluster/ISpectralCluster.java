@@ -12,7 +12,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster extends Equivalent<ISpectralCluster> {
+public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparable<ISpectralCluster> {
 
     /**
      * Get cluster id
