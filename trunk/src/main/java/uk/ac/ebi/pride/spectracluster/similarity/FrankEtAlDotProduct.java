@@ -90,7 +90,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         List<IPeak> kHighestPeaks2 = highestPeaksSpectrum2.getPeaks();
-        IPeak[] peaks2 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks2.size()]);
+        IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
 
         double mzRange = this.getMzRange();
         int t = 0;
@@ -112,6 +112,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             if (Math.abs(mass_difference) <= mzRange) {
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
+                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(),match2);
+     //          System.out.println(fmt);
+
                 MatchingProducts++;
                 dotProduct += match1 * match2;
                 t++;

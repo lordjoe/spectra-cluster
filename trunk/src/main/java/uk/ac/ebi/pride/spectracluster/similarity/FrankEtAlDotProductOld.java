@@ -83,8 +83,8 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         List<IPeak> kHighestPeaks2 = getHighestPeaks(new ArrayList<IPeak>(spectrum2.getPeaks()), k);
 
         // order the two peak lists based on their m/z values
-        Collections.sort(kHighestPeaks1, PeakMzComparator.getINSTANCE());
-        Collections.sort(kHighestPeaks2, PeakMzComparator.getINSTANCE());
+        Collections.sort(kHighestPeaks1, InversePeakIntensityComparator.INSTANCE);
+        Collections.sort(kHighestPeaks2, InversePeakIntensityComparator.INSTANCE);
 
         // create two intensity vectors
         List<Double> intensities1 = new ArrayList<Double>(k * 2);
@@ -127,7 +127,8 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
             double closestDiff = 100;
 
             for (Integer i : comparableIndexes) {
-                double mz2 = kHighestPeaks2.get(i).getMz();
+                IPeak iPeak = kHighestPeaks2.get(i);
+                double mz2 = iPeak.getMz();
                 double diff = Math.abs(mz1 - mz2);
 
                 if (diff < closestDiff) {
@@ -167,14 +168,14 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         double dotProduct = 0;
         double sumSquareIntensity1 = 0;
         double sumSquareIntensity2 = 0;
-
+        int numberMatches = 0;
         for (int i = 0; i < intensities1.size(); i++) {
             double i1 = intensities1.get(i);
             double i2 = intensities2.get(i);
-            String fmt  = String.format("%8.3f %8.3f", i1, i2);
-            System.out.println(fmt);
+   //         String fmt  = String.format("%8.3f %8.3f", i1, i2);
+    //        System.out.println(fmt);
             dotProduct += i1 * i2;
-
+            numberMatches++;
             sumSquareIntensity1 += Math.pow(i1, 2);
             sumSquareIntensity2 += Math.pow(i2, 2);
         }
@@ -185,6 +186,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
             return 0;
         double normalizedDotProduct = dotProduct / denom;
 
+   //     System.out.println("Old Spectrum matched " + numberMatches );
         return normalizedDotProduct;
     }
 
@@ -197,7 +199,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      * @return
      */
     private List<IPeak> getHighestPeaks(List<IPeak> peakList, int k) {
-        Collections.sort(peakList, PeakIntensityComparator.getInstance());
+        Collections.sort(peakList, InversePeakIntensityComparator.getInstance());
 
         List<IPeak> highestPeaks = new ArrayList<IPeak>(k);
 

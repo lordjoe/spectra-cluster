@@ -37,14 +37,20 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
     }
 
     public double getPrecursorMz() {
-        return getConsensusSpectrum().getPrecursorMz();
+        guaranteeClean();
+        ISpectrum consensusSpectrum1 = getConsensusSpectrum();
+        if(consensusSpectrum1 == null)
+            return 0;
+        return consensusSpectrum1.getPrecursorMz();
     }
 
     public double getPrecursorCharge() {
+        guaranteeClean();
         return getConsensusSpectrum().getPrecursorCharge();
     }
 
     public List<IPeak> getPeaks() {
+        guaranteeClean();
         return getConsensusSpectrum().getPeaks();
     }
 
@@ -114,7 +120,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
      * @return
      */
     public int compareTo(ISpectralCluster o) {
-        if (o == this)
+           if (o == this)
             return 0;
         if (getPrecursorMz() != o.getPrecursorMz()) {
             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
@@ -223,6 +229,12 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
         }
     }
 
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%10.3f %10.3f ",getPrecursorMz(),getPrecursorCharge() ) + getClusteredSpectraCount());
+        return sb.toString();
+    }
 
     /**
      * write out the data as an MGF file

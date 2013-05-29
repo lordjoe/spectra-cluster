@@ -70,7 +70,11 @@ public class ClusteringEngine implements IClusteringEngine {
 
             // find the cluster with the highest similarity score
             for (ISpectralCluster cluster : clusters) {
-                double similarityScore = similarityChecker.assessSimilarity(cluster.getConsensusSpectrum(), clusterToAdd.getConsensusSpectrum());
+                ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();
+                if(consensusSpectrum == null || consensusSpectrum1 == null)
+                    continue;
+                double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
                 if (similarityScore >= similarityChecker.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
                     highestSimilarityScore = similarityScore;
@@ -167,7 +171,11 @@ public class ClusteringEngine implements IClusteringEngine {
                 noneFittingSpectraFound = true;
 
                 ISpectrum[] spectraToRemove = new ISpectrum[noneFittingSpectra.size()];
-                cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
+                if(cluster.getClusteredSpectraCount() == spectraToRemove.length)    {
+                    noneFittingSpectra = findNoneFittingSpectra(cluster);
+                    throw new UnsupportedOperationException("Fix This"); // ToDo
+                }
+                  cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
 
                 for (ISpectrum noneFittingSpectrum : noneFittingSpectra) {
                     clustersToAdd.add(noneFittingSpectrum.asCluster());

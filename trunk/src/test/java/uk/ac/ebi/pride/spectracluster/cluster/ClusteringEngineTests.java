@@ -11,8 +11,7 @@ import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -35,6 +34,7 @@ public class ClusteringEngineTests {
         File inputFile = new File(url.toURI());
 
         originalSpectralClusters = ParserUtilities.readSpectralCluster(inputFile);
+        Arrays.sort(originalSpectralClusters);
         originalSpectra = ClusterUtilities.extractSpectra(Arrays.asList(originalSpectralClusters));
 
         clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
@@ -54,7 +54,8 @@ public class ClusteringEngineTests {
         }
 
         List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
-        Assert.assertEquals(newClusters.size(), originalSpectra.size());
+        Collections.sort(newClusters);
+        Assert.assertEquals(newClusters.size(), originalSpectralClusters.length);
 
         for (ISpectralCluster newCluster : newClusters) {
             boolean foundSimilarCluster = false;

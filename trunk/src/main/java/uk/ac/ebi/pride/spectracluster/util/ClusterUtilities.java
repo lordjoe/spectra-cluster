@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 public class ClusterUtilities {
     private static final Map<String,ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>() ;
 
-    public ISpectralCluster getById(String id)
+    public static ISpectralCluster getById(String id)
     {
         return ID_TO_CLUSTER.get(id);
     }
