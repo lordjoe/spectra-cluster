@@ -553,17 +553,31 @@ public class TestSimilarityMethods {
 
     /**
      * make sure old and new tests give same similarity
+     *
      * @throws Exception
      */
     @Test
     public void testSimilarity() throws Exception {
-        SimilarityChecker s1 = new FrankEtAlDotProductOld();
-        double oldSimilarity = s1.assessSimilarity(spectrum1, spectrum2);
+        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
-        SimilarityChecker s2 = new FrankEtAlDotProduct();
-        double newSimilarity = s2.assessSimilarity(spectrum1, spectrum2);
+        double toSelf = oldSimilarity.assessSimilarity(spectrum1, spectrum1);
+        Assert.assertEquals(1, toSelf, 0.001);
 
-        Assert.assertEquals(oldSimilarity,newSimilarity,0.001 * (oldSimilarity + newSimilarity));
+        double toSelfNew = newSimilarity.assessSimilarity(spectrum1, spectrum1);
+        Assert.assertEquals(1, toSelfNew, 0.001);
+
+
+        double oldDP = oldSimilarity.assessSimilarity(spectrum1, spectrum2);
+        double newDP = newSimilarity.assessSimilarity(spectrum1, spectrum2);
+
+        Assert.assertEquals(oldDP, newDP, 0.001 * (oldDP + newDP));
+
+        Assert.assertTrue(Math.abs(oldDP - newDP) < 0.8);
+
+//        double newSimilarity = newSimilarity.assessSimilarity(spectrum1, spectrum2);
+//
+//        Assert.assertEquals(oldSimilarity,newSimilarity,0.001 * (oldSimilarity + newSimilarity));
 
     }
 

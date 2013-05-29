@@ -66,7 +66,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      * Assesses the spectra's similarity using
      * the normalized dot-product
      */
-    public double assessSimilarity(IPeptideSpectrumMatch spectrum1, IPeptideSpectrumMatch spectrum2) {
+    public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
         // initialize the number of peaks to use with 15
         int k = 15;
         switch (version) {
@@ -95,7 +95,9 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
 
         for (IPeak p1 : kHighestPeaks1) {
             // add the intensity to the intensity array of spectrum 1
-            intensities1.add(1 + Math.log(p1.getIntensity()));
+            double intensity = p1.getIntensity();
+            double intensity2 = 1 + Math.log(intensity);
+            intensities1.add(intensity2);
 
             double mz1 = p1.getMz();
 
@@ -165,7 +167,9 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         double sumSquareIntensity2 = 0;
 
         for (int i = 0; i < intensities1.size(); i++) {
-            dotProduct += intensities1.get(i) * intensities2.get(i);
+            Double i1 = intensities1.get(i);
+            Double i2 = intensities2.get(i);
+            dotProduct += i1 * i2;
 
             sumSquareIntensity1 += Math.pow(intensities1.get(i), 2);
             sumSquareIntensity2 += Math.pow(intensities2.get(i), 2);

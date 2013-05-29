@@ -71,31 +71,36 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         return DEFAULT_SIMILARITY_THRESHOLD;
     }
 
+    /**
+     * who knows why Johannes does this but we can as well
+     *
+     * @param p1
+     * @return
+     */
+    protected static double johannesIntensityConverted(IPeak p1) {
+        double intensity = p1.getIntensity();
+        double intensity2 = 1 + Math.log(intensity);
+        return intensity2;
+
+    }
+
 
     /**
      * Assesses the spectra's similarity using
      * the normalized dot-product
      */
-    public double assessSimilarity(IPeptideSpectrumMatch spectrum1, IPeptideSpectrumMatch spectrum2) {
+    public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
         // initialize the number of peaks1 to use with 15
-        int k = NUMBER_COMPARED_PEAKS;
-        switch (version) {
-            case NAT_METH_2011:
-                k = calculateK2011(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz());
-                break;
-            case JPR_2008:
-                k = calculateK2008(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz(), spectrum1.getPrecursorCharge(), spectrum2.getPrecursorCharge());
-                break;
-        }
+        int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
         // get the k highest peaks1 from every spectrum
-        ISpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
+        ISpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
         List<IPeak> kHighestPeaks1 = highestPeaksSpectrum1.getPeaks();
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
-        ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
+        ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         List<IPeak> kHighestPeaks2 = highestPeaksSpectrum2.getPeaks();
         IPeak[] peaks2 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks2.size()]);
@@ -105,9 +110,10 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         int e = 0;
         int MatchingProducts = 0;
         int TotalProducts = 0;
-        double MatchingIntensity = 0.0;
+        double dotProduct = 0.0;
         double charge = spectrum1.getPrecursorCharge();
         double charge2 = spectrum2.getPrecursorCharge();
+        // todo do we penalize different charges??
         while (t < peaks2.length && e < peaks1.length) {
             TotalProducts++;
             IPeak peak1 = peaks1[t];
@@ -117,8 +123,10 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
             double mass_difference = mz2 - mz1;
             if (Math.abs(mass_difference) <= mzRange) {
+                double match1 = johannesIntensityConverted(peak1);
+                double match2 = johannesIntensityConverted(peak2);
                 MatchingProducts++;
-                MatchingIntensity += peak2.getIntensity();
+                dotProduct += match1 * match2;
                 t++;
             } else if (mass_difference < 0) {
                 e++;
@@ -126,98 +134,24 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                 t++;
             }
         }
-        double MatchingProductsFraction = (double) MatchingProducts / TotalProducts;
+        // normalize the dot product
+        double normalizedDotProduct = dotProduct / Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
 
-        // create two intensity vectors
-        List<Double> intensities1 = new ArrayList<Double>(k * 2);
-        List<Double> intensities2 = new ArrayList<Double>(k * 2);
+        return normalizedDotProduct;
 
-        // indicates the last item in the k2HighestPeakList that was merged
-        int lastIndex2 = 0;
+    }
 
-        for (IPeak p1 : kHighestPeaks1) {
-            // add the intensity to the intensity array of spectrum 1
-            intensities1.add(1 + Math.log(p1.getIntensity()));
-
-            double mz1 = p1.getMz();
-
-            // get the indexes of the comparable masses from peak list 2
-            List<Integer> comparableIndexes = new ArrayList<Integer>(3);
-
-            for (int i = lastIndex2; i < kHighestPeaks2.size(); i++) {
-                // make sure the object exists
-                if (kHighestPeaks2.get(i) == null)
-                    continue;
-
-                // compare the m/z
-                double mz2 = kHighestPeaks2.get(i).getMz();
-
-                // check if they are unique
-                if (mz2 >= mz1 - mzRange && mz2 <= mz1 + mzRange) {
-                    comparableIndexes.add(i);
-                }
-
-                // make sure the m/z isn't too big already
-                if (mz2 > mz1 + mzRange)
-                    break;
-            }
-
-            // get the comparable mass closest to the current one
-            int closestIndex = -1;
-            double closestDiff = 100;
-
-            for (Integer i : comparableIndexes) {
-                double mz2 = kHighestPeaks2.get(i).getMz();
-                double diff = Math.abs(mz1 - mz2);
-
-                if (diff < closestDiff) {
-                    closestIndex = i;
-                    closestDiff = diff;
-                }
-            }
-
-            // set the intensity 2
-            if (closestIndex >= 0) {
-                intensities2.add(1 + Math.log(kHighestPeaks2.get(closestIndex).getIntensity()));
-                kHighestPeaks2.set(closestIndex, null);
-            } else {
-                intensities2.add(0.0);
-            }
+    protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
+        int numberComparedPeaks = NUMBER_COMPARED_PEAKS;
+        switch (version) {
+            case NAT_METH_2011:
+                numberComparedPeaks = calculateK2011(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz());
+                break;
+            case JPR_2008:
+                numberComparedPeaks = calculateK2008(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz(), spectrum1.getPrecursorCharge(), spectrum2.getPrecursorCharge());
+                break;
         }
-
-        // add the intensities for the second spectrum
-        for (IPeak p2 : kHighestPeaks2) {
-            // ignore all peaks1 set to NULL as they were already processed
-            if (p2 == null)
-                continue;
-
-            // the peak doesn't exist in spectrum 1 as this was already checked
-            intensities1.add(0.0);
-
-            intensities2.add(1 + Math.log(p2.getIntensity()));
-        }
-
-        // make sure both intensities have the same size
-        if (intensities1.size() != intensities2.size())
-            throw new IllegalStateException("Different sizes of intensity arrays encountered.");
-
-//        // calculate the dot product
-//        double dotProduct = 0;
-//        double sumSquareIntensity1 = 0;
-//        double sumSquareIntensity2 = 0;
-//
-//        for (int i = 0; i < intensities1.size(); i++) {
-//            dotProduct += intensities1.get(i) * intensities2.get(i);
-//
-//            sumSquareIntensity1 += Math.pow(intensities1.get(i), 2);
-//            sumSquareIntensity2 += Math.pow(intensities2.get(i), 2);
-//        }
-//
-//        // normalize the dot product
-//        double normalizedDotProduct = dotProduct / Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
-
-//        return normalizedDotProduct;
-               throw new UnsupportedOperationException("Fix This"); // ToDo
+        return numberComparedPeaks;
     }
 
 
