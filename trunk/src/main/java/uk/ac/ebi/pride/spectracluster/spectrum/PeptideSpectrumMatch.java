@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
-
+      public static final int BAD_QUALITY_MEASURE = -1;
     /**
      * who knows why Johannes does this but we can as well
      *      todo generalize
@@ -45,7 +45,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
-    private double qualityMeasure;
+    private double qualityMeasure = BAD_QUALITY_MEASURE;
     private boolean m_Dirty;
 
     public PeptideSpectrumMatch(ISpectrum spectrum) {
@@ -73,7 +73,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         this.peptide = peptide;
         this.precursorCharge = precursorCharge;
         this.precursorMz = precursorMz;
-        this.qualityMeasure = -1;
+        this.qualityMeasure = BAD_QUALITY_MEASURE;
         setPeaks(peaks);
     }
 
@@ -114,6 +114,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     protected void setDirty(boolean dirty) {
         m_Dirty = dirty;
+        qualityMeasure = BAD_QUALITY_MEASURE;
     }
 
     protected void guaranteeClean() {
