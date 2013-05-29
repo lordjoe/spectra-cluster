@@ -46,7 +46,7 @@ public class ClusteringMain {
 
         int tryNumber = 0;
         while (tryNumber++ < MAX_RECLUSTERING_TRYS) {
-            boolean done = !engine.mergeClusters(scs); // true if nothing done
+            boolean done = !engine.mergeClusters(); // true if nothing done
             if (done)
                 break;
         }

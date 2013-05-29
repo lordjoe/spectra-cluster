@@ -73,8 +73,32 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 		
 		// get the k highest peaks from every spectrum
 		List<IPeak> kHighestPeaks1 = spectrum1.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
+        IPeak[] peaks =  kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()] );
 		List<IPeak> kHighestPeaks2 = spectrum2.getHighestNPeaks(NUMBER_COMPARED_PEAKS);
-		
+//
+//        int t = 0;
+//         int e = 0;
+//         int MatchingProducts = 0;
+//         int TotalProducts = 0;
+//         double MatchingIntensity = 0.0;
+//         int charge = theory.getCharge();
+//         while (t < tps.length && e < peaks.length) {
+//             TotalProducts++;
+//             double massChargeRatio = tps[t].getMassChargeRatio() - PROTON_MASS * charge;
+//             double mass_difference = peaks[e].getMassChargeRatio() - massChargeRatio;
+//             if (Math.abs(mass_difference) <= m_MassTolerance) {
+//                 MatchingProducts++;
+//                 MatchingIntensity += peaks[e].getPeak();
+//                 t++;
+//             }
+//             else if (mass_difference < 0) {
+//                 e++;
+//             }
+//             else if (mass_difference > 0) {
+//                 t++;
+//             }
+//         }
+//         double MatchingProductsFraction = (double) MatchingProducts / TotalProducts;
 
 		// create two intensity vectors
 		List<Double> intensities1 = new ArrayList<Double>(k*2);
