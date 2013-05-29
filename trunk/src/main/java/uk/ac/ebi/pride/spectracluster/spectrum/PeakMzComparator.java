@@ -8,14 +8,14 @@ import java.util.Comparator;
  */
 public class PeakMzComparator implements Comparator<IPeak> {
 
-    private static PeakMzComparator instance = new PeakMzComparator();
+    public final static PeakMzComparator INSTANCE = new PeakMzComparator();
 
     private PeakMzComparator() {
 
     }
 
-    public static PeakMzComparator getInstance() {
-        return instance;
+    public static PeakMzComparator getINSTANCE() {
+        return INSTANCE;
     }
 
     public int compare(IPeak o1, IPeak o2) {

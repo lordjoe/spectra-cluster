@@ -12,14 +12,14 @@ import java.util.Comparator;
  */
 public final class PeakIntensityComparator implements Comparator<IPeak> {
 
-    private static PeakIntensityComparator instance = new PeakIntensityComparator();
+    public static final PeakIntensityComparator INSTANCE = new PeakIntensityComparator();
 
-    private PeakIntensityComparator() {
+    public PeakIntensityComparator() {
 
     }
 
     public static PeakIntensityComparator getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

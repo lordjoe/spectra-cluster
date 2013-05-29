@@ -41,7 +41,6 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     @Test
     public void testBuildConsensusSpectrum() throws Exception {
         // iterate over all clusters
-        TotalIntensityNormalizer totalIntensityNormalizer = new TotalIntensityNormalizer();
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();

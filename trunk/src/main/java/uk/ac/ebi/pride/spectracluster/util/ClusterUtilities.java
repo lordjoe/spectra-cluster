@@ -18,6 +18,33 @@ public class ClusterUtilities {
     private static final Map<String,ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>() ;
 
     /**
+      * return a list of all spectra in the list of clusters sorted by charge then mz
+      * @param clusters !null list of clusters
+      * @return   !null list of spectra
+      */
+     public static List<ISpectrum> extractSpectra(List<ISpectralCluster> clusters) {
+         List<ISpectrum> holder = new ArrayList<ISpectrum>();
+         for (ISpectralCluster cluster : clusters) {
+             holder.addAll(cluster.getClusteredSpectra());
+         }
+         Collections.sort(holder);
+         return holder;
+     }
+
+     /**
+       * return a list of all spectra in the list of spectra sorted by charge then mz
+       * @param spectra !null list of spectra
+       * @return   !null list of spectra
+       */
+      public static List<ISpectralCluster> asClusters(List<IPeptideSpectrumMatch> spectra) {
+          List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+          for (IPeptideSpectrumMatch spectrum : spectra) {
+              holder.add(spectrum.asCluster());
+          }
+          Collections.sort(holder);
+          return holder;
+      }
+    /**
      * use when going to a completely new cluster set - say in a reducer
      */
     public static void clearClusters()

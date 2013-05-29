@@ -34,7 +34,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
       * Use Defaults which builds with reflection
       * Set the class with Defaults.setConsensusSpectrumBuilderClass
       */
-    private FrankEtAlConsensusSpectrumBuilder() {
+    public FrankEtAlConsensusSpectrumBuilder() {
         this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }
 
@@ -165,7 +165,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         if (allPeaks.size() == 0)
             return allPeaks;
         // sort by m/z allPeaks
-        Collections.sort(allPeaks, PeakMzComparator.getInstance());
+        Collections.sort(allPeaks, PeakMzComparator.getINSTANCE());
         List<IPeak> returnedPeaks = new ArrayList<IPeak>();
         IPeak start = null;
         int index = 0;

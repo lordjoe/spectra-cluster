@@ -14,7 +14,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster, Comparable<ISpectralCluster>, Equivalent<ISpectralCluster> {
+public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralCluster> {
 
     private final String id;
     private ISpectrum consensusSpectrum;
@@ -69,17 +69,19 @@ public class SpectralCluster implements ISpectralCluster, Comparable<ISpectralCl
             dirty = true;
 
             for (ISpectrum spectrumToMerge : merged) {
-                if (spectrumToMerge instanceof ISpectralCluster) {
-                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToMerge).getClusteredSpectra();
-                    for (ISpectrum nestedSpectrum : nestedSpectra) {
-                        if (!clusteredSpectra.contains(spectrumToMerge)) {
-                            clusteredSpectra.add(nestedSpectrum);
-                        }
-                    }
-
-                } else if (!clusteredSpectra.contains(spectrumToMerge)) {
+//                if (spectrumToMerge instanceof ISpectralCluster) {
+//                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToMerge).getClusteredSpectra();
+//                    for (ISpectrum nestedSpectrum : nestedSpectra) {
+//                        if (!clusteredSpectra.contains(spectrumToMerge)) {
+//                            clusteredSpectra.add(nestedSpectrum);
+//                        }
+//                    }
+//
+//                }
+//                else
+                if (!clusteredSpectra.contains(spectrumToMerge)) {
                     clusteredSpectra.add(spectrumToMerge);
-                }
+              }
             }
         }
     }
@@ -89,12 +91,12 @@ public class SpectralCluster implements ISpectralCluster, Comparable<ISpectralCl
             dirty = true;
 
             for (ISpectrum spectrumToRemove : removed) {
-                if (spectrumToRemove instanceof ISpectralCluster) {
-                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToRemove).getClusteredSpectra();
-                    clusteredSpectra.removeAll(nestedSpectra);
-                } else {
+//                if (spectrumToRemove instanceof ISpectralCluster) {
+//                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToRemove).getClusteredSpectra();
+//                    clusteredSpectra.removeAll(nestedSpectra);
+//                } else {
                     clusteredSpectra.remove(spectrumToRemove);
-                }
+//                }
             }
         }
     }

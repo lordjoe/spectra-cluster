@@ -42,7 +42,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
       * Set the class with Defaults.setSimilarityCheckerClass
       */
 
-    private FrankEtAlDotProduct() {
+    public FrankEtAlDotProduct() {
     }
 
     private double mzRange = 0.5;
@@ -74,8 +74,8 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 		List<IPeak> kHighestPeaks2 = getHighestPeaks(new ArrayList<IPeak>(spectrum2.getPeaks()), k);
 		
 		// order the two peak lists based on their m/z values
-		Collections.sort(kHighestPeaks1, PeakMzComparator.getInstance());
-		Collections.sort(kHighestPeaks2, PeakMzComparator.getInstance());
+		Collections.sort(kHighestPeaks1, PeakMzComparator.getINSTANCE());
+		Collections.sort(kHighestPeaks2, PeakMzComparator.getINSTANCE());
 		
 		// create two intensity vectors
 		List<Double> intensities1 = new ArrayList<Double>(k*2);
