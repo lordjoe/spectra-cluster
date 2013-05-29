@@ -1,9 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.consensus.FrankEtAlConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.quality.NullQualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+
+import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.Defaults
@@ -14,6 +21,12 @@ import uk.ac.ebi.pride.spectracluster.similarity.*;
 public class Defaults {
 
     public static final Defaults INSTANCE = new Defaults();
+
+    private final SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
+
+    private final QualityScorer defaultQualityScorer = new NullQualityScorer();
+
+    private final ClusterComparator defaultSpectrumComparator = new ClusterComparator(defaultQualityScorer);
 
     private Class<? extends IntensityNormalizer> normalizerClass = TotalIntensityNormalizer.class;
 
@@ -31,6 +44,12 @@ public class Defaults {
 
     public IClusteringEngine getDefaultClusteringEngine()
     {
+        if(true) {
+            SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
+            Comparator<ISpectralCluster> spectrumComparator = getDefaultSpectrumComparator();
+            return new ClusteringEngine(similarityChecker, spectrumComparator);
+        }
+
         try {
             return getClusteringEngineClass().newInstance();
         } catch (InstantiationException e) {
@@ -54,6 +73,8 @@ public class Defaults {
 
     public SimilarityChecker getDefaultSimilarityChecker()
     {
+        if (true)
+            return defaultSimilarityChecker;
         try {
             return getSimilarityCheckerClass().newInstance();
         } catch (InstantiationException e) {
@@ -72,6 +93,10 @@ public class Defaults {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Comparator<ISpectralCluster> getDefaultSpectrumComparator() {
+        return defaultSpectrumComparator;
     }
 
     public Class<? extends IntensityNormalizer> getNormalizerClass() {
