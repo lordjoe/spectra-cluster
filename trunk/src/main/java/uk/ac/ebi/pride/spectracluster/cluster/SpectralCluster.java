@@ -6,9 +6,8 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
 
 /**
  * @author Rui Wang
@@ -231,7 +230,6 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
      * @param out place to append
      */
     public void appendMGF(Appendable out) {
-        int indent = 0;
 
         try {
             out.append("BEGIN IONS");

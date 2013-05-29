@@ -17,6 +17,11 @@ import java.util.concurrent.*;
 public class ClusterUtilities {
     private static final Map<String,ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>() ;
 
+    public ISpectralCluster getById(String id)
+    {
+        return ID_TO_CLUSTER.get(id);
+    }
+
     /**
       * return a list of all spectra in the list of clusters sorted by charge then mz
       * @param clusters !null list of clusters

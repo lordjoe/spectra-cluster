@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-
+//import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+//
 ///**
 // * uk.ac.ebi.pride.spectracluster.SpecClusterPeak
 // *    represents a peak - sorts by mz,intensity,count

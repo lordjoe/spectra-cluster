@@ -44,7 +44,7 @@ public class HadoopJob implements IHadoopJob {
          }
 
         // Sort step
-        String[] keys = emittedData.keySet().toArray(new String[0]);
+        String[] keys = emittedData.keySet().toArray(new String[ emittedData.keySet().size()]);
         Arrays.sort(keys);
 
         // reduce step

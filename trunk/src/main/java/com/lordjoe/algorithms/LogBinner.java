@@ -17,6 +17,9 @@ public class LogBinner implements IBinner {
     private final double m_BinSize;
     private final int m_NumberBins;
     private final boolean m_OverFlowBinned;
+    private final double m_MinValueLog;
+    private final double m_MaxValueLog;
+    private final double m_DelValueLog;
 
 
     public LogBinner(double maxValue, double minValue, int binSize) {
@@ -43,13 +46,19 @@ public class LogBinner implements IBinner {
             throw new IllegalArgumentException("bad bins");
 
         m_MinValue = minValue;
+        m_MinValueLog = Math.log10(m_MinValue);
+
         m_MaxValue = maxValue;
+        m_MaxValueLog = Math.log10(m_MaxValue);
+
         m_BinSize = binSize;
 
         m_OverFlowBinned = overFlowBinned;
         m_MinBin = minBin;
 
         m_NumberBins = (int) (maxValue - minValue + 0.5) / binSize;
+
+        m_DelValueLog = (m_MaxValueLog - m_MinValueLog) / m_NumberBins;
     }
 
     /**
@@ -60,6 +69,7 @@ public class LogBinner implements IBinner {
      * @return either a valid bin number or -1 if  isOverflowBinned() is false and the
      *         data is outside the range handled
      */
+    @Override
     public int asBin(double value) {
         if (value < getMinValue()) {
             if (isOverflowBinned())
@@ -73,10 +83,15 @@ public class LogBinner implements IBinner {
             else
                 return -1; // out of range
         }
-        if(true)
-            throw new UnsupportedOperationException("Fix This"); // ToDo
-        return 0;
-      }
+        double scoreLog = Math.log10(value);
+        scoreLog -= m_MinValueLog;
+        int ret = (int) (scoreLog / m_DelValueLog);
+        return ret;
+    }
+
+
+
+
 
     public double getBinSize() {
         return m_BinSize;
@@ -87,9 +102,9 @@ public class LogBinner implements IBinner {
      * @return a number which when sent to asBin will return bin
      * @throws IllegalArgumentException if no such bin is possible
      */
+    @Override
     public double fromBin(int bin) throws IllegalArgumentException {
-        if (true) throw new UnsupportedOperationException("Fix This");
-        if (bin < -1)
+         if (bin < -1)
             throw new IllegalArgumentException("Illegal bin " + bin);
         if (bin == -1) {
             if (!isOverflowBinned())
@@ -100,9 +115,7 @@ public class LogBinner implements IBinner {
         if (bin < getMaxBin() || bin >= getMaxBin())
             throw new IllegalArgumentException("Illegal bin " + bin);
         // return the bin midpoint
-        if(true)
-            throw new UnsupportedOperationException("Fix This"); // ToDo
-        return getMinValue() + ((bin - getMinBin()) * getBinSize()) + getBinSize() / 2;
+        return getMinValue() * Math.pow(10, m_DelValueLog * bin);
 
     }
 
@@ -112,6 +125,7 @@ public class LogBinner implements IBinner {
      *
      * @return as above
      */
+    @Override
     public double getMinValue() {
         return m_MinValue;
     }
@@ -122,6 +136,7 @@ public class LogBinner implements IBinner {
      *
      * @return as above
      */
+    @Override
     public double getMaxValue() {
         return m_MaxValue;
     }
@@ -131,6 +146,7 @@ public class LogBinner implements IBinner {
      *
      * @return as above
      */
+    @Override
     public int getMinBin() {
         return m_MinBin;
     }
@@ -141,6 +157,7 @@ public class LogBinner implements IBinner {
      *
      * @return as above
      */
+    @Override
     public int getMaxBin() {
         return getMinBin() + getNumberBins();
     }
@@ -152,6 +169,7 @@ public class LogBinner implements IBinner {
      *
      * @return
      */
+    @Override
     public boolean isOverflowBinned() {
         return m_OverFlowBinned;
     }
