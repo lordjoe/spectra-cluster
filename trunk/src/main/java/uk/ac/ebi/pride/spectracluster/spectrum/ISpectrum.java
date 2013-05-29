@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectrum extends ISpectrumQuality, Comparable<ISpectrum> {
+public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
     /**
      * globally unique id
