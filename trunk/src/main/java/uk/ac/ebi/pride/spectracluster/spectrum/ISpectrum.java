@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+
 import java.util.*;
 
 /**
@@ -36,6 +38,13 @@ public interface ISpectrum extends Comparable<ISpectrum> {
      */
     public List<IPeak> getPeaks();
 
+
+    /**
+     * return number of peaks
+     * @return count
+     */
+    public int getPeaksCount();
+
     /**
      * Replace existing peaks with a new collection of peaks
      */
@@ -43,5 +52,30 @@ public interface ISpectrum extends Comparable<ISpectrum> {
 
 
     public void appendMGF(Appendable out);
+
+
+    /**
+      * make a cluster contaiming a single spectrum - this
+      * @return
+      */
+     public ISpectralCluster asCluster();
+
+    /**
+     * get the highest intensity peaks sorted by MZ - this value may be cached
+     * @param numberRequested  number peaks requested
+     * @return  list of no more than  numberRequested peaks in Mz order
+     */
+    public ISpectrum  getHighestNPeaks(int numberRequested);
+
+    /**
+     * return the sum of all intensities
+     */
+    public double getTotalIntensity();
+
+    /**
+     * return the sum  Square of all intensities
+     */
+    public double getSumSquareIntensity();
+
 
 }
