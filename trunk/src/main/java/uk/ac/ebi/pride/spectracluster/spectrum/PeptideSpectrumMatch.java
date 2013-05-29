@@ -77,6 +77,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     @Override
     public double getTotalIntensity() {
+        guaranteeClean();
         return totalIntensity;
     }
 
@@ -85,6 +86,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      */
     @Override
     public double getSumSquareIntensity() {
+        guaranteeClean();
         return sumSquareIntensity;
     }
 
