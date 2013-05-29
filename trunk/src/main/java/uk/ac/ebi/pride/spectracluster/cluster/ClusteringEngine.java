@@ -27,6 +27,7 @@ public class ClusteringEngine implements IClusteringEngine {
     protected void guaranteeClean() {
         if (isDirty()) {
             Collections.sort(clusters, spectrumComparator);
+            clusterDirtyClusters();
             setDirty(false);
         }
     }
@@ -56,7 +57,6 @@ public class ClusteringEngine implements IClusteringEngine {
     public void addClusters(ISpectralCluster... cluster) {
         if (cluster != null) {
             clusters.addAll(Arrays.asList(cluster));
-            clusterDirtyClusters();
             setDirty(true);
         }
 
