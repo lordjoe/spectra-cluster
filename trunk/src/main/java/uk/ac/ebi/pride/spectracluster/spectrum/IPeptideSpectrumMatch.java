@@ -1,9 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-
-import java.util.*;
+import com.lordjoe.algorithms.Equivalent;
 
 /**
  * uk.ac.ebi.pride.spectracluster.IScoredSpectrum
@@ -11,7 +8,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date 15/05/13
  */
-public interface IPeptideSpectrumMatch extends ISpectrum, ISpectrumQuality,Equivalent<ISpectrum> {
+public interface IPeptideSpectrumMatch extends ISpectrum, Equivalent<ISpectrum> {
     /**
      * return scored peptide - maybe null
      */
