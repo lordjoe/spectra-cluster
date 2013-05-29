@@ -15,7 +15,6 @@ import java.util.*;
  */
 public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
-      public static final int BAD_QUALITY_MEASURE = -1;
     /**
      * who knows why Johannes does this but we can as well
      *      todo generalize
@@ -166,12 +165,12 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         setDirty(true);
     }
 
-    public double getQualityMeasure() {
+    public double getQualityScore() {
         guaranteeClean();
         return qualityMeasure;
     }
 
-    public void setQualityMeasure(double qualityMeasure) {
+    public void setQualityScore(double qualityMeasure) {
         this.qualityMeasure = qualityMeasure;
     }
 
