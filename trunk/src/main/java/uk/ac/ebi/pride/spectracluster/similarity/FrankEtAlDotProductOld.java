@@ -138,7 +138,9 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
 
             // set the intensity 2
             if (closestIndex >= 0) {
-                intensities2.add(1 + Math.log(kHighestPeaks2.get(closestIndex).getIntensity()));
+                IPeak iPeak = kHighestPeaks2.get(closestIndex);
+                double intensity1 = iPeak.getIntensity();
+                intensities2.add(1 + Math.log(intensity1));
                 kHighestPeaks2.set(closestIndex, null);
             } else {
                 intensities2.add(0.0);
@@ -195,7 +197,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      * @return
      */
     private List<IPeak> getHighestPeaks(List<IPeak> peakList, int k) {
-        //Collections.sort(peakList, PeakIntensityComparator.getInstance());
+        Collections.sort(peakList, PeakIntensityComparator.getInstance());
 
         List<IPeak> highestPeaks = new ArrayList<IPeak>(k);
 
