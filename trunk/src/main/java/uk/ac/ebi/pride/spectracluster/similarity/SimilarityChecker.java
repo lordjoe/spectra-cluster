@@ -12,6 +12,12 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
  *
  */
 public interface SimilarityChecker {
+    /**
+     * erturn the default similarity Threshold
+     * @return as above
+     */
+    public double getDefaultThreshold();
+
 	/**
 	 * Assesses the similarity between the two passed
 	 * spectra and returns the result of this assessment

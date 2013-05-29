@@ -17,16 +17,4 @@ public interface IPeptideSpectrumMatch extends ISpectrum, ISpectrumQuality,Equiv
      */
     public String getPeptide();
 
-    /**
-      * make a cluster contaiming a single spectrum - this
-      * @return
-      */
-     public ISpectralCluster asCluster();
-
-    /**
-     * get the highest intensity peaks sorted by MZ - this value may be cached
-     * @param numberRequested  number peaks requested
-     * @return  list of no more than  numberRequested peaks in Mz order
-     */
-    public List<IPeak>  getHighestNPeaks(int numberRequested);
 }

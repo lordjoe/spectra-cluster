@@ -9,7 +9,7 @@ import java.util.*;
  * PeptideSepctrumMatch represents a peptide and a spectrum match
  * <p/>
  * todo: implement quality measure
-*
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -20,14 +20,15 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     private double precursorCharge;
     private double precursorMz;
     private double totalIntensity;
+    private double sumSquareIntensity;
     /**
      * for calculate similarity between spectra, all peaks should be sorted by intensity
      */
     private final List<IPeak> peaks = new ArrayList<IPeak>();
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
-    private final Map<Integer,List<IPeak>> highestPeaks = new HashMap<Integer, List<IPeak>>();
-     private double qualityMeasure;
+    private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
+    private double qualityMeasure;
     private boolean m_Dirty;
 
     public PeptideSpectrumMatch(ISpectrum spectrum) {
@@ -74,8 +75,17 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         return precursorCharge;
     }
 
+    @Override
     public double getTotalIntensity() {
         return totalIntensity;
+    }
+
+    /**
+     * return the sum  Square of all intensities
+     */
+    @Override
+    public double getSumSquareIntensity() {
+        return sumSquareIntensity;
     }
 
     protected boolean isDirty() {
@@ -91,16 +101,20 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
             highestPeaks.clear(); // highest peaks may have changed
             Collections.sort(this.peaks, PeakMzComparator.getINSTANCE());
             totalIntensity = 0;
+            sumSquareIntensity = 0;
             for (IPeak peak : peaks) {
-                totalIntensity += peak.getIntensity();
+                double intensity = peak.getIntensity();
+                totalIntensity += intensity;
+                sumSquareIntensity += intensity * sumSquareIntensity;
             }
             qualityMeasure = buildQualityMeasure();
             setDirty(false);
-          }
+        }
     }
 
-    protected  double buildQualityMeasure() {
-       // throw new UnsupportedOperationException("Fix This"); // ToDo
+
+    protected double buildQualityMeasure() {
+        // throw new UnsupportedOperationException("Fix This"); // ToDo
         return 0;
     }
 
@@ -108,6 +122,17 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     public List<IPeak> getPeaks() {
         guaranteeClean();
         return new ArrayList<IPeak>(peaks);
+    }
+
+    /**
+     * return number of peaks
+     *
+     * @return count
+     */
+    @Override
+    public int getPeaksCount() {
+        guaranteeClean();
+        return peaks.size();
     }
 
     public void setPeaks(Collection<IPeak> peaks) {
@@ -146,36 +171,39 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @return list of no more than  numberRequested peaks in Mz order
      */
     @Override
-    public List<IPeak> getHighestNPeaks(int numberRequested) {
+    public ISpectrum getHighestNPeaks(int numberRequested) {
         guaranteeClean();
-        List<IPeak> ret = highestPeaks.get(numberRequested);
-        if(ret == null)    {
-            ret = buildHighestPeaks(numberRequested) ;
-            Collections.sort(ret,PeakMzComparator.INSTANCE);   // sort by mz
+        ISpectrum ret = highestPeaks.get(numberRequested);
+        if (ret == null) {
+            ret = buildHighestPeaks(numberRequested);
+            int numberPeaks = ret.getPeaksCount();
             // remember the result and if less than requested remember for all
             // requests above or equal to the size
-            for (int i = numberRequested; i >= ret.size(); i--) {
-                highestPeaks.put(i,ret);
-              }
+            for (int i = numberRequested; i >= numberPeaks; i--) {
+                highestPeaks.put(i, ret);
+            }
         }
         return ret;
     }
 
     /**
      * return a list of the highest peaks sorted by intensity
-     * @param numberRequested   number peaks requested
-     * @return  !null array of size <= numberRequested;
+     *
+     * @param numberRequested number peaks requested
+     * @return !null array of size <= numberRequested;
      */
-    protected List<IPeak> buildHighestPeaks(int numberRequested) {
+    protected ISpectrum buildHighestPeaks(int numberRequested) {
         List<IPeak> byIntensity = new ArrayList<IPeak>(peaks);
-        Collections.sort(byIntensity,PeakIntensityComparator.INSTANCE); // sort by intensity
+        Collections.sort(byIntensity, PeakIntensityComparator.INSTANCE); // sort by intensity
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak iPeak : byIntensity) {
             holder.add(iPeak);
-            if(holder.size() >= numberRequested)
-                return holder;
+            if (holder.size() >= numberRequested)
+                break;
         }
-        return holder; // we did not get enough
+        PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this);
+        ret.setPeaks(holder);
+        return ret;
     }
 
     @Override
