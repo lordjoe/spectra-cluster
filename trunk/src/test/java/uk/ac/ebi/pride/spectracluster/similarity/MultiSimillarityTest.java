@@ -8,8 +8,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import static org.junit.Assert.*;
-
 
 /**
  * @author Rui Wang
@@ -41,18 +39,54 @@ public class MultiSimillarityTest {
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
-            if(spectra.size() == 1)
+            if (spectra.size() <= 1)
                 continue;
             // attila  do work!!!
 
-            //       Assert.assertTrue(Math.abs(oldDP - newDP) < SIMILAR_THRESHOLD);
-             if(true)
-                throw new UnsupportedOperationException("Fix This"); // ToDo add test here
-              index++; // track where we are
+            SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+            SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+
+            double oldDP;
+            oldDP = oldSimilarity.assessSimilarity(spectra.get(0), spectra.get(1));
+            double newDP;
+            newDP = newSimilarity.assessSimilarity(spectra.get(0), spectra.get(1));
+
+            //Assert.assertEquals(oldDP, newDP, 0.001 * (oldDP + newDP));
+            Assert.assertTrue(Math.abs(oldDP - newDP) < SIMILAR_THRESHOLD);
+
+
+
+/*
+            for (ISpectrum iSpectrum : spectra) {
+
+
+                //for (int i = 0; spectra.size() > i; i++) {
+                //   ISpectrum  spectrum = spectra[i];
+
+                double oldDP1;
+                oldDP1 = oldSimilarity.assessSimilarity(iSpectrum, consensusSpectrum);
+                double newDP2;
+                newDP2 = newSimilarity.assessSimilarity(iSpectrum, consensusSpectrum);
+
+                double oldDP;
+                oldDP = oldSimilarity.assessSimilarity(iSpectrum, iSpectrum);
+                double newDP;
+                newDP = newSimilarity.assessSimilarity(iSpectrum, iSpectrum);
+
+                //Assert.assertEquals(oldDP, newDP, 0.001 * (oldDP + newDP));
+                Assert.assertTrue(Math.abs(oldDP - newDP) < SIMILAR_THRESHOLD);
+
+
+                // comparing consensusSp agains member spectra gives -Infinity intensity in the example consensus spectrum
+
+            }*/
+
         }
+
     }
-
-
-
-
 }
+
+
+
+
+
