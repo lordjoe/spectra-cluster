@@ -15,6 +15,23 @@ import java.util.*;
  */
 public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
+
+    /**
+     * who knows why Johannes does this but we can as well
+     *      todo generalize
+     * @param p1
+     * @return
+     */
+    public static double johannesIntensityConverted(IPeak p1) {
+        double intensity = p1.getIntensity();
+        if(intensity == 0)
+            return 0;
+        double intensity2 = 1 + Math.log(intensity);
+        return intensity2;
+
+    }
+
+
     private String id;
     private String peptide;
     private double precursorCharge;
@@ -44,6 +61,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         for (IPeak peak : spectrum.getPeaks()) {
             this.peaks.add(new Peak(peak.getMz(), peak.getIntensity(), peak.getCount()));
         }
+        setDirty(true);
     }
 
     public PeptideSpectrumMatch(String id,
@@ -107,7 +125,9 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
             for (IPeak peak : peaks) {
                 double intensity = peak.getIntensity();
                 totalIntensity += intensity;
-                sumSquareIntensity += intensity * sumSquareIntensity;
+                // johannes uses this in his dotProduct // todo generalize for other algorithms
+                double ji = johannesIntensityConverted(peak);
+                sumSquareIntensity += ji * ji;
             }
             qualityMeasure = buildQualityMeasure();
             setDirty(false);

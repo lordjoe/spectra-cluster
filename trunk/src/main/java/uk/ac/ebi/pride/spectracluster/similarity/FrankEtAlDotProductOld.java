@@ -167,16 +167,21 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         double sumSquareIntensity2 = 0;
 
         for (int i = 0; i < intensities1.size(); i++) {
-            Double i1 = intensities1.get(i);
-            Double i2 = intensities2.get(i);
+            double i1 = intensities1.get(i);
+            double i2 = intensities2.get(i);
+            String fmt  = String.format("%8.3f %8.3f", i1, i2);
+            System.out.println(fmt);
             dotProduct += i1 * i2;
 
-            sumSquareIntensity1 += Math.pow(intensities1.get(i), 2);
-            sumSquareIntensity2 += Math.pow(intensities2.get(i), 2);
+            sumSquareIntensity1 += Math.pow(i1, 2);
+            sumSquareIntensity2 += Math.pow(i2, 2);
         }
 
         // normalize the dot product
-        double normalizedDotProduct = dotProduct / Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
+        double denom = Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
+        if(denom == 0)
+            return 0;
+        double normalizedDotProduct = dotProduct / denom;
 
         return normalizedDotProduct;
     }
