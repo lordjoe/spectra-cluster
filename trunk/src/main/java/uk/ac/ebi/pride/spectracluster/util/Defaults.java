@@ -5,8 +5,8 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.consensus.FrankEtAlConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.quality.NullQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 
@@ -24,7 +24,7 @@ public class Defaults {
 
     private final SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
 
-    private final QualityScorer defaultQualityScorer = new NullQualityScorer();
+    private final QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
     private final ClusterComparator defaultSpectrumComparator = new ClusterComparator(defaultQualityScorer);
 
