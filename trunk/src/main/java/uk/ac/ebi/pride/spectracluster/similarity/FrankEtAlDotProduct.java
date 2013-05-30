@@ -101,7 +101,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         double charge = spectrum1.getPrecursorCharge();
         double charge2 = spectrum2.getPrecursorCharge();
         // todo do we penalize different charges??
-        while (t < peaks2.length && e < peaks1.length) {
+        while (t < peaks1.length && e < peaks2.length) {
             TotalProducts++;
             IPeak peak1 = peaks1[t];
             double mz1 = peak1.getMz();

@@ -165,7 +165,9 @@ public class ClusteringEngine implements IClusteringEngine {
     private boolean demergeNoneFittingSpectra() {
         boolean noneFittingSpectraFound = false;
 
-        for (ISpectralCluster cluster : clusters) {
+        List<ISpectralCluster> emptyClusters = new ArrayList<ISpectralCluster>(); // holder for any empty clusters
+
+           for (ISpectralCluster cluster : clusters) {
             List<ISpectrum> noneFittingSpectra = findNoneFittingSpectra(cluster);
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
@@ -173,7 +175,7 @@ public class ClusteringEngine implements IClusteringEngine {
                 ISpectrum[] spectraToRemove = new ISpectrum[noneFittingSpectra.size()];
                 if(cluster.getClusteredSpectraCount() == spectraToRemove.length)    {
                     noneFittingSpectra = findNoneFittingSpectra(cluster);
-                    throw new UnsupportedOperationException("Fix This"); // ToDo
+                    emptyClusters.add(cluster); // nothing left remember this cluster
                 }
                   cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
 
@@ -182,6 +184,8 @@ public class ClusteringEngine implements IClusteringEngine {
                 }
             }
         }
+        if(!emptyClusters.isEmpty())    // any empty clusters
+            clusters.removeAll(emptyClusters);   // drop them
 
         return noneFittingSpectraFound;
     }
