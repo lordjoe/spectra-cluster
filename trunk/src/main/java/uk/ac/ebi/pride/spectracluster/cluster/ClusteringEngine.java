@@ -72,7 +72,7 @@ public class ClusteringEngine implements IClusteringEngine {
             for (ISpectralCluster cluster : clusters) {
                 ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
                 ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();
-                if(consensusSpectrum == null || consensusSpectrum1 == null)
+                if (consensusSpectrum == null || consensusSpectrum1 == null)
                     continue;
                 double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
@@ -124,6 +124,8 @@ public class ClusteringEngine implements IClusteringEngine {
     private boolean mergeAllClusters() {
         boolean modified = false;
         boolean toMerge = true;
+        long totalSimilarityTests = 0;
+        int totalClustersExamined = 0;
 
         while (toMerge) {
             toMerge = false;
@@ -132,9 +134,11 @@ public class ClusteringEngine implements IClusteringEngine {
             while (clusterIterator.hasNext()) {
                 ISpectralCluster currCluster = clusterIterator.next();
                 ISpectralCluster similarCluster = null;
+                totalClustersExamined++; // count so you can see where you are
 
                 for (ISpectralCluster cluster : clusters) {
                     if (currCluster != cluster) {
+                        totalSimilarityTests++;
                         double similarityScore = similarityChecker.assessSimilarity(currCluster.getConsensusSpectrum(), cluster.getConsensusSpectrum());
                         if (similarityScore >= similarityChecker.getDefaultThreshold()) {
                             toMerge = true;
@@ -164,27 +168,29 @@ public class ClusteringEngine implements IClusteringEngine {
      */
     private boolean demergeNoneFittingSpectra() {
         boolean noneFittingSpectraFound = false;
+         int totalClustersExamined = 0;
 
         List<ISpectralCluster> emptyClusters = new ArrayList<ISpectralCluster>(); // holder for any empty clusters
 
-           for (ISpectralCluster cluster : clusters) {
+        for (ISpectralCluster cluster : clusters) {
+            totalClustersExamined++; // count where we are
             List<ISpectrum> noneFittingSpectra = findNoneFittingSpectra(cluster);
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
 
                 ISpectrum[] spectraToRemove = new ISpectrum[noneFittingSpectra.size()];
-                if(cluster.getClusteredSpectraCount() == spectraToRemove.length)    {
+                if (cluster.getClusteredSpectraCount() == spectraToRemove.length) {
                     noneFittingSpectra = findNoneFittingSpectra(cluster);
                     emptyClusters.add(cluster); // nothing left remember this cluster
                 }
-                  cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
+                cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
 
                 for (ISpectrum noneFittingSpectrum : noneFittingSpectra) {
                     clustersToAdd.add(noneFittingSpectrum.asCluster());
                 }
             }
         }
-        if(!emptyClusters.isEmpty())    // any empty clusters
+        if (!emptyClusters.isEmpty())    // any empty clusters
             clusters.removeAll(emptyClusters);   // drop them
 
         return noneFittingSpectraFound;
