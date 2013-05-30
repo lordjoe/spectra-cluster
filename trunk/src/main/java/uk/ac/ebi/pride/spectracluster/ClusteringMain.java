@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -31,6 +32,7 @@ public class ClusteringMain {
 
     /**
      * cluster spectra from a group of existing mgf files
+     *
      * @param files
      */
     public static void clusterFiles(File... files) {
@@ -41,16 +43,32 @@ public class ClusteringMain {
             holder.addAll(Arrays.asList(sps));
         }
         List<ISpectralCluster> scs = ClusterUtilities.asClusters(holder);
-        IClusteringEngine engine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        engine.addClusters(scs.toArray(new ISpectralCluster[scs.size()]));
+        IClusteringEngine newEngine  = Defaults.INSTANCE.getDefaultClusteringEngine();
+        newEngine.addClusters(scs.toArray(new ISpectralCluster[scs.size()]));
 
+        IClusteringEngine oldengine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        oldengine.addClusters(scs.toArray(new ISpectralCluster[scs.size()]));
+
+        IClusteringEngine engine = oldengine; // test the old engine
+
+        long start = System.currentTimeMillis();
+        long lap = System.currentTimeMillis();
         int tryNumber = 0;
         while (tryNumber++ < MAX_RECLUSTERING_TRYS) {
             boolean done = !engine.mergeClusters(); // true if nothing done
             if (done)
                 break;
+            double delCycle = (System.currentTimeMillis() - lap) / 1000.0;
+
+            System.out.println("Loop took " + (int) delCycle + " sec");
+            lap = System.currentTimeMillis();
         }
+        long endNewEngine = System.currentTimeMillis();
+        double delSec = (endNewEngine - start) / 1000.0;
+
+        System.out.println("Clustering took " + (int) delSec + " sec");
         List<ISpectralCluster> output = engine.getClusters();
+
 //        for (ISpectralCluster sc : output) {
 //
 //        }

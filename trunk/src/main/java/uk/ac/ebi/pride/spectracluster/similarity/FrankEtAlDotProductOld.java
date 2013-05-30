@@ -21,6 +21,7 @@ import java.util.*;
  *         todo: this class needs to be reviewed
  */
 public class FrankEtAlDotProductOld implements SimilarityChecker {
+    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
     /**
      * The logger to use.
      */
@@ -58,7 +59,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      * @return as above
      */
     public double getDefaultThreshold() {
-        return FrankEtAlDotProduct.DEFAULT_SIMILARITY_THRESHOLD;
+        return  DEFAULT_SIMILARITY_THRESHOLD;
     }
 
 

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -22,7 +22,8 @@ public class ClusteringEngineTests {
     private ISpectralCluster[] originalSpectralClusters;
     private List<ISpectrum> originalSpectra;
     private IClusteringEngine clusteringEngine;
-    private SimilarityChecker similarityChecker;
+    private IClusteringEngine oldClusteringEngine;
+     private SimilarityChecker similarityChecker;
 
     @Before
     public void setUp() throws Exception {
@@ -37,24 +38,44 @@ public class ClusteringEngineTests {
         Arrays.sort(originalSpectralClusters);
         originalSpectra = ClusterUtilities.extractSpectra(Arrays.asList(originalSpectralClusters));
 
+        oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(),Defaults.INSTANCE.getDefaultSpectrumComparator());
         clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        for (ISpectrum originalSpectrum : originalSpectra) {
-            clusteringEngine.addClusters(originalSpectrum.asCluster());
-        }
+         for (ISpectrum originalSpectrum : originalSpectra) {
+             clusteringEngine.addClusters(originalSpectrum.asCluster());
+             oldClusteringEngine.addClusters(originalSpectrum.asCluster());
+         }
 
         similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
     }
 
     @Test
     public void testClusteringEngine() throws Exception {
+        long start = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {
-            if (clusteringEngine.mergeClusters()) {
+            if (!clusteringEngine.mergeClusters()) {
                 break;
             }
         }
+        long endNewEngine = System.currentTimeMillis();
+        double delSec = (endNewEngine - start)  /1000.0;
+        for (int i = 0; i < 2; i++) {
+             if (!oldClusteringEngine.mergeClusters()) {
+                 break;
+             }
+         }
+        long endOldEngine = System.currentTimeMillis();
+        double delOldSec = (endOldEngine - endNewEngine )  /1000.0;
+
+        System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
+
 
         List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
         Collections.sort(newClusters);
+
+        List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();
+        Collections.sort(oldClusters);
+
+
         Assert.assertEquals(newClusters.size(), originalSpectralClusters.length);
 
         for (ISpectralCluster newCluster : newClusters) {
