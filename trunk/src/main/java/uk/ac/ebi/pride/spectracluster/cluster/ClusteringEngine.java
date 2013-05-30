@@ -129,32 +129,25 @@ public class ClusteringEngine implements IClusteringEngine {
 
         while (toMerge) {
             toMerge = false;
-
-            Iterator<ISpectralCluster> clusterIterator = clusters.iterator();
-            while (clusterIterator.hasNext()) {
-                ISpectralCluster currCluster = clusterIterator.next();
-                ISpectralCluster similarCluster = null;
+            List<ISpectralCluster> clustersToRemove = new ArrayList<ISpectralCluster>();
+            for (int i = 0; i < clusters.size(); i++) {
                 totalClustersExamined++; // count so you can see where you are
-
-                for (ISpectralCluster cluster : clusters) {
-                    if (currCluster != cluster) {
-                        totalSimilarityTests++;
-                        double similarityScore = similarityChecker.assessSimilarity(currCluster.getConsensusSpectrum(), cluster.getConsensusSpectrum());
-                        if (similarityScore >= similarityChecker.getDefaultThreshold()) {
-                            toMerge = true;
-                            similarCluster = cluster;
-                            break;
-                        }
+                for (int j = i + 1; j < clusters.size(); j++) {
+                    totalSimilarityTests++;
+                    ISpectralCluster clusterI = clusters.get(i);
+                    ISpectralCluster clusterJ = clusters.get(j);
+                    double similarityScore = similarityChecker.assessSimilarity(clusterI.getConsensusSpectrum(), clusterJ.getConsensusSpectrum());
+                    if (similarityScore >= similarityChecker.getDefaultThreshold()) {
+                        toMerge = true;
+                        modified = true;
+                        ISpectrum[] clusteredSpectra = new ISpectrum[clusterI.getClusteredSpectra().size()];
+                        clusterJ.addSpectra(clusterI.getClusteredSpectra().toArray(clusteredSpectra));
+                        clustersToRemove.add(clusterI);
+                        break;
                     }
                 }
-
-                if (similarCluster != null) {
-                    modified = true;
-                    ISpectrum[] clusteredSpectra = new ISpectrum[currCluster.getClusteredSpectra().size()];
-                    similarCluster.addSpectra(currCluster.getClusteredSpectra().toArray(clusteredSpectra));
-                    clusterIterator.remove();
-                }
             }
+            clusters.removeAll(clustersToRemove);
         }
 
         return modified;
