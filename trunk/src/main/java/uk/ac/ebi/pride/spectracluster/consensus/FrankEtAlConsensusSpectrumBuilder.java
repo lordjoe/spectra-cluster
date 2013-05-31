@@ -63,7 +63,6 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         // if there's only one spectrum in the list, return this spectrum
         if (spectra.size() == 1) {
             ISpectrum singleSpectrumConsensusSpectrum = new PeptideSpectrumMatch(spectra.get(0));
-            intensityNormalizer.normalizeSpectrum(singleSpectrumConsensusSpectrum);
             return singleSpectrumConsensusSpectrum;
         }
 
@@ -80,11 +79,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         // filter the spectrum
         List<IPeak> filteredSpectrum = filterSpectrum(mergedConsensusSpectrum);
 
+        // normalize consensus spectrum's intensity
+        filteredSpectrum = intensityNormalizer.normalizePeaks(filteredSpectrum);
+
         // create consensus spectrum
         PeptideSpectrumMatch consensusSpectrum = createConsensusSpectrum(spectra, filteredSpectrum);
 
-        // normalize consensus spectrum's intensity
-        intensityNormalizer.normalizeSpectrum(consensusSpectrum);
 
         return consensusSpectrum;
     }

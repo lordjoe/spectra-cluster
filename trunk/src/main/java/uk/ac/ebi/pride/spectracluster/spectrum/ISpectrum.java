@@ -46,10 +46,10 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      */
     public int getPeaksCount();
 
-    /**
-     * Replace existing peaks with a new collection of peaks
-     */
-    public void setPeaks(Collection<IPeak> peaks);
+//    /**
+//     * Replace existing peaks with a new collection of peaks
+//     */
+//    public void setPeaks(Collection<IPeak> peaks);
 
 
     public void appendMGF(Appendable out);

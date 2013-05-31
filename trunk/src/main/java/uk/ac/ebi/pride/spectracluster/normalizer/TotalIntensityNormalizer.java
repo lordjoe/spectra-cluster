@@ -31,14 +31,6 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
     public TotalIntensityNormalizer() {
     }
 
-    @Override
-    public void normalizeSpectrum(ISpectrum spectrum) {
-
-		// create the new spectrum
-		List<IPeak> normalizedSpectrum =  normalizePeaks(spectrum.getPeaks());
-		
-         spectrum.setPeaks(normalizedSpectrum);
-	}
 
     @Override
     public List<IPeak> normalizePeaks(List<IPeak> peaks) {

@@ -15,8 +15,5 @@ public interface ISpectrumQuality {
      */
     public double getQualityScore();
 
-    /**
-     * Set the quality measure of a spectrum
-     */
-    public void setQualityScore(double qualityMeasure);
+
 }

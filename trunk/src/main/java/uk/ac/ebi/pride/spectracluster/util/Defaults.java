@@ -130,4 +130,8 @@ public class Defaults {
     public void setClusteringEngineClass(Class<? extends IClusteringEngine> clusteringEngineClass) {
         this.clusteringEngineClass = clusteringEngineClass;
     }
+
+    public QualityScorer getDefaultQualityScorer() {
+        return defaultQualityScorer;
+    }
 }
