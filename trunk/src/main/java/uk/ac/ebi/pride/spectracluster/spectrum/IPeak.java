@@ -9,7 +9,7 @@ import com.lordjoe.algorithms.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface IPeak extends Equivalent<IPeak>{
+public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
 
     public static final double SMALL_MZ_DIFFERENCE = 0.002;
     public static final double SMALL_INTENSITY_DIFFERENCE = 0.1;

@@ -1,13 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
 
 /**
  * PeptideSepctrumMatch represents a peptide and a spectrum match
- * <p/>
+ * <p/>  This class is effectively immutable - some measures are computed lazily but
+ * it cannot be manipulated from the outside
  * todo: implement quality measure
  *
  * @author Rui Wang
@@ -17,13 +19,14 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     /**
      * who knows why Johannes does this but we can as well
-     *      todo generalize
+     * todo generalize
+     *
      * @param p1
      * @return
      */
     public static double johannesIntensityConverted(IPeak p1) {
         double intensity = p1.getIntensity();
-        if(intensity == 0)
+        if (intensity == 0)
             return 0;
         double intensity2 = 1 + Math.log(intensity);
         return intensity2;
@@ -31,10 +34,10 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     }
 
 
-    private String id;
-    private String peptide;
-    private double precursorCharge;
-    private double precursorMz;
+    private final String id;
+    private final String peptide;
+    private final double precursorCharge;
+    private final double precursorMz;
     private double totalIntensity;
     private double sumSquareIntensity;
     /**
@@ -47,7 +50,20 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     private double qualityMeasure = BAD_QUALITY_MEASURE;
     private boolean m_Dirty;
 
+    /**
+     * simple copy constructor
+     * @param spectrum
+     */
     public PeptideSpectrumMatch(ISpectrum spectrum) {
+        this(spectrum, spectrum.getPeaks());
+    }
+
+    /**
+     * copy with different peaks
+     * @param spectrum  base used for charge, mz
+     * @param peaks new peaks
+     */
+    public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         this.id = spectrum.getId();
         if (spectrum instanceof IPeptideSpectrumMatch) {
             this.peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
@@ -57,10 +73,10 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         this.precursorCharge = spectrum.getPrecursorCharge();
         this.precursorMz = spectrum.getPrecursorMz();
 
-        for (IPeak peak : spectrum.getPeaks()) {
-            this.peaks.add(new Peak(peak.getMz(), peak.getIntensity(), peak.getCount()));
-        }
-        setDirty(true);
+        peaks.clear();
+        Collections.sort(inpeaks);
+        peaks.addAll(inpeaks);
+        makeCalculations();
     }
 
     public PeptideSpectrumMatch(String id,
@@ -73,7 +89,11 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         this.precursorCharge = precursorCharge;
         this.precursorMz = precursorMz;
         this.qualityMeasure = BAD_QUALITY_MEASURE;
-        setPeaks(peaks);
+        this.peaks.clear();
+        Collections.sort(peaks);
+        this.peaks.addAll(peaks);
+        makeCalculations();
+
     }
 
     public String getId() {
@@ -94,7 +114,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     @Override
     public double getTotalIntensity() {
-        guaranteeClean();
+    //    guaranteeClean();
         return totalIntensity;
     }
 
@@ -103,46 +123,35 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      */
     @Override
     public double getSumSquareIntensity() {
-        guaranteeClean();
+      //  guaranteeClean();
         return sumSquareIntensity;
     }
 
-    protected boolean isDirty() {
-        return m_Dirty;
-    }
 
-    protected void setDirty(boolean dirty) {
-        m_Dirty = dirty;
-        qualityMeasure = BAD_QUALITY_MEASURE;
-    }
-
-    protected void guaranteeClean() {
-        if (isDirty()) {
-            highestPeaks.clear(); // highest peaks may have changed
-            Collections.sort(this.peaks, PeakMzComparator.getINSTANCE());
-            totalIntensity = 0;
-            sumSquareIntensity = 0;
-            for (IPeak peak : peaks) {
-                double intensity = peak.getIntensity();
-                totalIntensity += intensity;
-                // johannes uses this in his dotProduct // todo generalize for other algorithms
-                double ji = johannesIntensityConverted(peak);
-                sumSquareIntensity += ji * ji;
-            }
-            qualityMeasure = buildQualityMeasure();
-            setDirty(false);
+    protected void makeCalculations() {
+        highestPeaks.clear(); // highest peaks may have changed
+        Collections.sort(this.peaks, PeakMzComparator.getINSTANCE());
+        totalIntensity = 0;
+        sumSquareIntensity = 0;
+        for (IPeak peak : peaks) {
+            double intensity = peak.getIntensity();
+            totalIntensity += intensity;
+            // johannes uses this in his dotProduct // todo generalize for other algorithms
+            double ji = johannesIntensityConverted(peak);
+            sumSquareIntensity += ji * ji;
         }
+        qualityMeasure = BAD_QUALITY_MEASURE;  // be laze here
     }
 
 
     protected double buildQualityMeasure() {
-        // throw new UnsupportedOperationException("Fix This"); // ToDo
-        return 0;
+        return Defaults.INSTANCE.getDefaultQualityScorer().calculateQualityScore(this);
+
     }
 
 
     public List<IPeak> getPeaks() {
-        guaranteeClean();
+       // guaranteeClean();
         return new ArrayList<IPeak>(peaks);
     }
 
@@ -153,26 +162,19 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      */
     @Override
     public int getPeaksCount() {
-        guaranteeClean();
+     //   guaranteeClean();
         return peaks.size();
     }
 
-    public void setPeaks(Collection<IPeak> peaks) {
-        this.peaks.clear();
-        if (peaks != null) {
-            this.peaks.addAll(peaks);
-        }
-        setDirty(true);
-    }
 
     public double getQualityScore() {
-        guaranteeClean();
+     //   guaranteeClean();
+        if (qualityMeasure == BAD_QUALITY_MEASURE) {
+            qualityMeasure = buildQualityMeasure();
+        }
         return qualityMeasure;
     }
 
-    public void setQualityScore(double qualityMeasure) {
-        this.qualityMeasure = qualityMeasure;
-    }
 
     /**
      * make a cluster contaiming a single spectrum - this
@@ -180,7 +182,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @return
      */
     public ISpectralCluster asCluster() {
-        guaranteeClean();
+     //   guaranteeClean();
         SpectralCluster ret = new SpectralCluster(getId());
         ret.addSpectra(this);
         return ret;
@@ -194,7 +196,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      */
     @Override
     public ISpectrum getHighestNPeaks(int numberRequested) {
-        guaranteeClean();
+      //  guaranteeClean();
         ISpectrum ret = highestPeaks.get(numberRequested);
         if (ret == null) {
             ret = buildHighestPeaks(numberRequested);
@@ -223,8 +225,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
             if (holder.size() >= numberRequested)
                 break;
         }
-        PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this);
-        ret.setPeaks(holder);
+        PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this, holder);
         return ret;
     }
 
@@ -235,7 +236,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @param out place to append
      */
     public void appendMGF(Appendable out) {
-        guaranteeClean();
+    //    guaranteeClean();
         int indent = 0;
 
         try {
@@ -279,7 +280,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     public boolean equivalent(ISpectrum o) {
         if (o == this)
             return true;
-        guaranteeClean();
+     //   guaranteeClean();
         if (o.getPrecursorMz() != getPrecursorMz()) {
             return false;
         }
@@ -310,7 +311,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     public int compareTo(ISpectrum o) {
         if (this == o)
             return 0;
-        guaranteeClean();
+    //    guaranteeClean();
         if (getPrecursorCharge() != o.getPrecursorCharge())
             return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
         if (getPrecursorMz() != o.getPrecursorMz())

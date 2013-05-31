@@ -9,11 +9,6 @@ import java.util.*;
  * @author Rui Wang
  */
 public interface IntensityNormalizer {
-	/**
-	 * Normalizes the given spectrum's intensities.
-	 * @param spectrum The spectrum as a Map with the m/z values as key and their intensities as values.
-	 */
-	public void normalizeSpectrum(ISpectrum spectrum);
 
     /**
      * normalize alist of peaks - all the dirty work is here

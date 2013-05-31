@@ -5,7 +5,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * @author Rui Wang
  * @version $Id$
  */
-public class Peak implements IPeak, Comparable<IPeak> {
+public class Peak implements IPeak{
 
     private final double massChargeRatio;
     private double intensity;
