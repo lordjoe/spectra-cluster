@@ -39,11 +39,6 @@ public class ExtendedFrankEtAlConsensusSpectrumBuilder extends FrankEtAlConsensu
     }
 
     @Override
-    public Collection<IPeak> originalAddAllPeaks(Collection<ISpectrum> spectra) {
-        return super.originalAddAllPeaks(spectra);
-    }
-
-    @Override
     public List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
         return super.mergeIdenticalPeaks(consensusSpectrum);
     }

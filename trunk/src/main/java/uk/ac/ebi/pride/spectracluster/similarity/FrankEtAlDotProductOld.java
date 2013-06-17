@@ -84,8 +84,8 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         List<IPeak> kHighestPeaks2 = getHighestPeaks(new ArrayList<IPeak>(spectrum2.getPeaks()), k);
 
         // order the two peak lists based on their m/z values
-        Collections.sort(kHighestPeaks1, InversePeakIntensityComparator.INSTANCE);
-        Collections.sort(kHighestPeaks2, InversePeakIntensityComparator.INSTANCE);
+        Collections.sort(kHighestPeaks1, PeakMzComparator.INSTANCE);
+        Collections.sort(kHighestPeaks2, PeakMzComparator.INSTANCE);
 
         // create two intensity vectors
         List<Double> intensities1 = new ArrayList<Double>(k * 2);

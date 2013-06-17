@@ -52,9 +52,9 @@ public class ClusterUtilities {
        * @param spectra !null list of spectra
        * @return   !null list of spectra
        */
-      public static List<ISpectralCluster> asClusters(List<IPeptideSpectrumMatch> spectra) {
+      public static List<ISpectralCluster> asClusters(List<ISpectrum> spectra) {
           List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-          for (IPeptideSpectrumMatch spectrum : spectra) {
+          for (ISpectrum spectrum : spectra) {
               holder.add(spectrum.asCluster());
           }
           Collections.sort(holder);

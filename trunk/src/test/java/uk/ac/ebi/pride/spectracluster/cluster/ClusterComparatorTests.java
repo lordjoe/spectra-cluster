@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.quality.OriginalSignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.net.URL;
  */
 public class ClusterComparatorTests {
 
-    private IPeptideSpectrumMatch[] peptideSpectrumMatches;
+    private ISpectrum[] peptideSpectrumMatches;
     private ClusterComparator clusterComparator;
     private OriginalClusterComparator originalClusterComparator;
 

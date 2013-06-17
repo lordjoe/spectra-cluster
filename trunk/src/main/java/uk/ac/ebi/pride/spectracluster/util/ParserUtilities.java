@@ -205,7 +205,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectrumMatch[] readMGFScans(LineNumberReader inp) {
+    public static ISpectrum[] readMGFScans(LineNumberReader inp) {
         List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
         IPeptideSpectrumMatch spectrum = readMGFScan(inp);
         while (spectrum != null) {
@@ -221,7 +221,7 @@ public class ParserUtilities {
      * @param inp !null existing file
      * @return !null array of spectra
      */
-    public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
+    public static ISpectrum[] readMGFScans(File inp) {
         try {
             return readMGFScans(new LineNumberReader(new FileReader(inp)));
         } catch (FileNotFoundException e) {
@@ -267,10 +267,6 @@ public class ParserUtilities {
             }
             if (line == null)
                 return null;
-
-            //           ret.setLabel(title);
-
-//            line = inp.readLine();
 
             List<IPeak> holder = new ArrayList<IPeak>();
 
@@ -454,10 +450,11 @@ public class ParserUtilities {
     protected static String buildMGFTitle(String line) {
         String[] items = line.split(",");
         String label = line.substring("TITLE=".length());
-        String spot_id = label;
-        if (items.length > 1)
-            spot_id = items[1].trim().substring("Spot_Id: ".length());
-        return spot_id;
+        String spectrumId = label;
+        if (items.length > 1) {
+            spectrumId = items[0].trim().substring("TITLE=id=".length());
+        }
+        return spectrumId;
     }
 
 

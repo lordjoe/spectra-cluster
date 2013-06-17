@@ -36,10 +36,10 @@ public class ClusteringMain {
      * @param files
      */
     public static void clusterFiles(File... files) {
-        List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
-            IPeptideSpectrumMatch[] sps = ParserUtilities.readMGFScans(file);
+            ISpectrum[] sps = ParserUtilities.readMGFScans(file);
             holder.addAll(Arrays.asList(sps));
         }
         List<ISpectralCluster> scs = ClusterUtilities.asClusters(holder);

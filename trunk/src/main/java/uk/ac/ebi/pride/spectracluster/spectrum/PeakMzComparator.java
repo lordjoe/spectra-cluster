@@ -14,7 +14,7 @@ public class PeakMzComparator implements Comparator<IPeak> {
 
     }
 
-    public static PeakMzComparator getINSTANCE() {
+    public static PeakMzComparator getInstance() {
         return INSTANCE;
     }
 
