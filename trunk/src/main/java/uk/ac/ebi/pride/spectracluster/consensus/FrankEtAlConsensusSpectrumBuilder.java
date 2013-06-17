@@ -62,8 +62,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
         // if there's only one spectrum in the list, return this spectrum
         if (spectra.size() == 1) {
-            ISpectrum singleSpectrumConsensusSpectrum = new PeptideSpectrumMatch(spectra.get(0));
-            return singleSpectrumConsensusSpectrum;
+            ISpectrum singleSpectrum = spectra.get(0);
+            List<IPeak> singleSpectrumPeaks = intensityNormalizer.normalizePeaks(singleSpectrum.getPeaks());
+            return new PeptideSpectrumMatch(singleSpectrum.getId(),
+                                            null,
+                                            singleSpectrum.getPrecursorCharge(),
+                                            singleSpectrum.getPrecursorMz(), singleSpectrumPeaks);
         }
 
         // add the peaks from all spectra to the consensus spectrum
@@ -164,8 +168,9 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
         if (allPeaks.size() == 0)
             return allPeaks;
+
         // sort by m/z allPeaks
-        Collections.sort(allPeaks, PeakMzComparator.getINSTANCE());
+        Collections.sort(allPeaks, PeakMzComparator.getInstance());
         List<IPeak> returnedPeaks = new ArrayList<IPeak>();
         IPeak start = null;
         int index = 0;
@@ -191,75 +196,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         }
         returnedPeaks.add(start); //  add last peak
         return returnedPeaks;
-
     }
-
-    /**
-     * old code compare
-     *
-     * @param spectra
-     * @return
-     */
-    protected Collection<IPeak> originalAddAllPeaks(Collection<ISpectrum> spectra) {
-        // initialize the consensus spectrum - expect 2000 peaks for the beginning
-        Map<Double, IPeak> consensusSpectrum = new HashMap<Double, IPeak>(2000);
-
-        // process the spectra
-        for (ISpectrum spectrum : spectra) {
-            // process the current spectrum's peaks
-            for (IPeak peak : spectrum.getPeaks()) {
-                double mz = peak.getMz();
-                double intensity = peak.getIntensity();
-
-                // ignore 0 intensity peaks
-                if (intensity <= 0) {
-                    continue;
-                }
-
-                // if the consensus spectrum doesn't contain the peak yet, simply add it
-                if (!consensusSpectrum.containsKey(mz)) {
-                    consensusSpectrum.put(mz, peak);
-                } else {
-                    // if the peak already exists, sum it up
-                    consensusSpectrum.put(mz, new Peak(mz, consensusSpectrum.get(mz).getIntensity() + intensity, consensusSpectrum.get(mz).getCount() + 1));
-                }
-            }
-        }
-
-        return consensusSpectrum.values();
-    }
-
-//    /**
-//     * @param consensusSpectrum
-//     */
-//    private List<IPeak> mergeIdenticalPeaks(List<IPeak> peaks, double range) {
-//        ListIterator<IPeak> peakIter = peaks.listIterator();
-//        List<IPeak> returned = new ArrayList<IPeak>();
-//        IPeak currentPeak;
-//        IPeak previousPeak;
-//        while (peakIter.hasNext()) {
-//            currentPeak = peakIter.next();
-//            if (peakIter.hasPrevious()) {
-//                previousPeak = peakIter.previous();
-//
-//                if (previousPeak.getMz() <= currentPeak.getMz() + range) {
-//                    // calculate the new weighted m/z
-//                    double weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + currentPeak.getIntensity() * currentPeak.getMz()) / (previousPeak.getIntensity() + currentPeak.getIntensity());
-//
-//                    Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + currentPeak.getIntensity(), previousPeak.getCount() + currentPeak.getCount());
-//
-//                    returned.add(mergedPeak);
-//                } else {
-//                    returned.add(currentPeak);
-//                }
-//
-//            } else {
-//                returned.add(currentPeak);
-//            }
-//        }
-//        return returned;
-//    }
-
 
     /**
      * @param consensusSpectrum
@@ -267,11 +204,6 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     protected List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
         // convert the spectrum into a list of Peaks
         List<IPeak> peaks = new ArrayList<IPeak>(consensusSpectrum);
-
-        // sort the list according to m/z values
-        // only need to sort once
-        // NOt needed because the input is already sorted
-        //   Collections.sort(peaks, PeakMzComparator.getInstance());
 
         // based on the set range
         for (double range = DEFUALT_MZ_THRESHOLD_STEP; range <= DEFAULT_FINAL_MZ_THRESHOLD; range += DEFUALT_MZ_THRESHOLD_STEP) {
@@ -304,6 +236,39 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
                     }
                 } else {
                     peakIter.next();
+                }
+            }
+        }
+
+        return peaks;
+    }
+
+    private List<IPeak> originalMergeIdenticalPeaks(List<IPeak> peaks) {
+
+        // based on the set range
+        for (double range = DEFUALT_MZ_THRESHOLD_STEP; range <= DEFAULT_FINAL_MZ_THRESHOLD; range += DEFUALT_MZ_THRESHOLD_STEP) {
+            // sort the list according to m/z values
+            Collections.sort(peaks, PeakMzComparator.getInstance());
+
+            // as the list is sorted, peaks only have to be checked in one "direction"
+            for (int i = 0; i < peaks.size() - 1; i++) {
+                IPeak current = peaks.get(i);
+                IPeak next    = peaks.get(i + 1);
+
+                if (current == null || next == null)
+                    continue;
+
+                // check if the next peak falls within the range
+                if (next.getMz() <= current.getMz() + range) {
+                    // calculate the new weighted m/z
+                    double weightedMz = (next.getIntensity() * next.getMz() + current.getIntensity() * current.getMz()) / (next.getIntensity() + current.getIntensity());
+
+                    Peak mergedPeak = new Peak(weightedMz, current.getIntensity() + next.getIntensity(), current.getCount() + next.getCount());
+
+                    // remove the current peak from the array
+                    peaks.set(i, null);
+                    // set the next peak to the merged one
+                    peaks.set(i + 1, mergedPeak);
                 }
             }
         }

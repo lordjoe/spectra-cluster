@@ -1,12 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -16,9 +18,9 @@ import java.util.*;
 public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralCluster> {
 
     private final String id;
+    private boolean dirty;
     private ISpectrum consensusSpectrum;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
-    private boolean dirty;
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(String id ) {
@@ -74,16 +76,6 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
             dirty = true;
 
             for (ISpectrum spectrumToMerge : merged) {
-//                if (spectrumToMerge instanceof ISpectralCluster) {
-//                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToMerge).getClusteredSpectra();
-//                    for (ISpectrum nestedSpectrum : nestedSpectra) {
-//                        if (!clusteredSpectra.contains(spectrumToMerge)) {
-//                            clusteredSpectra.add(nestedSpectrum);
-//                        }
-//                    }
-//
-//                }
-//                else
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
                     clusteredSpectra.add(spectrumToMerge);
               }
@@ -96,12 +88,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
             dirty = true;
 
             for (ISpectrum spectrumToRemove : removed) {
-//                if (spectrumToRemove instanceof ISpectralCluster) {
-//                    Collection<ISpectrum> nestedSpectra = ((ISpectralCluster) spectrumToRemove).getClusteredSpectra();
-//                    clusteredSpectra.removeAll(nestedSpectra);
-//                } else {
-                    clusteredSpectra.remove(spectrumToRemove);
-//                }
+                clusteredSpectra.remove(spectrumToRemove);
             }
         }
     }
@@ -229,11 +216,14 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
         }
     }
 
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%10.3f %10.3f ",getPrecursorMz(),getPrecursorCharge() ) + getClusteredSpectraCount());
-        return sb.toString();
+    @Override
+    public String toString() {
+        String text = "count = " + clusteredSpectra.size() + ", spectrum = ";
+        for (ISpectrum s : clusteredSpectra)
+            text += s.getId() + ",";
+
+        text = text.substring(0, text.length() - 1);
+        return text;
     }
 
     /**

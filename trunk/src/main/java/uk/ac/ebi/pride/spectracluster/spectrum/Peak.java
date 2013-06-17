@@ -70,11 +70,8 @@ public class Peak implements IPeak{
      */
     @Override
     public String toString() {
-
-        String item = String.format("%10.5f", getMz()).trim();
-        String item2 = String.format("%8.2f", getIntensity()).trim();
-        return item + "\t" + item2;
+        String mz = String.format("%10.5f", getMz()).trim();
+        String intensity = String.format("%8.2f", getIntensity()).trim();
+        return "m/z = "+ mz + ", intensity = " + intensity + ", count = " + getCount();
     }
-
-
 }

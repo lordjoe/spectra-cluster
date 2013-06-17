@@ -130,7 +130,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
 
     protected void makeCalculations() {
         highestPeaks.clear(); // highest peaks may have changed
-        Collections.sort(this.peaks, PeakMzComparator.getINSTANCE());
+        Collections.sort(this.peaks, PeakMzComparator.getInstance());
         totalIntensity = 0;
         sumSquareIntensity = 0;
         for (IPeak peak : peaks) {

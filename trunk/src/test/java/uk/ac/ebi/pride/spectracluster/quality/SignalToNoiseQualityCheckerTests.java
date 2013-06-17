@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.quality;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.net.URL;
  * @version $Id$
  */
 public class SignalToNoiseQualityCheckerTests {
-    private IPeptideSpectrumMatch[] peptideSpectrumMatches;
+    private ISpectrum[] peptideSpectrumMatches;
     private QualityScorer originalQualityScorer;
     private QualityScorer qualityScorer;
 
@@ -34,7 +34,7 @@ public class SignalToNoiseQualityCheckerTests {
 
     @Test
     public void testSignalToNoiseQualityChecker() throws Exception {
-        for (IPeptideSpectrumMatch peptideSpectrumMatch : peptideSpectrumMatches) {
+        for (ISpectrum peptideSpectrumMatch : peptideSpectrumMatches) {
 
             double originalScore = originalQualityScorer.calculateQualityScore(peptideSpectrumMatch);
             double score = qualityScorer.calculateQualityScore(peptideSpectrumMatch);
