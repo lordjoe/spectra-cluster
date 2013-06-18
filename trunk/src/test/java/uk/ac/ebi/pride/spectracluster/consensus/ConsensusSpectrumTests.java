@@ -8,9 +8,7 @@ import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -18,7 +16,7 @@ import java.util.List;
  */
 public class ConsensusSpectrumTests {
 
-    private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931","1258781","3722"));
+    private Set<String> spectrumIds = new HashSet<String>(Arrays.asList("83931","1258781","3722"));
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
     private ConsensusSpectrumBuilder consensusSpectrumBuilder;
 

@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-
 import java.util.*;
 
 
@@ -93,6 +92,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
 
         double mzRange = this.getMzRange();
+        boolean lastIsT = false;
         int t = 0;
         int e = 0;
         int MatchingProducts = 0;
@@ -112,21 +112,36 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             if (Math.abs(mass_difference) <= mzRange) {
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
-                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(),match2);
-     //          System.out.println(fmt);
+                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(), match2);
+                //          System.out.println(fmt);
 
                 MatchingProducts++;
                 dotProduct += match1 * match2;
                 t++;
-            } else if (mass_difference < 0) {
-                e++;
-            } else if (mass_difference > 0) {
-                t++;
             }
+            if (mass_difference == 0) {
+                if (lastIsT) {
+                    e++;
+                    lastIsT = false;
+                }
+                else {
+                    t++;
+                    lastIsT = true;
+                }
+            }
+            else {
+                if (mass_difference < 0) {
+                    e++;
+                }
+                else {
+                    t++;
+                }
+            }
+
         }
         // normalize the dot product
         double denom = Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
-        if(denom == 0)
+        if (denom == 0)
             return 0;
         double normalizedDotProduct = dotProduct / denom;
 
