@@ -1,21 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.Equivalent;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralCluster> {
+public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCluster> {
 
     private final String id;
     private boolean dirty;
@@ -23,7 +21,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
-    public SpectralCluster(String id ) {
+    public SpectralCluster(String id) {
         this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
@@ -41,7 +39,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
     public double getPrecursorMz() {
         guaranteeClean();
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();
-        if(consensusSpectrum1 == null)
+        if (consensusSpectrum1 == null)
             return 0;
         return consensusSpectrum1.getPrecursorMz();
     }
@@ -78,7 +76,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
             for (ISpectrum spectrumToMerge : merged) {
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
                     clusteredSpectra.add(spectrumToMerge);
-              }
+                }
             }
         }
     }
@@ -107,7 +105,7 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
      * @return
      */
     public int compareTo(ISpectralCluster o) {
-           if (o == this)
+        if (o == this)
             return 0;
         if (getPrecursorMz() != o.getPrecursorMz()) {
             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
@@ -158,7 +156,8 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
                     return false;
             }
             return true; // just one spectrum so check peaks
-        } else {
+        }
+        else {
             throw new UnsupportedOperationException("Fix This"); // ToDo
 //
 //                for (int i = 0; i < spc1.size(); i++) {
@@ -196,7 +195,8 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -218,7 +218,12 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
 
     @Override
     public String toString() {
-        String text = "count = " + clusteredSpectra.size() + ", spectrum = ";
+        double precursorMZ = getPrecursorMz();
+        String text =
+                "charge= " + getPrecursorCharge() + "," +
+                        "mz= " + String.format("%10.3f", precursorMZ).trim() + "," +
+                        "count= " + clusteredSpectra.size() +
+                        ", spectrum = ";
         for (ISpectrum s : clusteredSpectra)
             text += s.getId() + ",";
 
@@ -257,7 +262,8 @@ public class SpectralCluster implements ISpectralCluster,  Equivalent<ISpectralC
             }
             out.append("END IONS");
             out.append("\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
