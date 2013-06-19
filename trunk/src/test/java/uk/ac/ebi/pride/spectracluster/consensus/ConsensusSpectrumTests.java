@@ -15,13 +15,13 @@ public class ConsensusSpectrumTests {
 
     private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
-    private ConsensusSpectrumBuilder consensusSpectrumBuilder;
+    private FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {
         List<ISpectrum> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = (FrankEtAlConsensusSpectrumBuilder)Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 
         for (ISpectrum originalSpectrum : mgfSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
@@ -42,5 +42,20 @@ public class ConsensusSpectrumTests {
 
         Assert.assertTrue(consensusSpectrum1.equivalent(consensusSpectrum2));
         Assert.assertTrue(consensusSpectrum2.equivalent(consensusSpectrum3));
+    }
+
+
+    @Test
+    public void testConsensusSpectrumStepByStep() throws Exception {
+
+        Collections.shuffle(filteredOriginalSpectra);
+        List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+        List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+
+        Collections.shuffle(filteredOriginalSpectra);
+        List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+        List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+
+
     }
 }
