@@ -17,11 +17,24 @@ public class ConsensusSpectrumTests {
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
     private FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
 
+
+    public boolean peakListsEquivalent(List<IPeak> l1, List<IPeak> l2) {
+        if (l1.size() != l2.size())
+            return false;
+        for (int i = 0; i < l1.size(); i++) {
+            IPeak p1 = l1.get(i);
+            IPeak p2 = l2.get(i);
+            if (!p1.equivalent(p2))
+                return false;
+        }
+        return true;
+    }
+
     @Before
     public void setUp() throws Exception {
         List<ISpectrum> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        consensusSpectrumBuilder = (FrankEtAlConsensusSpectrumBuilder)Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = (FrankEtAlConsensusSpectrumBuilder) Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 
         for (ISpectrum originalSpectrum : mgfSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
@@ -29,6 +42,7 @@ public class ConsensusSpectrumTests {
             }
         }
     }
+
 
     @Test
     public void testConsensusSpectrum() throws Exception {
@@ -47,15 +61,14 @@ public class ConsensusSpectrumTests {
 
     @Test
     public void testConsensusSpectrumStepByStep() throws Exception {
-
         Collections.shuffle(filteredOriginalSpectra);
         List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
         List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
 
         Collections.shuffle(filteredOriginalSpectra);
         List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+        Assert.assertTrue(peakListsEquivalent(allPeaks, allPeaks1));
         List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
-
-
+        Assert.assertTrue(peakListsEquivalent(mergedIdenticalPeaks, mergedIdenticalPeaks1));
     }
 }
