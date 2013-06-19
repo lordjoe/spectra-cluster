@@ -293,7 +293,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         }
 
         for (int i = 0; i < peaks1.length; i++) {
-            IPeak pk0 = peaks1[i];
+            IPeak pk0 = peaks[i];
             IPeak pk1 = peaks1[i];
             if (!pk0.equivalent(pk1))
                 return false;
@@ -322,5 +322,12 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         return getId().compareTo(o.getId());
 
 
+    }
+
+    @Override
+    public String toString() {
+        return "PeptideSpectrumMatch{" +
+                "id='" + id + '\'' +
+                '}';
     }
 }

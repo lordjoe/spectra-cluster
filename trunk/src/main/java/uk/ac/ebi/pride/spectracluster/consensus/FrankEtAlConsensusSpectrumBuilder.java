@@ -84,7 +84,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         List<IPeak> filteredSpectrum = filterSpectrum(mergedConsensusSpectrum);
 
         // normalize consensus spectrum's intensity
-        filteredSpectrum = intensityNormalizer.normalizePeaks(filteredSpectrum);
+//        filteredSpectrum = intensityNormalizer.normalizePeaks(filteredSpectrum);
 
         // create consensus spectrum
         PeptideSpectrumMatch consensusSpectrum = createConsensusSpectrum(spectra, filteredSpectrum);
@@ -148,8 +148,14 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
     protected void adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
         for (IPeak p : mergedConsensusSpectrum) {
-            double peakProbability = (double) p.getCount() / numberOfSpectra;
-            double newIntensity = p.getIntensity() * (0.95 + 0.05 * Math.pow(1 + peakProbability, 5));
+            int peakCount = p.getCount();
+            double peakProbability = (double) peakCount / numberOfSpectra;
+            double factor = 0.95 + 0.05 * Math.pow(1 + peakProbability, 5);
+            if (Math.abs(p.getMz() - 211) < 1) {
+               // break here
+               peakCount = p.getCount();
+            }
+            double newIntensity = p.getIntensity() * factor;
             p.setIntensity(newIntensity);
         }
     }
