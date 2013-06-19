@@ -61,14 +61,17 @@ public class ConsensusSpectrumTests {
 
     @Test
     public void testConsensusSpectrumStepByStep() throws Exception {
-        Collections.shuffle(filteredOriginalSpectra);
-        List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
-        List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+        for (int i = 0; i < 10; i++) {
+            Collections.shuffle(filteredOriginalSpectra);
+            List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+            List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
 
-        Collections.shuffle(filteredOriginalSpectra);
-        List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
-        Assert.assertTrue(peakListsEquivalent(allPeaks, allPeaks1));
-        List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
-        Assert.assertTrue(peakListsEquivalent(mergedIdenticalPeaks, mergedIdenticalPeaks1));
+
+            Collections.shuffle(filteredOriginalSpectra);
+            List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+            Assert.assertTrue(peakListsEquivalent(allPeaks, allPeaks1));
+            List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+            Assert.assertTrue(peakListsEquivalent(mergedIdenticalPeaks, mergedIdenticalPeaks1));
+        }
     }
 }
