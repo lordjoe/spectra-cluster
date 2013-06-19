@@ -27,10 +27,23 @@ public class ClusteringEngine implements IClusteringEngine {
 
     protected void guaranteeClean() {
         if (isDirty()) {
+            filterClustersToAdd();
             Collections.sort(clustersToAdd, spectrumComparator);
             addToClusters();
             setDirty(false);
         }
+    }
+
+    protected void filterClustersToAdd() {
+        List<ISpectralCluster> l2 = new   ArrayList<ISpectralCluster>( );
+        for (ISpectralCluster sc : clustersToAdd) {
+            if(sc.getClusteredSpectraCount() > 0)
+                l2.add(sc);
+            else
+                sc =  null; // why
+        }
+        clustersToAdd.clear();
+        clustersToAdd.addAll(l2);
     }
 
     /**

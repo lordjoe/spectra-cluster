@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import org.apache.log4j.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.*;
@@ -176,8 +177,8 @@ public class FrankEtAlClustering implements SpectraClustering {
             double highestSimilarity = 0;
             innerIndex = 0;
 
- //           if(s.getPrecursorCharge() == null)
- //               continue;
+            //           if(s.getPrecursorCharge() == null)
+            //               continue;
 
             // check if there's a cluster where the spectrum fits
             for (SpectraCluster c : cluster) {
@@ -276,21 +277,20 @@ public class FrankEtAlClustering implements SpectraClustering {
 
         public int compare(ClusteringSpectrum spec1, ClusteringSpectrum spec2) {
             // first check whether the precursor m/z is different
-            if (spec1.getPrecursorMZ() - precursorRange > spec2.getPrecursorMZ())
-                return -1;
-            if (spec1.getPrecursorMZ() + precursorRange < spec2.getPrecursorMZ())
-                return 1;
+            // first check whether the precursor m/z is different
+            double del = spec1.getPrecursorMZ() - spec2.getPrecursorMZ();
+            if (Math.abs(del) > precursorRange) {
+                return del < 0 ? -1 : 1;
+            }
 
-            // as the m/z ranges are the same check the quality
+           // as the m/z ranges are the same check the quality
             double quality1 = qualityChecker.assessQuality(spec1.getPeaklist());
             double quality2 = qualityChecker.assessQuality(spec2.getPeaklist());
 
-            if (quality1 > quality2)
-                return -1;
-            if (quality1 < quality2)
-                return 1;
-
-            return 0;
+            double del2 = quality2 - quality1;
+            if (del2 == 0)
+                return 0;
+            return del < 0 ? -1 : 1;
         }
 
     }

@@ -1,13 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrumQuality;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.Comparator;
+import java.util.*;
 
 /**
- *
  * todo: implement this class
  *
  * @author Rui Wang
@@ -23,28 +21,34 @@ public class ClusterComparator implements Comparator<ISpectralCluster> {
 
 
     public ClusterComparator(QualityScorer qualityScorer) {
-      }
+    }
 
     @Override
     public int compare(ISpectralCluster cluster1, ISpectralCluster cluster2) {
+        if (cluster1 == cluster2)
+            return 0;
         // first check whether the precursor m/z is different
-        if (cluster1.getPrecursorMz() - PRECURSOR_RANGE > cluster2.getPrecursorMz()) {
-            return -1;
+        double del = cluster1.getPrecursorMz() - cluster2.getPrecursorMz();
+        if (Math.abs(del) > PRECURSOR_RANGE) {
+            return del < 0 ? -1 : 1;
         }
 
-        if (cluster1.getPrecursorMz() + PRECURSOR_RANGE < cluster2.getPrecursorMz())
-            return 1;
-
         // as the m/z ranges are the same check the quality
-        double quality1 =  cluster1.getConsensusSpectrum().getQualityScore() ;
-        double quality2 =  cluster2.getConsensusSpectrum().getQualityScore();
+        ISpectrum consensusSpectrum1 = cluster1.getConsensusSpectrum();
+        ISpectrum consensusSpectrum2 = cluster2.getConsensusSpectrum();
+        if(consensusSpectrum1 == null)
+            consensusSpectrum1 = cluster1.getConsensusSpectrum(); // break here
+        if(consensusSpectrum2 == null)
+             consensusSpectrum2 = cluster2.getConsensusSpectrum(); // break here
 
-        if (quality1 > quality2)
-            return -1;
-        if (quality1 < quality2)
-            return 1;
+        double quality1 = consensusSpectrum1.getQualityScore();
+        double quality2 = consensusSpectrum2.getQualityScore();
 
-        return 0;
+        double del2 = quality2 - quality1;
+        if (del2 == 0)
+            return 0;
+        return del < 0 ? -1 : 1;
+
     }
 
 
