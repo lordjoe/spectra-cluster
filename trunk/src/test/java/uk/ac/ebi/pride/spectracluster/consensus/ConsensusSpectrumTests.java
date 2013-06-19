@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class ConsensusSpectrumTests {
 
-    private Set<String> spectrumIds = new HashSet<String>(Arrays.asList("83931", "1258781", "3722"));
+    private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
     private ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
@@ -32,7 +32,15 @@ public class ConsensusSpectrumTests {
 
     @Test
     public void testConsensusSpectrum() throws Exception {
-        ISpectrum consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
-        System.out.println(consensusSpectrum.toString());
+        ISpectrum consensusSpectrum1 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+
+        Collections.shuffle(filteredOriginalSpectra);
+        ISpectrum consensusSpectrum2 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+
+        Collections.shuffle(filteredOriginalSpectra);
+        ISpectrum consensusSpectrum3 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+
+        Assert.assertTrue(consensusSpectrum1.equivalent(consensusSpectrum2));
+        Assert.assertTrue(consensusSpectrum2.equivalent(consensusSpectrum3));
     }
 }
