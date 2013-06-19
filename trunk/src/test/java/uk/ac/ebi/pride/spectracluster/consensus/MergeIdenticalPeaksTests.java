@@ -18,7 +18,7 @@ import java.util.List;
 public class MergeIdenticalPeaksTests {
 
     private List<IPeak> peaks;
-    private ExtendedFrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
+    private  FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -32,7 +32,7 @@ public class MergeIdenticalPeaksTests {
         peaks.add(new Peak(223.1, 20, 1));
         peaks.add(new Peak(223.4, 30, 1));
 
-        consensusSpectrumBuilder = new ExtendedFrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
+        consensusSpectrumBuilder = new  FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }
 
     @Test

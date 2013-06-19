@@ -58,7 +58,6 @@ public class ParserTests {
         ISpectrum spectralCluster = ParserUtilities.readMGFScan(inp);
         String id = spectralCluster.getId();
         int number_scans = 1;
-        Assert.assertEquals(number_scans, Integer.parseInt(id));
 
         while (spectralCluster != null) {
 
@@ -71,7 +70,7 @@ public class ParserTests {
             IPeak[] peaks = spectralCluster.getPeaks().toArray(new IPeak[0]);
             if (peaks.length < 2)
                 Assert.assertTrue(peaks.length > 2);  // make there are some peaks
-
+            spectralCluster = ParserUtilities.readMGFScan(inp);
             number_scans++;
         }
 

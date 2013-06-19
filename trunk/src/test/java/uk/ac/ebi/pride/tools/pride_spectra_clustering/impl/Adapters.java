@@ -87,6 +87,37 @@ public class Adapters {
 
 
     /**
+      * convert old peak to new  peak
+      *
+      * @param pk !null peak list
+      * @return !null equivalent peak list
+      */
+     public static  List<IPeak>  fromPeaks(List<Peak> pks) {
+         List<IPeak> ret = new ArrayList<IPeak>();
+         for (Peak k : pks) {
+              ret.add(fromPeak(k));
+         }
+         Collections.sort(ret)   ;
+         return ret;
+     }
+
+    /**
+      * convert old peak to new  peak
+      *
+      * @param pk !null peak list
+      * @return !null equivalent peak list
+      */
+     public static  List<Peak>  fromIPeaks(List<IPeak> pks) {
+         Collections.sort(pks)   ;
+         List<Peak> ret = new ArrayList<Peak>();
+         for (IPeak k : pks) {
+              ret.add(fromPeak(k));
+         }
+          return ret;
+     }
+
+
+     /**
      * convert old  SpectraCluster to new
      *
      * @param inp !null cluster
