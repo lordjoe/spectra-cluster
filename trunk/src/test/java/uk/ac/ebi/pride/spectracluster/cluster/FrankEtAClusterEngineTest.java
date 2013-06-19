@@ -2,15 +2,13 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -18,37 +16,20 @@ import static org.junit.Assert.*;
  * @version $Id$
  */
 public class FrankEtAClusterEngineTest {
-    private ConsensusSpectraItems[] consensusSpectraItems;
      private ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {
-        // load a file contains a list of clusters
-        URL url = FrankEtAClusterEngineTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile = new File(url.toURI());
-
-        consensusSpectraItems = ParserUtilities.readClusters(inputFile);
-
-        url = FrankEtAClusterEngineTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.mgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        inputFile = new File(url.toURI());
-
-      //  consensusSpectraItems = ParserUtilities.guaranteeMGFParse(inputFile);
-
-
-        // create an instance of consensus spectrum builder
-          consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
-     }
+//
+//        // create an instance of consensus spectrum builder
+        consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
+    }
 
     @Test
     public void testBuildConsensusSpectrum() throws Exception {
+        final List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
         // iterate over all clusters
-          int index = 0;
+        int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
@@ -63,7 +44,7 @@ public class FrankEtAClusterEngineTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-             ISpectrum newConsensusSpectrum = newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
+            ISpectrum newConsensusSpectrum = newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail
@@ -74,7 +55,6 @@ public class FrankEtAClusterEngineTest {
             index++; // track where we are
         }
     }
-
 
 
     private static List<List<IPeak>> asListOfLists(List<ISpectrum> spectra) {

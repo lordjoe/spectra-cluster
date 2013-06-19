@@ -258,7 +258,9 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
             out.append("\n");
 
             for (IPeak peak : getPeaks()) {
-                out.append(peak.toString());
+                String line = String.format("10.3f",peak.getMz()).trim() + "\t"  +
+                        String.format("10.3f",peak.getIntensity()).trim();
+                out.append(line);
                 out.append("\n");
             }
             out.append("END IONS");

@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.io.File;
 import java.net.URL;
@@ -27,15 +28,7 @@ public class ClusteringEngineMgfTests {
 
     @Before
     public void setUp() throws Exception {
-        // load a file contains a list of clusters
-        URL url = ClusteringEngineMgfTests.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.mgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile = new File(url.toURI());
-
-        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
-        originalSpectra = Arrays.asList(mgfSpectra);
+         originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
         oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
