@@ -69,12 +69,23 @@ public class OriginalClusteringEngineTests {
         }
         originalSpectraList = originalClustering.clusterSpectra(spectra);
 
+        for (int i = 0; i <4; i++) {
+           if(!clusteringEngine.mergeClusters())
+               break;
 
-        while (clusteringEngine.mergeClusters()) ; // find clusters
+        }
+        for (int i = 0; i <4; i++) {
+            if(!oldClusteringEngine.mergeClusters())
+                break;
 
-        while (oldClusteringEngine.mergeClusters()) ; // find clusters
+         }
+        for (int i = 0; i <4; i++) {
+            if(!originalClusteringEngine.mergeClusters())
+                break;
 
-        while (originalClusteringEngine.mergeClusters()) ; // find clusters
+         }
+
+
 
     }
 
