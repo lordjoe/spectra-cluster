@@ -21,6 +21,16 @@ public class Peak implements IPeak{
         this.count = count;
     }
 
+    /**
+     * copy constructor
+     * @param copied
+     */
+    public Peak(IPeak copied) {
+        this.massChargeRatio = copied.getMz();
+        this.intensity = copied.getIntensity();
+        this.count = copied.getCount();
+    }
+
     public double getMz() {
         return massChargeRatio;
     }
