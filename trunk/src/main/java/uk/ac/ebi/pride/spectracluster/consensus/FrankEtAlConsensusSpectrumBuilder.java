@@ -164,7 +164,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * Adds all peaks from the passed List of
      * spectra to the consensus spectrum.
      */
-    protected List<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
+    public List<IPeak> addAllPeaks(Collection<ISpectrum> spectra) {
         List<IPeak> allPeaks = new ArrayList<IPeak>();
 
         // process the spectra
@@ -207,7 +207,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     /**
      * @param consensusSpectrum
      */
-    protected List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
+    public List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
         // convert the spectrum into a list of Peaks
         List<IPeak> peaks = new ArrayList<IPeak>(consensusSpectrum);
 
