@@ -31,9 +31,9 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
 
     /**
-      * Use Defaults which builds with reflection
-      * Set the class with Defaults.setConsensusSpectrumBuilderClass
-      */
+     * Use Defaults which builds with reflection
+     * Set the class with Defaults.setConsensusSpectrumBuilderClass
+     */
     public FrankEtAlConsensusSpectrumBuilder() {
         this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }
@@ -65,9 +65,9 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             ISpectrum singleSpectrum = spectra.get(0);
             List<IPeak> singleSpectrumPeaks = intensityNormalizer.normalizePeaks(singleSpectrum.getPeaks());
             return new PeptideSpectrumMatch(singleSpectrum.getId(),
-                                            null,
-                                            singleSpectrum.getPrecursorCharge(),
-                                            singleSpectrum.getPrecursorMz(), singleSpectrumPeaks);
+                    null,
+                    singleSpectrum.getPrecursorCharge(),
+                    singleSpectrum.getPrecursorMz(), singleSpectrumPeaks);
         }
 
         // add the peaks from all spectra to the consensus spectrum
@@ -78,7 +78,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         List<IPeak> mergedConsensusSpectrum = mergeIdenticalPeaks(allPeaks);
 
         // adapt the peak intensities using the following formula: I = I * (0.95 + 0.05 * (1 + pi))^5 where pi is the peaks probability
-        adaptPeakIntensities(mergedConsensusSpectrum, spectra.size());
+        mergedConsensusSpectrum = adaptPeakIntensities(mergedConsensusSpectrum, spectra.size());
 
         // filter the spectrum
         List<IPeak> filteredSpectrum = filterSpectrum(mergedConsensusSpectrum);
@@ -138,22 +138,27 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
 
             // take the 5 highest peaks
-            for (int i = 0; i < Math.min(5,peakBuffer.size()); i++) {
+            for (int i = 0; i < Math.min(5, peakBuffer.size()); i++) {
                 filteredSpectrum.add(peakBuffer.get(i));
-             }
-          }
+            }
+        }
 
         return filteredSpectrum;
     }
 
-    protected void adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
+    protected List<IPeak> adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
+        List<IPeak> holder = new ArrayList<IPeak>();
+
+
         for (IPeak p : mergedConsensusSpectrum) {
             int peakCount = p.getCount();
             double peakProbability = (double) peakCount / numberOfSpectra;
             double factor = 0.95 + 0.05 * Math.pow(1 + peakProbability, 5);
             double newIntensity = p.getIntensity() * factor;
-            p.setIntensity(newIntensity);
+              IPeak added = new Peak(p.getMz(), newIntensity, peakCount);
+            holder.add(added);
         }
+        return holder;
     }
 
     /**
@@ -193,7 +198,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
                 int count = start.getCount() + allPeak.getCount();
                 double mz = start.getMz();
                 start = new Peak(mz, intensity, count);
-            } else {
+            }
+            else {
                 returnedPeaks.add(start); // not merging
                 start = allPeak;  //  start is next peak
             }
@@ -239,7 +245,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
                         peakIter.next();
                         peakIter.set(mergedPeak);
                     }
-                } else {
+                }
+                else {
                     peakIter.next();
                 }
             }
@@ -258,7 +265,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             // as the list is sorted, peaks only have to be checked in one "direction"
             for (int i = 0; i < peaks.size() - 1; i++) {
                 IPeak current = peaks.get(i);
-                IPeak next    = peaks.get(i + 1);
+                IPeak next = peaks.get(i + 1);
 
                 if (current == null || next == null)
                     continue;

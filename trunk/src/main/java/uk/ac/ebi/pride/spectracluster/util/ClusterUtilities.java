@@ -29,7 +29,7 @@ public class ClusterUtilities {
      */
     public static List<IPeak>  peaksByIntensity(ISpectrum sc)
     {
-        List<IPeak> peaks = sc.getPeaks();
+        List<IPeak> peaks = new ArrayList(sc.getPeaks());
         Collections.sort(peaks,PeakIntensityComparator.INSTANCE);
         return peaks;
     }

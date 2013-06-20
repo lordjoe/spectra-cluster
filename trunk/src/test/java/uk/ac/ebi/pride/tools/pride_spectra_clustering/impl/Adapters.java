@@ -19,7 +19,6 @@ import java.util.*;
  * Date: 6/18/13
  */
 public class Adapters {
-    public static final Adapters[] EMPTY_ARRAY = {};
 
     public static final ConsensusSpectrumBuilder consensusBuilder = new FrankEtAlConsensusSpectrumBuilder();
     /**

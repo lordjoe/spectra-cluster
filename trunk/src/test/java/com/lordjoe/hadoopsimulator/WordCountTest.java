@@ -12,8 +12,7 @@ import org.junit.*;
  * @date 5/15/13
  */
 public class WordCountTest {
-    public static WordCountTest[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = WordCountTest.class;
+
 
     public static String cleanUpWord(String in)
     {

@@ -19,8 +19,15 @@ public class ClusterComparator implements Comparator<ISpectralCluster> {
      */
     private static final double PRECURSOR_RANGE = 2;
 
+    private final QualityScorer scorer;
+
 
     public ClusterComparator(QualityScorer qualityScorer) {
+        scorer = qualityScorer;
+    }
+
+    public QualityScorer getScorer() {
+        return scorer;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class SignalToNoiseChecker implements QualityScorer {
      */
     @Override
     public double calculateQualityScore(ISpectrum spectrum) {
-        ISpectrum highestNPeaks = spectrum.getHighestNPeaks(NUMBER_HIGH_PEAKS);
+        IPeaksSpectrum highestNPeaks = spectrum.getHighestNPeaks(NUMBER_HIGH_PEAKS);
 
         // TODO: react to small spectra - this is johannes todo
         if (highestNPeaks.getPeaksCount() < NUMBER_HIGH_PEAKS)
@@ -37,7 +37,7 @@ public class SignalToNoiseChecker implements QualityScorer {
 
         double meanHigh = (totalIntensity - highestPeak) / (NUMBER_HIGH_PEAKS - 1);
 
-        List<IPeak> peaks = spectrum.getPeaks();
+        List<IPeak> peaks = new ArrayList<IPeak>(spectrum.getPeaks());
         Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
 
         double median;

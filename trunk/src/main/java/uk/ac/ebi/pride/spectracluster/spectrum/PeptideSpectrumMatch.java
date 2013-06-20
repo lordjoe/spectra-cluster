@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.*;
+import java.math.*;
 import java.util.*;
 
 /**
@@ -15,132 +15,106 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
-
-    /**
-     * who knows why Johannes does this but we can as well
-     * todo generalize
-     *
-     * @param p1
-     * @return
-     */
-    public static double johannesIntensityConverted(IPeak p1) {
-        double intensity = p1.getIntensity();
-        if (intensity == 0)
-            return 0;
-        double intensity2 = 1 + Math.log(intensity);
-        return intensity2;
-
-    }
+public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpectrumMatch, ISpectrumQuality {
 
 
-    private final String id;
     private final String peptide;
-    private final double precursorCharge;
-    private final double precursorMz;
-    private double totalIntensity;
-    private double sumSquareIntensity;
-    /**
-     * for calculate similarity between spectra, all peaks should be sorted by intensity
-     */
-    private final List<IPeak> peaks = new ArrayList<IPeak>();
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
-    private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
+    private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
     private double qualityMeasure = BAD_QUALITY_MEASURE;
-    private boolean m_Dirty;
+    private BigInteger majorBits;
 
     /**
      * simple copy constructor
+     *
      * @param spectrum
      */
     public PeptideSpectrumMatch(ISpectrum spectrum) {
-        this(spectrum, spectrum.getPeaks());
+        super(spectrum, spectrum.getPeaks());
+        if(spectrum instanceof IPeptideSpectrumMatch)  {
+            peptide = ((IPeptideSpectrumMatch)spectrum).getPeptide();
+        }
+        else {
+            peptide = null;
+        }
     }
 
     /**
      * copy with different peaks
-     * @param spectrum  base used for charge, mz
-     * @param peaks new peaks
+     *
+     * @param spectrum base used for charge, mz
+     * @param peaks    new peaks
      */
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
-        this.id = spectrum.getId();
-        if (spectrum instanceof IPeptideSpectrumMatch) {
-            this.peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-        } else {
-            this.peptide = null;
+        super(spectrum, inpeaks);
+        if(spectrum instanceof IPeptideSpectrumMatch)  {
+            peptide = ((IPeptideSpectrumMatch)spectrum).getPeptide();
         }
-        this.precursorCharge = spectrum.getPrecursorCharge();
-        this.precursorMz = spectrum.getPrecursorMz();
-
-        peaks.clear();
-        Collections.sort(inpeaks);
-        peaks.addAll(inpeaks);
-        makeCalculations();
+        else {
+            peptide = null;
+        }
+        makeAdvancedCalculations();
     }
 
     public PeptideSpectrumMatch(String id,
-                                String peptide,
+                                String peptideX,
                                 double precursorCharge,
                                 double precursorMz,
                                 List<IPeak> peaks) {
-        this.id = id;
-        this.peptide = peptide;
-        this.precursorCharge = precursorCharge;
-        this.precursorMz = precursorMz;
-        this.qualityMeasure = BAD_QUALITY_MEASURE;
-        this.peaks.clear();
-        Collections.sort(peaks);
-        this.peaks.addAll(peaks);
-        makeCalculations();
+        super(id, precursorCharge, precursorMz, peaks);
+        this.peptide = peptideX;
+        makeAdvancedCalculations();
 
     }
 
-    public String getId() {
-        return id;
+    /**
+     * an optimization to return a Biginteger representing bits at the mz values where the
+     * majors (top MAJOR_PEAK_NUMBER are
+     *
+     * @return !null value - lazily built
+     */
+    @Override
+    public BigInteger asMajorPeakBits() {
+        if(majorBits == null) {
+            majorBits = buildMajorBits();
+        }
+        return majorBits;
     }
+
+    /**
+     * set bits numbered by the highest MAJOR_PEAK_NUMBER(6) peaks
+     * @return  constructed BigInteger
+     */
+    protected BigInteger buildMajorBits() {
+        BigInteger ret =  BigInteger.ZERO;
+        final IPeaksSpectrum highestNPeaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
+        final List<IPeak> iPeaks = ((PeaksSpectrum)highestNPeaks).internalGetPeaks();
+        for (IPeak pk : iPeaks) {
+           ret = ret.setBit((int)pk.getMz()) ;
+        }
+        return ret;
+    }
+
+    protected void makeAdvancedCalculations() {
+        highestPeaks.clear(); // highest peaks may have changed
+        qualityMeasure = BAD_QUALITY_MEASURE;  // be laze here
+    }
+
 
     public String getPeptide() {
         return peptide;
     }
 
-    public double getPrecursorMz() {
-        return precursorMz;
-    }
-
-    public double getPrecursorCharge() {
-        return precursorCharge;
-    }
-
-    @Override
-    public double getTotalIntensity() {
-    //    guaranteeClean();
-        return totalIntensity;
-    }
 
     /**
-     * return the sum  Square of all intensities
+     * return a spectrum normalized to the specific total intensity
+     *
+     * @return !null spectrum - might be this
      */
     @Override
-    public double getSumSquareIntensity() {
-      //  guaranteeClean();
-        return sumSquareIntensity;
-    }
-
-
-    protected void makeCalculations() {
-        highestPeaks.clear(); // highest peaks may have changed
-        Collections.sort(this.peaks, PeakMzComparator.getInstance());
-        totalIntensity = 0;
-        sumSquareIntensity = 0;
-        for (IPeak peak : peaks) {
-            double intensity = peak.getIntensity();
-            totalIntensity += intensity;
-            // johannes uses this in his dotProduct // todo generalize for other algorithms
-            double ji = johannesIntensityConverted(peak);
-            sumSquareIntensity += ji * ji;
-        }
-        qualityMeasure = BAD_QUALITY_MEASURE;  // be laze here
+    public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
+        return new NormailzedPeptideSpectrumMatch(this, totalIntensity);   // build a new normalized intensity
     }
 
 
@@ -150,25 +124,8 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
     }
 
 
-    public List<IPeak> getPeaks() {
-       // guaranteeClean();
-        return new ArrayList<IPeak>(peaks);
-    }
-
-    /**
-     * return number of peaks
-     *
-     * @return count
-     */
-    @Override
-    public int getPeaksCount() {
-     //   guaranteeClean();
-        return peaks.size();
-    }
-
-
     public double getQualityScore() {
-     //   guaranteeClean();
+        //   guaranteeClean();
         if (qualityMeasure == BAD_QUALITY_MEASURE) {
             qualityMeasure = buildQualityMeasure();
         }
@@ -182,7 +139,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @return
      */
     public ISpectralCluster asCluster() {
-     //   guaranteeClean();
+        //   guaranteeClean();
         SpectralCluster ret = new SpectralCluster(getId());
         ret.addSpectra(this);
         return ret;
@@ -195,9 +152,9 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @return list of no more than  numberRequested peaks in Mz order
      */
     @Override
-    public ISpectrum getHighestNPeaks(int numberRequested) {
-      //  guaranteeClean();
-        ISpectrum ret = highestPeaks.get(numberRequested);
+    public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
+        //  guaranteeClean();
+        IPeaksSpectrum ret = highestPeaks.get(numberRequested);
         if (ret == null) {
             ret = buildHighestPeaks(numberRequested);
             int numberPeaks = ret.getPeaksCount();
@@ -217,7 +174,7 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
      * @return !null array of size <= numberRequested;
      */
     protected ISpectrum buildHighestPeaks(int numberRequested) {
-        List<IPeak> byIntensity = new ArrayList<IPeak>(peaks);
+        List<IPeak> byIntensity = new ArrayList<IPeak>(getPeaks());
         Collections.sort(byIntensity, PeakIntensityComparator.INSTANCE); // sort by intensity
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak iPeak : byIntensity) {
@@ -229,105 +186,6 @@ public class PeptideSpectrumMatch implements IPeptideSpectrumMatch {
         return ret;
     }
 
-    @Override
-    /**
-     * write out the data as an MGF file
-     *
-     * @param out place to append
-     */
-    public void appendMGF(Appendable out) {
-    //    guaranteeClean();
-        int indent = 0;
-
-        try {
-            out.append("BEGIN IONS");
-            out.append("\n");
-
-            out.append("TITLE=" + getId());
-            out.append("\n");
-
-            double precursorCharge = getPrecursorCharge();
-            double massChargeRatio = getPrecursorMz();
-
-            out.append("PEPMASS=" + massChargeRatio);
-            out.append("\n");
-
-            out.append("CHARGE=" + precursorCharge);
-            if (precursorCharge > 0)
-                out.append("+");
-            out.append("\n");
-
-            for (IPeak peak : getPeaks()) {
-                String line = String.format("10.3f",peak.getMz()).trim() + "\t"  +
-                        String.format("10.3f",peak.getIntensity()).trim();
-                out.append(line);
-                out.append("\n");
-            }
-            out.append("END IONS");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
 
 
-    /**
-     * like equals but weaker - says other is equivalent to this
-     *
-     * @param o poiibly null other object
-     * @return true if other is "similar enough to this"
-     */
-    public boolean equivalent(ISpectrum o) {
-        if (o == this)
-            return true;
-     //   guaranteeClean();
-        if (o.getPrecursorMz() != getPrecursorMz()) {
-            return false;
-        }
-        IPeak[] peaks = getPeaks().toArray(new IPeak[0]);
-        IPeak[] peaks1 = o.getPeaks().toArray(new IPeak[0]);
-        if (peaks.length != peaks1.length) {
-            return false;
-        }
-
-        for (int i = 0; i < peaks1.length; i++) {
-            IPeak pk0 = peaks[i];
-            IPeak pk1 = peaks1[i];
-            if (!pk0.equivalent(pk1))
-                return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * natural sort order is first charge then mz
-     * finally compare id
-     *
-     * @param o !null other spectrum
-     * @return as above
-     */
-    @Override
-    public int compareTo(ISpectrum o) {
-        if (this == o)
-            return 0;
-    //    guaranteeClean();
-        if (getPrecursorCharge() != o.getPrecursorCharge())
-            return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
-        if (getPrecursorMz() != o.getPrecursorMz())
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-
-        return getId().compareTo(o.getId());
-
-
-    }
-
-    @Override
-    public String toString() {
-        return "PeptideSpectrumMatch{" +
-                "id='" + id + '\'' +
-                '}';
-    }
 }

@@ -8,8 +8,8 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 public class Peak implements IPeak{
 
     private final double massChargeRatio;
-    private double intensity;
-    private int count;
+    private final double intensity;
+    private final int count;
 
     public Peak(double massChargeRatio, double intensity) {
         this(massChargeRatio, intensity, 1);
@@ -39,14 +39,6 @@ public class Peak implements IPeak{
         return intensity;
     }
 
-    /**
-     * Set peak intensity
-     */
-    @Override
-    public void setIntensity(double inx) {
-        intensity = inx;
-
-    }
 
     public int getCount() {
         return count;

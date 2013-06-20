@@ -9,6 +9,8 @@ import com.lordjoe.algorithms.Equivalent;
  * @date 15/05/13
  */
 public interface IPeptideSpectrumMatch extends ISpectrum {
+
+    public static final int MAJOR_PEAK_NUMBER = 6; // Frand et al does 5 we do 1 more
     /**
      * return scored peptide - maybe null
      */

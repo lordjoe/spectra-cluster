@@ -68,14 +68,13 @@ public class HadoopWrapper extends Configured implements Tool {
      */
     public static void fillInProperties(TaskAttemptContext context, Properties conFigProps) {
         Configuration conf = context.getConfiguration();
-        Iterator it = conf.iterator();
-        while (it.hasNext()) {
-
-            Map.Entry next = (Map.Entry) it.next();
+        for (Map.Entry<String, String> next : conf) {
             String key = next.getKey().toString();
             String value = next.getValue().toString();
             conFigProps.setProperty(key, value);
+
         }
+
     }
 
 

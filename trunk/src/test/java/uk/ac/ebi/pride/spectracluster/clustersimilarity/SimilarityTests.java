@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -38,31 +37,38 @@ public class SimilarityTests {
         distanceMeasure = new ConcensusSpectrumDistance();
     }
 
+
     /**
      * sanity check distance cluster to itself must be 0
+     *
      * @throws Exception
      */
     @Test
     public void testSelfSimilarity() throws Exception {
+
         for (int i = 0; i < originalSpectralClusters.length; i++) {
             ISpectralCluster sc1 = originalSpectralClusters[i];
-            Assert.assertEquals(0,distanceMeasure.distance(sc1,sc1),0.0001);    // every cluster is similar to itself
+            final double distance = distanceMeasure.distance(sc1, sc1);
+            Assert.assertEquals(0, distance, 0.0001);    // every cluster is similar to itself
         }
     }
 
+
     /**
      * sanity check compart list of clusters to itself
+     *
      * @throws Exception
      */
     @Test
     public void testGroupSimilarity() throws Exception {
-        List<ISpectralCluster>  l1 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters)) ;
-        List<ISpectralCluster>  l2 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters)) ;
+        List<ISpectralCluster> l1 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters));
+        List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters));
 
         ClusterListSimilarity cd = new ClusterListSimilarity(distanceMeasure);
         final List<ISpectralCluster> identical = cd.identicalClusters(l1, l2);
-        Assert.assertEquals(originalSpectralClusters.length,identical.size());
+
+        Assert.assertEquals(originalSpectralClusters.length, identical.size());
         Assert.assertTrue(l1.isEmpty());
         Assert.assertTrue(l2.isEmpty());
-     }
+    }
 }

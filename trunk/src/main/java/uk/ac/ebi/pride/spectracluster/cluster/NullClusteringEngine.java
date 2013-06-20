@@ -50,10 +50,8 @@ public class NullClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addClusters(ISpectralCluster... cluster) {
-        for (int i = 0; i < cluster.length; i++) {
-            ISpectralCluster sc = cluster[i];
-            clusters.add(sc);
-        }
+        clusters.addAll(Arrays.asList(cluster));
+
         setDirty(true);
 
     }

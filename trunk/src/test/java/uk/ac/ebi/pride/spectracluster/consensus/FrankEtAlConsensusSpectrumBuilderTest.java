@@ -1,13 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.File;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +54,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-             ISpectrum newConsensusSpectrum = newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
+             ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail

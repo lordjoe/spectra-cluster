@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import org.apache.log4j.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.*;
