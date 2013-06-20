@@ -1,12 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.similarity.TestSimilarityMethods
@@ -551,7 +549,8 @@ public class TestSimilarityMethods {
 
     }
 
-    /**
+
+     /**
      * make sure old and new tests give same similarity
      *
      * @throws Exception
@@ -560,14 +559,6 @@ public class TestSimilarityMethods {
     public void testSimilarity() throws Exception {
         SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
         SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
-
-        List<IPeak> peaksByIntensity1 = ClusterUtilities.peaksByIntensity(spectrum1);
-        List<IPeak> peaksByIntensity2 = ClusterUtilities.peaksByIntensity(spectrum2);
-
-        ISpectrum hp1 = spectrum1.getHighestNPeaks(8);
-        List<IPeak> hp1Peaks = hp1.getPeaks();
-        ISpectrum hp2 = spectrum2.getHighestNPeaks(8);
-        List<IPeak> hp2Peaks = hp2.getPeaks();
 
         double oldDP = oldSimilarity.assessSimilarity(spectrum1, spectrum2);
         double newDP = newSimilarity.assessSimilarity(spectrum1, spectrum2);

@@ -48,8 +48,7 @@ public class ConcensusSpectrumDistance implements ClusterDistance {
             double mass_difference = mz2 - mz1;
             if (Math.abs(mass_difference) <= MZ_EQUIVALENT_RANGE) {
                 ret -= 2; // match
-                t++;
-            }
+             }
             if (mass_difference == 0) {
                 if (lastIsT) {
                     e++;

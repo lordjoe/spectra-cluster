@@ -12,8 +12,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
  * @date 5/10/13
  */
 public class SpectrumPeakTests {
-    public static SpectrumPeakTests[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = SpectrumPeakTests.class;
+
     public static final Random RND = new Random();
     public static final int MAX_PEAKS = 100;
 

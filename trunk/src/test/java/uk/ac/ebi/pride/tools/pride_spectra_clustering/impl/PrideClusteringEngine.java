@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
 
@@ -16,8 +14,7 @@ import java.util.*;
  */
 public class PrideClusteringEngine implements IClusteringEngine {
 
-    private boolean dirty;
-    private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
     private  List<SpectraCluster> clustersFound = null;
     private final List<ClusteringSpectrum> addedSpectra = new ArrayList<ClusteringSpectrum>();
     private final SpectraClustering clustering = new FrankEtAlClustering();

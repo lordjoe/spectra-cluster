@@ -32,7 +32,7 @@ public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
     /**
      * Set peak intensity
      */
-    public void setIntensity(double intensity);
+ //   public void setIntensity(double intensity);
 
     /**
      * number associated spectra

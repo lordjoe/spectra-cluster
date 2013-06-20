@@ -1,11 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.normalizer;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Normalizes a spectrum's intensities so that
@@ -24,13 +21,26 @@ import java.util.List;
 public class TotalIntensityNormalizer implements IntensityNormalizer {
 	private static final double DEFAULT_TOTAL_INTENSITY = 1000;
 
+    private final double totalIntensity;
     /**
      * Use Defaults which builds with reflection
      * Set the class with Defaults.setNormalizerClass
      */
     public TotalIntensityNormalizer() {
+        this(DEFAULT_TOTAL_INTENSITY);
     }
 
+    /**
+      * Use Defaults which builds with reflection
+      * Set the class with Defaults.setNormalizerClass
+      */
+     public TotalIntensityNormalizer(double total) {
+         totalIntensity = total;
+     }
+
+    public double getTotalIntensity() {
+        return totalIntensity;
+    }
 
     @Override
     public List<IPeak> normalizePeaks(List<IPeak> peaks) {
@@ -50,7 +60,7 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
 			return normalizedSpectrum;
 
 		// calculate the ratio
-		double ratio = DEFAULT_TOTAL_INTENSITY / specTotalIntensity;
+		double ratio = getTotalIntensity() / specTotalIntensity;
 
 
 		for (IPeak p : peaks) {

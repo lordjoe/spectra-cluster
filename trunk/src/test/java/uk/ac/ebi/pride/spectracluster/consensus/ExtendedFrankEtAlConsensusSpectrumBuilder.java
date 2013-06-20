@@ -29,8 +29,8 @@ public class ExtendedFrankEtAlConsensusSpectrumBuilder extends FrankEtAlConsensu
     }
 
     @Override
-    public void adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
-        super.adaptPeakIntensities(mergedConsensusSpectrum, numberOfSpectra);
+    public List<IPeak> adaptPeakIntensities(List<IPeak> mergedConsensusSpectrum, double numberOfSpectra) {
+        return super.adaptPeakIntensities(mergedConsensusSpectrum, numberOfSpectra);
     }
 
     @Override

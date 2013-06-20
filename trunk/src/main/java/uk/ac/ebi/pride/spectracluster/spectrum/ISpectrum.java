@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 
-import java.util.*;
+import java.math.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
@@ -13,70 +12,36 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
+public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality {
+
+
 
     /**
-     * globally unique id
+     * make a cluster contaiming a single spectrum - this
      *
-     * @return !null id
+     * @return
      */
-    public String getId();
-
-    /**
-     * get precursor m/z
-     */
-    public double getPrecursorMz();
-
-    /**
-     * get charge - mixed charge
-     */
-    public double getPrecursorCharge();
-
-    /**
-     * return peaks sorted by MZ
-     *
-     * @return !null array of peaks
-     */
-    public List<IPeak> getPeaks();
-
-
-    /**
-     * return number of peaks
-     * @return count
-     */
-    public int getPeaksCount();
-
-//    /**
-//     * Replace existing peaks with a new collection of peaks
-//     */
-//    public void setPeaks(Collection<IPeak> peaks);
-
-
-    public void appendMGF(Appendable out);
-
-
-    /**
-      * make a cluster contaiming a single spectrum - this
-      * @return
-      */
-     public ISpectralCluster asCluster();
+    public ISpectralCluster asCluster();
 
     /**
      * get the highest intensity peaks sorted by MZ - this value may be cached
-     * @param numberRequested  number peaks requested
-     * @return  list of no more than  numberRequested peaks in Mz order
+     *
+     * @param numberRequested number peaks requested
+     * @return Peaks spectrum
      */
-    public ISpectrum  getHighestNPeaks(int numberRequested);
+    public IPeaksSpectrum getHighestNPeaks(int numberRequested);
 
     /**
-     * return the sum of all intensities
+     * return a spectrum normalized to the specific total intensity
+     *
+     * @return !null spectrum - might be this
      */
-    public double getTotalIntensity();
+    public INormalizedSpectrum asNormalizedTo(double totalIntensity);
 
     /**
-     * return the sum  Square of all intensities
+     * an optimization to return a Biginteger representing bits at the mz values where the
+     * majors (top MAJOR_PEAK_NUMBER are
+     * @return  !null value - lazily built
      */
-    public double getSumSquareIntensity();
-
-
+    public BigInteger asMajorPeakBits();
 }

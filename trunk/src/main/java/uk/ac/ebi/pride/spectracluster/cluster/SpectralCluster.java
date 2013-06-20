@@ -158,16 +158,18 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
             return true; // just one spectrum so check peaks
         }
         else {
-            throw new UnsupportedOperationException("Fix This"); // ToDo
-//
-//                for (int i = 0; i < spc1.size(); i++) {
-//                    Equivalent<ISpectrum> pk0 = (Equivalent<ISpectrum>) spc1;
-//                    ISpectrum pk1 = spc2[i];
-//                    boolean test = !pk0.equivalent(pk1);
-//                    if (test)
-//                        return false;
-//                }
-//                return true;
+            if (spc1.size() != spc2.size())
+                return false;
+
+
+            for (int i = 0; i < spc1.size(); i++) {
+                ISpectrum pk1 = spc1.get(i);
+                ISpectrum pk2 = spc2.get(i);
+                boolean test = !pk2.equivalent(pk1);
+                if (test)
+                    return false;
+            }
+            return true;
         }
     }
 

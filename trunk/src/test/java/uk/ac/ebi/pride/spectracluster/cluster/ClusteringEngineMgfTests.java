@@ -1,19 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import org.junit.Before;
-import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang

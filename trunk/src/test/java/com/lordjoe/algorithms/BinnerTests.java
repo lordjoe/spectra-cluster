@@ -2,13 +2,7 @@ package com.lordjoe.algorithms;
 
 import org.junit.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: attilacsordas
- * Date: 18/05/2013
- * Time: 23:24
- * To change this template use File | Settings | File Templates.
- */
+
 public class BinnerTests {
     public static BinnerTests[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = BinnerTests.class;

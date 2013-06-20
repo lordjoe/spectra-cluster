@@ -13,8 +13,7 @@ import java.util.Random;
  * @date 07/05/13
  */
 public class DoubleMapTest {
-    public static DoubleMapTest[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = DoubleMapTest.class;
+
 
     public static final Random RND = new Random();
     public static final int DEFAULT_MAP_SIZE = 1000;

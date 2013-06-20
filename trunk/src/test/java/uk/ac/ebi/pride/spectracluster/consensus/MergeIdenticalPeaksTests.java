@@ -1,15 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang

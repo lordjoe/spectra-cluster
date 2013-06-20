@@ -53,7 +53,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     public FrankEtAlDotProduct() {
     }
 
-    private double mzRange = 0.5;
+    private double mzRange = DEFAULT_MZ_RANGE;
     /**
      * The algorithm version to use. By
      * default the version described in
@@ -80,13 +80,13 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
         // get the k highest peaks1 from every spectrum
-        ISpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
+        IPeaksSpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
         List<IPeak> kHighestPeaks1 = highestPeaksSpectrum1.getPeaks();
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
-        ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
+        IPeaksSpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         List<IPeak> kHighestPeaks2 = highestPeaksSpectrum2.getPeaks();
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
@@ -112,12 +112,11 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             if (Math.abs(mass_difference) <= mzRange) {
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
-                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(), match2);
+                // String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(), match2);
                 //          System.out.println(fmt);
 
                 MatchingProducts++;
                 dotProduct += match1 * match2;
-                t++;
             }
             if (mass_difference == 0) {
                 if (lastIsT) {

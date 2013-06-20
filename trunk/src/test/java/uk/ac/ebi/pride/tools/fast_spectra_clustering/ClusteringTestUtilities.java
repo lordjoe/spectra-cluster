@@ -160,6 +160,25 @@ public class ClusteringTestUtilities {
         }
     }
 
+    public static List<ISpectralCluster>  readSpectraClustersFromResource() {
+        return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
+    }
+
+
+    public static List<ISpectralCluster>  readSpectraClustersFromResource(String resName) {
+        List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(  resName) ;
+        int index = 1000;
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        for (ConsensusSpectraItems si : items) {
+            ISpectralCluster cluster = new SpectralCluster(Integer.toString(index++));
+            for(ISpectrum sr : si.getSpectra())
+                cluster.addSpectra(sr);
+            holder.add(cluster);
+        }
+
+        return holder;
+    }
+
     /**
      * read a resource mgf as a list of spectra
      *

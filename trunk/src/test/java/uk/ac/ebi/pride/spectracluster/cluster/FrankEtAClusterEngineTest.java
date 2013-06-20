@@ -44,7 +44,7 @@ public class FrankEtAClusterEngineTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-            ISpectrum newConsensusSpectrum = newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
+            ISpectrum newConsensusSpectrum =  consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail

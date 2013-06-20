@@ -370,7 +370,7 @@ public class ParserUtilities {
 
     }
 
-    protected static void handleTitleLine(PeptideSpectrumMatch spectrum, String titleLine) {
+    protected static void handleTitleLine(PeaksSpectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
         for (int i = 0; i < items.length; i++) {
