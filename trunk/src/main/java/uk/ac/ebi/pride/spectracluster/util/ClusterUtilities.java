@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
-
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -29,7 +28,7 @@ public class ClusterUtilities {
      */
     public static List<IPeak>  peaksByIntensity(ISpectrum sc)
     {
-        List<IPeak> peaks = new ArrayList(sc.getPeaks());
+        List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
         Collections.sort(peaks,PeakIntensityComparator.INSTANCE);
         return peaks;
     }
@@ -46,6 +45,7 @@ public class ClusterUtilities {
          Collections.sort(holder);
          return holder;
      }
+
 
      /**
        * return a list of all spectra in the list of spectra sorted by charge then mz
@@ -113,7 +113,7 @@ public class ClusterUtilities {
      * @param maxPerBin maximim peaks to retain
      * @return
      */
-    public static List<IPeak> getHighestInBins(List<IPeak> peaks,
+      public static List<IPeak> getHighestInBins(List<IPeak> peaks,
                                                       double minMZ,
                                                       double maxMZ,
                                                       double binSize,
@@ -122,8 +122,10 @@ public class ClusterUtilities {
         // handles the binning as am object
         LinearBinner binner = new LinearBinner(maxMZ,binSize,minMZ);
         /// these will keep the highest values
-        PriorityQueue<IPeak>[]  higheseEachBin =
-                (PriorityQueue<IPeak>[])new PriorityQueue[binner.getNumberBins()];
+       // unchecked cast
+        PriorityQueue<IPeak>[] higheseEachBin = Cast.it(new PriorityQueue[binner.getNumberBins()]);
+
+
         // for all peaks
         for (IPeak pk : peaks) {
             // bin mz

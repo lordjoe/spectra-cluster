@@ -1,15 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
-import org.junit.Before;
+import org.junit.*;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.quality.OriginalSignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
-import java.io.File;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -17,7 +17,7 @@ import java.net.URL;
  */
 public class ClusterComparatorTests {
 
-    private ISpectrum[] peptideSpectrumMatches;
+    private List<ISpectrum> peptideSpectrumMatches;
     private ClusterComparator clusterComparator;
     private OriginalClusterComparator originalClusterComparator;
 
@@ -31,13 +31,13 @@ public class ClusterComparatorTests {
             throw new IllegalStateException("no file for input found!");
         }
         File inputFile = new File(url.toURI());
-        peptideSpectrumMatches = ParserUtilities.readMGFScans(inputFile);
+        peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
     }
 
     @Test
     public void testClusterComparator() throws Exception {
-        int result = clusterComparator.compare(peptideSpectrumMatches[0].asCluster(), peptideSpectrumMatches[1].asCluster());
-        int originalResult = originalClusterComparator.compare(peptideSpectrumMatches[0].asCluster(), peptideSpectrumMatches[1].asCluster());
+        int result = clusterComparator.compare(peptideSpectrumMatches.get(0).asCluster(), peptideSpectrumMatches.get(1).asCluster());
+        int originalResult = originalClusterComparator.compare(peptideSpectrumMatches.get(0).asCluster(), peptideSpectrumMatches.get(1).asCluster());
         Assert.assertEquals(result, originalResult);
     }
 }

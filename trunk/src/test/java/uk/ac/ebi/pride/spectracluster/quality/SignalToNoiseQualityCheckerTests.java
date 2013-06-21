@@ -1,20 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.quality;
 
 import junit.framework.Assert;
-import org.junit.Before;
+import org.junit.*;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
-import java.io.File;
-import java.net.URL;
+import java.util.*;
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
 public class SignalToNoiseQualityCheckerTests {
-    private ISpectrum[] peptideSpectrumMatches;
+    private List<ISpectrum> peptideSpectrumMatches;
     private QualityScorer originalQualityScorer;
     private QualityScorer qualityScorer;
 
@@ -23,13 +22,7 @@ public class SignalToNoiseQualityCheckerTests {
     public void setUp() throws Exception {
         originalQualityScorer = new OriginalSignalToNoiseChecker();
         qualityScorer = new SignalToNoiseChecker();
-
-        URL url = SignalToNoiseQualityCheckerTests.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/two_spectra.mgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile = new File(url.toURI());
-        peptideSpectrumMatches = ParserUtilities.readMGFScans(inputFile);
+        peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
     }
 
     @Test
