@@ -16,6 +16,7 @@ import java.util.*;
 public class MultiSimillarityTest {
     private ConsensusSpectraItems[] consensusSpectraItems;
 
+    @SuppressWarnings("UnusedDeclaration")
     public static final double SIMILAR_THRESHOLD = 1.5; // this is really big
 
     @Before

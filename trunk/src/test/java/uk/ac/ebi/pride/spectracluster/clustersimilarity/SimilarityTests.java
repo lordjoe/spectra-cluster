@@ -3,11 +3,8 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
 
 /**
@@ -17,22 +14,13 @@ import java.util.*;
  */
 public class SimilarityTests {
 
-    private ISpectralCluster[] originalSpectralClusters;
-    private List<ISpectrum> originalSpectra;
-    private ClusterDistance distanceMeasure;
+    private List<ISpectralCluster> originalSpectralClusters;
+       private ClusterDistance distanceMeasure;
 
     @Before
     public void setUp() throws Exception {
-        // load a file contains a list of clusters
-        URL url = ClusteringEngineTests.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile = new File(url.toURI());
 
-        originalSpectralClusters = ParserUtilities.readSpectralCluster(inputFile);
-        Arrays.sort(originalSpectralClusters);
-        originalSpectra = ClusterUtilities.extractSpectra(Arrays.asList(originalSpectralClusters));
+        originalSpectralClusters =  ClusteringTestUtilities.readSpectraClustersFromResource();
 
         distanceMeasure = new ConcensusSpectrumDistance();
     }
@@ -46,11 +34,12 @@ public class SimilarityTests {
     @Test
     public void testSelfSimilarity() throws Exception {
 
-        for (int i = 0; i < originalSpectralClusters.length; i++) {
-            ISpectralCluster sc1 = originalSpectralClusters[i];
+        for (ISpectralCluster sc1 : originalSpectralClusters) {
             final double distance = distanceMeasure.distance(sc1, sc1);
             Assert.assertEquals(0, distance, 0.0001);    // every cluster is similar to itself
+
         }
+
     }
 
 
@@ -61,13 +50,13 @@ public class SimilarityTests {
      */
     @Test
     public void testGroupSimilarity() throws Exception {
-        List<ISpectralCluster> l1 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters));
-        List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>(Arrays.asList(originalSpectralClusters));
+          List<ISpectralCluster> l1 = new ArrayList<ISpectralCluster>(originalSpectralClusters); // copy this will change
+         List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>(originalSpectralClusters); // copy this will change;
 
         ClusterListSimilarity cd = new ClusterListSimilarity(distanceMeasure);
         final List<ISpectralCluster> identical = cd.identicalClusters(l1, l2);
 
-        Assert.assertEquals(originalSpectralClusters.length, identical.size());
+        Assert.assertEquals(originalSpectralClusters.size(), identical.size());
         Assert.assertTrue(l1.isEmpty());
         Assert.assertTrue(l2.isEmpty());
     }

@@ -16,6 +16,7 @@ import java.util.Collections;
  */
 public class OriginalSignalToNoiseChecker implements QualityScorer {
 
+    public static final int NUMBER_SPECTRA_TO_CHECK = 6;
 	/**
 	 * Calculates a spectrum's signal-to-noise ratio
 	 * by taking the 2nd-6th highest peak's intensity
@@ -36,14 +37,13 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
         // get the total intensity of the 2nd-6th highest peak
         double highestPeakIntensity = 0.0;
 
-        // TODO: react to small spectra
-        if (intensities.size() < 6)
+          if (intensities.size() < NUMBER_SPECTRA_TO_CHECK)
             return 0.0;
 
-        for (int n = intensities.size() - 6; n < intensities.size() - 1; n++)
+        for (int n = intensities.size() - NUMBER_SPECTRA_TO_CHECK; n < intensities.size() - 1; n++)
             highestPeakIntensity += intensities.get(n);
 
-        highestPeakIntensity = highestPeakIntensity / 5;
+        highestPeakIntensity = highestPeakIntensity / (NUMBER_SPECTRA_TO_CHECK - 1);
 
         // get the median
         double nPeaks = intensities.size();

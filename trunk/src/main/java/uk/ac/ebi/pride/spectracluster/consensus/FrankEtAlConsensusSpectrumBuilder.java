@@ -171,8 +171,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         // process the spectra
         for (ISpectrum spectrum : spectra) {
             for (IPeak peak : spectrum.getPeaks()) {
-                Peak newPeak = new Peak(peak);
-                allPeaks.add(newPeak);
+                 allPeaks.add(peak);
             }
         }
 

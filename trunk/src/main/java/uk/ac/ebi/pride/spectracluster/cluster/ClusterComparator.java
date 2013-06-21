@@ -6,8 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import java.util.*;
 
 /**
- * todo: implement this class
- *
+   *
  * @author Rui Wang
  * @version $Id$
  */

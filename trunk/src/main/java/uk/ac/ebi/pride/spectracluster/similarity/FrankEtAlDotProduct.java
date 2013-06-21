@@ -28,6 +28,10 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     public static final double DEFAULT_MZ_RANGE = 0.5;
 
     public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
+
+    public static final int LARGE_BINNING_REGION = 1000;
+
+    public static final int K2011_BIN_SIZE = 50;
     /**
      * The logger to use.
      */
@@ -181,9 +185,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
-        int k = NUMBER_COMPARED_PEAKS * (int) (peptideMass / 1000);
+        int k = NUMBER_COMPARED_PEAKS * (int) (peptideMass / LARGE_BINNING_REGION);
 
-        if (peptideMass % 1000 > 0)
+        if (peptideMass % LARGE_BINNING_REGION > 0)
             k += NUMBER_COMPARED_PEAKS;
 
         return k;
@@ -202,7 +206,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             return NUMBER_COMPARED_PEAKS;
 
         // use m/z / 50
-        int k = (int) ((precursor1 / 50 + precursor2 / 50) / 2);
+        int k = (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
 
         return k;
     }

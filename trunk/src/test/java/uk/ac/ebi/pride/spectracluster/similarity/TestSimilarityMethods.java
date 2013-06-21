@@ -535,6 +535,7 @@ public class TestSimilarityMethods {
 
     private IPeptideSpectrumMatch spectrum1;
     private IPeptideSpectrumMatch spectrum2;
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     private IPeptideSpectrumMatch spectrum3;
 
     @Before
