@@ -2,11 +2,13 @@ package uk.ac.ebi.pride.tools.pride_spectra_clustering.util;
 
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.impl.*;
+import uk.ac.ebi.pride.tools.mgf_parser.model.*;
 
 import java.util.*;
 
 public class ClusteringSpectrum {
     private String id;
+    private String peptide;
     private Double precursorMZ;
     private Double precursorIntensity;
     private Integer precursorCharge;
@@ -15,7 +17,17 @@ public class ClusteringSpectrum {
     private Integer msLevel;
 
     public ClusteringSpectrum(Spectrum s) {
+
         id = s.getId();
+        if (s instanceof Ms2Query) {
+            id = ((Ms2Query) s).getTitle();
+            int index = id.indexOf(",sequence=");
+            if (index > -1) {
+                peptide = id.substring(index + ",sequence=".length()).trim();
+                id = id.substring(0,index).replace("id=","");
+            }
+        }
+
         precursorMZ = s.getPrecursorMZ();
         precursorIntensity = s.getPrecursorIntensity();
         precursorCharge = s.getPrecursorCharge();
@@ -50,6 +62,7 @@ public class ClusteringSpectrum {
 
     /**
      * Added SLewis because we hand a List of parks not a Map
+     *
      * @param id
      * @param precursorMZ
      * @param precursorIntensity
@@ -73,6 +86,14 @@ public class ClusteringSpectrum {
         Collections.sort(this.peaklist, PeakIntensityComparator.getInstance());
     }
 
+
+    public String getPeptide() {
+        return peptide;
+    }
+
+    public void setPeptide(final String pPeptide) {
+        peptide = pPeptide;
+    }
 
     public String getId() {
         return id;
@@ -103,5 +124,13 @@ public class ClusteringSpectrum {
         for (Peak p : peaklist)
             mapPeaks.put(p.getMz(), p.getIntensity());
         return new SpectrumImplementation(id, precursorCharge, precursorMZ, precursorIntensity, mapPeaks, msLevel);
+    }
+
+    @Override
+    public String toString() {
+        String ret = id;
+        if (peptide != null)
+            ret += "," + peptide;
+        return ret;
     }
 }

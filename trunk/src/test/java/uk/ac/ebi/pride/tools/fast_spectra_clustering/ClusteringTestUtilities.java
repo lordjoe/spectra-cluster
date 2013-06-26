@@ -82,7 +82,7 @@ public class ClusteringTestUtilities {
      * @param resName
      * @return
      */
-    public static List<ISpectrum> readISpectraFromResource() {
+    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
         return readISpectraFromResource(SAMPLE_MGF_FILE);
     }
 
@@ -92,7 +92,7 @@ public class ClusteringTestUtilities {
      * @param resName
      * @return
      */
-    public static List<ISpectrum> readISpectraFromResource(String resName) {
+    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
         URL url = null;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(resName);
@@ -108,7 +108,7 @@ public class ClusteringTestUtilities {
 
         }
 
-        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
         return Arrays.asList(mgfSpectra);
     }
 

@@ -69,7 +69,7 @@ public class FrankEtAlClusteringTest {
         List<SpectraCluster> generatedCluster = clustering.clusterSpectra(spectra);
         long stop = System.currentTimeMillis();
 
-        System.out.println("Clustering done in " + (stop - start) + " msec");
+        // System.out.println("Clustering done in " + (stop - start) + " msec");
 
          // NOTE Values modifies to work
         // we do sort differently

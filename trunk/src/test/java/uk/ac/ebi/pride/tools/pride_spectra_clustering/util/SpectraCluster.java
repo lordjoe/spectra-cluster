@@ -204,7 +204,7 @@ public class SpectraCluster {
         if(Math.abs(averageMz - 400.438) < 0.003)   {
             if(addedSpectra.size() == 5) {
                 buildConsensusSpectrum(); // break here
-                ClusterWriter.dumpPeaks(consensusSpectrum , System.out);
+      //          ClusterWriter.dumpPeaks(consensusSpectrum , System.out);
 
             }
 

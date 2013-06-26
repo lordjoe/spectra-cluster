@@ -56,11 +56,11 @@ public class ClusteringEngine implements IClusteringEngine {
         return new ArrayList<ISpectralCluster>(clusters);
     }
 
-    public boolean isDirty() {
+    protected boolean isDirty() {
         return dirty;
     }
 
-    public void setDirty(boolean dirty) {
+    protected void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
 
@@ -76,7 +76,7 @@ public class ClusteringEngine implements IClusteringEngine {
 
     }
 
-    private void addToClusters() {
+    protected void addToClusters() {
         for (ISpectralCluster clusterToAdd : clustersToAdd) {
             ISpectralCluster mostSimilarCluster = null;
             double highestSimilarityScore = 0;
@@ -84,7 +84,7 @@ public class ClusteringEngine implements IClusteringEngine {
             // find the cluster with the highest similarity score
             for (ISpectralCluster cluster : clusters) {
                 ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                ISpectrum consensusSpectrum1 = clusterToAdd.getClusteredSpectra().get(0);
+                ISpectrum consensusSpectrum1 = clusterToAdd.getClusteredSpectra().get(0);  // subspectra are really only one spectrum clusters
 
                 double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
@@ -133,7 +133,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return true if clusters have been merged
      */
-    private boolean mergeAllClusters() {
+    protected boolean mergeAllClusters() {
         boolean modified = false;
         boolean toMerge = true;
 
@@ -167,7 +167,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return true if spectra have been removed
      */
-    private boolean demergeNoneFittingSpectra() {
+    protected boolean demergeNoneFittingSpectra() {
         boolean noneFittingSpectraFound = false;
 
         List<ISpectralCluster> emptyClusters = new ArrayList<ISpectralCluster>(); // holder for any empty clusters
@@ -195,7 +195,7 @@ public class ClusteringEngine implements IClusteringEngine {
         return noneFittingSpectraFound;
     }
 
-    private List<ISpectrum> findNoneFittingSpectra(ISpectralCluster cluster) {
+    protected List<ISpectrum> findNoneFittingSpectra(ISpectralCluster cluster) {
         List<ISpectrum> noneFittingSpectra = new ArrayList<ISpectrum>();
 
         if (cluster.getClusteredSpectra().size() > 1) {

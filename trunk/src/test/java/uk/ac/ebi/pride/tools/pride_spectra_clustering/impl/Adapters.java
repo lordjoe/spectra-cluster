@@ -160,6 +160,9 @@ public class Adapters {
                 (int) precursorCharge,
                 newPeaks);
 
+        if(inp instanceof IPeptideSpectrumMatch)  {
+            ret.setPeptide(((IPeptideSpectrumMatch)inp).getPeptide());
+        }
         return ret;
     }
 

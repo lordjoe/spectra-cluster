@@ -14,27 +14,21 @@ import java.util.*;
  */
 public class ClusteringEngineMgfTests {
 
-    private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
-    private List<ISpectrum> originalSpectra;
-    private IClusteringEngine clusteringEngine;
-    private IClusteringEngine oldClusteringEngine;
 
-    @Before
-    public void setUp() throws Exception {
-         originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+    @Test
+    public void testClusteringEngine() throws Exception {
+        List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
+        List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
+        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
 
-        oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-        clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
+
         for (ISpectrum originalSpectrum : originalSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
                 clusteringEngine.addClusters(originalSpectrum.asCluster());
                 oldClusteringEngine.addClusters(originalSpectrum.asCluster());
             }
         }
-    }
-
-    @Test
-    public void testClusteringEngine() throws Exception {
         for (int i = 0; i <= 2; i++) {
             if (!oldClusteringEngine.mergeClusters()) {
                 break;

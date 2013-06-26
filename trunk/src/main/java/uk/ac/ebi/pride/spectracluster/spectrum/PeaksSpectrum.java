@@ -178,7 +178,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
             out.append("BEGIN IONS");
             out.append("\n");
 
-            out.append("TITLE=" + getId());
+            appendTitle(out);
             out.append("\n");
 
             double precursorCharge = getPrecursorCharge();
@@ -206,6 +206,15 @@ public class PeaksSpectrum implements IPeaksSpectrum {
 
         }
 
+    }
+
+    /**
+     * override to add peptide later
+     * @param out
+     * @throws IOException
+     */
+    protected void appendTitle(final Appendable out) throws IOException {
+        out.append("TITLE=" + getId());
     }
 
 

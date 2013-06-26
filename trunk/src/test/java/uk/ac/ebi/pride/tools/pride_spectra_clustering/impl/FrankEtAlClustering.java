@@ -20,7 +20,7 @@ public class FrankEtAlClustering implements SpectraClustering {
      * Indicates whether info about the processing times
      * should be printed to STDOUT.
      */
-    public static boolean PRINT_STATS_INFO = true;
+    public static boolean PRINT_STATS_INFO = false;
     /**
      * Logger to use
      */

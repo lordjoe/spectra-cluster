@@ -18,54 +18,59 @@ import java.util.*;
  */
 public class OriginalClusteringEngineTests {
 
-     private List<ISpectrum> originalSpectra;
-    private IClusteringEngine clusteringEngine;
-    private IClusteringEngine oldClusteringEngine;
-    private IClusteringEngine originalClusteringEngine;
-    private static List<Spectrum> spectra;   // spectra gathered the old way
-    private static List<SpectraCluster> originalSpectraList;   // spectra gathered the old way
-    private static final SpectraClustering originalClustering = new FrankEtAlClustering();
-
-    @Before
-     public void setUp() throws Exception {
-         originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
-
-         oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-         clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-         originalClusteringEngine = new PrideClusteringEngine();
-         for (ISpectrum originalSpectrum : originalSpectra) {
-             final ISpectralCluster iSpectralCluster = originalSpectrum.asCluster();
-             clusteringEngine.addClusters(iSpectralCluster);
-             oldClusteringEngine.addClusters(iSpectralCluster);
-             originalClusteringEngine.addClusters(iSpectralCluster);
-         }
-
-         spectra = ClusteringTestUtilities.readSpectrumsFromResource();
-          originalSpectraList = originalClustering.clusterSpectra(spectra);
-
-         for (int i = 0; i < 4; i++) {
-             if (!clusteringEngine.mergeClusters())
-                 break;
-
-         }
-         for (int i = 0; i < 4; i++) {
-             if (!oldClusteringEngine.mergeClusters())
-                 break;
-
-         }
-         for (int i = 0; i < 4; i++) {
-             if (!originalClusteringEngine.mergeClusters())
-                 break;
-
-         }
-
-
-     }
-
 
     private static final boolean TEST_KNOWN_TO_FAIL = true; // todo take out when things work
+
     @Test
     public void testClusteringEngine() throws Exception {
+
+        List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
+        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngine originalClusteringEngine = new PrideClusteringEngine();
+        List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource();
+        List<SpectraCluster> originalSpectraList;   // spectra gathered the old way
+        final SpectraClustering originalClustering = new FrankEtAlClustering();
+
+
+        for (ISpectrum originalSpectrum : originalSpectra) {
+            final ISpectralCluster iSpectralCluster = originalSpectrum.asCluster();
+            clusteringEngine.addClusters(iSpectralCluster);
+            oldClusteringEngine.addClusters(iSpectralCluster);
+            originalClusteringEngine.addClusters(iSpectralCluster);
+        }
+
+
+        originalSpectraList = originalClustering.clusterSpectra(spectra);
+
+        // convert all spectra into sorted peak lists
+        List<ClusteringSpectrum> cs = new ArrayList<ClusteringSpectrum>(spectra.size());
+        for (Spectrum s : spectra)
+            cs.add(new ClusteringSpectrum(s));
+        final List<SpectraCluster> scs = originalClustering.clusterConvertedSpectra(cs);
+
+        Assert.assertEquals(originalSpectraList.size(), scs.size());
+
+
+        for (int i = 0; i < 4; i++) {
+            if (!originalClusteringEngine.mergeClusters())
+                break;
+        }
+        List<ISpectralCluster> originalClusters = originalClusteringEngine.getClusters();
+        Collections.sort(originalClusters);
+        Assert.assertEquals(originalClusters.size(), scs.size());
+
+
+        for (int i = 0; i < 4; i++) {
+            if (!clusteringEngine.mergeClusters())
+                break;
+
+        }
+        for (int i = 0; i < 4; i++) {
+            if (!oldClusteringEngine.mergeClusters())
+                break;
+
+        }
 
         final List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
 
@@ -73,12 +78,9 @@ public class OriginalClusteringEngineTests {
         List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
-        List<ISpectralCluster> originalClusters = originalClusteringEngine.getClusters();
-        Collections.sort(originalClusters);
 
-
-         if(TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
-             return; // todo FIX!!!
+        if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
+            return; // todo FIX!!!
 
 
         Assert.assertEquals(originalSpectraList.size(), originalClusters.size());
