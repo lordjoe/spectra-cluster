@@ -165,7 +165,7 @@ public class ClusterWriter {
         out.append("\n");
 
         out.append("TITLE=" + sp.getId());
-        out.append("\n");
+          out.append("\n");
 
 
         out.append("PEPMASS=" + sp.getPrecursorMZ());

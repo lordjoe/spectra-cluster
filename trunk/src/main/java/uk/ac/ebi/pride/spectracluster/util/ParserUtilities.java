@@ -205,7 +205,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static ISpectrum[] readMGFScans(LineNumberReader inp) {
+    public static IPeptideSpectrumMatch[] readMGFScans(LineNumberReader inp) {
         List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
         IPeptideSpectrumMatch spectrum = readMGFScan(inp);
         while (spectrum != null) {
@@ -221,7 +221,7 @@ public class ParserUtilities {
      * @param inp !null existing file
      * @return !null array of spectra
      */
-    public static ISpectrum[] readMGFScans(File inp) {
+    public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
         try {
             return readMGFScans(new LineNumberReader(new FileReader(inp)));
         } catch (FileNotFoundException e) {
@@ -245,6 +245,7 @@ public class ParserUtilities {
      */
     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
+        String sequence = null;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -291,6 +292,9 @@ public class ParserUtilities {
                     if (line.startsWith("TITLE=")) {
                         titleLine = line; // we may look for sequences later
                         title = buildMGFTitle(line);
+                        int index = line.indexOf(",sequence=");
+                        if(index > -1)
+                            sequence = line.substring(index + ",sequence=".length()).trim();
                         line = inp.readLine();
                         continue;
                     }
@@ -329,8 +333,8 @@ public class ParserUtilities {
                 if (END_IONS.equals(line)) {
                     double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
-                    String peptide = null;
-
+                    String peptide = sequence;
+                    sequence =null;
                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
                             title,
                             peptide,
@@ -537,7 +541,7 @@ public class ParserUtilities {
                 else
                     sc.append(sb);
 
-                System.out.println(sb.toString());
+                // System.out.println(sb.toString());
             }
         }
     }

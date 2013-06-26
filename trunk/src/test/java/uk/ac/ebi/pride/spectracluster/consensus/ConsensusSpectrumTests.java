@@ -32,7 +32,7 @@ public class ConsensusSpectrumTests {
 
     @Before
     public void setUp() throws Exception {
-        List<ISpectrum> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
         consensusSpectrumBuilder = (FrankEtAlConsensusSpectrumBuilder) Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 

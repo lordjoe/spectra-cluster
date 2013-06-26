@@ -50,7 +50,7 @@ public class ClusteringEngineTests {
         long endOldEngine = System.currentTimeMillis();
         double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
 
-        System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
+        // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
         List<ISpectralCluster> newClusters = clusteringEngine.getClusters();

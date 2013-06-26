@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import java.io.*;
 import java.math.*;
 import java.util.*;
 
@@ -32,8 +33,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     public PeptideSpectrumMatch(ISpectrum spectrum) {
         super(spectrum, spectrum.getPeaks());
-        if(spectrum instanceof IPeptideSpectrumMatch)  {
-            peptide = ((IPeptideSpectrumMatch)spectrum).getPeptide();
+        if (spectrum instanceof IPeptideSpectrumMatch) {
+            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
         }
         else {
             peptide = null;
@@ -48,8 +49,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         super(spectrum, inpeaks);
-        if(spectrum instanceof IPeptideSpectrumMatch)  {
-            peptide = ((IPeptideSpectrumMatch)spectrum).getPeptide();
+        if (spectrum instanceof IPeptideSpectrumMatch) {
+            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
         }
         else {
             peptide = null;
@@ -76,7 +77,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     @Override
     public BigInteger asMajorPeakBits() {
-        if(majorBits == null) {
+        if (majorBits == null) {
             majorBits = buildMajorBits();
         }
         return majorBits;
@@ -84,14 +85,15 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     /**
      * set bits numbered by the highest MAJOR_PEAK_NUMBER(6) peaks
-     * @return  constructed BigInteger
+     *
+     * @return constructed BigInteger
      */
     protected BigInteger buildMajorBits() {
-        BigInteger ret =  BigInteger.ZERO;
+        BigInteger ret = BigInteger.ZERO;
         final IPeaksSpectrum highestNPeaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
-        final List<IPeak> iPeaks = ((PeaksSpectrum)highestNPeaks).internalGetPeaks();
+        final List<IPeak> iPeaks = ((PeaksSpectrum) highestNPeaks).internalGetPeaks();
         for (IPeak pk : iPeaks) {
-           ret = ret.setBit((int)pk.getMz()) ;
+            ret = ret.setBit((int) pk.getMz());
         }
         return ret;
     }
@@ -186,6 +188,21 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         return ret;
     }
 
+
+    /**
+     * override to add peptide
+     *
+     * @param out
+     * @throws java.io.IOException
+     */
+    @Override
+    protected void appendTitle(final Appendable out) throws IOException {
+        String csq = "TITLE=" + getId();
+        final String peptide1 = getPeptide();
+        if (peptide1 != null && peptide1.length() > 0)
+            csq = "TITLE==id=" + getId() + ",sequence=" + peptide1;
+        out.append(csq);
+    }
 
 
 }
