@@ -24,12 +24,12 @@ public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpect
     /**
      * get precursor m/z
      */
-    public double getPrecursorMz();
+    public float getPrecursorMz();
 
     /**
      * get charge - mixed charge
      */
-    public double getPrecursorCharge();
+    public int getPrecursorCharge();
 
     /**
      * return unmodifiable peaks sorted by MZ

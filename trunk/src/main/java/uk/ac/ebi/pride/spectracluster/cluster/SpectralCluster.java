@@ -36,7 +36,7 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         return id;
     }
 
-    public double getPrecursorMz() {
+    public float getPrecursorMz() {
         guaranteeClean();
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();
         if (consensusSpectrum1 == null)
@@ -44,7 +44,7 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         return consensusSpectrum1.getPrecursorMz();
     }
 
-    public double getPrecursorCharge() {
+    public int getPrecursorCharge() {
         guaranteeClean();
         return getConsensusSpectrum().getPrecursorCharge();
     }

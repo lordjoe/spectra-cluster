@@ -7,15 +7,15 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  */
 public class Peak implements IPeak{
 
-    private final double massChargeRatio;
-    private final double intensity;
+    private final float massChargeRatio;
+    private final float intensity;
     private final int count;
 
-    public Peak(double massChargeRatio, double intensity) {
+    public Peak(float massChargeRatio, float intensity) {
         this(massChargeRatio, intensity, 1);
     }
 
-    public Peak(double massChargeRatio, double intensity, int count) {
+    public Peak(float massChargeRatio, float intensity, int count) {
         this.massChargeRatio = massChargeRatio;
         this.intensity = intensity;
         this.count = count;
@@ -31,11 +31,11 @@ public class Peak implements IPeak{
         this.count = copied.getCount();
     }
 
-    public double getMz() {
+    public float getMz() {
         return massChargeRatio;
     }
 
-    public double getIntensity() {
+    public float getIntensity() {
         return intensity;
     }
 

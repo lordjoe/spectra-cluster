@@ -84,7 +84,7 @@ public class ClusteringEngine implements IClusteringEngine {
             // find the cluster with the highest similarity score
             for (ISpectralCluster cluster : clusters) {
                 ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                ISpectrum consensusSpectrum1 = clusterToAdd.getClusteredSpectra().get(0);  // subspectra are really only one spectrum clusters
+                ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
 
                 double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 

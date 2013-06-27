@@ -64,7 +64,7 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
 
 
 		for (IPeak p : peaks) {
-			normalizedSpectrum.add(new Peak(p.getMz(), p.getIntensity() * ratio));
+			normalizedSpectrum.add(new Peak(p.getMz(),(float)(  p.getIntensity() * ratio)));
         }
 
         return normalizedSpectrum;
