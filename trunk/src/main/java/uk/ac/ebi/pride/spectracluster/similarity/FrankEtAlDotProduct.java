@@ -176,8 +176,8 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      * @param charge2
      * @return
      */
-    private int calculateK2008(Double precursor1, Double precursor2,
-                               Double charge1, Double charge2) {
+    private int calculateK2008(Float precursor1, Float precursor2,
+                               Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
             return NUMBER_COMPARED_PEAKS;
@@ -200,7 +200,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      * @param precursor2
      * @return
      */
-    private int calculateK2011(Double precursor1, Double precursor2) {
+    private int calculateK2011(Float precursor1, Float precursor2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null)
             return NUMBER_COMPARED_PEAKS;

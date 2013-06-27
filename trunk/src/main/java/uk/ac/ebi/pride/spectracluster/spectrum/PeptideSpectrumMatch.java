@@ -60,8 +60,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     public PeptideSpectrumMatch(String id,
                                 String peptideX,
-                                double precursorCharge,
-                                double precursorMz,
+                                int precursorCharge,
+                                float precursorMz,
                                 List<IPeak> peaks) {
         super(id, precursorCharge, precursorMz, peaks);
         this.peptide = peptideX;

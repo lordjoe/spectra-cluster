@@ -31,8 +31,8 @@ public class PeaksSpectrum implements IPeaksSpectrum {
 
     public static final PeaksSpectrum[] EMPTY_ARRAY = {};
     private final String id;
-    private final double precursorCharge;
-    private final double precursorMz;
+    private final int precursorCharge;
+    private final float precursorMz;
     /**
      * for calculate similarity between spectra, all peaks should be sorted by intensity
      */
@@ -41,7 +41,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     private final double sumSquareIntensity;
 
 
-    public PeaksSpectrum(final String pId, final double pPrecursorCharge, final double pPrecursorMz, List<IPeak> peaks) {
+    public PeaksSpectrum(final String pId, final int pPrecursorCharge, final float pPrecursorMz, List<IPeak> peaks) {
         id = pId;
         precursorCharge = pPrecursorCharge;
         precursorMz = pPrecursorMz;
@@ -114,11 +114,11 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         return id;
     }
 
-    public double getPrecursorMz() {
+    public float getPrecursorMz() {
         return precursorMz;
     }
 
-    public double getPrecursorCharge() {
+    public int getPrecursorCharge() {
         return precursorCharge;
     }
 
@@ -257,7 +257,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         if (o == this)
             return true;
         //   guaranteeClean();
-        if (o.getPrecursorMz() != getPrecursorMz()) {
+        if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > IPeak.SMALL_MZ_DIFFERENCE) {
             return false;
         }
         final List<IPeak> iPeaks = internalGetPeaks();

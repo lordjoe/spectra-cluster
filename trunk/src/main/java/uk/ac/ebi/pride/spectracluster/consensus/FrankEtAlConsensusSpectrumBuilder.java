@@ -97,8 +97,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * Create consensus spectrum with weighted m/z, total charge and total intensity
      */
     protected PeptideSpectrumMatch createConsensusSpectrum(Collection<ISpectrum> spectra, List<IPeak> filteredSpectrum) {
-        double totalMz = 0.0;
-        double totalCharge = 0.0;
+        float totalMz = 0.0F;
+        int totalCharge = 0;
 
         for (ISpectrum spectrum : spectra) {
             totalMz += spectrum.getPrecursorMz();
@@ -108,7 +108,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
         totalMz /= spectra.size();
 
-        return new PeptideSpectrumMatch(null, null, totalCharge / spectra.size(), totalMz, filteredSpectrum);
+        final int precursorCharge = (int)((totalCharge + 0.5) / spectra.size());
+        return new PeptideSpectrumMatch(null, null, precursorCharge, totalMz, filteredSpectrum);
     }
 
     /**
@@ -155,7 +156,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             double peakProbability = (double) peakCount / numberOfSpectra;
             double factor = 0.95 + 0.05 * Math.pow(1 + peakProbability, 5);
             double newIntensity = p.getIntensity() * factor;
-              IPeak added = new Peak(p.getMz(), newIntensity, peakCount);
+              IPeak added = new Peak(p.getMz(), (float)newIntensity, peakCount);
             holder.add(added);
         }
         return holder;
@@ -193,9 +194,9 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             // re have a peak - start and another peak allpeak - do we merge
             double diff = allPeak.getMz() - start.getMz();
             if (diff < 0.00001) {
-                double intensity = start.getIntensity() + allPeak.getIntensity();
+                float intensity = start.getIntensity() + allPeak.getIntensity();
                 int count = start.getCount() + allPeak.getCount();
-                double mz = start.getMz();
+                float mz = start.getMz();
                 start = new Peak(mz, intensity, count);
             }
             else {
@@ -233,7 +234,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
                     if (previousPeak.getMz() + range >= nextPeak.getMz()) {
                         // calculate the new weighted m/z
-                        double weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + nextPeak.getIntensity() * nextPeak.getMz()) / (previousPeak.getIntensity() + nextPeak.getIntensity());
+                        float weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + nextPeak.getIntensity() * nextPeak.getMz()) / (previousPeak.getIntensity() + nextPeak.getIntensity());
 
                         Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + nextPeak.getIntensity(), previousPeak.getCount() + nextPeak.getCount());
 
@@ -274,7 +275,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
                     // calculate the new weighted m/z
                     double weightedMz = (next.getIntensity() * next.getMz() + current.getIntensity() * current.getMz()) / (next.getIntensity() + current.getIntensity());
 
-                    Peak mergedPeak = new Peak(weightedMz, current.getIntensity() + next.getIntensity(), current.getCount() + next.getCount());
+                    Peak mergedPeak = new Peak((float)weightedMz, current.getIntensity() + next.getIntensity(), current.getCount() + next.getCount());
 
                     // remove the current peak from the array
                     peaks.set(i, null);

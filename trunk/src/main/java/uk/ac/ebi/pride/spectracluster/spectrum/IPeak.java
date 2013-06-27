@@ -17,7 +17,7 @@ public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
     /**
      * Peak m/z
      */
-    public double getMz();
+    public float getMz();
 
 //    /**
 //     * Set peak m/z
@@ -27,7 +27,7 @@ public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
     /**
      * Peak intensity
      */
-    public double getIntensity();
+    public float getIntensity();
 
     /**
      * Set peak intensity

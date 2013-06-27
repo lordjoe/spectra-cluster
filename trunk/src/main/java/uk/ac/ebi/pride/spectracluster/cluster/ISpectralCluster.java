@@ -24,7 +24,7 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
      *
      * @return
      */
-    public double getPrecursorMz();
+    public float getPrecursorMz();
 
 
     /**
@@ -32,7 +32,7 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
      *
      * @return
      */
-    public double getPrecursorCharge();
+    public int getPrecursorCharge();
 
 
     /**

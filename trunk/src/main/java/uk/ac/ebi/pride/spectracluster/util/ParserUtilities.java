@@ -40,7 +40,8 @@ public class ParserUtilities {
     public static ISpectralCluster[] readSpectralCluster(File inp) {
         try {
             return readSpectralCluster(new LineNumberReader(new FileReader(inp)));
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -103,7 +104,8 @@ public class ParserUtilities {
                 if (line.startsWith(END_CLUSTER))
                     return ret;
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
         return null; // nothing found or incloplete
@@ -144,7 +146,8 @@ public class ParserUtilities {
                 if (first != null)
                     holder.add(first);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
         ret.setConcensus(concensus);
@@ -183,7 +186,7 @@ public class ParserUtilities {
         for (int i = 0; i < split.length; i++) {
             String s = split[i];
             if (s.startsWith("Charge=")) {
-                return (int)(0.5 + Double.parseDouble(s.substring("Charge=".length())));
+                return (int) (0.5 + Double.parseDouble(s.substring("Charge=".length())));
             }
         }
         throw new IllegalArgumentException("no Charge= part in " + line);
@@ -224,7 +227,8 @@ public class ParserUtilities {
     public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
         try {
             return readMGFScans(new LineNumberReader(new FileReader(inp)));
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -251,7 +255,7 @@ public class ParserUtilities {
                 line = inp.readLine();
 
             double massToChargeCalledPpMass = 0;
-            double dcharge = 1;
+            int dcharge = 1;
             String title = null;
             while (line != null) {
 
@@ -293,7 +297,7 @@ public class ParserUtilities {
                         titleLine = line; // we may look for sequences later
                         title = buildMGFTitle(line);
                         int index = line.indexOf(",sequence=");
-                        if(index > -1)
+                        if (index > -1)
                             sequence = line.substring(index + ",sequence=".length()).trim();
                         line = inp.readLine();
                         continue;
@@ -305,7 +309,11 @@ public class ParserUtilities {
                     }
                     if (line.startsWith("CHARGE=")) {
                         line = line.replace("+", "");
-                        dcharge = Double.parseDouble(line.substring("CHARGE=".length()));
+                        final String substring = line.substring("CHARGE=".length());
+                        if (substring.contains("."))
+                            dcharge = (int) (0.5 + Double.parseDouble(substring));
+                        else
+                            dcharge = Integer.parseInt(substring);
                         line = inp.readLine();
                         continue;
                     }
@@ -334,32 +342,35 @@ public class ParserUtilities {
                     double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
                     String peptide = sequence;
-                    sequence =null;
+                    sequence = null;
                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
                             title,
                             peptide,
                             dcharge,
-                            mz,
+                            (float) mz,
                             holder
                     );
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
-                } else {
+                }
+                else {
                     line = line.replace("\t", " ");
                     String[] items = line.split(" ");
                     // not sure we should let other ceses go but this is safer
                     if (items.length >= 2) {
                         try {
-                            double peakMass = Double.parseDouble(items[0].trim());
+                            float peakMass = Float.parseFloat(items[0].trim());
                             float peakIntensity = Float.parseFloat(items[1].trim());
                             Peak added = new Peak(peakMass, peakIntensity);
                             holder.add(added);
-                        } catch (NumberFormatException e) {
+                        }
+                        catch (NumberFormatException e) {
                             // I am not happy but I guess we can forgive a little bad data
                             handleBadMGFData(line);
                         }
-                    } else {
+                    }
+                    else {
                         // I am not happy but I guess we can forgive a little bad data
                         handleBadMGFData(line);
                     }
@@ -368,18 +379,20 @@ public class ParserUtilities {
                 }
             }
             return null; // or should an exception be thrown - we did not hit an END IONS tag
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
+    @SuppressWarnings("UnusedParameters")
     protected static void handleTitleLine(PeaksSpectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
         for (int i = 0; i < items.length; i++) {
             String item = items[i];
-           // if(item.startsWith(""))
+            // if(item.startsWith(""))
         }
 
     }
@@ -416,7 +429,8 @@ public class ParserUtilities {
     public static void guaranteeMGFParse(String filename) {
         try {
             guaranteeMGFParse(new FileInputStream(filename));
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -490,7 +504,8 @@ public class ParserUtilities {
             try {
                 Reader isr = new FileReader(f);
                 return new LineNumberReader(isr);
-            } catch (FileNotFoundException e) {
+            }
+            catch (FileNotFoundException e) {
                 return null;
             }
 
@@ -516,7 +531,8 @@ public class ParserUtilities {
             ConsensusSpectraItems[] ret = new ConsensusSpectraItems[holder.size()];
             holder.toArray(ret);
             return ret;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
