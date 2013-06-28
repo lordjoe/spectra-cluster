@@ -54,8 +54,10 @@ public class ConsensusSpectrumTests {
         Collections.shuffle(filteredOriginalSpectra);
         ISpectrum consensusSpectrum3 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
 
-        Assert.assertTrue(consensusSpectrum1.equivalent(consensusSpectrum2));
-        Assert.assertTrue(consensusSpectrum2.equivalent(consensusSpectrum3));
+        final boolean equivalent = consensusSpectrum1.equivalent(consensusSpectrum2);
+        Assert.assertTrue(equivalent);
+        final boolean equivalent1 = consensusSpectrum2.equivalent(consensusSpectrum3);
+        Assert.assertTrue(equivalent1);
     }
 
 

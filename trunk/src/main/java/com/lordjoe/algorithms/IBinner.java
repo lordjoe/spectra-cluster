@@ -7,8 +7,6 @@ package com.lordjoe.algorithms;
  * @date 11/05/13
  */
 public interface IBinner {
-    public static IBinner[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = IBinner.class;
 
     /**
      * place the value into a bin between getMinBin()   and getMaxBin()

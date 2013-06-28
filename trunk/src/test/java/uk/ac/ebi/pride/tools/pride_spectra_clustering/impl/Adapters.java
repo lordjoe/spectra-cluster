@@ -53,7 +53,7 @@ public class Adapters {
      */
     public static ISpectrum fromSpectrum(ClusteringSpectrum inp) {
         final Integer precursorCharge = inp.getPrecursorCharge();
-        final Double precursorMZ = inp.getPrecursorMZ();
+        final double precursorMZ = inp.getPrecursorMZ();
         final String id = inp.getId();
         final ParamGroup additional = inp.getAdditional();
         String peptide = null; // todo do better
@@ -66,9 +66,9 @@ public class Adapters {
 
         ISpectrum ret = new PeptideSpectrumMatch(id,
                 peptide,
-                precursorCharge,
-                precursorMZ,
-                newPeaks);
+                (int)(precursorCharge + 0.5),
+                (float)precursorMZ,
+                 newPeaks);
 
         return ret;
     }
@@ -80,7 +80,7 @@ public class Adapters {
      * @return !null equivalent peak
      */
     public static IPeak fromPeak(Peak pk) {
-        IPeak ret = new uk.ac.ebi.pride.spectracluster.spectrum.Peak(pk.getMz(), pk.getIntensity(), pk.getCount());
+        IPeak ret = new uk.ac.ebi.pride.spectracluster.spectrum.Peak((float)pk.getMz(),(float) pk.getIntensity(), pk.getCount());
         return ret;
     }
 

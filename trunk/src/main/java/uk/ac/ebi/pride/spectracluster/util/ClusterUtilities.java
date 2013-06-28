@@ -46,6 +46,21 @@ public class ClusterUtilities {
          return holder;
      }
 
+    /**
+         * return a list of all spectra in the list of clusters sorted by charge then mz
+         * @param clusters !null list of clusters
+         * @return   !null list of spectra
+         */
+        public static double minMZ(List<ISpectralCluster> clusters) {
+            double ret = Double.MIN_VALUE;
+            List<ISpectrum> holder = new ArrayList<ISpectrum>();
+            for (ISpectralCluster cluster : clusters) {
+                ret = Math.min(cluster.getPrecursorMz(),ret);
+            }
+              return ret;
+        }
+
+
 
      /**
        * return a list of all spectra in the list of spectra sorted by charge then mz

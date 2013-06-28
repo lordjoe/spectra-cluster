@@ -48,6 +48,13 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
     public ISpectrum getConsensusSpectrum();
 
     /**
+     * real spectrum with the highest quality - this is a
+     * good way to compare clusters
+     * @return !null spectrum
+     */
+    public ISpectrum getHighestQualitySpectrum();
+
+    /**
      * all internally spectrum
      */
     public List<ISpectrum> getClusteredSpectra();
