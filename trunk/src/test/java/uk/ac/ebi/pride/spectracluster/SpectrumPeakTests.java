@@ -20,8 +20,8 @@ public class SpectrumPeakTests {
     public static IPeak[] buildPeaks() {
         List<IPeak> holder = new ArrayList<IPeak>();
         for (int i = 0; i < MAX_PEAKS; i++) {
-            double mz = 1000 - i;
-            double intensity = 100 * RND.nextDouble();
+            float mz = 1000 - i;
+            float intensity = 100 * RND.nextFloat();
             holder.add(new Peak(mz, intensity));
 
         }

@@ -6,7 +6,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * @author Rui Wang
  * @version $Id$
  */
-public interface ISpectrumQuality   {
+public interface ISpectrumQuality extends IPeaksSpectrum   {
 
     public static final int BAD_QUALITY_MEASURE = -1;
 

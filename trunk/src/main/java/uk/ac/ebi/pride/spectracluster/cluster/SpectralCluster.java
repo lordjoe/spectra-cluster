@@ -18,6 +18,7 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
     private final String id;
     private boolean dirty;
     private ISpectrum consensusSpectrum;
+    private ISpectrum highestQualitySpectrum;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
@@ -55,6 +56,21 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
     }
 
 
+    /**
+     * real spectrum with the highest quality - this is a
+     * good way to compare clusters
+     *
+     * @return !null spectrum
+     */
+    @Override
+    public ISpectrum getHighestQualitySpectrum() {
+        return highestQualitySpectrum;
+    }
+
+    protected void setHighestQualitySpectrum(final ISpectrum pHighestQualitySpectrum) {
+        highestQualitySpectrum = pHighestQualitySpectrum;
+    }
+
     public ISpectrum getConsensusSpectrum() {
         guaranteeClean();
         return consensusSpectrum;
@@ -77,6 +93,15 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
                     clusteredSpectra.add(spectrumToMerge);
                 }
+                // track which spectrum in the cluster has the highest quality
+                final ISpectrum spectrumToMerge1 = spectrumToMerge;
+                if (highestQualitySpectrum == null) {
+                    highestQualitySpectrum = spectrumToMerge1;
+                }
+                else {
+                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge1.getQualityScore())
+                        setHighestQualitySpectrum(spectrumToMerge1);
+                }
             }
         }
     }
@@ -87,11 +112,34 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
 
             for (ISpectrum spectrumToRemove : removed) {
                 clusteredSpectra.remove(spectrumToRemove);
+                if (highestQualitySpectrum == spectrumToRemove)
+                    highestQualitySpectrum = null;
             }
         }
     }
 
-    private void guaranteeClean() {
+    /**
+     * should only be called if we remove the highest quality spectrum
+     */
+    protected void guaranteeHighestQuailty() {
+        if (highestQualitySpectrum == null) {
+            for (ISpectrum spectrumToMerge : clusteredSpectra) {
+                // track which spectrum in the cluster has the highest quality
+                if (highestQualitySpectrum == null) {
+                    setHighestQualitySpectrum(spectrumToMerge);
+                }
+                else {
+                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge.getQualityScore())
+                        setHighestQualitySpectrum(spectrumToMerge);
+                }
+
+            }
+
+        }
+    }
+
+
+    protected void guaranteeClean() {
         if (dirty) {
             consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(clusteredSpectra);
             dirty = false;

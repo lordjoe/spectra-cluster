@@ -28,7 +28,7 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
     @Override
     public double calculateQualityScore(ISpectrum spectrum) {
         // get the intensities
-        ArrayList<Double> intensities = new ArrayList<Double>(spectrum.getPeaks().size());
+        ArrayList<Float> intensities = new ArrayList<Float>(spectrum.getPeaks().size());
         for (IPeak p : spectrum.getPeaks())
             intensities.add(p.getIntensity());
 
@@ -52,9 +52,9 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
         // check if there's an even number of peaks
         if (nPeaks %2 == 0) {
             int index1 = (int) nPeaks / 2 - 1;
-            Double intensity1 = intensities.get(index1);
+            Float intensity1 = intensities.get(index1);
             int index2 = (int) nPeaks / 2;
-            Double intensity2 = intensities.get(index2);
+            Float intensity2 = intensities.get(index2);
             median = (intensity1 + intensity2) / 2;
         }
         else    {
