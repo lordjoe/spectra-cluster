@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -16,10 +17,10 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     private final int mainBin;
     private final IClusteringEngine engine;
 
-    public BinnedClusteringEngine(final IClusteringEngine pEngine,final IWideBinner pBinner, final int pMainBin) {
+    public BinnedClusteringEngine( final IWideBinner pBinner, final int pMainBin) {
         binner = pBinner;
         mainBin = pMainBin;
-        engine = pEngine;
+        engine = Defaults.INSTANCE.getDefaultClusteringEngine();   // need a new engine every time
     }
 
 

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
 
@@ -35,12 +35,12 @@ public class ClusteringEngine implements IClusteringEngine {
     }
 
     protected void filterClustersToAdd() {
-        List<ISpectralCluster> l2 = new   ArrayList<ISpectralCluster>( );
+        List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster sc : clustersToAdd) {
-            if(sc.getClusteredSpectraCount() > 0)
+            if (sc.getClusteredSpectraCount() > 0)
                 l2.add(sc);
             else
-                sc =  null; // why
+                sc = null; // why
         }
         clustersToAdd.clear();
         clustersToAdd.addAll(l2);
@@ -53,7 +53,9 @@ public class ClusteringEngine implements IClusteringEngine {
     @Override
     public List<ISpectralCluster> getClusters() {
         guaranteeClean();
-        return new ArrayList<ISpectralCluster>(clusters);
+        final ArrayList<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(clusters);
+        Collections.sort(ret);
+        return ret;
     }
 
     protected boolean isDirty() {
@@ -98,7 +100,8 @@ public class ClusteringEngine implements IClusteringEngine {
             if (mostSimilarCluster != null) {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
-            } else {
+            }
+            else {
                 clusters.add(clusterToAdd);
             }
         }

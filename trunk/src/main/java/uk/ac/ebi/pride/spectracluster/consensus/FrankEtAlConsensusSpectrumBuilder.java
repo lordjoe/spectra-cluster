@@ -13,6 +13,12 @@ import java.util.*;
  * @author jg
  */
 public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
+
+    public static final int SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS = 5;
+    /**
+     * width in daltons of the sliding window
+     */
+    public static final int SLIDING_WINDOW_WIDTH = 100; // mz
     /**
      * The final m/z threshold to use to combine
      * peaks as identical.
@@ -119,29 +125,35 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     // todo  using ClusterUtilities.getHighestInBins
     protected List<IPeak> filterSpectrum(List<IPeak> mergedConsensusSpectrum) {
         // expect to keep 1% - just a wild guess
-        List<IPeak> filteredSpectrum = new ArrayList<IPeak>(mergedConsensusSpectrum.size() / 100);
+        List<IPeak> filteredSpectrum = new ArrayList<IPeak>( );
 
+        if(mergedConsensusSpectrum.size() == 0)
+            return filteredSpectrum; // should never happen
+
+        int index = 0;
         // process the peaks using the sliding window
-        for (double startMz = 0, endMz = 100; endMz <= 5000; endMz += 100, startMz += 100) {
+        for (double startMz = 0, endMz = SLIDING_WINDOW_WIDTH; endMz <= IPeak.HIGHEST_USABLE_MZ; endMz += SLIDING_WINDOW_WIDTH, startMz += SLIDING_WINDOW_WIDTH) {
             List<IPeak> peakBuffer = new ArrayList<IPeak>();
 
             // fill the peak buffer with all peaks within that range
-            for (IPeak p : mergedConsensusSpectrum) {
-                if (p.getMz() < startMz)
-                    continue;
-                if (p.getMz() > endMz)
-                    break;
-
+            IPeak p = mergedConsensusSpectrum.get(index++);
+            while(index < mergedConsensusSpectrum.size() && p.getMz() < startMz) {
+                p = mergedConsensusSpectrum.get(index++);
+            }
+            while(index < mergedConsensusSpectrum.size() && p.getMz() < endMz) {
                 peakBuffer.add(p);
+                p = mergedConsensusSpectrum.get(index++);
             }
 
             // sort the buffer
             Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
 
             // take the 5 highest peaks
-            for (int i = 0; i < Math.min(5, peakBuffer.size()); i++) {
+            for (int i = 0; i < Math.min(SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS, peakBuffer.size()); i++) {
                 filteredSpectrum.add(peakBuffer.get(i));
             }
+            if(index >= mergedConsensusSpectrum.size())
+                break;
         }
 
         return filteredSpectrum;
