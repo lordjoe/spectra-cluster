@@ -111,7 +111,7 @@ public class ClusteringEngine implements IClusteringEngine {
             else {
                 if(clusters.size() % 10 == 0)
                     System.out.println(clusterToAdd);
-                clusters.add(clusterToAdd);
+                clusters.add(new SpectralCluster(clusterToAdd));
             }
         }
 
