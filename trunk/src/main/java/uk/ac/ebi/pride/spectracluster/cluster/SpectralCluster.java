@@ -22,6 +22,17 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
+    public SpectralCluster(ISpectralCluster copied) {
+        this.id = copied.getId();
+        this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
+        this.highestQualitySpectrum = copied.getHighestQualitySpectrum();
+        this.dirty = false;
+        this.consensusSpectrumBuilder = ((SpectralCluster)copied).consensusSpectrumBuilder;
+        clusteredSpectra.addAll(((SpectralCluster)copied).clusteredSpectra);
+
+    }
+
+
     public SpectralCluster(String id) {
         this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
@@ -162,11 +173,11 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
 
-        if(getHighestQualitySpectrum() != o.getHighestQualitySpectrum())  {
-            return getHighestQualitySpectrum().getQualityScore() <   o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
+        if (getHighestQualitySpectrum() != o.getHighestQualitySpectrum()) {
+            return getHighestQualitySpectrum().getQualityScore() < o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
         }
 
-        if(true)
+        if (true)
             throw new UnsupportedOperationException("Fix This"); // This should never happen
         return 0;
     }
