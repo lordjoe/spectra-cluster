@@ -34,13 +34,16 @@ public class ClusteringEngine implements IClusteringEngine {
         }
     }
 
+    /**
+     * Remove clusters which are size zero
+     */
     protected void filterClustersToAdd() {
         List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster sc : clustersToAdd) {
             if (sc.getClusteredSpectraCount() > 0)
                 l2.add(sc);
             else
-                sc = null; // why
+                sc = null; // break point here for debugging
         }
         clustersToAdd.clear();
         clustersToAdd.addAll(l2);
