@@ -35,9 +35,8 @@ public class ClusterComparator implements Comparator<ISpectralCluster> {
             return 0;
         // first check whether the precursor m/z is different
         double del = cluster1.getPrecursorMz() - cluster2.getPrecursorMz();
-        if (Math.abs(del) > PRECURSOR_RANGE) {
-            return del < 0 ? -1 : 1;
-        }
+ //       if(Math.abs(del) > PRECURSOR_RANGE)
+ //           return del < 0 ? -1 : 1;
 
         // as the m/z ranges are the same check the quality
         ISpectrum consensusSpectrum1 = cluster1.getConsensusSpectrum();
@@ -51,9 +50,17 @@ public class ClusterComparator implements Comparator<ISpectralCluster> {
         double quality2 = consensusSpectrum2.getQualityScore();
 
         double del2 = quality2 - quality1;
-        if (del2 == 0)
+        if (del2 == 0)   {
+            if (del != 0) {
+                   return del < 0 ? -1 : 1;
+               }
             return 0;
-        return del < 0 ? -1 : 1;
+
+        }
+        else {
+            return del2 < 0 ? -1 : 1;
+
+        }
 
     }
 
