@@ -14,12 +14,10 @@ public class BinningClusteringEngine implements IClusteringEngine {
 
     private final IWideBinner binner;
     private final Map<Integer, IClusteringEngine> engineForBin = new HashMap<Integer, IClusteringEngine>();
-    private final IClusteringEngine engine;
 
-    public BinningClusteringEngine(final IClusteringEngine pEngine, final IWideBinner pBinner) {
+    public BinningClusteringEngine( final IWideBinner pBinner) {
         binner = pBinner;
-        engine = pEngine;
-    }
+      }
 
 
     /**
@@ -33,6 +31,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
             final List<ISpectralCluster> clusters = engine.getClusters();
             holder.addAll(clusters);
         }
+        Collections.sort(holder);
         return holder;
     }
 
@@ -63,7 +62,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
         synchronized (engineForBin)  {
             IClusteringEngine ret = engineForBin.get(pBin);
             if(ret == null)  {
-                ret = new BinnedClusteringEngine(engine,binner,pBin) ;
+                ret = new BinnedClusteringEngine( binner,pBin) ;
                 engineForBin.put(pBin,ret);
             }
             return ret;

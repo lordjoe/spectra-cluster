@@ -12,12 +12,18 @@ import java.util.*;
  */
 public class ClusterContentDistance implements ClusterDistance {
 
+    public static final ClusterContentDistance INSTANCE = new ClusterContentDistance();
+
     public static final double MAX_DISTANCE = 1;
-     public static final double MZ_EQUIVALENT_RANGE = 0.3;
+
+    private ClusterContentDistance() {
+
+    }
 
     /**
      * measure the distance between two clusters - a value of 0 says the clusters are the same or equivalent.
      * a cluster will always have a distance of 0 with itself
+     * looks at the fraction of spectra which are not in common
      *
      * @param c1 !null cluster
      * @param c2 !null cluster
@@ -29,51 +35,28 @@ public class ClusterContentDistance implements ClusterDistance {
         final ISpectrum s2 = c2.getHighestQualitySpectrum();
 
         // do not even share highest quality
-        if(!s1.equivalent(s2))  {
+        if (!s1.equivalent(s2)) {
             return MAX_DISTANCE;
-         }
+        }
 
         final List<ISpectrum> sp1 = c1.getClusteredSpectra(); // these are by mz
         final List<ISpectrum> sp2 = c2.getClusteredSpectra(); // these are by mz
 
 
-         final int totalSpectra = sp1.size() + sp2.size();
-         double ret = totalSpectra;
+        final Set<ISpectrum> allSpectra = new HashSet<ISpectrum>(sp1);
+        allSpectra.addAll(sp2);
 
-        boolean lastIsT = false;
-        int t = 0;
-        int e = 0;
-        while (t < sp1.size() && e < sp2.size()) {
-            ISpectrum spectrum1 = sp1.get(t);
-            double mz1 = spectrum1.getPrecursorMz();
-            ISpectrum spectrum2 = sp2.get(e);
-            double mz2 = spectrum2.getPrecursorMz();
+        final Set<ISpectrum> sp1NotSp2 = new HashSet<ISpectrum>(allSpectra);
+        sp1NotSp2.removeAll(sp2);
 
-            double mass_difference = mz2 - mz1;
-            if (Math.abs(mass_difference) <= MZ_EQUIVALENT_RANGE) {
-                if(spectrum1.equivalent(spectrum2))
-                    ret -= 2; // match
-             }
-            if (mass_difference == 0) {
-                if (lastIsT) {
-                    e++;
-                    lastIsT = false;
-                }
-                else {
-                    t++;
-                    lastIsT = true;
-                }
-            }
-            else {
-                if (mass_difference < 0) {
-                    e++;
-                }
-                else {
-                    t++;
-                }
-            }
-         }
-        return ret / totalSpectra; // should be 0..1
+        final Set<ISpectrum> sp2NotSp1 = new HashSet<ISpectrum>(allSpectra);
+        sp2NotSp1.removeAll(sp1);
+
+
+        double ret = sp1NotSp2.size() + sp2NotSp1.size();
+        ret /= allSpectra.size();
+
+        return ret;
 
     }
 }

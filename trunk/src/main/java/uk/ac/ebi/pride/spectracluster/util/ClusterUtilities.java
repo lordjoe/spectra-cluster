@@ -51,14 +51,58 @@ public class ClusterUtilities {
          * @param clusters !null list of clusters
          * @return   !null list of spectra
          */
-        public static double minMZ(List<ISpectralCluster> clusters) {
-            double ret = Double.MIN_VALUE;
+        public static double minClusterMZ(List<ISpectralCluster> clusters) {
+            double ret = Double.MAX_VALUE;
             List<ISpectrum> holder = new ArrayList<ISpectrum>();
             for (ISpectralCluster cluster : clusters) {
                 ret = Math.min(cluster.getPrecursorMz(),ret);
             }
               return ret;
         }
+
+    /**
+           * return a list of all spectra in the list of clusters sorted by charge then mz
+           * @param clusters !null list of clusters
+           * @return   !null list of spectra
+           */
+          public static double maxClusterMZ(List<ISpectralCluster> clusters) {
+              double ret = 0;
+              List<ISpectrum> holder = new ArrayList<ISpectrum>();
+              for (ISpectralCluster cluster : clusters) {
+                  ret = Math.max(cluster.getPrecursorMz(),ret);
+              }
+                return ret;
+          }
+
+
+
+    /**
+         * return a list of all spectra in the list of clusters sorted by charge then mz
+         * @param clusters !null list of clusters
+         * @return   !null list of spectra
+         */
+        public static double minSpectraMZ(List<ISpectrum> clusters) {
+            double ret = Double.MAX_VALUE;
+            List<ISpectrum> holder = new ArrayList<ISpectrum>();
+            for (ISpectrum cluster : clusters) {
+                ret = Math.min(cluster.getPrecursorMz(),ret);
+            }
+              return ret;
+        }
+
+    /**
+           * return a list of all spectra in the list of clusters sorted by charge then mz
+           * @param clusters !null list of clusters
+           * @return   !null list of spectra
+           */
+          public static double maxSpectraMZ(List<ISpectrum> clusters) {
+              double ret = 0;
+              List<ISpectrum> holder = new ArrayList<ISpectrum>();
+              for (ISpectrum cluster : clusters) {
+                  ret = Math.max(cluster.getPrecursorMz(), ret);
+              }
+                return ret;
+          }
 
 
 
