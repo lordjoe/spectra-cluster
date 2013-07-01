@@ -162,6 +162,12 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
 
+        if(getHighestQualitySpectrum() != o.getHighestQualitySpectrum())  {
+            return getHighestQualitySpectrum().getQualityScore() <   o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
+        }
+
+        if(true)
+            throw new UnsupportedOperationException("Fix This"); // This should never happen
         return 0;
     }
 
