@@ -84,8 +84,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         this.precursorMz = spectrum.getPrecursorMz();
 
         peaks.clear();
-        Collections.sort(inpeaks);
-
         peaks.addAll(inpeaks);
 
         Collections.sort(this.peaks, PeakMzComparator.getInstance());
