@@ -8,14 +8,15 @@ import java.util.*;
 
 /**
  * Implement a clustering Engine using the original johannes code
- *  NOT Implemented yet
+ * NOT Implemented yet
+ *
  * @author Steve Lewis
  * @version $Id$
  */
 public class PrideClusteringEngine implements IClusteringEngine {
 
-     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
-    private  List<SpectraCluster> clustersFound = null;
+    private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+    private List<SpectraCluster> clustersFound = null;
     private final List<ClusteringSpectrum> addedSpectra = new ArrayList<ClusteringSpectrum>();
     private final SpectraClustering clustering = new FrankEtAlClustering();
 
@@ -31,7 +32,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
      */
     @Override
     public List<ISpectralCluster> getClusters() {
-  //      guaranteeClean();
+        //      guaranteeClean();
         return new ArrayList<ISpectralCluster>(clusters);
     }
 
@@ -48,11 +49,10 @@ public class PrideClusteringEngine implements IClusteringEngine {
                 addedSpectra.addAll(spectra);
             }
 
-         }
+        }
         clustersFound = null;
 
     }
-
 
 
     /**
@@ -62,7 +62,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
      */
     @Override
     public boolean mergeClusters() {
-        if(clustersFound != null)
+        if (clustersFound != null)
             return false; // already done
 
         clusters.clear();
@@ -74,9 +74,6 @@ public class PrideClusteringEngine implements IClusteringEngine {
 
         return false; // we are done after one pass
     }
-
-
-
 
 
 }

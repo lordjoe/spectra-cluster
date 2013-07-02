@@ -15,20 +15,13 @@ import static org.junit.Assert.assertEquals;
  * @version $Id$
  */
 public class FrankEtAlConsensusSpectrumBuilderTest {
-    private List<ConsensusSpectraItems> consensusSpectraItems;
-     private ConsensusSpectrumBuilder consensusSpectrumBuilder;
-
-    @Before
-    public void setUp() throws Exception {
-        // load a file contains a list of clusters
-         consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
+     @Test
+    public void testBuildConsensusSpectrum() throws Exception {
+            // load a file contains a list of clusters
+        List<ConsensusSpectraItems>  consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
 
         // create an instance of consensus spectrum builder
-          consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
-     }
-
-    @Test
-    public void testBuildConsensusSpectrum() throws Exception {
+        ConsensusSpectrumBuilder consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
         // iterate over all clusters
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
@@ -89,6 +82,11 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
         double total1 = 0;
         double total2 = 0;
+
+        // check the size of the peaks
+        if (peaks1.size() != peaks2.size())
+            return false;
+
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);
             total1 += peak1.getIntensity();
@@ -99,10 +97,6 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         // Note -
         // We need to compare all three spectra
         // 2 we should compare without failing so we can look hard at the differenece
-
-        // check the size of the peaks
-        if (peaks1.size() != peaks2.size())
-            return false;
 
         double del = 0;
         // only look at MZ

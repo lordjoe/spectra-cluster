@@ -67,7 +67,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
             return null;
 
         // if there's only one spectrum in the list, return this spectrum
-        if (spectra.size() == 1) {
+        if (spectra.size() == 0) {   // wasa 1
             ISpectrum singleSpectrum = spectra.get(0);
             List<IPeak> singleSpectrumPeaks = intensityNormalizer.normalizePeaks(singleSpectrum.getPeaks());
             return new PeptideSpectrumMatch(singleSpectrum.getId(),
@@ -298,5 +298,23 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         }
 
         return peaks;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final FrankEtAlConsensusSpectrumBuilder that = (FrankEtAlConsensusSpectrumBuilder) o;
+
+        if (intensityNormalizer != null ? !intensityNormalizer.equals(that.intensityNormalizer) : that.intensityNormalizer != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return intensityNormalizer != null ? intensityNormalizer.hashCode() : 0;
     }
 }

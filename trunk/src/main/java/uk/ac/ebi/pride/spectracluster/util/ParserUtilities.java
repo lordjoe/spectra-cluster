@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -122,6 +123,7 @@ public class ParserUtilities {
     public static ConsensusSpectraItems readConsensusSpectraItems(LineNumberReader inp, String line) {
         ConsensusSpectraItems ret = new ConsensusSpectraItems();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        FrankEtAlConsensusSpectrumBuilder sb = new  FrankEtAlConsensusSpectrumBuilder();
         ISpectrum concensus = null;
         try {
             if (line == null)
@@ -135,7 +137,8 @@ public class ParserUtilities {
 
             line = inp.readLine();
             if (line != null) {
-                concensus = readMGFScan(inp, line);
+                 concensus = readMGFScan(inp, line);
+                holder.add(concensus);
             }
             while (line != null) {
 
@@ -150,8 +153,8 @@ public class ParserUtilities {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ret.setConcensus(concensus);
-        ret.setSpectra(holder);
+         ret.setSpectra(holder);
+        ret.setConcensus(sb.buildConsensusSpectrum(holder));
         return ret; // nothing found or incloplete
     }
 

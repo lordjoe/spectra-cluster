@@ -84,6 +84,9 @@ public class FrankEtAClusterEngineTest {
     }
 
     private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
+          // check the size of the peaks
+        if (peaks1.size() != peaks2.size())
+            return false;
         double total1 = 0;
         double total2 = 0;
         for (int i = 0; i < peaks1.size(); i++) {
@@ -97,9 +100,6 @@ public class FrankEtAClusterEngineTest {
         // We need to compare all three spectra
         // 2 we should compare without failing so we can look hard at the differenece
 
-        // check the size of the peaks
-        if (peaks1.size() != peaks2.size())
-            return false;
 
         double del = 0;
         // only look at MZ

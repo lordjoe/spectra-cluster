@@ -76,4 +76,24 @@ public class Peak implements IPeak{
         String intensity = String.format("%8.2f", getIntensity()).trim();
         return "m/z = "+ mz + ", intensity = " + intensity + ", count = " + getCount();
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Peak peak = (Peak) o;
+
+        if (Float.compare(peak.intensity, intensity) != 0) return false;
+        if (Float.compare(peak.massChargeRatio, massChargeRatio) != 0) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (massChargeRatio != +0.0f ? Float.floatToIntBits(massChargeRatio) : 0);
+        result = 31 * result + (intensity != +0.0f ? Float.floatToIntBits(intensity) : 0);
+        return result;
+    }
 }

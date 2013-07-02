@@ -36,7 +36,7 @@ public class SignalToNoiseChecker implements QualityChecker {
 		// get the total intensity of the 2nd-6th highest peak
 		double highestPeakIntensity = 0.0;
 		
-		// TODO: react to small spectra
+		// ignore small spectra
 		if (intensities.size() < 6)
 			return 0.0;
 		

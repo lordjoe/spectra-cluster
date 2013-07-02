@@ -65,4 +65,6 @@ public class NormailzedPeptideSpectrumMatch extends PeptideSpectrumMatch impleme
     public double getRequiredTotalIntensity() {
         return requiredTotalIntensity;
     }
+
+
 }

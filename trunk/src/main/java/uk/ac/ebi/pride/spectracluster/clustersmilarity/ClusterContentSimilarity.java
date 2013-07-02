@@ -63,7 +63,7 @@ public class ClusterContentSimilarity {
                       requiredDistance = 0.4;
                   final double distance = dm.distance(sc1, sc2);
                   if (distance <= requiredDistance) {
-                    identical.add(sc1);
+                    identical.add(new AlternativeSpectralClusters(sc1,sc2));
                     matched1.add(sc1);
                     matched2.add(sc2);
                 }

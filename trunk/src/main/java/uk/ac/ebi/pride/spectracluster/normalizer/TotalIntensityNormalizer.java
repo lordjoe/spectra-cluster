@@ -15,8 +15,7 @@ import java.util.*;
  * @author jg
  * @author Rui Wang
  *
- * todo: spectrum total intensity calculation need to be reviewed
- *
+  *
  */
 public class TotalIntensityNormalizer implements IntensityNormalizer {
 	private static final double DEFAULT_TOTAL_INTENSITY = 1000;
@@ -70,4 +69,22 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
         return normalizedSpectrum;
 	}
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final TotalIntensityNormalizer that = (TotalIntensityNormalizer) o;
+
+        if (Double.compare(that.totalIntensity, totalIntensity) != 0)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final long temp = Double.doubleToLongBits(totalIntensity);
+        return (int) (temp ^ (temp >>> 32));
+    }
 }

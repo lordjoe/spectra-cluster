@@ -11,8 +11,7 @@ import java.util.*;
  * PeptideSepctrumMatch represents a peptide and a spectrum match
  * <p/>  This class is effectively immutable - some measures are computed lazily but
  * it cannot be manipulated from the outside
- * todo: implement quality measure
- *
+  *
  * @author Rui Wang
  * @version $Id$
  */
