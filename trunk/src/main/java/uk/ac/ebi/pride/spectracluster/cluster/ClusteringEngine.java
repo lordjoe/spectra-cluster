@@ -84,8 +84,8 @@ public class ClusteringEngine implements IClusteringEngine {
     protected void addToClusters() {
         for (ISpectralCluster clusterToAdd : clustersToAdd) {
             String id = clusterToAdd.getId();
-            if("11".equals(id))
-                id = clusterToAdd.getId(); // break here
+    //        if("11".equals(id))       // debugging stuff
+    //            id = clusterToAdd.getId(); // break here
 
             ISpectralCluster mostSimilarCluster = null;
             double highestSimilarityScore = 0;
@@ -109,8 +109,8 @@ public class ClusteringEngine implements IClusteringEngine {
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
             }
             else {
-                if(clusters.size() % 10 == 0)
-                    System.out.println(clusterToAdd);
+     //           if(clusters.size() % 10 == 0)      // debugging stuff
+     ///               System.out.println(clusterToAdd);
                 clusters.add(new SpectralCluster(clusterToAdd));
             }
         }

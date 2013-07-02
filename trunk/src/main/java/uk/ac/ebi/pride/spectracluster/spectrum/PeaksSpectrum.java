@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
-
 import java.io.*;
 import java.util.*;
 
@@ -49,16 +48,16 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         Collections.sort(peaks);
         this.peaks.addAll(peaks);
         Collections.sort(this.peaks, PeakMzComparator.getInstance());
-        double  totalIntensityX = 0;
+        double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
-         for (IPeak peak : peaks) {
-             double intensity = peak.getIntensity();
-             totalIntensityX += intensity;
-             // johannes uses this in his dotProduct // todo generalize for other algorithms
-             double ji = johannesIntensityConverted(peak);
-             sumSquareIntensityX += ji * ji;
-         }
-        totalIntensity  = totalIntensityX;
+        for (IPeak peak : peaks) {
+            double intensity = peak.getIntensity();
+            totalIntensityX += intensity;
+            // johannes uses this in his dotProduct // todo generalize for other algorithms
+            double ji = johannesIntensityConverted(peak);
+            sumSquareIntensityX += ji * ji;
+        }
+        totalIntensity = totalIntensityX;
         sumSquareIntensity = sumSquareIntensityX;
     }
 
@@ -87,25 +86,23 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         peaks.addAll(inpeaks);
 
         Collections.sort(this.peaks, PeakMzComparator.getInstance());
-        double  totalIntensityX = 0;
+        double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
-         for (IPeak peak : peaks) {
-             double intensity = peak.getIntensity();
-             totalIntensityX += intensity;
-             // johannes uses this in his dotProduct // todo generalize for other algorithms
-             double ji = johannesIntensityConverted(peak);
-             sumSquareIntensityX += ji * ji;
-         }
-        totalIntensity  = totalIntensityX;
+        for (IPeak peak : peaks) {
+            double intensity = peak.getIntensity();
+            totalIntensityX += intensity;
+            // johannes uses this in his dotProduct // todo generalize for other algorithms
+            double ji = johannesIntensityConverted(peak);
+            sumSquareIntensityX += ji * ji;
+        }
+        totalIntensity = totalIntensityX;
         sumSquareIntensity = sumSquareIntensityX;
 
     }
 
 
-
-
     protected void makeCalculations() {
-     }
+    }
 
 
     public String getId() {
@@ -136,12 +133,13 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     /**
      * return an unmodifiable version of the internal list
      * ??? should this be a copy
+     *
      * @return as above
      */
     @Override
     public List<IPeak> getPeaks() {
         // guaranteeClean();
-        return  Collections.unmodifiableList(peaks); //  Collections.unmodifiableList(new ArrayList<IPeak>(peaks)) ;    todo or should I do a copy
+        return Collections.unmodifiableList(peaks);
     }
 
     /**
@@ -208,6 +206,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
 
     /**
      * override to add peptide later
+     *
      * @param out
      * @throws IOException
      */
@@ -285,4 +284,43 @@ public class PeaksSpectrum implements IPeaksSpectrum {
         return true;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final PeaksSpectrum that = (PeaksSpectrum) o;
+
+        if (precursorCharge != that.precursorCharge) return false;
+        if (Float.compare(that.precursorMz, precursorMz) != 0) return false;
+        if (!id.equals(that.id)) return false;
+        if (peaks.size() != that.peaks.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < peaks.size(); i++) {
+            IPeak pk0 = peaks.get(i);
+            IPeak pk1 = that.peaks.get(i);
+            if (!pk0.equals(pk1))
+                return false;
+        }
+
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id.hashCode();
+        result = 31 * result + precursorCharge;
+        result = 31 * result + (precursorMz != +0.0f ? Float.floatToIntBits(precursorMz) : 0);
+        for (int i = 0; i < peaks.size(); i++) {
+            IPeak pk0 = peaks.get(i);
+            result = 31 * result + pk0.hashCode();
+        }
+
+        return result;
+    }
 }

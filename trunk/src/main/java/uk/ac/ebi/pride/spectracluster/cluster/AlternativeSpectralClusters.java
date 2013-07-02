@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,40 +12,85 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCluster> {
+public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent<ISpectralCluster> {
+
+    protected static String concensusId(ISpectralCluster... copied) {
+        StringBuilder sb = new StringBuilder();
+        for (ISpectralCluster sc : copied) {
+            if (sb.length() > 0)
+                sb.append(":");
+            sb.append(sc.getId());
+        }
+
+        return sb.toString();
+    }
+
+    protected static ISpectrum getHighestQualitySpectrum(ISpectralCluster... copied) {
+        ISpectrum ret = copied[0].getHighestQualitySpectrum();
+        for (int i = 1; i < copied.length; i++) {
+            if (!ret.equals(copied[i].getHighestQualitySpectrum()))
+                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same highest quality spectrum");
+        }
+
+        return ret;
+    }
+
+    protected static ConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
+        ConsensusSpectrumBuilder ret = copied[0].getConsensusSpectrumBuilder();
+        for (int i = 1; i < copied.length; i++) {
+            final ConsensusSpectrumBuilder spectrumBuilder = copied[i].getConsensusSpectrumBuilder();
+            if (!ret.equals(spectrumBuilder)) {
+                final boolean equals = ret.equals(spectrumBuilder); // why not
+                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
+            }
+        }
+        return ret;
+    }
 
     private final String id;
-    private boolean dirty;
     private ISpectrum consensusSpectrum;
     private ISpectrum highestQualitySpectrum;
-    private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
+    private final List<ISpectralCluster> constitutingClusters = new ArrayList<ISpectralCluster>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
+    private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
 
-    public SpectralCluster(ISpectralCluster copied) {
-        this.id = copied.getId();
-        this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
-        this.highestQualitySpectrum = copied.getHighestQualitySpectrum();
-        this.dirty = false;
-        this.consensusSpectrumBuilder = copied.getConsensusSpectrumBuilder();
-        clusteredSpectra.addAll(copied.getClusteredSpectra());
+    public AlternativeSpectralClusters(ISpectralCluster... copied) {
+        this.id = concensusId(copied);
+        constitutingClusters.addAll(Arrays.asList(copied));
+        this.highestQualitySpectrum = getHighestQualitySpectrum(copied);
+        this.consensusSpectrumBuilder = getCommonConsensusSpectrumBuilder(copied);
+        Set<ISpectrum> holder = new HashSet<ISpectrum>();
+        for (ISpectralCluster sc : copied) {
+            holder.addAll(sc.getClusteredSpectra());
+        }
+        clusteredSpectra.addAll(holder);
+        Collections.sort(clusteredSpectra);
+        this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum();
 
     }
 
 
-    public SpectralCluster(String id) {
-        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
-    }
-
-    public SpectralCluster(String id, ConsensusSpectrumBuilder consensusSpectrumBuilder) {
-        this.id = id;
-        this.consensusSpectrum = null;
-        this.dirty = false;
-        this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+    public List<ISpectralCluster> getConstitutingClusters() {
+        return Collections.unmodifiableList(constitutingClusters);
     }
 
     @Override
     public String getId() {
         return id;
+    }
+
+    protected void guaranteeClean() {
+        // do nothing but keep code more compatable with SpectraCluster
+    }
+
+    /**
+     * needed so copy constructors work with the interface
+     *
+     * @return
+     */
+    @Override
+    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+        return consensusSpectrumBuilder;
     }
 
     @Override
@@ -70,11 +114,6 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         return getConsensusSpectrum().getPeaks();
     }
 
-
-    @Override
-    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-        return consensusSpectrumBuilder;
-    }
 
     /**
      * real spectrum with the highest quality - this is a
@@ -110,66 +149,14 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
 
     @Override
     public void addSpectra(ISpectrum... merged) {
-        if (merged != null && merged.length > 0) {
-            dirty = true;
-
-            for (ISpectrum spectrumToMerge : merged) {
-                if (!clusteredSpectra.contains(spectrumToMerge)) {
-                    clusteredSpectra.add(spectrumToMerge);
-                }
-                // track which spectrum in the cluster has the highest quality
-                final ISpectrum spectrumToMerge1 = spectrumToMerge;
-                if (highestQualitySpectrum == null) {
-                    highestQualitySpectrum = spectrumToMerge1;
-                }
-                else {
-                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge1.getQualityScore())
-                        setHighestQualitySpectrum(spectrumToMerge1);
-                }
-            }
-        }
+        throw new UnsupportedOperationException("Cannot change AlternativeSpectralClusters");
     }
 
     @Override
     public void removeSpectra(ISpectrum... removed) {
-        if (removed != null && removed.length > 0) {
-            dirty = true;
-
-            for (ISpectrum spectrumToRemove : removed) {
-                clusteredSpectra.remove(spectrumToRemove);
-                if (highestQualitySpectrum == spectrumToRemove)
-                    highestQualitySpectrum = null;
-            }
-        }
+        throw new UnsupportedOperationException("Cannot change AlternativeSpectralClusters");
     }
 
-    /**
-     * should only be called if we remove the highest quality spectrum
-     */
-    protected void guaranteeHighestQuailty() {
-        if (highestQualitySpectrum == null) {
-            for (ISpectrum spectrumToMerge : clusteredSpectra) {
-                // track which spectrum in the cluster has the highest quality
-                if (highestQualitySpectrum == null) {
-                    setHighestQualitySpectrum(spectrumToMerge);
-                }
-                else {
-                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge.getQualityScore())
-                        setHighestQualitySpectrum(spectrumToMerge);
-                }
-
-            }
-
-        }
-    }
-
-
-    protected void guaranteeClean() {
-        if (dirty) {
-            consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(clusteredSpectra);
-            dirty = false;
-        }
-    }
 
     /**
      * sort by mz - might be useful
@@ -215,7 +202,6 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         if (abs > IPeak.SMALL_MZ_DIFFERENCE) {
             return false;
         }
-
         List<ISpectrum> spc1 = getClusteredSpectra();
         List<ISpectrum> spc2 = o.getClusteredSpectra();
         if (spc1.size() != spc2.size()) {
@@ -301,17 +287,14 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
 
     @Override
     public String toString() {
-        double precursorMZ = getPrecursorMz();
-        String text =
-                "charge= " + getPrecursorCharge() + "," +
-                        "mz= " + String.format("%10.3f", precursorMZ).trim() + "," +
-                        "count= " + clusteredSpectra.size() +
-                        ", spectrum = ";
-        for (ISpectrum s : clusteredSpectra)
-            text += s.getId() + ",";
+        StringBuilder sb = new StringBuilder();
+        for (ISpectralCluster constitutingCluster : constitutingClusters) {
+            if (sb.length() > 0)
+                sb.append(",");
+            sb.append(constitutingCluster);
+        }
+        return sb.toString();
 
-        text = text.substring(0, text.length() - 1);
-        return text;
     }
 
     /**

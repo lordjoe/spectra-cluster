@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -79,5 +80,12 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
 
 
     public void appendSpectra(Appendable out) ;
+
+    /**
+     * needed so copy constructors work with the interface
+     * @return
+     */
+    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() ;
+
 
 }
