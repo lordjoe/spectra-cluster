@@ -12,7 +12,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent<ISpectralCluster> {
+public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
     protected static String concensusId(ISpectralCluster... copied) {
         StringBuilder sb = new StringBuilder();
@@ -65,7 +65,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent
         }
         clusteredSpectra.addAll(holder);
         Collections.sort(clusteredSpectra);
-        this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum();
+        this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(this);
 
     }
 
@@ -81,6 +81,16 @@ public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent
 
     protected void guaranteeClean() {
         // do nothing but keep code more compatable with SpectraCluster
+    }
+
+
+    /**
+     * all internally spectrum
+     */
+    @Override
+    public List<ISpectrum> getHighestQualitySpectra() {
+
+        return getClusteredSpectra();   // todo fix
     }
 
     /**
@@ -136,8 +146,41 @@ public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent
         return consensusSpectrum;
     }
 
+    /**
+     * this should be protected but it needs to be used by spectral clustering so that
+     * guarantee clean can be byPassed
+     *
+     * @return  exactly the current concensus spectrum
+     */
+    @Override
+    public ISpectrum internalGetConcensusSpectrum() {
+        return consensusSpectrum;
+     }
+
+    /**
+       * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+       * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+       *
+       * @return
+       */
+      @Override
+      public int[] asMajorPeakMZs() {
+          return getConsensusSpectrum().asMajorPeakMZs();
+      }
+
+
     @Override
     public List<ISpectrum> getClusteredSpectra() {
+        guaranteeClean();
+        return new ArrayList<ISpectrum>(clusteredSpectra);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<ISpectrum> internalGetClusteredSpectra() {
         guaranteeClean();
         return new ArrayList<ISpectrum>(clusteredSpectra);
     }
@@ -336,5 +379,18 @@ public class AlternativeSpectralClusters implements ISpectralCluster, Equivalent
 
     }
 
-
+    /**
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Override
+    public boolean containsMajorPeak(final int mz) {
+        for (ISpectralCluster constitutingCluster : constitutingClusters) {
+            if(constitutingCluster.containsMajorPeak(mz))
+                return true;
+        }
+        return false;
+    }
 }

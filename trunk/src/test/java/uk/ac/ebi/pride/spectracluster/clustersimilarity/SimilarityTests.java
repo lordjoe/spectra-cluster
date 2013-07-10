@@ -14,16 +14,7 @@ import java.util.*;
  */
 public class SimilarityTests {
 
-    private List<ISpectralCluster> originalSpectralClusters;
-       private ClusterDistance distanceMeasure;
-
-    @Before
-    public void setUp() throws Exception {
-
-        originalSpectralClusters =  ClusteringTestUtilities.readSpectraClustersFromResource();
-
-        distanceMeasure = new ConcensusSpectrumDistance();
-    }
+     private ClusterDistance distanceMeasure = new ConcensusSpectrumDistance();
 
 
     /**
@@ -33,10 +24,14 @@ public class SimilarityTests {
      */
     @Test
     public void testSelfSimilarity() throws Exception {
+        List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
 
         for (ISpectralCluster sc1 : originalSpectralClusters) {
-            final double distance = distanceMeasure.distance(sc1, sc1);
-            Assert.assertEquals(0, distance, 0.0001);    // every cluster is similar to itself
+            double distance = distanceMeasure.distance(sc1, sc1);
+            if (distance > 0.0001) {
+                distance = distanceMeasure.distance(sc1, sc1); //  break here
+                Assert.assertEquals(0, distance, 0.0001);    // every cluster is similar to itself
+            }
 
         }
 
@@ -44,20 +39,25 @@ public class SimilarityTests {
 
 
     /**
-     * sanity check compart list of clusters to itself
+     * sanity check compare list of clusters to itself
      *
      * @throws Exception
      */
     @Test
     public void testGroupSimilarity() throws Exception {
-          List<ISpectralCluster> l1 = new ArrayList<ISpectralCluster>(originalSpectralClusters); // copy this will change
-         List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>(originalSpectralClusters); // copy this will change;
+        final List<ISpectralCluster> originalCLuster = ClusteringTestUtilities.readSpectraClustersFromResource();
+        Collections.sort(originalCLuster);
+        List<ISpectralCluster> l1 = new ArrayList(originalCLuster);
+        final List<ISpectralCluster> originalCLuster2 = ClusteringTestUtilities.readSpectraClustersFromResource();
+        Collections.sort(originalCLuster2);
+        List<ISpectralCluster> l2 = new ArrayList(originalCLuster2);
 
         ClusterListSimilarity cd = new ClusterListSimilarity(distanceMeasure);
         final List<ISpectralCluster> identical = cd.identicalClusters(l1, l2);
 
-        Assert.assertEquals(originalSpectralClusters.size(), identical.size());
+        Assert.assertEquals(originalCLuster.size(), identical.size());
         Assert.assertTrue(l1.isEmpty());
         Assert.assertTrue(l2.isEmpty());
     }
-}
+
+  }

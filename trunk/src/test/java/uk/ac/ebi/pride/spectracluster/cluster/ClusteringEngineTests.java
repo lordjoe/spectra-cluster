@@ -26,7 +26,8 @@ public class ClusteringEngineTests {
         List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
         IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+         IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             clusteringEngine.addClusters(originalSpectrum.asCluster());

@@ -35,7 +35,7 @@ public class FrankEtAlClusteringTest {
   //      ClusterWriter.dumpSpectra("FrankEtAl.cgf",generatedCluster);
 
    //     Assert.assertEquals(142, generatedCluster.size());
-        Assert.assertEquals(141, generatedCluster.size());
+        Assert.assertEquals(143, generatedCluster.size());
         for (int i = 0; i < 3; i++) {
             SpectraCluster cluster = generatedCluster.get(i);
 
@@ -45,7 +45,8 @@ public class FrankEtAlClusteringTest {
                 Assert.assertEquals(5, cluster.getClusterSize());
                 //System.out.println("Here1");
                 boolean peakFound = false;
-                for (Peak p : cluster.getConsensusSpectrum()) {
+                final List<Peak> consensusSpectrum = cluster.getConsensusSpectrum();
+                for (Peak p : consensusSpectrum) {
                     if (Math.abs(p.getMz() - 686.52796) < IPeak.SMALL_MZ_DIFFERENCE) {
                         Assert.assertEquals(2.1374678, p.getIntensity(),IPeak.SMALL_INTENSITY_DIFFERENCE);
                         peakFound = true;
@@ -84,9 +85,10 @@ public class FrankEtAlClusteringTest {
                 Assert.assertEquals(1, cluster.getClusterSize());
 
                 boolean peakFound = false;
-                for (Peak p : cluster.getConsensusSpectrum()) {
-                    if (Math.abs(p.getMz() -284.06317) < IPeak.SMALL_MZ_DIFFERENCE) {
-                        Assert.assertEquals(6.644530262887737, p.getIntensity(),IPeak.SMALL_INTENSITY_DIFFERENCE);
+                final List<Peak> consensusSpectrum = cluster.getConsensusSpectrum();
+                for (Peak p : consensusSpectrum) {
+                    if (Math.abs(p.getMz() -365.26794) < IPeak.SMALL_MZ_DIFFERENCE) {
+                        Assert.assertEquals(0.5862995642779956, p.getIntensity(),IPeak.SMALL_INTENSITY_DIFFERENCE);
                         peakFound = true;
                     }
                 }

@@ -13,19 +13,31 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster implements ISpectralCluster, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+
 
     private final String id;
     private boolean dirty;
-    private ISpectrum consensusSpectrum;
-    private ISpectrum highestQualitySpectrum;
+    private PeptideSpectrumMatch consensusSpectrum;
+    private final List<ISpectrum> highestQualitySpectra = new ArrayList<ISpectrum>();
+    private double lowestClusteredQuality = Double.MIN_VALUE;
+    private boolean highestQualitySetChanged;
+
+
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(ISpectralCluster copied) {
         this.id = copied.getId();
         this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
-        this.highestQualitySpectrum = copied.getHighestQualitySpectrum();
+        this.highestQualitySpectra.addAll(copied.getHighestQualitySpectra());
+        if (copied instanceof SpectralCluster) {
+            this.lowestClusteredQuality = ((SpectralCluster) copied).lowestClusteredQuality;
+            this.highestQualitySetChanged = false;
+        }
+        else {
+            throw new UnsupportedOperationException("Fix This"); // ToDo
+        }
         this.dirty = false;
         this.consensusSpectrumBuilder = copied.getConsensusSpectrumBuilder();
         clusteredSpectra.addAll(copied.getClusteredSpectra());
@@ -84,17 +96,52 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
      */
     @Override
     public ISpectrum getHighestQualitySpectrum() {
-        return highestQualitySpectrum;
+        guaranteeHighestQuailty();
+        if (highestQualitySpectra.isEmpty())
+            return null;
+        return (highestQualitySpectra.get(0));
     }
 
-    protected void setHighestQualitySpectrum(final ISpectrum pHighestQualitySpectrum) {
-        highestQualitySpectrum = pHighestQualitySpectrum;
-    }
 
     @Override
     public ISpectrum getConsensusSpectrum() {
         guaranteeClean();
         return consensusSpectrum;
+    }
+
+    /**
+     * this should be protected but it needs to be used by spectral clustering so that
+     * guarantee clean can be byPassed
+     *
+     * @return exactly the current concensus spectrum
+     */
+    @Override
+    public ISpectrum internalGetConcensusSpectrum() {
+        return consensusSpectrum;
+    }
+
+
+    /**
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Override
+    public boolean containsMajorPeak(final int mz) {
+        return consensusSpectrum.containsMajorPeak(mz);
+    }
+
+    /**
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
+     * @return
+     */
+    @Override
+    public int[] asMajorPeakMZs() {
+        final ISpectrum consensusSpectrum1 = getConsensusSpectrum();
+        return consensusSpectrum1.asMajorPeakMZs();
     }
 
     @Override
@@ -108,6 +155,17 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         return clusteredSpectra.size();
     }
 
+    /**
+     * this should be protected but it needs to be used by spectral clustering so that
+     * guaranett clean can be byPassed
+     *
+     * @return
+     */
+    @Override
+    public List<ISpectrum> internalGetClusteredSpectra() {
+        return clusteredSpectra;
+    }
+
     @Override
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
@@ -118,14 +176,8 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
                     clusteredSpectra.add(spectrumToMerge);
                 }
                 // track which spectrum in the cluster has the highest quality
-                final ISpectrum spectrumToMerge1 = spectrumToMerge;
-                if (highestQualitySpectrum == null) {
-                    highestQualitySpectrum = spectrumToMerge1;
-                }
-                else {
-                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge1.getQualityScore())
-                        setHighestQualitySpectrum(spectrumToMerge1);
-                }
+
+                handleQualityInsert(spectrumToMerge);
             }
         }
     }
@@ -137,36 +189,100 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
 
             for (ISpectrum spectrumToRemove : removed) {
                 clusteredSpectra.remove(spectrumToRemove);
-                if (highestQualitySpectrum == spectrumToRemove)
-                    highestQualitySpectrum = null;
+                handleQualityRemove(spectrumToRemove);
             }
+        }
+    }
+
+    public boolean isHighestQualitySetChanged() {
+        return highestQualitySetChanged;
+    }
+
+    public void setHighestQualitySetChanged(final boolean pHighestQualitySetChanged) {
+        highestQualitySetChanged = pHighestQualitySetChanged;
+    }
+
+    protected double getLowestClusteredQuality() {
+        return lowestClusteredQuality;
+    }
+
+    protected void setLowestClusteredQuality(final double pLowestClusteredQuality) {
+        lowestClusteredQuality = pLowestClusteredQuality;
+    }
+
+
+    /**
+     * should only be called if we remove the highest quality spectrum
+     */
+    protected void handleQualityInsert(ISpectrum inserted) {
+        double quality = inserted.getQualityScore();
+        if (highestQualitySpectra.size() < NUMBER_SPECTRA_FOR_CONSENSUS) {
+            highestQualitySpectra.add(inserted);
+            setLowestClusteredQuality(Math.min(getLowestClusteredQuality(), quality));
+            setHighestQualitySetChanged(true);
+        }
+        else {
+            if (quality <= getLowestClusteredQuality())
+                return; // worse than  the lowest
+            setHighestQualitySetChanged(true);
+            highestQualitySpectra.add(inserted);
+
         }
     }
 
     /**
      * should only be called if we remove the highest quality spectrum
      */
+    protected void handleQualityRemove(ISpectrum inserted) {
+        double quality = inserted.getQualityScore();
+        if (quality < getLowestClusteredQuality())
+            return; // worse than  the lowest
+        if (highestQualitySpectra.remove(inserted)) {
+            setHighestQualitySetChanged(true);
+        }
+    }
+
+    /**
+     * all internally spectrum
+     */
+    @Override
+    public List<ISpectrum> getHighestQualitySpectra() {
+        return Collections.unmodifiableList(highestQualitySpectra);
+    }
+
+    /**
+     * should only be called if we remove the highest quality spectrum
+     */
     protected void guaranteeHighestQuailty() {
-        if (highestQualitySpectrum == null) {
-            for (ISpectrum spectrumToMerge : clusteredSpectra) {
-                // track which spectrum in the cluster has the highest quality
-                if (highestQualitySpectrum == null) {
-                    setHighestQualitySpectrum(spectrumToMerge);
-                }
-                else {
-                    if (highestQualitySpectrum.getQualityScore() < spectrumToMerge.getQualityScore())
-                        setHighestQualitySpectrum(spectrumToMerge);
-                }
-
+        if (isHighestQualitySetChanged()) {
+            if (highestQualitySpectra.isEmpty()) {
+                setLowestClusteredQuality(Double.MAX_VALUE);
+                setHighestQualitySetChanged(false);
+                return;
             }
-
+            Collections.sort(highestQualitySpectra, QualitySpectrumComparator.INSTANCE); // sort highest quality first
+            if (highestQualitySpectra.size() > NUMBER_SPECTRA_FOR_CONSENSUS) {
+                List<ISpectrum> retained = new ArrayList<ISpectrum>();
+                for (int i = 0; i < NUMBER_SPECTRA_FOR_CONSENSUS; i++) {
+                    retained.add(highestQualitySpectra.get(i)); // only keep the top NUMBER_SPECTRA_FOR_CONSENSUS
+                }
+                highestQualitySpectra.clear();
+                highestQualitySpectra.addAll(retained);
+            }
+            setLowestClusteredQuality(highestQualitySpectra.get(highestQualitySpectra.size() - 1).getQualityScore());
+            consensusSpectrum = (PeptideSpectrumMatch) consensusSpectrumBuilder.buildConsensusSpectrum(this);
+            setHighestQualitySetChanged(false);
+        }
+        else {
+            if (consensusSpectrum == null)
+                consensusSpectrum = (PeptideSpectrumMatch) consensusSpectrumBuilder.buildConsensusSpectrum(this);
         }
     }
 
 
     protected void guaranteeClean() {
         if (dirty) {
-            consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(clusteredSpectra);
+            guaranteeHighestQuailty();
             dirty = false;
         }
     }
@@ -184,16 +300,27 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
         if (getPrecursorMz() != o.getPrecursorMz()) {
             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
         }
+        if (getPrecursorCharge() != o.getPrecursorCharge()) {
+            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
+        }
         if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
 
-        if (getHighestQualitySpectrum() != o.getHighestQualitySpectrum()) {
-            return getHighestQualitySpectrum().getQualityScore() < o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
+        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
+        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
+        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
+            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
+                highestQualitySpectrum1 = getHighestQualitySpectrum();
+                throw new IllegalStateException("problem"); // ToDo change
+            }
+
+            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
         }
 
         if (true)
-            throw new UnsupportedOperationException("Fix This"); // This should never happen
+            System.out.println("Need better compare");
+        //          throw new UnsupportedOperationException("Fix This"); // This should never happen
         return 0;
     }
 
@@ -216,8 +343,13 @@ public class SpectralCluster implements ISpectralCluster, Equivalent<ISpectralCl
             return false;
         }
 
-        List<ISpectrum> spc1 = getClusteredSpectra();
-        List<ISpectrum> spc2 = o.getClusteredSpectra();
+        List<ISpectrum> spc1 = internalGetClusteredSpectra();
+        List<ISpectrum> spc2;
+        if (o instanceof InternalSpectralCluster)
+            spc2 = ((InternalSpectralCluster) o).internalGetClusteredSpectra();  // no copy or clean needed
+        else
+            spc2 = o.getClusteredSpectra();
+
         if (spc1.size() != spc2.size()) {
             return false;
         }

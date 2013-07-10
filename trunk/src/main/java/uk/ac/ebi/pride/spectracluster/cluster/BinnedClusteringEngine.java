@@ -16,11 +16,14 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     private final IWideBinner binner;
     private final int mainBin;
     private final IClusteringEngine engine;
+    private String name ;
+
 
     public BinnedClusteringEngine( final IWideBinner pBinner, final int pMainBin) {
         binner = pBinner;
         mainBin = pMainBin;
         engine = Defaults.INSTANCE.getDefaultClusteringEngine();   // need a new engine every time
+        name = "Bin"  + mainBin;
     }
 
 
@@ -73,4 +76,47 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     public boolean mergeClusters() {
         return engine.mergeClusters();
      }
+
+
+    /**
+     * nice for debugging to name an engine
+     * @return  possibly null name
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * nice for debugging to name an engine
+     * @param pName   possibly null name
+     */
+    @Override
+    public void setName(final String pName) {
+        name = pName;
+    }
+
+    /**
+      * allow engines to be named
+      * @return
+      */
+     @Override
+     public String toString() {
+          if(name != null)
+              return name;
+         return super.toString();
+     }
+
+
+    /**
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return engine.size();
+    }
+
+
 }

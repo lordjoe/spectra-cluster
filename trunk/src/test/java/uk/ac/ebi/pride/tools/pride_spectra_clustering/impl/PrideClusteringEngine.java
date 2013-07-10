@@ -75,5 +75,33 @@ public class PrideClusteringEngine implements IClusteringEngine {
         return false; // we are done after one pass
     }
 
+    /**
+      * nice for debugging to name an engine
+      *
+      * @return possibly null name
+      */
+     @Override
+     public String getName() {
+         return "PrideClusteringEngine";
+     }
 
+     /**
+      * nice for debugging to name an engine
+      *
+      * @param pName possibly null name
+      */
+     @Override
+     public void setName(final String pName) {
+
+     }
+
+    /**
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return clusters.size();
+    }
 }

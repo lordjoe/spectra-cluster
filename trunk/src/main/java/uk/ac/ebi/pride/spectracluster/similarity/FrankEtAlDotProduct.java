@@ -27,7 +27,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
     public static final double DEFAULT_MZ_RANGE = 0.5;
 
-    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
+    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.7;
+
+    public static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
 
     public static final int LARGE_BINNING_REGION = 1000;
 
@@ -70,15 +72,27 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      *
      * @return as above
      */
+    @Override
     public double getDefaultThreshold() {
         return DEFAULT_SIMILARITY_THRESHOLD;
     }
 
+    /**
+     * return the default similarity Threshold  this is
+     * the threshold to keep  a spectrum in a cluster
+     *
+     * @return as above
+     */
+    @Override
+    public double getDefaultRetainThreshold() {
+        return DEFAULT_RETAIN_THRESHOLD;
+    }
 
     /**
      * Assesses the spectra's similarity using
      * the normalized dot-product
      */
+    @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
         // initialize the number of peaks1 to use with 15
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);

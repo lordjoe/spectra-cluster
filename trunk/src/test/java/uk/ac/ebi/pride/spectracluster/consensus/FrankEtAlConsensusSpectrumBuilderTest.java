@@ -21,7 +21,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         List<ConsensusSpectraItems>  consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
 
         // create an instance of consensus spectrum builder
-        ConsensusSpectrumBuilder consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
+         FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
         // iterate over all clusters
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {

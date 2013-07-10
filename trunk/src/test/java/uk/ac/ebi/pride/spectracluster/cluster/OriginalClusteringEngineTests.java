@@ -26,8 +26,9 @@ public class OriginalClusteringEngineTests {
 
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
         IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-        IClusteringEngine originalClusteringEngine = new PrideClusteringEngine();
+        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
+         IClusteringEngine originalClusteringEngine = new PrideClusteringEngine();
         List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource();
         List<SpectraCluster> originalSpectraList;   // spectra gathered the old way
         final SpectraClustering originalClustering = new FrankEtAlClustering();

@@ -12,12 +12,22 @@ import java.util.*;
  */
 public class BinningClusteringEngine implements IClusteringEngine {
 
+    public static final int DEFAULT_MAX_BIN = 1600;
+    public static final int DEFAULT_MIN_BIN = 300;
+
+
     private final IWideBinner binner;
     private final Map<Integer, IClusteringEngine> engineForBin = new HashMap<Integer, IClusteringEngine>();
+    private String name = "BinningClusteringEngine";
 
-    public BinningClusteringEngine( final IWideBinner pBinner) {
+    public BinningClusteringEngine() {
+        this(new LinearWideBinner((int) (DEFAULT_MAX_BIN + 0.5), 1, DEFAULT_MIN_BIN, true));
+    }
+
+
+    public BinningClusteringEngine(final IWideBinner pBinner) {
         binner = pBinner;
-      }
+    }
 
 
     /**
@@ -55,15 +65,16 @@ public class BinningClusteringEngine implements IClusteringEngine {
 
     /**
      * find the engine for a bin creating one as needed
+     *
      * @param pBin
      * @return
      */
     protected IClusteringEngine getEngine(final int pBin) {
-        synchronized (engineForBin)  {
+        synchronized (engineForBin) {
             IClusteringEngine ret = engineForBin.get(pBin);
-            if(ret == null)  {
-                ret = new BinnedClusteringEngine( binner,pBin) ;
-                engineForBin.put(pBin,ret);
+            if (ret == null) {
+                ret = new BinnedClusteringEngine(binner, pBin);
+                 engineForBin.put(pBin, ret);
             }
             return ret;
         }
@@ -79,10 +90,55 @@ public class BinningClusteringEngine implements IClusteringEngine {
 
         boolean anythingDone = false;
         // todo use multiple threads
-         for (IClusteringEngine engine : engineForBin.values()) {
-             final List<ISpectralCluster> clusters = engine.getClusters();
-             anythingDone |= engine.mergeClusters();
-         }
-        return anythingDone ;
+        for (IClusteringEngine engine : engineForBin.values()) {
+            final List<ISpectralCluster> clusters = engine.getClusters();
+            anythingDone |= engine.mergeClusters();
+        }
+        return anythingDone;
     }
+
+    /**
+     * nice for debugging to name an engine
+     * @return  possibly null name
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * nice for debugging to name an engine
+     * @param pName   possibly null name
+     */
+    @Override
+    public void setName(final String pName) {
+        name = pName;
+    }
+
+    /**
+      * allow engines to be named
+      * @return
+      */
+     @Override
+     public String toString() {
+          if(name != null)
+              return name;
+         return super.toString();
+     }
+
+    /**
+      * total number of clusters including queued clustersToAdd
+      *
+      * @return
+      */
+     @Override
+     public int size() {
+         int n = 0;
+         // todo use multiple threads
+         for (IClusteringEngine engine : engineForBin.values()) {
+              n += engine.size();
+         }
+         return n;
+     }
+
 }

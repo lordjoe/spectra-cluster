@@ -13,8 +13,10 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparable<ISpectralCluster> {
+public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparable<ISpectralCluster>,IMajorPeaksHolder  {
 
+    // only highest quality spectra used for concensus
+    public static final int NUMBER_SPECTRA_FOR_CONSENSUS = 10;
     /**
      * Get cluster id
      */
@@ -58,6 +60,11 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
     /**
      * all internally spectrum
      */
+    public List<ISpectrum> getHighestQualitySpectra();
+
+    /**
+     * all internally spectrum
+     */
     public List<ISpectrum> getClusteredSpectra();
 
     /**
@@ -86,6 +93,13 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
      * @return
      */
     public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() ;
+
+    /**
+     * does the concensus spectrum contin this is a major peak
+     * @param mz   peak as int
+     * @return  true if so
+     */
+    public boolean containsMajorPeak(int mz);
 
 
 }

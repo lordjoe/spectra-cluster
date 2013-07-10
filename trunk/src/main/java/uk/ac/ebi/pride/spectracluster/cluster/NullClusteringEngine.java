@@ -66,4 +66,34 @@ public class NullClusteringEngine implements IClusteringEngine {
         guaranteeClean();
         return false;
     }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @return possibly null name
+     */
+    @Override
+    public String getName() {
+        return "NullClusteringEngine";
+    }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @param pName possibly null name
+     */
+    @Override
+    public void setName(final String pName) {
+
+    }
+
+    /**
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return 0;
+    }
 }
