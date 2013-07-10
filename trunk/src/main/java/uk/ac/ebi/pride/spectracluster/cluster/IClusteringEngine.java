@@ -27,7 +27,7 @@ public interface IClusteringEngine {
      * clusters are merged in the internal collection
      * @return true is  anything happened
      */
-    public boolean mergeClusters();
+    public boolean processClusters();
 
     /**
      * nice for debugging to name an engine

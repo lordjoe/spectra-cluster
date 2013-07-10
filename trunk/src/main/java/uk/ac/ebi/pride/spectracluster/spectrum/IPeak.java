@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import com.lordjoe.algorithms.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.ISpecClusterPeak
+ * uk.ac.ebi.pride.spectracluster.IPeak
  *
  * @author Steve Lewis
  * @author Rui Wang

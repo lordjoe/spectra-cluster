@@ -125,6 +125,13 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
     }
 
 
+    @Override
+    public int getPeaksCount() {
+        guaranteeClean();
+        return getConsensusSpectrum().getPeaksCount();
+    }
+
+
     /**
      * real spectrum with the highest quality - this is a
      * good way to compare clusters

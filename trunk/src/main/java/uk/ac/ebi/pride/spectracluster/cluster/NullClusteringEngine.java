@@ -62,7 +62,7 @@ public class NullClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
         guaranteeClean();
         return false;
     }

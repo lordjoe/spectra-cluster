@@ -20,7 +20,6 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     private final Comparator<ISpectralCluster> spectrumComparator;
     private final Map<Integer, IClusteringEngine> engineForBin = new HashMap<Integer, IClusteringEngine>();
     private final Set<ISpectralCluster> readClusters = new HashSet<ISpectralCluster>();
-    private final Set<String> alreadyClustered = new HashSet<String>();
     private final IClusteringEngineFactory factory;
     private String name = "PeakMatchClusteringEngineOriginal";
 
@@ -93,13 +92,13 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
 
         boolean anythingDone = false;
         // todo use multiple threads
          for (IClusteringEngine engine : engineForBin.values()) {
              final List<ISpectralCluster> clusters = engine.getClusters();
-             anythingDone |= engine.mergeClusters();
+             anythingDone |= engine.processClusters();
          }
         return anythingDone ;
     }

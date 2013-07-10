@@ -74,7 +74,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
 
 
         boolean anythingDone = false;
@@ -102,7 +102,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                     }
                     if (engine.size() < 2)
                         continue; // nothing to cluster
-                    engine.mergeClusters();
+                    engine.processClusters();
                     final List<ISpectralCluster> clusters = engine.getClusters();
                     currentClusters.addAll(clusters);
                     for (ISpectralCluster cluster : clusters) {

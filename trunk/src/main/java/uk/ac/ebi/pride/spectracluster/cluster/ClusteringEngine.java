@@ -188,7 +188,7 @@ public class ClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
         guaranteeClean();
 
         if(size() < 2)

@@ -14,8 +14,6 @@ import java.math.*;
  */
 public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksHolder {
 
-
-
     /**
      * make a cluster contaiming a single spectrum - this
      *

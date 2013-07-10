@@ -15,7 +15,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpectrumMatch, ISpectrumQuality {
+public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpectrumMatch {
 
 
     private final String peptide;
@@ -214,7 +214,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             // remember the result and if less than requested remember for all
             // requests above or equal to the size
             for (int i = numberRequested; i >= numberPeaks; i--) {
-                highestPeaks.put(i, ret);
+                highestPeaks.put(i, ret);  // todo fix
             }
         }
         return ret;

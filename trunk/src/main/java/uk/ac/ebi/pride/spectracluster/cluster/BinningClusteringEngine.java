@@ -86,13 +86,13 @@ public class BinningClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
 
         boolean anythingDone = false;
         // todo use multiple threads
         for (IClusteringEngine engine : engineForBin.values()) {
             final List<ISpectralCluster> clusters = engine.getClusters();
-            anythingDone |= engine.mergeClusters();
+            anythingDone |= engine.processClusters();
         }
         return anythingDone;
     }

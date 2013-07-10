@@ -13,7 +13,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparable<ISpectralCluster>,IMajorPeaksHolder  {
+public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalent<ISpectralCluster>,Comparable<ISpectralCluster>,IMajorPeaksHolder  {
 
     // only highest quality spectra used for concensus
     public static final int NUMBER_SPECTRA_FOR_CONSENSUS = 10;
@@ -37,13 +37,6 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
      */
     public int getPrecursorCharge();
 
-
-    /**
-     * concensus spectrum Charge
-     *
-     * @return
-     */
-    public List<IPeak> getPeaks();
 
     /**
      * Get consensus spectrum
@@ -71,16 +64,6 @@ public interface ISpectralCluster extends Equivalent<ISpectralCluster>,Comparabl
      * count of internal spectrum
      */
     public int getClusteredSpectraCount();
-
-    /**
-     * Add a array of spectrum to cluster
-     */
-    public void addSpectra(ISpectrum... merged);
-
-    /**
-     * Remove an array of spectrum from cluster
-     */
-    public void removeSpectra(ISpectrum... removed);
 
 
     public void append(Appendable out);

@@ -61,7 +61,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
+    public boolean processClusters() {
         if (clustersFound != null)
             return false; // already done
 
