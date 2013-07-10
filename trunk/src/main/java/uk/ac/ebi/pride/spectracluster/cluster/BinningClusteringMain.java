@@ -45,7 +45,7 @@ public class BinningClusteringMain {
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         for (int i = 0; i < 2; i++) {
-            if (!binningEngine.mergeClusters()) {
+            if (!binningEngine.processClusters()) {
                 break;
             }
         }

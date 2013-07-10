@@ -37,14 +37,14 @@ public class ClusteringEngineTests {
 
         long start = System.currentTimeMillis();
 //        for (int i = 0; i < 2; i++) {
-//            if (!clusteringEngine.mergeClusters()) {
+//            if (!clusteringEngine.processClusters()) {
 //                break;
 //            }
 //        }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < 2; i++) {
-            if (!oldClusteringEngine.mergeClusters()) {
+            if (!oldClusteringEngine.processClusters()) {
                 break;
             }
         }

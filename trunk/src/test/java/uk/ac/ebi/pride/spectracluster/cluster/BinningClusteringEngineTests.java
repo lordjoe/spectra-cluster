@@ -38,7 +38,7 @@ public class BinningClusteringEngineTests {
         }
 
         for (int i = 0; i < 2; i++) {
-            if (!clusteringEngine.mergeClusters()) {
+            if (!clusteringEngine.processClusters()) {
                 break;
             }
         }
@@ -75,14 +75,14 @@ public class BinningClusteringEngineTests {
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {
-            if (!clusteringEngine.mergeClusters()) {
+            if (!clusteringEngine.processClusters()) {
                 break;
             }
         }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < 2; i++) {
-            if (!binningEngine.mergeClusters()) {
+            if (!binningEngine.processClusters()) {
                 break;
             }
         }
@@ -143,14 +143,14 @@ public class BinningClusteringEngineTests {
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < 2; i++) {
-            if (!clusteringEngine.mergeClusters()) {
+            if (!clusteringEngine.processClusters()) {
                 break;
             }
         }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < 2; i++) {
-            if (!binningEngine.mergeClusters()) {
+            if (!binningEngine.processClusters()) {
                 break;
             }
         }

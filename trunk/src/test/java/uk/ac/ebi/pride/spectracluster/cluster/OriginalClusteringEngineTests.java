@@ -58,7 +58,7 @@ public class OriginalClusteringEngineTests {
 
 
         for (int i = 0; i < 4; i++) {
-            if (!originalClusteringEngine.mergeClusters())
+            if (!originalClusteringEngine.processClusters())
                 break;
         }
         List<ISpectralCluster> originalClusters = originalClusteringEngine.getClusters();
@@ -67,12 +67,12 @@ public class OriginalClusteringEngineTests {
 
 
         for (int i = 0; i < 4; i++) {
-            if (!clusteringEngine.mergeClusters())
+            if (!clusteringEngine.processClusters())
                 break;
 
         }
         for (int i = 0; i < 4; i++) {
-            if (!oldClusteringEngine.mergeClusters())
+            if (!oldClusteringEngine.processClusters())
                 break;
 
         }

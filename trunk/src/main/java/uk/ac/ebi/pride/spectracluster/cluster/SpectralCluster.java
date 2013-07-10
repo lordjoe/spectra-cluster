@@ -7,13 +7,14 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
 
     private final String id;
@@ -22,6 +23,7 @@ public class SpectralCluster implements ISpectralCluster, InternalSpectralCluste
     private final List<ISpectrum> highestQualitySpectra = new ArrayList<ISpectrum>();
     private double lowestClusteredQuality = Double.MIN_VALUE;
     private boolean highestQualitySetChanged;
+    private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
 
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
@@ -56,6 +58,49 @@ public class SpectralCluster implements ISpectralCluster, InternalSpectralCluste
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
     }
 
+
+    /**
+     * add a change listener
+     * final to make sure this is not duplicated at multiple levels
+     *
+     * @param added non-null change listener
+     */
+    public final void addSpectrumHolderListener(SpectrumHolderListener added) {
+        if (!m_SpectrumHolderListeners.contains(added))
+            m_SpectrumHolderListeners.add(added);
+    }
+
+    /**
+     * remove a change listener
+     *
+     * @param removed non-null change listener
+     */
+    public final void removeSpectrumHolderListener(SpectrumHolderListener removed) {
+        while (m_SpectrumHolderListeners.contains(removed))
+            m_SpectrumHolderListeners.remove(removed);
+    }
+
+
+    /**
+     * notify any state change listeners - probably should
+     * be protected but is in the interface to form an event cluster
+     *
+     * @param oldState
+     * @param newState
+     * @param commanded
+     */
+    public void notifySpectrumHolderListeners(boolean isAdd,ISpectrum... spectra) {
+        if (m_SpectrumHolderListeners.isEmpty())
+            return;
+        for (SpectrumHolderListener listener : m_SpectrumHolderListeners) {
+            if(isAdd)
+                listener.onSpectraAdd(this,spectra);
+            else
+                listener.onSpectraRemove(this,spectra);
+          }
+    }
+
+
     @Override
     public String getId() {
         return id;
@@ -80,6 +125,12 @@ public class SpectralCluster implements ISpectralCluster, InternalSpectralCluste
     public List<IPeak> getPeaks() {
         guaranteeClean();
         return getConsensusSpectrum().getPeaks();
+    }
+
+    @Override
+    public int getPeaksCount() {
+        guaranteeClean();
+        return getConsensusSpectrum().getPeaksCount();
     }
 
 
@@ -179,6 +230,7 @@ public class SpectralCluster implements ISpectralCluster, InternalSpectralCluste
 
                 handleQualityInsert(spectrumToMerge);
             }
+            notifySpectrumHolderListeners(true,merged);   // tell other interested parties
         }
     }
 
@@ -191,6 +243,7 @@ public class SpectralCluster implements ISpectralCluster, InternalSpectralCluste
                 clusteredSpectra.remove(spectrumToRemove);
                 handleQualityRemove(spectrumToRemove);
             }
+            notifySpectrumHolderListeners(false,removed); // tell other interested parties
         }
     }
 

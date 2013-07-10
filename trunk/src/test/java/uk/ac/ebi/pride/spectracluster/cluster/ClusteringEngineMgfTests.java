@@ -30,7 +30,7 @@ public class ClusteringEngineMgfTests {
             }
         }
         for (int i = 0; i <= 2; i++) {
-            if (!oldClusteringEngine.mergeClusters()) {
+            if (!oldClusteringEngine.processClusters()) {
                 break;
             }
         }

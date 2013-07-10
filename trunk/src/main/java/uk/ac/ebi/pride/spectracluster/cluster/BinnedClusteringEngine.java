@@ -73,8 +73,8 @@ public class BinnedClusteringEngine implements IClusteringEngine {
      * @return true is  anything happened
      */
     @Override
-    public boolean mergeClusters() {
-        return engine.mergeClusters();
+    public boolean processClusters() {
+        return engine.processClusters();
      }
 
 

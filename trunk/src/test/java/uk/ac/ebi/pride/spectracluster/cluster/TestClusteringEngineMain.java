@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,10 +14,10 @@ import java.util.*;
  * User: Steve
  * Date: 7/5/13
  */
-public class ClusteringEngineMain {
+public class TestClusteringEngineMain {
 
     private long readTimeMillisec;
-    public ClusteringEngineMain() {
+    public TestClusteringEngineMain() {
     }
 
     public long getReadTimeMillisec() {
@@ -41,8 +42,8 @@ public class ClusteringEngineMain {
         /**
          * Add your favorite clustering engine here
          */
-         PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
-   //     IClusteringEngine engine = new PRideC();
+     //    PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
+       IClusteringEngine engine = new PrideClusteringEngine();
          long end = System.currentTimeMillis();
         final long readTIme = end - start;
         addReadTimeMillisec(readTIme);
@@ -140,7 +141,7 @@ public class ClusteringEngineMain {
         }
 
 
-        ClusteringEngineMain mainClusterer = new ClusteringEngineMain();
+        TestClusteringEngineMain mainClusterer = new TestClusteringEngineMain();
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
         double min = 0;

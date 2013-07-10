@@ -1,9 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import com.lordjoe.algorithms.*;
-
-
-import java.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
@@ -12,7 +10,7 @@ import java.util.*;
  * User: Steve
  * Date: 6/20/13
  */
-public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpectrum> {
+public interface IPeaksSpectrum extends  Equivalent<ISpectrum>,IPeaksHolder, Comparable<ISpectrum> {
 
     /**
      * globally unique id
@@ -32,18 +30,9 @@ public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpect
     public int getPrecursorCharge();
 
     /**
-     * return unmodifiable peaks sorted by MZ
-     *
-     * @return !null array of peaks
+     * write as MGF
+     * @param out
      */
-    public List<IPeak> getPeaks();
-
-    /**
-     * return number of peaks
-     * @return count
-     */
-    public int getPeaksCount();
-
     public void appendMGF(Appendable out);
 
     /**
