@@ -236,6 +236,23 @@ public class ParserUtilities {
         }
     }
 
+    /**
+     * read an mgf files and return as a list of single spectrum clusters
+      * @param inp !null existing file
+      * @return !null array of spectra
+      */
+     public static List<ISpectralCluster> readMGFClusters(File inp) {
+         IPeptideSpectrumMatch[] scans = readMGFScans(  inp);
+         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+         for (int i = 0; i < scans.length; i++) {
+             IPeptideSpectrumMatch scan = scans[i];
+             final ISpectralCluster e = scan.asCluster();
+             holder.add(e);
+         }
+
+         return holder;
+     }
+
 
     /**
      * @param inp !null reader

@@ -46,10 +46,18 @@ public class ConcensusSpectrumDistance implements ClusterDistance {
             double mz2 = peak2.getMz();
 
             double mass_difference = mz2 - mz1;
-            if (Math.abs(mass_difference) <= MZ_EQUIVALENT_RANGE) {
+            if (Math.abs(mass_difference) <= MZ_EQUIVALENT_RANGE / 3) {
                 ret -= 2; // match
+                int shouldBe1 = (TotakPeaks - 2) - 2 * e;
+
+                // debigging code only important when they should be the same
+                if(ret != shouldBe1)
+                    shouldBe1 = (TotakPeaks - 2) - 2 * e; // break here
+                int shouldBe2 = (TotakPeaks - 2) - 2 * t;
+                if(ret != shouldBe2)
+                      shouldBe2 = (TotakPeaks - 2) - 2 * t; // break here
              }
-            if (mass_difference == 0) {
+            if (mass_difference == 0) {     // choose the last to increment
                 if (lastIsT) {
                     e++;
                     lastIsT = false;
@@ -62,12 +70,14 @@ public class ConcensusSpectrumDistance implements ClusterDistance {
             else {
                 if (mass_difference < 0) {
                     e++;
+                    lastIsT = false;
                 }
                 else {
                     t++;
+                    lastIsT = true;
                 }
             }
-         }
+        }
         return ret / TotakPeaks; // hould be 0..1
 
     }

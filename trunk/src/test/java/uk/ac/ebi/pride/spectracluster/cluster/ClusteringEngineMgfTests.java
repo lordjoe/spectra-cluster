@@ -20,8 +20,8 @@ public class ClusteringEngineMgfTests {
         List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
         IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-
+        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator()) ;
+        IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {

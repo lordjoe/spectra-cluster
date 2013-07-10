@@ -1,16 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.consensus.FrankEtAlConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.normalizer.*;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.Defaults
@@ -22,116 +18,84 @@ public class Defaults {
 
     public static final Defaults INSTANCE = new Defaults();
 
-    private final SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
+    private SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
 
-    private final QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
+    private QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
-    private final ClusterComparator defaultSpectrumComparator = new ClusterComparator(defaultQualityScorer);
+    private ClusterComparator defaultSpectrumComparator = new ClusterComparator(defaultQualityScorer);
 
-    private Class<? extends IntensityNormalizer> normalizerClass = TotalIntensityNormalizer.class;
+    private IntensityNormalizer normalizer = new TotalIntensityNormalizer();
 
-    private Class<? extends  ConsensusSpectrumBuilder > consensusSpectrumBuilderClass = FrankEtAlConsensusSpectrumBuilder.class;
+    private ConsensusSpectrumBuilder defaultConsensusSpectrumBuilder;
 
-    private Class<? extends SimilarityChecker> similarityCheckerClass = FrankEtAlDotProduct.class;
-
-    private Class<? extends IClusteringEngine> clusteringEngineClass = NullClusteringEngine.class;
-
-
+    private IClusteringEngineFactory defaultClusteringEngineFactory;
 
     private Defaults() {
 
     }
 
-    public IClusteringEngine getDefaultClusteringEngine()
-    {
-        if(true) {
-            SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
-            Comparator<ISpectralCluster> spectrumComparator = getDefaultSpectrumComparator();
-            return new ClusteringEngine(similarityChecker, spectrumComparator);
-        }
+    public IClusteringEngine getDefaultClusteringEngine() {
+        SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
+        Comparator<ISpectralCluster> spectrumComparator = getDefaultSpectrumComparator();
+        return ClusteringEngine.getClusteringEngineFactory().getClusteringEngine();
 
-        try {
-            return getClusteringEngineClass().newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
-    public IntensityNormalizer getDefaultIntensityNormalizer()
-     {
-         try {
-             return getNormalizerClass().newInstance();
-         } catch (InstantiationException e) {
-             throw new RuntimeException(e);
-         } catch (IllegalAccessException e) {
-             throw new RuntimeException(e);
-         }
-     }
-
-    public SimilarityChecker getDefaultSimilarityChecker()
-    {
-        if (true)
-            return defaultSimilarityChecker;
-        try {
-            return getSimilarityCheckerClass().newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public IntensityNormalizer getDefaultIntensityNormalizer() {
+        return normalizer;
     }
 
-    public ConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder()
-    {
-        try {
-            return getConsensusSpectrumBuilderClass().newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+    public void setNormalizer(final IntensityNormalizer pNormalizer) {
+        normalizer = pNormalizer;
+    }
+
+    public SimilarityChecker getDefaultSimilarityChecker() {
+        if (defaultSimilarityChecker == null) {
+            defaultSimilarityChecker = new FrankEtAlDotProduct();
         }
+        return defaultSimilarityChecker;
+    }
+
+    public void setDefaultSimilarityChecker(final SimilarityChecker pDefaultSimilarityChecker) {
+        defaultSimilarityChecker = pDefaultSimilarityChecker;
+    }
+
+    public void setDefaultQualityScorer(final QualityScorer pDefaultQualityScorer) {
+        defaultQualityScorer = pDefaultQualityScorer;
+    }
+
+    public void setDefaultSpectrumComparator(final ClusterComparator pDefaultSpectrumComparator) {
+        defaultSpectrumComparator = pDefaultSpectrumComparator;
+    }
+
+    public void setDefaultClusteringEngineFactory(final IClusteringEngineFactory pDefaultClusteringEngineFactory) {
+        defaultClusteringEngineFactory = pDefaultClusteringEngineFactory;
+    }
+
+    public void setDefaultConsensusSpectrumBuilder(final ConsensusSpectrumBuilder pDefaultConsensusSpectrumBuilder) {
+         defaultConsensusSpectrumBuilder = pDefaultConsensusSpectrumBuilder;
+    }
+
+    public ConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
+        if (defaultConsensusSpectrumBuilder == null) {
+            defaultConsensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder();
+        }
+         return defaultConsensusSpectrumBuilder;
     }
 
     public Comparator<ISpectralCluster> getDefaultSpectrumComparator() {
         return defaultSpectrumComparator;
     }
 
-    public Class<? extends IntensityNormalizer> getNormalizerClass() {
-        return normalizerClass;
-    }
-
-    public void setNormalizerClass(Class<? extends IntensityNormalizer> normalizerClass) {
-        this.normalizerClass = normalizerClass;
-    }
-
-    public Class<? extends ConsensusSpectrumBuilder> getConsensusSpectrumBuilderClass() {
-        return consensusSpectrumBuilderClass;
-    }
-
-    public void setConsensusSpectrumBuilderClass(Class<? extends ConsensusSpectrumBuilder> consensusSpectrumBuilderClass) {
-        this.consensusSpectrumBuilderClass = consensusSpectrumBuilderClass;
-    }
-
-    public Class<? extends SimilarityChecker> getSimilarityCheckerClass() {
-        return similarityCheckerClass;
-    }
-
-    public void setSimilarityCheckerClass(Class<? extends SimilarityChecker> similarityCheckerClass) {
-        this.similarityCheckerClass = similarityCheckerClass;
-    }
-
-    public Class<? extends IClusteringEngine> getClusteringEngineClass() {
-        return clusteringEngineClass;
-    }
-
-    public void setClusteringEngineClass(Class<? extends IClusteringEngine> clusteringEngineClass) {
-        this.clusteringEngineClass = clusteringEngineClass;
-    }
 
     public QualityScorer getDefaultQualityScorer() {
         return defaultQualityScorer;
+    }
+
+    public IClusteringEngineFactory getDefaultClusteringEngineFactory() {
+        if (defaultClusteringEngineFactory == null)
+            defaultClusteringEngineFactory = ClusteringEngine.getClusteringEngineFactory();
+        return defaultClusteringEngineFactory;
     }
 }

@@ -12,7 +12,7 @@ import java.math.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality {
+public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksHolder {
 
 
 
@@ -44,4 +44,21 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality {
      * @return  !null value - lazily built
      */
     public BigInteger asMajorPeakBits();
+
+    /**
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     * @return
+     */
+     public IPeaksSpectrum asMajorPeaks();
+
+    /**
+      * does the concensus spectrum contin this is a major peak
+      * @param mz   peak as int
+      * @return  true if so
+      */
+     public boolean containsMajorPeak(int mz);
+
+
+
 }

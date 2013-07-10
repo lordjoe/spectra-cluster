@@ -29,4 +29,23 @@ public interface IClusteringEngine {
      */
     public boolean mergeClusters();
 
+    /**
+     * nice for debugging to name an engine
+     * @return  possibly null name
+     */
+    public String getName();
+
+    /**
+     * nice for debugging to name an engine
+     * @param pName   possibly null name
+     */
+    public void setName(final String pName);
+
+    /**
+     * total number of clusters including queued clustersToAdd
+     * @return
+     */
+    public int size();
+
+
 }

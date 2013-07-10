@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
  * @version $Id$
  */
 public class FrankEtAClusterEngineTest {
-     private ConsensusSpectrumBuilder consensusSpectrumBuilder;
+     private FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {

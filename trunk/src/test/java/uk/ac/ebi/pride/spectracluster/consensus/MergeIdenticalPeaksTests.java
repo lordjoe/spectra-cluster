@@ -25,8 +25,8 @@ public class MergeIdenticalPeaksTests {
         peaks.add(new Peak(123.48F, 30, 1));
 
         peaks.add(new Peak(223.0F, 10, 1));
-        peaks.add(new Peak(223.1F, 20, 1));
-        peaks.add(new Peak(223.4F, 30, 1));
+        peaks.add(new Peak(223.05F, 20, 1));
+        peaks.add(new Peak(223.07F, 30, 1));
 
         consensusSpectrumBuilder = new  FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
     }

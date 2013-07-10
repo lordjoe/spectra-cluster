@@ -24,6 +24,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
     private double qualityMeasure = BAD_QUALITY_MEASURE;
     private BigInteger majorBits;
+    private Set<Integer> majorPeakMZ = new HashSet<Integer>();
 
     /**
      * simple copy constructor
@@ -89,12 +90,63 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     protected BigInteger buildMajorBits() {
         BigInteger ret = BigInteger.ZERO;
-        final IPeaksSpectrum highestNPeaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
+        final IPeaksSpectrum highestNPeaks = asMajorPeaks();
         final List<IPeak> iPeaks = ((PeaksSpectrum) highestNPeaks).internalGetPeaks();
         for (IPeak pk : iPeaks) {
             ret = ret.setBit((int) pk.getMz());
         }
         return ret;
+    }
+
+    /**
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     * @return
+     */
+    @Override
+    public IPeaksSpectrum asMajorPeaks() {
+        return getHighestNPeaks(MAJOR_PEAK_NUMBER);
+    }
+
+    /**
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
+     * @return
+     */
+    @Override
+    public int[] asMajorPeakMZs() {
+        guaranteeMajorPeaks();
+        final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
+        Arrays.sort(peaks);
+        int[] ret = new int[peaks.length];
+        for (int i = 0; i < ret.length; i++) {
+             ret[i] = peaks[i];
+
+        }
+        return ret;
+    }
+
+    protected void guaranteeMajorPeaks() {
+        if(majorPeakMZ.isEmpty()) {
+             IPeaksSpectrum peaks = asMajorPeaks();
+            int index = 0;
+            for(IPeak peak : peaks.getPeaks())  {
+                majorPeakMZ.add(  (int)peak.getMz());
+            }
+          }
+    }
+
+    /**
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Override
+    public boolean containsMajorPeak(final int mz) {
+        guaranteeMajorPeaks();
+        return majorPeakMZ.contains(mz);
     }
 
     protected void makeAdvancedCalculations() {
