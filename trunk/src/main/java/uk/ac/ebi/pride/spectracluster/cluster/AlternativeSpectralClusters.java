@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -379,6 +380,43 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         }
 
     }
+
+
+
+    /**
+     * write out the data as a .clustering file
+     *
+     * @param out place to append
+     */
+    @Override
+    public void appendClustering(Appendable out) {
+        int indent = 0;
+
+        try {
+            out.append("=Cluster=\n");
+            out.append("av_precursor_mz=" + String.format("%10.3f",getPrecursorMz()).trim());
+            out.append("\n");
+            out.append("av_precursor_intens=" + String.format("%10.3f",getPrecursorMz()).trim());
+            out.append("\n");
+
+
+            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]" );
+            out.append("\n");
+
+            for (ISpectrum spec : getClusteredSpectra()) {
+                out.append("SPEC\t");
+                out.append(spec.getId());
+                out.append("\ttrue\n");
+
+            }
+          }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
 
     /**
      * do not add begin and end cluster - useful for rebuilding a mgf

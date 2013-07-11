@@ -15,6 +15,10 @@ import java.util.*;
  */
 public class ClusteringEngineMain {
 
+    private static String name = "PeakMatchClustering";
+    private static String description = "Describe Me";
+
+
     private long readTimeMillisec;
     public ClusteringEngineMain() {
     }
@@ -71,6 +75,7 @@ public class ClusteringEngineMain {
 
 
         saveClusters(clusters1,inputFile);
+        saveClustersAsClusterings(clusters1,inputFile);
 
 
         end = System.currentTimeMillis();
@@ -104,6 +109,50 @@ public class ClusteringEngineMain {
             if(out != null)
                 out.close();
         }
+    }
+    /**
+     * write clusters to a file in the default directory with the extension .cgf
+     * @param pClusters1  !null list of clusters
+     * @param pInputFile  !null input file
+     */
+    protected void saveClustersAsClusterings(final List<ISpectralCluster> pClusters1, final File pInputFile) {
+
+        if(pClusters1.size() == 0)
+            return;
+        String outName = pInputFile.getName()  + ".clustering";
+        PrintWriter out =  null;
+        try {
+           out = new PrintWriter(new FileWriter(outName)) ;
+
+            appendClusteringHeaders(out);
+
+
+            for (ISpectralCluster iSpectralCluster : pClusters1) {
+                iSpectralCluster.appendClustering(out);
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+        finally {
+            if(out != null)
+                out.close();
+        }
+    }
+
+    /**
+     * add the headers needed by a clustering file
+     * @param pOut  !null output
+     */
+    protected void appendClusteringHeaders(final PrintWriter pOut) {
+        pOut.append("name=" + name + "\n");
+        final SimilarityChecker defaultSimilarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        pOut.append("similarity_method=" + defaultSimilarityChecker.getClass().getSimpleName() + "\n");
+        pOut.append("threshold=" + defaultSimilarityChecker.getDefaultThreshold() + "\n");
+        pOut.append("fdr=" + "0" + "\n"); // todo what is this?
+        pOut.append("description=" +  description + "\n");
+        pOut.append("\n");
     }
 
     /**

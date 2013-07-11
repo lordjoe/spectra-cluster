@@ -20,6 +20,46 @@ public class ClusterUtilities {
         return ID_TO_CLUSTER.get(id);
     }
 
+
+    /**
+     * return a list of any peptides found with duplicates
+     *
+     * @return as above
+     */
+    public static List<String> getPeptideList(List<ISpectrum> spectra) {
+        List<String> petides = new ArrayList<String>();
+        for (ISpectrum spec : spectra) {
+            if (spec instanceof IPeptideSpectrumMatch) {
+                String peptide = ((IPeptideSpectrumMatch) spec).getPeptide();
+                if (peptide == null || peptide.length() == 0)
+                    continue;
+                String[] items = peptide.split(";");
+                petides.addAll(Arrays.asList(items));
+             }
+
+        }
+        return petides;
+    }
+
+    /**
+     * return the most common peptides (first if equally commmon) or ""
+     * if no peptides found
+     *
+     * @return as above
+     */
+    public static String mostCommonPeptides(List<ISpectrum> spectra) {
+        final List<String> peptideList = getPeptideList(spectra);
+        StringBuilder sb = new StringBuilder();
+        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+        for (String s : stringsByOccurance) {
+            if(sb.length() > 0)
+                sb.append(",");
+            sb.append(s) ;
+        }
+        return sb.toString();
+    }
+
+
     /**
      * return the peaks sorted by intensity
      *
@@ -128,43 +168,6 @@ public class ClusterUtilities {
     public static void clearClusters() {
         ID_TO_CLUSTER.clear();
     }
-    /**
-     * get a cluster given an id building it as needed
-     *
-     * @param id !null or empty id
-     * @return !null cluster
-     */
-//    public static ISpectralCluster getCluster(String id,int charge) {
-//        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
-//        if(ret != null)   {    // already exists
-//            if(ret.getPrecursorCharge() != charge)
-//                throw new IllegalStateException("cannot change charge on a cluster");
-//            return ret;
-//        }
-//        ret = new SpectralCluster(id, charge);
-//        ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
-//        return ret;
-//    }
-
-    /**
-     * get a cluster given an id building it as needed
-     *
-     * @param id !null or empty id
-     * @return !null cluster
-     */
-//    public static ISpectralCluster getCLuster(String id, double mz, int charge, IPeak[] peaks) {
-//        ISpectralCluster ret = ID_TO_CLUSTER.get(id);
-//          if(ret != null)   {    // already exists
-//              if(ret.getCharge() != charge)
-//                  throw new IllegalStateException("cannot change charge on a cluster");
-//              throw new UnsupportedOperationException("Is this a legal case??"); // ToDo better check spectra ...
-//             // return ret;
-//          }
-//         ret = new SingleSpectrum(id, mz, charge, peaks).asCluster();
-//         ID_TO_CLUSTER.put(id, ret) ; // remember this custer so id not reused
-//         return ret;
-//    }
-//
 
     /**
      * binn the mz range finding the highest peaks in each bin
@@ -223,5 +226,37 @@ public class ClusterUtilities {
 
     }
 
+    /**
+     * make a list of mx values comma separated as a string
+     *
+     * @param spec !null spectrun
+     * @return as above
+     */
+    public static String buildMZString(final ISpectrum spec) {
+        StringBuilder sb = new StringBuilder();
+        for (IPeak pk : spec.getPeaks()) {
+           if(sb.length() > 0)
+               sb.append(",");
+            sb.append(String.format("%10.3f",pk.getMz()).trim());
+        }
+        return sb.toString();
 
+    }
+
+    /**
+     * make a list of mx values comma separated as a string
+     *
+     * @param spec !null spectrun
+     * @return as above
+     */
+    public static String buildIntensityString(final ISpectrum spec) {
+        StringBuilder sb = new StringBuilder();
+        for (IPeak pk : spec.getPeaks()) {
+           if(sb.length() > 0)
+               sb.append(",");
+            sb.append(String.format("%10.5f",pk.getIntensity()).trim());
+        }
+        return sb.toString();
+
+    }
 }

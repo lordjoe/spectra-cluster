@@ -66,7 +66,20 @@ public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalen
     public void append(Appendable out);
 
 
+
+    /**
+       * write out the data as a .cgf fragment
+       *
+       * @param out place to append   // todo move out of SpectralCLustering
+       */
     public void appendSpectra(Appendable out) ;
+
+    /**
+       * write out the data as a .clustering fragment
+       *
+       * @param out place to append     // todo move out of SpectralCLustering
+       */
+      public void appendClustering(Appendable out);
 
     /**
      * needed so copy constructors work with the interface
