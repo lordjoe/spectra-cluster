@@ -14,9 +14,6 @@ import java.util.*;
  * @date 10/05/13
  */
 public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalent<ISpectralCluster>,Comparable<ISpectralCluster>,IMajorPeaksHolder  {
-
-    // only highest quality spectra used for concensus
-    public static final int NUMBER_SPECTRA_FOR_CONSENSUS = 10;
     /**
      * Get cluster id
      */

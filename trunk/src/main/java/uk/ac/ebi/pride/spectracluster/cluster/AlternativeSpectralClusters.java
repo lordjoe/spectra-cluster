@@ -6,13 +6,14 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class AlternativeSpectralClusters implements ISpectralCluster, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
     protected static String concensusId(ISpectralCluster... copied) {
         StringBuilder sb = new StringBuilder();
@@ -49,24 +50,76 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
 
     private final String id;
     private ISpectrum consensusSpectrum;
-    private ISpectrum highestQualitySpectrum;
+    // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
+    // quality spectra - these can be use to build a concensus of quality
+    // Note all adds and removes are done by registering as a SpectrumHolderListener
+    private final SpectralQualityHolder qualityHolder;
     private final List<ISpectralCluster> constitutingClusters = new ArrayList<ISpectralCluster>();
     private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
+    private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
+    private boolean locked;
 
     public AlternativeSpectralClusters(ISpectralCluster... copied) {
         this.id = concensusId(copied);
         constitutingClusters.addAll(Arrays.asList(copied));
-        this.highestQualitySpectrum = getHighestQualitySpectrum(copied);
+        qualityHolder = new SpectralQualityHolder();
+        addSpectrumHolderListener(qualityHolder);
         this.consensusSpectrumBuilder = getCommonConsensusSpectrumBuilder(copied);
         Set<ISpectrum> holder = new HashSet<ISpectrum>();
         for (ISpectralCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
-        clusteredSpectra.addAll(holder);
+        for (ISpectrum spec : holder) {
+            addSpectra(spec);
+        }
         Collections.sort(clusteredSpectra);
         this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(this);
+        locked = true; // now we are immutable
+    }
 
+
+    /**
+     * add a change listener
+     * final to make sure this is not duplicated at multiple levels
+     *
+     * @param added non-null change listener
+     */
+    @Override
+    public final void addSpectrumHolderListener(SpectrumHolderListener added) {
+        if (!m_SpectrumHolderListeners.contains(added))
+            m_SpectrumHolderListeners.add(added);
+    }
+
+    /**
+     * remove a change listener
+     *
+     * @param removed non-null change listener
+     */
+    @Override
+    public final void removeSpectrumHolderListener(SpectrumHolderListener removed) {
+        while (m_SpectrumHolderListeners.contains(removed))
+            m_SpectrumHolderListeners.remove(removed);
+    }
+
+
+    /**
+     * notify any state change listeners - probably should
+     * be protected but is in the interface to form an event cluster
+     *
+     * @param oldState
+     * @param newState
+     * @param commanded
+     */
+    protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
+        if (m_SpectrumHolderListeners.isEmpty())
+            return;
+        for (SpectrumHolderListener listener : m_SpectrumHolderListeners) {
+            if (isAdd)
+                listener.onSpectraAdd(this, spectra);
+            else
+                listener.onSpectraRemove(this, spectra);
+        }
     }
 
 
@@ -140,12 +193,9 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
      */
     @Override
     public ISpectrum getHighestQualitySpectrum() {
-        return highestQualitySpectrum;
+        return qualityHolder.getHighestQualitySpectrum();
     }
 
-    protected void setHighestQualitySpectrum(final ISpectrum pHighestQualitySpectrum) {
-        highestQualitySpectrum = pHighestQualitySpectrum;
-    }
 
     @Override
     public ISpectrum getConsensusSpectrum() {
@@ -157,23 +207,23 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
      * this should be protected but it needs to be used by spectral clustering so that
      * guarantee clean can be byPassed
      *
-     * @return  exactly the current concensus spectrum
+     * @return exactly the current concensus spectrum
      */
     @Override
     public ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrum;
-     }
+    }
 
     /**
-       * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-       * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-       *
-       * @return
-       */
-      @Override
-      public int[] asMajorPeakMZs() {
-          return getConsensusSpectrum().asMajorPeakMZs();
-      }
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
+     * @return
+     */
+    @Override
+    public int[] asMajorPeakMZs() {
+        return getConsensusSpectrum().asMajorPeakMZs();
+    }
 
 
     @Override
@@ -183,7 +233,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -199,7 +248,17 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
 
     @Override
     public void addSpectra(ISpectrum... merged) {
-        throw new UnsupportedOperationException("Cannot change AlternativeSpectralClusters");
+        if(locked)
+            throw new IllegalStateException("Cannot change AlternativeSpectralClusters");
+        if (merged != null && merged.length > 0) {
+
+            for (ISpectrum spectrumToMerge : merged) {
+                if (!clusteredSpectra.contains(spectrumToMerge)) {
+                    clusteredSpectra.add(spectrumToMerge);
+                }
+            }
+            notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
+        }
     }
 
     @Override
@@ -395,7 +454,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster,InternalSpe
     @Override
     public boolean containsMajorPeak(final int mz) {
         for (ISpectralCluster constitutingCluster : constitutingClusters) {
-            if(constitutingCluster.containsMajorPeak(mz))
+            if (constitutingCluster.containsMajorPeak(mz))
                 return true;
         }
         return false;
