@@ -21,5 +21,18 @@ public interface ISpectrumHolder {
      */
     public void removeSpectra(ISpectrum... removed);
 
+    /**
+     * add a change listener
+     * final to make sure this is not duplicated at multiple levels
+     *
+     * @param added non-null change listener
+     */
+    public  void addSpectrumHolderListener(SpectrumHolderListener added);
 
+    /**
+     * remove a change listener
+     *
+     * @param removed non-null change listener
+     */
+    public void removeSpectrumHolderListener(SpectrumHolderListener removed) ;
 }
