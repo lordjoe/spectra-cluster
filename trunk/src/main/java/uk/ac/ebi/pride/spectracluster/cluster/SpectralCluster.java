@@ -356,7 +356,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     }
 
     /**
-     * write out the data as an MGF file
+     * write out the data as a CGF file
      *
      * @param out place to append
      */
@@ -387,6 +387,47 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
 
     }
+
+
+    /**
+     * write out the data as a .clustering file
+     *
+     * @param out place to append
+     */
+    @Override
+    public void appendClustering(Appendable out) {
+        int indent = 0;
+
+        try {
+            out.append("=Cluster=\n");
+            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
+            out.append("\n");
+            out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
+            out.append("\n");
+
+
+            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+            out.append("\n");
+
+            out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
+            out.append("\n");
+            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
+            out.append("\n");
+
+            for (ISpectrum spec : getClusteredSpectra()) {
+                out.append("SPEC\t");
+                out.append(spec.getId());
+                out.append("\ttrue\n");
+
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
 
     /**
      * do not add begin and end cluster - useful for rebuilding a mgf
