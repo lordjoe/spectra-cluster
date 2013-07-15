@@ -38,8 +38,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
-        final ISpectrum[] specs = clusteredSpectra1.toArray(new ISpectrum[clusteredSpectra1.size()]);
-        addSpectra(specs);
+        addSpectra(clusteredSpectra1);
 
     }
 
@@ -224,6 +223,16 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         return clusteredSpectra;
     }
 
+    /**
+     * convenience method to all a list not individual spectra
+     * @param merged !null list to add
+     */
+    @Override
+    public void addSpectra( List<ISpectrum> merged) {
+         addSpectra(merged.toArray(new ISpectrum[merged.size()]));
+    }
+
+
     @Override
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
@@ -289,10 +298,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
         }
 
-        if (true)
-            System.out.println("Need better compare");
-        //          throw new UnsupportedOperationException("Fix This"); // This should never happen
-        return 0;
+        int hash1 = hashCode();
+        int hash2 = o.hashCode();
+        if(hash1 != hash2)
+            return hash1 < hash2 ? -1 : 0;
+
+         return 0;
     }
 
 

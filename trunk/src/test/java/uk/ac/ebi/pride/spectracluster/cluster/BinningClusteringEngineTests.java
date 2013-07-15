@@ -37,7 +37,7 @@ public class BinningClusteringEngineTests {
             clusteringEngine.addClusters(sc);
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!clusteringEngine.processClusters()) {
                 break;
             }
@@ -74,14 +74,14 @@ public class BinningClusteringEngineTests {
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!clusteringEngine.processClusters()) {
                 break;
             }
         }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!binningEngine.processClusters()) {
                 break;
             }
@@ -142,14 +142,14 @@ public class BinningClusteringEngineTests {
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!clusteringEngine.processClusters()) {
                 break;
             }
         }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!binningEngine.processClusters()) {
                 break;
             }

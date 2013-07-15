@@ -43,7 +43,7 @@ public class ClusteringEngineTests {
 //        }
         long endNewEngine = System.currentTimeMillis();
         double delSec = (endNewEngine - start) / 1000.0;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!oldClusteringEngine.processClusters()) {
                 break;
             }

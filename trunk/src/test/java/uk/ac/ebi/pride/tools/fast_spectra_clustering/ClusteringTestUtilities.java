@@ -122,6 +122,8 @@ public class ClusteringTestUtilities {
         return readSpectrumsFromResource(SAMPLE_MGF_FILE);
     }
 
+
+
     /**
      * read a resource mgf as a list of spectra
      *
@@ -135,6 +137,7 @@ public class ClusteringTestUtilities {
             List<Spectrum> spectra;
             URL testFile = ClusteringTestUtilities.class.getClassLoader().getResource(resName);
 
+            assert testFile != null;
             specFile = new File(testFile.toURI());
 
             mgfFile = new MgfFile(specFile);

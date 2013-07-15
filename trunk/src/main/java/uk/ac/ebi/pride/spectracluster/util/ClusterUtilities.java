@@ -2,22 +2,69 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
-import java.util.concurrent.*;
+
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterUtilities
- *
+ *    a lits of stateless static functions for manipulating clusters, lists of clusters
+ *    and performing other common chores
  * @author Steve Lewis
  * @date 5/10/13
  */
 public class ClusterUtilities {
-    private static final Map<String, ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>();
+//    private static final Map<String, ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>();
+//
+//    public static ISpectralCluster getById(String id) {
+//        return ID_TO_CLUSTER.get(id);
+//    }
+//
+//    /**
+//      * use when going to a completely new cluster set - say in a reducer
+//      */
+//     public static void clearClusters() {
+//         ID_TO_CLUSTER.clear();
+//     }
 
-    public static ISpectralCluster getById(String id) {
-        return ID_TO_CLUSTER.get(id);
+
+    /**
+     *  take out all clusters consisting of a single spectrum and return them as a list
+     *  - engines will do this as a step in reclustering
+     * @param clusters !null   a list of clusters - this WILL be modified
+     * @return !null list of clusters containing a single spectrum
+     */
+     public static List<ISpectralCluster> removeSingleSpectrumClusters(List<ISpectralCluster> clusters) {
+         return removeSingleSpectrumClustersSizedLessThan( clusters,1);
+     }
+
+    /**
+     *  take out all clusters sized les shtne size and return them as a list of single spectrum clusters
+     *  - engines will do this as a step in reclustering
+     * @param pClusters  !null   a list of clusters - this WILL be modified
+     * @param size - clusters sized less than or equal to this will be removed and returned as single spectrum clusters
+     * @return !null list of clusters containing a single spectrum
+     */
+    public static List<ISpectralCluster> removeSingleSpectrumClustersSizedLessThan(final List<ISpectralCluster> pClusters, final int size) {
+        List<ISpectralCluster> retained = new ArrayList<ISpectralCluster>();
+        List<ISpectralCluster> asSingleSpectra = new ArrayList<ISpectralCluster>();
+        for (ISpectralCluster cluster : pClusters) {
+            if(cluster.getClusteredSpectraCount() <= size)   {
+                final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                for (ISpectrum spectrum : clusteredSpectra) {
+                    asSingleSpectra.add(spectrum.asCluster()); // di not retain but return as one spectrum clusters
+                }
+            }
+            else {
+                retained.add(cluster); // large enough keep it
+            }
+        }
+        pClusters.clear();
+        pClusters.addAll(retained);
+
+        return asSingleSpectra;
     }
 
 
@@ -162,12 +209,6 @@ public class ClusterUtilities {
         return holder;
     }
 
-    /**
-     * use when going to a completely new cluster set - say in a reducer
-     */
-    public static void clearClusters() {
-        ID_TO_CLUSTER.clear();
-    }
 
     /**
      * binn the mz range finding the highest peaks in each bin
@@ -259,4 +300,106 @@ public class ClusterUtilities {
         return sb.toString();
 
     }
+
+
+    /**
+     * merge clusters among themselves returning a list of surviving clusters which will replace mergable
+     * @param mergable  !null list of clusters
+     * @param similarityChecker !null simil;atity checker
+     * @param maxMZDIfference  max difference to consider merging
+     * @return !null list of new clusters
+     */
+     public static  List<ISpectralCluster> mergeClusters(List<ISpectralCluster> mergable,SimilarityChecker similarityChecker,double maxMZDIfference) {
+         List<ISpectralCluster> retained = new ArrayList<ISpectralCluster>();
+         // clusters need to be compared with all clusters below them
+         for (ISpectralCluster cluster : mergable) {
+             double currentMZ = cluster.getPrecursorMz();
+             double minimimMergableMZ = currentMZ - maxMZDIfference;
+             ISpectralCluster mergeWith = null;
+             if(retained.isEmpty())  {   // start with the first cluster
+                 retained.add(cluster);
+                 continue;
+             }
+
+             // start at the top mz cluster
+             for (int index = retained.size() - 1; index >= 0; index--) {
+                 ISpectralCluster test = retained.get(index);
+                 if (test.getPrecursorMz() < minimimMergableMZ)
+                     break; // no more to consider
+                 final ISpectrum cs1 = test.getConsensusSpectrum();
+                 double similarity =  similarityChecker.assessSimilarity(cs1, cluster.getConsensusSpectrum());
+                if(similarity >= similarityChecker.getDefaultThreshold())   {
+                    mergeWith = test;
+                    break; // found who to merge with
+                }
+
+             }
+             if(mergeWith == null) {
+                 retained.add(cluster); // nothing to merge with so keep the cluster
+             }
+             else {  // merge with a close enough cluster
+                 mergeWith.addSpectra(cluster.getClusteredSpectra());
+             }
+         }
+         // make sure the retained are still in mz order
+         Collections.sort(retained);
+         return retained;
+     }
+
+
+    /**
+     * take a collection of clusters - presumably with clustered and another group - maybe
+     * single spectrun clusters - that fact is not important but the groups sould be distinct
+     * merge where possible and return the list of not merged spectra
+     * @param mergable !null list of clusters - the clusters will change but not change in number
+     * @param singles  !null list of single spectra
+     * @param similarityChecker  !null similarity
+     * @param maxMZDIfference  ! maxMZ difference to look at for merging
+     * @return   !null list of non-merged clusters from singles
+     */
+     public static  List<ISpectralCluster> mergeClustersWithSingleSpectra(List<ISpectralCluster> mergable,List<ISpectralCluster> singles,SimilarityChecker similarityChecker,double maxMZDIfference) {
+         List<ISpectralCluster> retainedSingleSpectra = new ArrayList<ISpectralCluster>();
+         int startIndex = 0;
+         // clusters need to be compared with all clusters below them
+         for (ISpectralCluster cluster : singles) {
+             double currentMZ = cluster.getPrecursorMz();
+             double minimimMergableMZ = currentMZ - maxMZDIfference;
+             ISpectralCluster mergeWith = null;
+             // start at the top mz cluster
+             for (int index = startIndex; index > mergable.size(); index++) {
+                 ISpectralCluster test = mergable.get(index);
+                 if(index == startIndex)  {
+                     if (test.getPrecursorMz() < minimimMergableMZ)   {
+                         startIndex++;
+                         continue; // try again
+                     }
+                 }
+                double distance =  similarityChecker.assessSimilarity(test.getConsensusSpectrum(),cluster.getConsensusSpectrum());
+                if(distance <= similarityChecker.getDefaultThreshold())   {
+                    mergeWith = test;
+                    break; // found who to merge with
+                }
+
+             }
+             if(mergeWith == null) {
+                 retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
+             }
+             else {  // merge with a close enough cluster
+                 // note this may disturb the order of the cluster list but should not stop
+                 // the algorithm from working
+                 mergeWith.addSpectra(cluster.getClusteredSpectra());
+             }
+         }
+
+
+          // make sure the mergable are still in mz order
+         Collections.sort(mergable);
+
+
+          // make sure the retainedSingleSpectra are still in mz order
+         Collections.sort(retainedSingleSpectra);
+         return retainedSingleSpectra;
+     }
+
+
 }

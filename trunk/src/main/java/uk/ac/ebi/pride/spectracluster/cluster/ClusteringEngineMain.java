@@ -65,13 +65,17 @@ public class ClusteringEngineMain {
         }
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
-        for (int i = 0; i < 2; i++) {
+        engine.processClusters(); // force pass 1 - then we can recluster
+        List<ISpectralCluster> pass1 = engine.getClusters();     // look at results
+        List<ISpectralCluster> pass2 = null;
+        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!engine.processClusters()) {
                 break;
             }
+             pass2 = engine.getClusters();  // look at results
         }
 
-        final List<ISpectralCluster> clusters1 = engine.getClusters();
+        List<ISpectralCluster> clusters1 = engine.getClusters();     // get results
 
 
         saveClusters(clusters1,inputFile);

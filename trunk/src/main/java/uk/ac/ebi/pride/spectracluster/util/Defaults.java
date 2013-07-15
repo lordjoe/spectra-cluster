@@ -16,7 +16,12 @@ import java.util.*;
  */
 public class Defaults {
 
+    public static final int DEFAULT_NUMBER_RECLUSTERING_PASSES = 2;
+
+
     public static final Defaults INSTANCE = new Defaults();
+
+    private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
     private SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
 
@@ -41,6 +46,14 @@ public class Defaults {
 
     }
 
+
+    public int getDefaultNumberReclusteringPasses() {
+        return numberReclusteringPasses;
+    }
+
+    public void setDefaultNumberReclusteringPasses(final int pNumberReclusteringPasses) {
+        numberReclusteringPasses = pNumberReclusteringPasses;
+    }
 
     public IntensityNormalizer getDefaultIntensityNormalizer() {
         return normalizer;
