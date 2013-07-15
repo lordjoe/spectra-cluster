@@ -95,4 +95,11 @@ public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalen
     public boolean containsMajorPeak(int mz);
 
 
+    /**
+     * Add a list of spectrum to cluster
+     */
+    public void addSpectra(List<ISpectrum> added);
+
+
+
 }

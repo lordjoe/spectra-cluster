@@ -71,9 +71,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         for (ISpectralCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
-        for (ISpectrum spec : holder) {
-            addSpectra(spec);
-        }
+        addSpectra(new ArrayList<ISpectrum>(holder));
         Collections.sort(clusteredSpectra);
         this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(this);
         locked = true; // now we are immutable
@@ -242,14 +240,27 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return new ArrayList<ISpectrum>(clusteredSpectra);
     }
 
+
     @Override
     public int getClusteredSpectraCount() {
         return clusteredSpectra.size();
     }
 
+
+    /**
+     * convenience method to all a list not individual spectra
+     *
+     * @param merged !null list to add
+     */
+    @Override
+    public void addSpectra(List<ISpectrum> merged) {
+        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
+    }
+
+
     @Override
     public void addSpectra(ISpectrum... merged) {
-        if(locked)
+        if (locked)
             throw new IllegalStateException("Cannot change AlternativeSpectralClusters");
         if (merged != null && merged.length > 0) {
 
@@ -382,7 +393,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
 
-
     /**
      * write out the data as a .clustering file
      *
@@ -394,13 +404,13 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
 
         try {
             out.append("=Cluster=\n");
-            out.append("av_precursor_mz=" + String.format("%10.3f",getPrecursorMz()).trim());
+            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
             out.append("\n");
-            out.append("av_precursor_intens=" + String.format("%10.3f",getPrecursorMz()).trim());
+            out.append("av_precursor_intens=" + String.format("%10.3f", getPrecursorMz()).trim());
             out.append("\n");
 
 
-            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]" );
+            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
             out.append("\n");
 
             for (ISpectrum spec : getClusteredSpectra()) {
@@ -409,7 +419,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
                 out.append("\ttrue\n");
 
             }
-          }
+        }
         catch (IOException e) {
             throw new RuntimeException(e);
 

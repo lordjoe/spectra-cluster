@@ -32,7 +32,7 @@ public class CountedString implements Comparable<CountedString> {
                 currentCount++;
             }
             else {
-                if (!"".equals(current))    // ignore empty
+                if (!current.isEmpty())    // ignore empty
                     holder.add(new CountedString(current, currentCount));
 
                 currentCount = 1;
@@ -40,8 +40,9 @@ public class CountedString implements Comparable<CountedString> {
             }
         }
         if (currentCount > 0) {
-            if (!"".equals(current))    // ignore empty
+            if (!current.isEmpty())    // ignore empty
                 holder.add(new CountedString(current, currentCount));
+
         }
         CountedString[] ret = new CountedString[holder.size()];
         holder.toArray(ret);

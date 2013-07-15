@@ -12,11 +12,12 @@ import java.util.*;
  */
 public interface IClusteringEngine {
 
-    /**
-     * Get clustered clusters
-     * SLewis - I think a guarantee that they are sorted by MZ is useful
+       /**
+     * Get clustered clusters sorted by MZ is useful
+     * @return !null list this will be sorted by mz a include clusters of all sizes
      */
     public List<ISpectralCluster> getClusters();
+
 
     /**
      * add some clusters

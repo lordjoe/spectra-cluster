@@ -41,6 +41,17 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
         return totalIntensity;
     }
 
+    /**
+     * return the value normalized to - especial;ly useful for total intensity normalization where
+     * we may not weed to normalize
+     *
+     * @return as above
+     */
+    @Override
+    public double getNormalizedValue() {
+        return getTotalIntensity();
+    }
+
     @Override
     public List<IPeak> normalizePeaks(List<IPeak> peaks) {
 		// get the max intensity

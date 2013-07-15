@@ -25,7 +25,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * The final m/z threshold to use to combine
      * peaks as identical.
      */
-    private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
+   // private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
     /**
      * The step size to use when iteratively
      * merging identical peaks. This is not
@@ -90,7 +90,10 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         if (spectra == null || spectra.isEmpty())
             return null;
 
-        int numberSpectra = spectra.size();
+        if (spectra.size() == 1)
+             return spectra.get(0);   // ok 1 is a concensus
+
+           int numberSpectra = spectra.size();
         // if there's only one spectrum in the list, return this spectrum
 //        if (numberSpectra == 0) {   // was 1
 //            ISpectrum singleSpectrum = spectra.get(0);
@@ -106,11 +109,18 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         // Note alllPeaks is sorted by MZ
 
         // merge identical peaks in the consensus spectrum
-        List<IPeak> mergedConsensusSpectrum;
-        if (numberSpectra > 1)
+        List<IPeak> mergedConsensusSpectrum = null;
+        if (numberSpectra > 1) {
             mergedConsensusSpectrum = mergeIdenticalPeaks(allPeaks);
-        else
-            mergedConsensusSpectrum = intensityNormalizer.normalizePeaks(allPeaks); // assume 1 is not normailized
+        }
+        else {
+            // normalize as needed
+            if(!(intensityNormalizer instanceof  TotalIntensityNormalizer) ||
+                    intensityNormalizer.getNormalizedValue() != spectra.get(0).getTotalIntensity())
+                mergedConsensusSpectrum = intensityNormalizer.normalizePeaks(allPeaks); // assume 1 is not normailized
+            else
+                mergedConsensusSpectrum = allPeaks; // already normalized
+        }
 
         // adapt the peak intensities using the following formula: I = I * (0.95 + 0.05 * (1 + pi))^5 where pi is the peaks probability
         mergedConsensusSpectrum = adaptPeakIntensities(mergedConsensusSpectrum, spectra.size());
