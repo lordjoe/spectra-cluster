@@ -14,6 +14,29 @@ public class ConcensusSpectrumDistance implements ClusterDistance {
 
     public static final int NUMBER_COMPARED_PEAKS = 32;
     public static final double MZ_EQUIVALENT_RANGE = 0.3;
+    public static final String VERSION = "1.0";
+
+
+    /**
+       * return a name which should not change
+       *
+       * @return !null name
+       */
+      @Override
+      public String getName() {
+          return getClass().getSimpleName();
+      }
+
+      /**
+       * return a version number - this may be updated over time
+       *
+       * @return !null version
+       */
+      @Override
+      public String getCurrentVersion() {
+          return VERSION;
+      }
+
 
     /**
      * measure the distance between two clusters - a value of 0 says the clusters are the same or equivalent.

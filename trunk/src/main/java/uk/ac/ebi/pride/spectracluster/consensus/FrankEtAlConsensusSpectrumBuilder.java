@@ -15,6 +15,7 @@ import java.util.*;
  * @author jg
  */
 public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
+    public static final String VERSION = "1.0";
 
     public static final int SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS = 5;
     /**
@@ -53,6 +54,27 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
     public void setIntensityNormalizer(IntensityNormalizer intensityNormalizer) {
         this.intensityNormalizer = intensityNormalizer;
     }
+
+
+    /**
+       * return a name which should not change
+       *
+       * @return !null name
+       */
+      @Override
+      public String getName() {
+          return getClass().getSimpleName();
+      }
+
+      /**
+       * return a version number - this may be updated over time
+       *
+       * @return !null version
+       */
+      @Override
+      public String getCurrentVersion() {
+          return VERSION;
+      }
 
 
     /**

@@ -59,6 +59,26 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     public FrankEtAlDotProduct() {
     }
 
+    /**
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return getVersion().toString();
+    }
+
     private double mzRange = DEFAULT_MZ_RANGE;
     /**
      * The algorithm version to use. By
@@ -230,7 +250,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     }
 
     public AlgorithmVersion getVersion() {
-        return version;
+        return version ;
     }
 
     public void setMzRange(double mzRange) {

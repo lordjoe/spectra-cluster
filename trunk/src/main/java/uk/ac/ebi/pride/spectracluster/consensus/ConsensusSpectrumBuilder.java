@@ -2,9 +2,8 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-
-import java.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * Creates a consensus spectrum from
@@ -14,7 +13,7 @@ import java.util.*;
  * @author Rui Wang
  *
  */
-public interface ConsensusSpectrumBuilder {
+public interface ConsensusSpectrumBuilder extends IAlgorithm {
     /**
    	 * Creates a consensus spectrum based on the
    	 * passed list of spectra.

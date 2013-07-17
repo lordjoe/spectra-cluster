@@ -54,6 +54,25 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
     private AlgorithmVersion version = AlgorithmVersion.NAT_METH_2011;
 
     /**
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return version.toString();
+    }
+    /**
      * erturn the default similarity Threshold
      *
      * @return as above
