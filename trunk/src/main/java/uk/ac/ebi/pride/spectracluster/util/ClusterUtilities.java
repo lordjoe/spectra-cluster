@@ -89,6 +89,16 @@ public class ClusterUtilities {
     }
 
     /**
+     * return a comma delimited set of most common peptides
+     * @return as above
+     */
+    public static String mostCommonPeptides(ISpectralCluster cluster) {
+        final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        String petides =  mostCommonPeptides(clusteredSpectra) ;
+        return petides;
+    }
+
+    /**
      * return the most common peptides (first if equally commmon) or ""
      * if no peptides found
      *

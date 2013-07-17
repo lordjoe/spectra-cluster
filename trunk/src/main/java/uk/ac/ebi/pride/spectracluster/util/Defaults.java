@@ -2,11 +2,13 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.datastore.*;
 import uk.ac.ebi.pride.spectracluster.normalizer.*;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 
-import java.util.*;
+import javax.sql.*;
+ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.Defaults
@@ -35,8 +37,33 @@ public class Defaults {
 
     private IClusteringEngineFactory defaultClusteringEngineFactory;
 
+    private DataSource defaultDataSource;
+
     private Defaults() {
 
+    }
+
+    public int getNumberReclusteringPasses() {
+        return numberReclusteringPasses;
+    }
+
+    public void setNumberReclusteringPasses(final int pNumberReclusteringPasses) {
+        numberReclusteringPasses = pNumberReclusteringPasses;
+    }
+
+    public IntensityNormalizer getNormalizer() {
+        return normalizer;
+    }
+
+    public synchronized DataSource getDefaultDataSource() {
+        if(defaultDataSource == null) {
+            defaultDataSource = SpringJDBCUtilities.buildDefaultDataSource();
+        }
+        return defaultDataSource;
+    }
+
+    public void setDefaultDataSource(final DataSource pDefaultDataSource) {
+        defaultDataSource = pDefaultDataSource;
     }
 
     public IClusteringEngine getDefaultClusteringEngine() {

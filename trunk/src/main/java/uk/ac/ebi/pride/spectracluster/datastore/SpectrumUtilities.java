@@ -13,6 +13,7 @@ import java.util.*;
  */
 public class SpectrumUtilities {
 
+    public static final int MAXIMUM_ENCODED_PEAKS = 250;
 
     /**
      * encode a list of peaks as would be done by mzml
@@ -22,7 +23,7 @@ public class SpectrumUtilities {
     public static List<IPeak> dataStringToPeaks(String dataStr)
     {
         List<IPeak> holder = new ArrayList<IPeak>();
-        double[] data = decodeDataString(dataStr );
+          double[] data = decodeDataString(dataStr );
         for (int i = 0; i < data.length; i += 2) {
             double mz = data[i];
             double intensity = data[i+ 1];
@@ -34,6 +35,28 @@ public class SpectrumUtilities {
     }
 
 
+
+    /**
+     * encode a list of peaks as would be done by mzml
+     * @param peaks !null list of peaks
+     * @return  !null String
+     */
+    public static List<IPeak>   filterTop250Peaks(List<IPeak> peaks)
+    {
+        List<IPeak> copy = new ArrayList<IPeak>(peaks);
+        Collections.sort(copy,PeakIntensityComparator.INSTANCE);
+        List<IPeak> holder = new ArrayList<IPeak>();
+        for (IPeak pk : copy) {
+            holder.add(pk) ;
+            if(holder.size() >= MAXIMUM_ENCODED_PEAKS)
+                break;
+        }
+        // back to mz order
+        Collections.sort(holder);
+
+         return holder;
+    }
+
     /**
      * encode a list of peaks as would be done by mzml
      * @param peaks !null list of peaks
@@ -41,15 +64,22 @@ public class SpectrumUtilities {
      */
     public static String peaksToDataString(List<IPeak> peaks)
     {
+        // we can only store 250 peaks
+        if(peaks.size() > MAXIMUM_ENCODED_PEAKS)
+            peaks = filterTop250Peaks(peaks);
+
+
         double[] data = new double[ 2 * peaks.size()] ;
-        for (int i = 0; i <  peaks.size(); i++) {
-             IPeak pk = peaks.get(i);
-            data[2 * i]  = pk.getMz();
-            data[(2 * i) + 1]  = pk.getIntensity();
+        int dataIndex = 0;
+        for (int i = 0; i <   peaks.size(); i++) {
+            IPeak pk = peaks.get(i);
+
+            data[dataIndex++]  = pk.getMz();
+            data[dataIndex++]  = pk.getIntensity();
 
         }
         String ret = encode(data);
-        return ret;
+         return ret;
     }
 
 
@@ -59,7 +89,7 @@ public class SpectrumUtilities {
       * @return  !null data
      */
     protected static double[] decodeDataString(final String pDataString ) {
-         return decodeDataString( pDataString,false) ;
+         return decodeDataString( pDataString,true) ;
     }
 
     /**
