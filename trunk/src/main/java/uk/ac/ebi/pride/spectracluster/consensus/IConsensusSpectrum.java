@@ -17,6 +17,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * IConsensusSpectrum is the default interface for objects used to
@@ -25,7 +26,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
  * adding and / or removing spectra from the consensus spectrum.
  * @author jg
  */
-public interface IConsensusSpectrum extends  ISpectrumHolder,SpectrumHolderListener {
+public interface IConsensusSpectrum extends  ISpectrumHolder,SpectrumHolderListener,IAlgorithm {
 
     /**
      * return the current spectrum represented as the data in the stored spectra

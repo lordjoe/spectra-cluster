@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * Assesses the similarity between two
@@ -11,7 +12,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
  * @author Rui Wang
  *
  */
-public interface SimilarityChecker {
+public interface SimilarityChecker extends IAlgorithm {
     /**
      * return the default similarity Threshold  this is
      * the threshold to add a spectrum to a cluster

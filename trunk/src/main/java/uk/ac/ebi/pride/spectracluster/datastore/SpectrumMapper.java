@@ -9,6 +9,7 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.SpectrumMapper
+ * Handle most of the work of inserting and retrieving spectra from a database
  * User: Steve
  * Date: 7/15/13
  */
@@ -17,15 +18,20 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
 
     public static final String SELECT_ALL_SPECTRA_STATEMENT = "SELECT * FROM <database>.spectrums  ";
     public static final String SELECT_SPECTRUM_STATEMENT = SELECT_ALL_SPECTRA_STATEMENT + " WHERE id = ?";
-    public static final String INSERT_SPECTRUM_STATEMENT = "Insert  INTO <database>.spectrums  " +
+    // insert except where key exists
+    public static final String INSERT_SPECTRUM_STATEMENT = "Insert IGNORE INTO <database>.spectrums  " +
             "(id,precursor_charge,precursor_mz,peptide,annotation,peaks) " +
-            "VALUES  (?,?,?,?,?,? )";
+            "VALUES  (?,?,?,?,?,? ) ";
 
 
     public static final int MAX_ANNOTATION_LENGTH = 256;
     public static final int MAX_PEPTIDE_LENGTH = 100;
     public static final int MAX_ID_LENGTH = 16;
 
+    /**
+     * statement to create a spectrums table in the database <database>  every
+     * group of clustered spectra is in its own database
+     */
     public static final String TABLE_CREATE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS <database>.spectrums  ( \n" +
                     "  id VARCHAR(" + MAX_ID_LENGTH + ")   NOT NULL  , \n" +
@@ -35,7 +41,9 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
                     "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
                     "  PRIMARY KEY (id)\n" +
-                    ")  ";
+                    ");" +
+                    "CREATE INDEX idx_charge on   <database>.spectrums(precursor_charge);" +   // index charge
+                    "CREATE INDEX idx_mz on   <database>.spectrums(precursor_mz); ";      // index mz
 
     /**
      * convert a spectrum to a suitable set of objects for an insert query

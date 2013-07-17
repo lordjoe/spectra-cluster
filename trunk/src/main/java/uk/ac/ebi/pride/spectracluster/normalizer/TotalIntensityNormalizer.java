@@ -18,6 +18,8 @@ import java.util.*;
   *
  */
 public class TotalIntensityNormalizer implements IntensityNormalizer {
+    public static final String VERSION = "1.0";
+
 	private static final double DEFAULT_TOTAL_INTENSITY = 1000;
 
     private final double totalIntensity;
@@ -36,6 +38,27 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
      public TotalIntensityNormalizer(double total) {
          totalIntensity = total;
      }
+
+    /**
+       * return a name which should not change
+       *
+       * @return !null name
+       */
+      @Override
+      public String getName() {
+          return getClass().getSimpleName();
+      }
+
+      /**
+       * return a version number - this may be updated over time
+       *
+       * @return !null version
+       */
+      @Override
+      public String getCurrentVersion() {
+          return VERSION;
+      }
+
 
     public double getTotalIntensity() {
         return totalIntensity;

@@ -77,7 +77,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
      * @param tableName name of a known table
      */
     public void guaranteeTable(String tableName) {
-        SimpleJdbcTemplate template = getTemplate();
+         SimpleJdbcTemplate template = getTemplate();
         try {
             List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + getDatabaseName() + "." + tableName, SpringJDBCUtilities.FIELD_MAPPER);
             if (fields.size() > 0)
@@ -86,6 +86,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
         catch (DataAccessException ignored) {
 
         }
+        guaranteeDatabaseExists();
         String creator = m_NameToCreateStatement.get(tableName);
         if (creator == null)
             throw new IllegalArgumentException("cannot create table " + tableName);
@@ -96,13 +97,18 @@ public class WorkingClusterDatabase implements ITemplateHolder {
 
 
     /**
-     * drop all data
+     * make sure the tables exist
+     */
+    public void guaranteeDatabaseExists( ) {
+       SimpleJdbcTemplate template = getTemplate();
+       template.update("CREATE DATABASE IF NOT EXISTS " + getDatabaseName());
+    }
+
+    /**
+     * make sure the tables exist
      */
     public void guaranteeDatabase( ) {
 
-        SimpleJdbcTemplate template = getTemplate();
-        //    template.update("DROP SCHEMA IF EXISTS " + SCHEMA_NAME);
-        //     template.update("CREATE SCHEMA  " + SCHEMA_NAME);
 
         for (int i = 0; i < TABLES.length; i++) {
             String table = TABLES[i];

@@ -15,8 +15,32 @@ import java.util.Collections;
  *
  */
 public class OriginalSignalToNoiseChecker implements QualityScorer {
+    public static final String VERSION = "1.0";
 
     public static final int NUMBER_SPECTRA_TO_CHECK = 6;
+
+
+
+    /**
+       * return a name which should not change
+       *
+       * @return !null name
+       */
+      @Override
+      public String getName() {
+          return getClass().getSimpleName();
+      }
+
+      /**
+       * return a version number - this may be updated over time
+       *
+       * @return !null version
+       */
+      @Override
+      public String getCurrentVersion() {
+          return VERSION;
+      }
+
 	/**
 	 * Calculates a spectrum's signal-to-noise ratio
 	 * by taking the 2nd-6th highest peak's intensity

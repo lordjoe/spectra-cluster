@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.normalizer;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -9,7 +10,7 @@ import java.util.*;
  *
  * @author Rui Wang
  */
-public interface IntensityNormalizer {
+public interface IntensityNormalizer  extends IAlgorithm {
 
     /**
      * return the value normalized to - especial;ly useful for total intensity normalization where
