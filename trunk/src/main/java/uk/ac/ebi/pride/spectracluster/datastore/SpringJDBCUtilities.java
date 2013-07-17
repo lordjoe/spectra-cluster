@@ -3,8 +3,6 @@ package uk.ac.ebi.pride.spectracluster.datastore;
 import org.apache.commons.dbcp.*;
 import org.springframework.jdbc.*;
 import org.springframework.jdbc.core.simple.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.sql.*;
 import java.io.*;
@@ -19,10 +17,30 @@ import java.util.prefs.*;
  */
 public class SpringJDBCUtilities {
     public static final ParameterizedRowMapper<String> STRING_MAPPER = new StringMapper();
-    public static final ParameterizedRowMapper<ISpectrum> SPECTRUM_MAPPER = new SpectrumMapper();
-    public static final ParameterizedRowMapper<ISpectralCluster> CLUSTER_MAPPER = new ClusterMapper();
-//    public static final ParameterizedRowMapper<IModifiedPeptide> MODIFIED_PEPTIDE_MAPPER = new ModifiedClusterMapper();
+    public static final SpectrumMapper SPECTRUM_MAPPER = new SpectrumMapper();
+   // public static final ParameterizedRowMapper<ISpectralCluster> CLUSTER_MAPPER = new ClusterMapper();
+    //    public static final ParameterizedRowMapper<IModifiedPeptide> MODIFIED_PEPTIDE_MAPPER = new ModifiedClusterMapper();
     public static final ParameterizedRowMapper<FieldDescription> FIELD_MAPPER = new FieldDescriptionMapper();
+
+    /**
+     * build a default data source - this needs to be better and more portable
+     *
+     * @return
+     */
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    public static DataSource buildDefaultDataSource() {
+        Map<String, String> holder = new HashMap<String, String>();
+        final String host = "localhost";
+        holder.put(SpringJDBCUtilities.DATA_HOST_PARAMETER, host);
+        holder.put(SpringJDBCUtilities.DATA_USER_PARAMETER, "pride-spectra");
+        String pw = "pride";
+        holder.put(SpringJDBCUtilities.DATA_PASSWORD_PARAMETER, pw);
+        holder.put(SpringJDBCUtilities.DATA_DRIVER_CLASS_PARAMETER, "com.mysql.jdbc.Driver");
+        DataSource ds = SpringJDBCUtilities.buildDataSource(holder);
+        return ds;
+    }
+
+
     private static boolean gUsingMySQL = false;
 
     public static boolean isUsingMySQL() {
@@ -35,13 +53,14 @@ public class SpringJDBCUtilities {
 
 
     public static String trimIfNotNUll(String s) {
-        if(s == null)
+        if (s == null)
             return null;
         return s.trim();
     }
 
     private static final Map<Class<?>, ParameterizedRowMapper> gMappers = new HashMap<Class<?>, ParameterizedRowMapper>();
 
+    @SuppressWarnings("unchecked")
     public static <T> ParameterizedRowMapper<T> getMapper(Class<T> cls) {
         return (ParameterizedRowMapper<T>) gMappers.get(cls);
     }
@@ -53,12 +72,13 @@ public class SpringJDBCUtilities {
      * @param tableName !null table name
      * @param creator   !null statement to create table
      */
-    public static void guaranteeTable(SimpleJdbcTemplate template, String tableName, String creator) {
+    public static void guaranteeTable(SimpleJdbcTemplate template,    String tableName, String creator) {
         try {
-            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + tableName, SpringJDBCUtilities.FIELD_MAPPER);
+            List<SpringJDBCUtilities.FieldDescription> fields = template.query( "describe " + tableName, SpringJDBCUtilities.FIELD_MAPPER);
             if (fields.size() > 0)
                 return;
-            template.update(creator);
+
+               template.update(creator);
         }
         catch (BadSqlGrammarException ex) {
             template.update(creator);
@@ -107,8 +127,7 @@ public class SpringJDBCUtilities {
      */
     public boolean isTablePresent(SimpleJdbcTemplate template, String tableName) {
         String[] tables = listTables(template);
-        for (int i = 0; i < tables.length; i++) {
-            String table = tables[i];
+        for (String table : tables) {
             if (table.equalsIgnoreCase(tableName))
                 return true;
         }
@@ -223,7 +242,7 @@ public class SpringJDBCUtilities {
     public static final String DATA_DRIVER_CLASS_PARAMETER = "org.systemsbiology.xtandem.Datasource.DriverClass";
 
 
-    public static String buildConnectionString(final Map<String,String> holder) {
+    public static String buildConnectionString(final Map<String, String> holder) {
         String host = holder.get(DATA_HOST_PARAMETER);
         String database = holder.get(DATA_DATABASE_PARAMETER);
         String connString = "jdbc:mysql://" + host + "/";
@@ -232,7 +251,7 @@ public class SpringJDBCUtilities {
         return connString;
     }
 
-    public static DataSource buildDataSource(final Map<String,String> holder) {
+    public static DataSource buildDataSource(final Map<String, String> holder) {
         String user = holder.get(DATA_USER_PARAMETER);
         String password = holder.get(DATA_PASSWORD_PARAMETER);
         String driverclass = holder.get(DATA_DRIVER_CLASS_PARAMETER);
@@ -389,6 +408,7 @@ public class SpringJDBCUtilities {
      * @param table  !null existing table
      * @return last id
      */
+    @SuppressWarnings("UnusedParameters")
     public static int getLastId(ITemplateHolder holder, String table) {
         SimpleJdbcTemplate template = holder.getTemplate();
         if (isUsingMySQL())
@@ -399,7 +419,7 @@ public class SpringJDBCUtilities {
 
 
     public static String getRootPassword(String host) {
-          //return "j4m35c0ok";
+        //return "j4m35c0ok";
         Preferences prefs = Preferences.userNodeForPackage(SpringJDBCUtilities.class);
         String hostRootPassword = host + "_root_password";
         String def = "<none>";
@@ -413,11 +433,11 @@ public class SpringJDBCUtilities {
     public static void setHostPassword(String host, String passwordInClear) {
         Preferences prefs = Preferences.userNodeForPackage(SpringJDBCUtilities.class);
         String hostRootPassword = host + "_root_password";
-         prefs.put(hostRootPassword,  passwordInClear);
+        prefs.put(hostRootPassword, passwordInClear);
     }
 
     public static DataSource getRootDataSource(String host) {
-        Map<String,String> holder = new HashMap<String, String>();
+        Map<String, String> holder = new HashMap<String, String>();
         holder.put(DATA_HOST_PARAMETER, host);
         holder.put(DATA_USER_PARAMETER, "root");
         // hack to get root privilegse remotely
@@ -448,7 +468,7 @@ public class SpringJDBCUtilities {
         }
         else {
             File[] split = splitFile(filename, (long) (MAX_SINGLE_LOAD * 0.8));
-     //       ElapsedTimer et = new ElapsedTimer();
+            //       ElapsedTimer et = new ElapsedTimer();
             db.update("ALTER TABLE " + table + " DISABLE KEYS;");
             for (int i = 0; i < split.length; i++) {
                 File file = split[i];
@@ -458,9 +478,9 @@ public class SpringJDBCUtilities {
                         "LOAD Data LOCAL INFILE \'" + adjFileName + "\' into table " + table
                         //     + "UNIQUE_CHECKS=1;"
                 );
- //               if (i % 50 == 0)
- //                   et.showElapsed("loaded part " + i);
- //               et.reset();
+                //               if (i % 50 == 0)
+                //                   et.showElapsed("loaded part " + i);
+                //               et.reset();
             }
             db.update("ALTER TABLE " + table + " ENABLE KEYS;");
         }

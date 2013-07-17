@@ -1,7 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
+import org.springframework.dao.*;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.simple.*;
 
+import javax.sql.*;
 import java.util.*;
 
 /**
@@ -11,63 +14,61 @@ import java.util.*;
  * User: Steve
  * Date: 7/15/13
  */
-public class WorkingClusterDatabase {
+public class WorkingClusterDatabase implements ITemplateHolder {
 
-    public static final int MAX_PEAKS_PER_SPECTRUM = 250;
+    public static final int MAX_PEAKS_PER_SPECTRUM = 500;
     public static final int MAX_PEAKS_STRING_LENGTH = MAX_PEAKS_PER_SPECTRUM * 8;
 
     public static final String[] TABLES =
             {
                     "spectrums",
-                    "cluster_to_spectrums",
-                    "clusters",
-                    "spectrum_properties",
-                     };
+                    //             "clusters",
+            };
 
     public static final String[] CREATE_STATEMENTS =
             {
                     SpectrumMapper.TABLE_CREATE_STATEMENT,
-                      "CREATE TABLE  IF NOT EXISTS `average_mz_to_fragments` (\n" +
-                            "  `mz` int(11) NOT NULL,\n" +
-                            "  `sequence` varchar(" + MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
-                            "  `real_mass` double default NULL,\n" +
-                            "  `missed_cleavages` int(11) DEFAULT NULL,\n" +
-                            "  PRIMARY KEY  (`mz`,`sequence`)\n" +
-                            ")",
-                    ClusterMapper.TABLE_CREATE_STATEMENT,
-                         "CREATE TABLE IF NOT EXISTS `fragment_protein` (\n" +
-                            "  `sequence` varchar(255) NOT NULL,\n" +
-                            "  `protein_id` int(11) NOT NULL,\n" +
-                            "  PRIMARY KEY (`sequence`,`protein_id`)\n" +
-                            ")",
-                    "CREATE TABLE  IF NOT EXISTS `load_fragments` (\n" +
-                            "  `id` int(11) NOT NULL,\n" +
-                            "  `sequence` varchar(" + MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
-                            "  `protein_id` int(11) NOT NULL,\n" +
-                            "  `start_location` int(11) NOT NULL,\n" +
-                            "  `average_mass` double DEFAULT NULL,\n" +
-                            "  `iaverage_mass` int(11) DEFAULT NULL,\n" +
-                            "  `mono_mass` double DEFAULT NULL,\n" +
-                            "  `imono_mass` int(11) DEFAULT NULL,\n" +
-                            "  `missed_cleavages` int(11) DEFAULT NULL,\n" +
-                            "  PRIMARY KEY (`id`)\n" +
-                            ")",
-              };
+                    //           ClusterMapper.TABLE_CREATE_STATEMENT,
+            };
 
 
+    public static final String SELECT_ALL_CLUSTERS_STATEMENT = "SELECT * FROM clusters  ";
+    @SuppressWarnings("UnusedDeclaration")
+    public static final String SELECT_CLUSTER_STATEMENT = SELECT_ALL_CLUSTERS_STATEMENT + " WHERE id = ?";
+
+
+    private final String databaseName;
+    private final JdbcTemplate m_OldTemplate;
+    private final DataSource dataSource;
     private final SimpleJdbcTemplate m_Template;
     private final Map<String, String> m_NameToCreateStatement = new HashMap<String, String>();
 
-    public WorkingClusterDatabase(final SimpleJdbcTemplate pTemplate) {
-        m_Template = pTemplate;
+    public WorkingClusterDatabase(String databaseName, final DataSource ds) {
+        dataSource = ds;
+        m_Template = new SimpleJdbcTemplate(ds);
+        m_OldTemplate = new  JdbcTemplate(ds);
+        this.databaseName = databaseName;
+
         for (int i = 0; i < TABLES.length; i++) {
             m_NameToCreateStatement.put(TABLES[i], CREATE_STATEMENTS[i]);
 
         }
     }
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public JdbcTemplate getOldTemplate() {
+        return m_OldTemplate;
+    }
+
     public SimpleJdbcTemplate getTemplate() {
         return m_Template;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
     }
 
     /**
@@ -76,26 +77,36 @@ public class WorkingClusterDatabase {
      * @param tableName name of a known table
      */
     public void guaranteeTable(String tableName) {
+        SimpleJdbcTemplate template = getTemplate();
+        try {
+            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + getDatabaseName() + "." + tableName, SpringJDBCUtilities.FIELD_MAPPER);
+            if (fields.size() > 0)
+                return;
+        }
+        catch (DataAccessException ignored) {
+
+        }
         String creator = m_NameToCreateStatement.get(tableName);
         if (creator == null)
             throw new IllegalArgumentException("cannot create table " + tableName);
-        SimpleJdbcTemplate template = getTemplate();
-        SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
+        creator =  creator.replace("<database>", getDatabaseName());
+        final int update = getOldTemplate().update(creator);
+     //   SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
     }
 
 
     /**
      * drop all data
      */
-    public void createDatabase() {
+    public void guaranteeDatabase( ) {
 
         SimpleJdbcTemplate template = getTemplate();
         //    template.update("DROP SCHEMA IF EXISTS " + SCHEMA_NAME);
         //     template.update("CREATE SCHEMA  " + SCHEMA_NAME);
 
-        for (int i = 0; i < CREATE_STATEMENTS.length; i++) {
-            String stmt = CREATE_STATEMENTS[i];
-            template.update(stmt);
+        for (int i = 0; i < TABLES.length; i++) {
+            String table = TABLES[i];
+            guaranteeTable(table);
 
         }
     }
@@ -108,7 +119,7 @@ public class WorkingClusterDatabase {
         SimpleJdbcTemplate template = getTemplate();
         for (int i = 0; i < TABLES.length; i++) {
             String table = TABLES[i];
-            template.update("delete from  " + table);
+            template.update("delete from  " + getDatabaseName() + "." + table);
 
         }
     }
