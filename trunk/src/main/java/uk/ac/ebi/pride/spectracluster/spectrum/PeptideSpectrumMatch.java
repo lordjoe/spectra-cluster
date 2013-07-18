@@ -19,6 +19,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
 
     private final String peptide;
+    private final String annotation;
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
     private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
@@ -35,10 +36,12 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         super(spectrum, spectrum.getPeaks());
         if (spectrum instanceof IPeptideSpectrumMatch) {
             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
         }
         else {
             peptide = null;
-        }
+            annotation = null;
+         }
     }
 
     /**
@@ -50,21 +53,36 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         super(spectrum, inpeaks);
         if (spectrum instanceof IPeptideSpectrumMatch) {
-            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-        }
-        else {
-            peptide = null;
-        }
-        makeAdvancedCalculations();
+             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+             annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
+         }
+         else {
+             peptide = null;
+             annotation = null;
+          }
+         makeAdvancedCalculations();
     }
 
     public PeptideSpectrumMatch(String id,
-                                String peptideX,
+                                String peptide,
                                 int precursorCharge,
                                 float precursorMz,
                                 List<IPeak> peaks) {
+        this(id,peptide, precursorCharge, precursorMz, peaks,null);
+
+    }
+
+    public PeptideSpectrumMatch(String id,
+                                String peptide,
+                                int precursorCharge,
+                                float precursorMz,
+                                List<IPeak> peaks,
+                                String pAnnotation
+    ) {
         super(id, precursorCharge, precursorMz, peaks);
-        this.peptide = peptideX;
+        this.peptide = peptide;
+        this.annotation = pAnnotation;
+
         makeAdvancedCalculations();
 
     }
@@ -155,10 +173,21 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
 
+    /**
+     * return scored peptide - maybe null
+     */
+    @Override
     public String getPeptide() {
         return peptide;
     }
 
+    /**
+     * return text in the id not peptide or id
+     */
+    @Override
+    public String getAnnotation() {
+        return annotation;
+    }
 
     /**
      * return a spectrum normalized to the specific total intensity

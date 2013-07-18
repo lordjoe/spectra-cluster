@@ -41,9 +41,10 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
                     "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
                     "  PRIMARY KEY (id)\n" +
-                    ");" +
-                    "CREATE INDEX idx_charge on   <database>.spectrums(precursor_charge);" +   // index charge
-                    "CREATE INDEX idx_mz on   <database>.spectrums(precursor_mz); ";      // index mz
+                    ");"
+            //        "CREATE INDEX idx_charge on   <database>.spectrums(precursor_charge);" +   // index charge
+            //        "CREATE INDEX idx_mz on   <database>.spectrums(precursor_mz); "
+            ;      // index mz
 
     /**
      * convert a spectrum to a suitable set of objects for an insert query
@@ -114,7 +115,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
         String peptide = SpringJDBCUtilities.trimIfNotNUll(rs.getString("peptide"));
         List<IPeak> peaks = SpectrumUtilities.dataStringToPeaks(peaksStr);
 
-        ISpectrum ret = new PeptideSpectrumMatch(id, peptide, precursor_charge, precursor_mz, peaks);
+        ISpectrum ret = new PeptideSpectrumMatch(id, peptide, precursor_charge, precursor_mz, peaks,annotation);
         return ret;
     }
 
