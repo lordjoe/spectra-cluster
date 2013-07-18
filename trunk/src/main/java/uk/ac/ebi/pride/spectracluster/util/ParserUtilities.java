@@ -270,6 +270,7 @@ public class ParserUtilities {
     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
+        String annotation = null;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -314,12 +315,13 @@ public class ParserUtilities {
 
                 if (line.contains("=")) {
                     if (line.startsWith("TITLE=")) {
-                        titleLine = line; // we may look for sequences later
+                        titleLine = line;
                         title = buildMGFTitle(line);
                         int index = line.indexOf(",sequence=");
-                        if (index > -1)
+                        if (index > -1 ) {
                             sequence = line.substring(index + ",sequence=".length()).trim();
-                        line = inp.readLine();
+                            }
+                         line = inp.readLine();
                         continue;
                     }
                     if (line.startsWith("PEPMASS=")) {
@@ -368,7 +370,8 @@ public class ParserUtilities {
                             peptide,
                             dcharge,
                             (float) mz,
-                            holder
+                            holder,
+                            title // save title - sequence as annotation
                     );
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
