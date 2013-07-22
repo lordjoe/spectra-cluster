@@ -4,8 +4,10 @@ import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 /**
@@ -450,6 +452,78 @@ public class ParserTests {
 
         boolean equivalent = sc.equivalent(sc2);
         Assert.assertTrue(equivalent);
+
+    }
+
+    /**
+     * test reading an MGF Scan and that all ids are unique
+     *
+     * @param pIs
+     */
+    @Test
+    public void testClusterIterator() throws Exception {
+        LineNumberReader is = new LineNumberReader(new StringReader(CLUSTER_STRING));
+        ISpectralCluster[] scs = ParserUtilities.readSpectralCluster(is);
+        is.close();
+        Assert.assertEquals(1, scs.length);
+
+
+        is = new LineNumberReader(new StringReader(CLUSTER_STRING));
+        CGFSpectrumIterable mgi = new CGFSpectrumIterable(is);
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        for (ISpectralCluster sc : mgi) {
+            holder.add(sc);
+        }
+        Assert.assertEquals(1, holder.size());
+
+        ISpectralCluster sc = scs[0];
+        ISpectralCluster sc2 = holder.get(0);
+
+        boolean equivalent = sc.equivalent(sc2);
+        Assert.assertTrue(equivalent);
+
+    }
+
+    /**
+     * test reading an MGF Scan conventionally and with an iterator
+     *
+     * @param pIs
+     */
+    @Test
+    public void testSpectrumIterator() throws Exception {
+
+        List<? extends ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
+
+           // load a file contains a list of clusters
+        URL url = null;
+        url = ClusteringEngineMgfTests.class.getClassLoader().getResource(ClusteringTestUtilities.SAMPLE_MGF_FILE);
+        if (url == null) {
+            throw new IllegalStateException("no file for input found!");
+        }
+        File inputFile = null;
+        try {
+            inputFile = new File(url.toURI());
+        }
+        catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+
+        }
+
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        MGFSpectrumIterable itr = new MGFSpectrumIterable(inputFile);
+        for(ISpectrum sp : itr)   {
+            holder.add(sp);
+        }
+        Assert.assertEquals(holder.size(),spectra.size());
+
+        Collections.sort(holder);
+        Collections.sort(spectra);
+
+        // bettrer be the same
+        for (int i = 0; i < holder.size(); i++) {
+                 Assert.assertTrue(holder.get(i).equivalent(spectra.get(i)) );
+
+        }
 
     }
 

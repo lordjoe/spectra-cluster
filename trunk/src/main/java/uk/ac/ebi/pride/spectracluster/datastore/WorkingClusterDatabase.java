@@ -16,7 +16,8 @@ import java.util.*;
  */
 public class WorkingClusterDatabase implements ITemplateHolder {
 
-    public static final int MAX_PEAKS_PER_SPECTRUM = 500;
+    public static final int MAX_IN_MEMORY_SPECTRA = 15000;
+    public static final int MAX_PEAKS_PER_SPECTRUM = 256;
     public static final int MAX_PEAKS_STRING_LENGTH = MAX_PEAKS_PER_SPECTRUM * 8;
 
     public static final String[] TABLES =
@@ -46,7 +47,8 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     public WorkingClusterDatabase(String databaseName, final DataSource ds) {
         dataSource = ds;
         m_Template = new SimpleJdbcTemplate(ds);
-        m_OldTemplate = new  JdbcTemplate(ds);
+        m_OldTemplate = new JdbcTemplate(ds);
+        m_OldTemplate.setMaxRows(MAX_IN_MEMORY_SPECTRA);
         this.databaseName = databaseName;
 
         for (int i = 0; i < TABLES.length; i++) {
@@ -77,7 +79,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
      * @param tableName name of a known table
      */
     public void guaranteeTable(String tableName) {
-         SimpleJdbcTemplate template = getTemplate();
+        SimpleJdbcTemplate template = getTemplate();
         try {
             List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + getDatabaseName() + "." + tableName, SpringJDBCUtilities.FIELD_MAPPER);
             if (fields.size() > 0)
@@ -90,30 +92,73 @@ public class WorkingClusterDatabase implements ITemplateHolder {
         String creator = m_NameToCreateStatement.get(tableName);
         if (creator == null)
             throw new IllegalArgumentException("cannot create table " + tableName);
-        creator =  creator.replace("<database>", getDatabaseName());
+        creator = creator.replace("<database>", getDatabaseName());
         final int update = getOldTemplate().update(creator);
-     //   SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
+        //   SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
     }
 
 
     /**
      * make sure the tables exist
      */
-    public void guaranteeDatabaseExists( ) {
-       SimpleJdbcTemplate template = getTemplate();
-       template.update("CREATE DATABASE IF NOT EXISTS " + getDatabaseName());
+    public void guaranteeDatabaseExists() {
+        SimpleJdbcTemplate template = getTemplate();
+
+        final String dmyDB = getDatabaseName();
+        String[] dbMames = SpringJDBCUtilities.queryForStrings(template, "SHOW DATABASES");
+        for (int i = 0; i < dbMames.length; i++) {
+            if (dmyDB.equalsIgnoreCase(dbMames[i]))
+                return;  // already exists
+        }
+        final int update = template.update("CREATE DATABASE IF NOT EXISTS " + dmyDB);
+        if (update == 0)
+            //noinspection UnnecessaryReturnStatement
+            return; // no change
+        else
+            //noinspection UnnecessaryReturnStatement
+            return;
     }
 
     /**
      * make sure the tables exist
      */
-    public void guaranteeDatabase( ) {
+    public void guaranteeDatabase() {
 
 
         for (int i = 0; i < TABLES.length; i++) {
             String table = TABLES[i];
             guaranteeTable(table);
 
+        }
+        guaranteeIndices();
+    }
+
+
+    public static final String FIND_INDEX_STATEMENT = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS " +
+            "WHERE table_schema=? AND table_name=? AND index_name=?";
+
+    public static final String BUILD_INDEX_STATEMENT = "CREATE INDEX <index_name> on <full_table_name>(<column_to_index>);";
+
+
+    public void guaranteeIndices() {
+        final String db1DatabaseName = getDatabaseName();
+        final SimpleJdbcTemplate template = getTemplate();
+        String tableName = "spectrums";
+        String columnName = "precursor_charge";
+        indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
+        columnName = "precursor_mz";
+        indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
+   //     columnName = "peptide";
+   //     indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
+    }
+
+    protected void indexColumnIfNeeded(final SimpleJdbcTemplate template, final String pDb1DatabaseName, final String pTableName, final String pColumnName) {
+        String indexName = pTableName + "_" + pDb1DatabaseName + "_" + pColumnName;
+        final int indexCount = template.queryForInt(FIND_INDEX_STATEMENT, pDb1DatabaseName, pTableName, indexName);
+        if (indexCount == 0) {
+            String fullTable = pDb1DatabaseName + "." + pTableName;
+            String createIndexUpdate = BUILD_INDEX_STATEMENT.replace("<full_table_name>", fullTable).replace("<column_to_index>", pColumnName).replace("<index_name>", indexName);
+            int done = template.update(createIndexUpdate);
         }
     }
 

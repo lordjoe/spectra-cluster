@@ -11,30 +11,46 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
  */
 public interface ISpectrumDataStore {
 
+
     /**
      * return a spectrum stored with a particular id
      * @param id !null id
-     * @return   possibly null spectrum
+     * @return   possibly null cluster
      */
-    public ISpectrum getById(String id);
+    public ISpectrum getSpectrumById(String id);
+
+    /**
+     * iterate over all spectra in the database
+     * @return
+     */
+    public Iterable<? extends ISpectrum> getAllSpectra( );
+
+    /**
+     * store one spectrum in the database
+     * @param stored
+     */
+    public void storeSpectrum(ISpectrum stored);
 
 
     /**
      *
-     * @param minMz  >0 <= maxMz  spectra returned have mz >= this
-     * @param mazMz  >= minMZ spectras returned have mz < this unless it == minMz
+     * @param minMz  >0 <= maxMz  clusters returned have mz >= this
+     * @param mazMz  >= minMZ clusters returned have mz < this unless it == minMz
      * @return  !null iterable
      */
-    public Iterable<ISpectrum> getByMz(double minMz,double mazMz);
+    public Iterable<? extends ISpectrum> getSpectrumByMz(double minMz, double mazMz);
 
     /**
      *
-     * @param minMz  >0 <= maxMz  spectra returned have mz >= this
-     * @param mazMz  >= minMZ spectras returned have mz < this unless it == minMz
+     * @param minMz  >0 <= maxMz  clusters returned have mz >= this
+     * @param mazMz  >= minMZ clusters returned have mz < this unless it == minMz
      * @param charge  0 meaqns all charges otherwise a specific charge is called for
       * @return  !null iterable
      */
-    public Iterable<ISpectrum> getByMzAndCharge(double minMz,double mazMz,int charge);
+    public Iterable<? extends ISpectrum> getSpectrumByMzAndCharge(double minMz, double mazMz, int charge);
+
+
+
 
 
     /**
@@ -42,7 +58,7 @@ public interface ISpectrumDataStore {
      * @param peptide !null !empty peptide
      * @return   !null iterable
      */
-    public Iterable<ISpectrum> getBPeptide(String peptide);
+    public Iterable<? extends ISpectrum> getByPeptide(String peptide);
 
 
 }

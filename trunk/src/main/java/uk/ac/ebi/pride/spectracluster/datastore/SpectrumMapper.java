@@ -17,7 +17,13 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
 
 
     public static final String SELECT_ALL_SPECTRA_STATEMENT = "SELECT * FROM <database>.spectrums  ";
-    public static final String SELECT_SPECTRUM_STATEMENT = SELECT_ALL_SPECTRA_STATEMENT + " WHERE id = ?";
+    public static final String SELECT_WITH_PEPTIDE = "SELECT * FROM <database>.spectrums WHERE peptide = ? ORDERBY precursor_mz ";
+    @SuppressWarnings("UnusedDeclaration")
+    public static final String SELECT_WITH_CHARGE = "SELECT * FROM <database>.spectrums WHERE precursor_charge = ?  ";
+    public static final String SELECT_WITH_MZ = "SELECT * FROM <database>.spectrums WHERE precursor_mz >= ? AND precursor_mz < ? ";
+    public static final String SELECT_WITH_CHARGE_AND_MZ = "SELECT * FROM <database>.spectrums WHERE  precursor_charge = ? AND precursor_mz >= ? AND precursor_mz < ? ";
+     public static final String SELECT_SPECTRUM_STATEMENT = SELECT_ALL_SPECTRA_STATEMENT + " WHERE id = ?";
+    public static final String DELETE_SPECTRUM_STATEMENT = "DELETE FROM <database>.spectrums   WHERE id = ?";
     // insert except where key exists
     public static final String INSERT_SPECTRUM_STATEMENT = "Insert IGNORE INTO <database>.spectrums  " +
             "(id,precursor_charge,precursor_mz,peptide,annotation,peaks) " +
@@ -41,9 +47,9 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
                     "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
                     "  PRIMARY KEY (id)\n" +
-                    ");"
-            //        "CREATE INDEX idx_charge on   <database>.spectrums(precursor_charge);" +   // index charge
-            //        "CREATE INDEX idx_mz on   <database>.spectrums(precursor_mz); "
+                    ")"
+            //        "CREATE IF NOT EXISTS INDEX idx_charge_<database> on   <database>.spectrums(precursor_charge);" +   // index charge
+            //        "CREATE IF NOT EXISTS  INDEX idx_mz_<database> on   <database>.spectrums(precursor_mz); "
             ;      // index mz
 
     /**
@@ -74,7 +80,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
     }
 
 
-    public BatchPreparedStatementSetter buildBatchSetter(final List<ISpectrum> spectra) {
+    public BatchPreparedStatementSetter buildBatchSetter(final List<? extends ISpectrum> spectra) {
         return new BatchPreparedStatementSetter() {
 
             public void setValues(PreparedStatement ps, int i)

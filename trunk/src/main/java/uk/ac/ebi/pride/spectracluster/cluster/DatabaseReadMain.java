@@ -10,20 +10,21 @@ import java.io.*;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.DatabaseLoadMain
- * main to use for loading an mgf file or a directory of mgf files into a database
+ * uk.ac.ebi.pride.spectracluster.cluster.DatabaseReadMain
+ * main to use to test reading the database
  * User: Steve
  * Date: 7/5/13
  */
-public class DatabaseLoadMain {
+public class DatabaseReadMain {
 
 
     private long readTimeMillisec;
     private long storeTimeMillisec;
-    private final IMutableSpectrumDataStore database;
+    private final ISpectrumDataStore database;
+    private final List<SpectrumClusteringData> spectraData = new ArrayList<SpectrumClusteringData>();
 
 
-    public DatabaseLoadMain(String dbName) {
+    public DatabaseReadMain(String dbName) {
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         database = new SQLDataStore(dbName, ds);
     }
@@ -45,11 +46,10 @@ public class DatabaseLoadMain {
         storeTimeMillisec += pReadTimeMillisec;
     }
 
-    public IMutableSpectrumDataStore getDatabase() {
+    public ISpectrumDataStore getDatabase() {
         return database;
     }
 
-    public static final int MAX_SPECTRA_TO_PROCESS_AT_ONCE = 10000;
 
     /**
      * do the work of inserting all clusters in a file into a working database
@@ -70,7 +70,7 @@ public class DatabaseLoadMain {
         long end = System.currentTimeMillis();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
 
-        IMutableSpectrumDataStore db = getDatabase();
+        ISpectrumDataStore db = getDatabase();
 
         MGFSpectrumIterable spcit = new MGFSpectrumIterable(inputFile);
         Iterator<ISpectrum> itr = spcit.iterator();
@@ -78,35 +78,29 @@ public class DatabaseLoadMain {
         while (itr.hasNext()) {
             start = System.currentTimeMillis();
             while (itr.hasNext()) {
-                holder.add(itr.next());
-                if (holder.size() >= MAX_SPECTRA_TO_PROCESS_AT_ONCE)
-                    break;
-            }
+                final ISpectrum next = itr.next();
+                if(next instanceof  IPeptideSpectrumMatch) {
+                    spectraData.add(new SpectrumClusteringData((IPeptideSpectrumMatch)next)) ;
+                }
+               }
             end = System.currentTimeMillis();
             long del = end - start;
             addReadTimeMillisec(del);
             readTime += del;
-            // store any spectra
-            if (!holder.isEmpty()) {
-                seconds = (del / 1000);
-                min = seconds / 60;
-                System.out.println("read " + inputFile + " with " + holder.size() + " spectra in " + String.format("%10.3f", seconds).trim());
-                start = System.currentTimeMillis();
-                db.storeSpectra(holder);
-                processedSpectra += holder.size();
-                end = System.currentTimeMillis();
-                del = end - start;
-                storeTime += del;
-                addStoreTimeMillisec(del);
-                seconds = (del / 1000);
-                min = seconds / 60;
-                System.out.println("inserted " + inputFile + " with " + holder.size() + " spectra in " + String.format("%10.3f", seconds).trim());
-                holder.clear();
-            }
-        }
+          }
 
 
-      }
+        seconds = (readTime / 1000);
+        min = seconds / 60;
+        System.out.println("read " + inputFile + " with " + processedSpectra + " spectra in " + String.format("%10.3f", seconds).trim());
+
+        start = System.currentTimeMillis();
+
+
+        seconds = (storeTime / 1000);
+        min = seconds / 60;
+        System.out.println("inserted " + inputFile + " with " + processedSpectra + " spectra in " + String.format("%10.3f sec", seconds).trim());
+    }
 
 
     /**
@@ -131,38 +125,42 @@ public class DatabaseLoadMain {
         }
     }
 
+    protected List<SpectrumClusteringData> internalGetSpectraData() {
+        return spectraData;
+    }
 
     protected static void usage() {
         System.out.println("Usage database_name <mgf file or directory> ...");
     }
 
 
+    /**
+     * try to see if a medium suzed 200K spectrum can be characterized in memory
+     * @param args
+     */
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             usage();
             return;
         }
 
 
-        DatabaseLoadMain mainClusterer = new DatabaseLoadMain(args[0]);
+        DatabaseReadMain mainClusterer = new DatabaseReadMain(args[0]);
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
         double min = 0;
-        for (int i = 1; i < args.length; i++) {
-            String arg = args[i];
-            File f = new File(arg);
-            if (!f.exists())
-                throw new IllegalArgumentException("File " + arg + " does not exist");
-            if (f.isDirectory())
-                mainClusterer.processDirectory(f);
-            else
-                mainClusterer.processFile(f);
 
-            end = System.currentTimeMillis();
-            int seconds = (int) ((end - start) / 1000);
-            min = seconds / 60;
+        final ISpectrumDataStore db = mainClusterer.getDatabase();
+
+        int nSpectra = 0;
+        for( ISpectrum spc : db.getAllSpectra() ) {
+            SpectrumClusteringData clus = new SpectrumClusteringData((IPeptideSpectrumMatch)spc);
+            mainClusterer.internalGetSpectraData().add(clus);
+            nSpectra++;
         }
-        double readMin = mainClusterer.getReadTimeMillisec() / (60 * 1000);
+        end = System.currentTimeMillis();
+
+        double readMin = (end - start) / (60 * 1000);
         System.out.println("read in " + String.format("%10.2f", readMin) + " min");
         System.out.println("Processed in " + String.format("%10.2f", min - readMin) + " min");
         System.out.println("Total " + String.format("%10.2f", min) + " min");
