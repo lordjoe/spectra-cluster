@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class InMemoryDatastoreTests {
 
-    private IMutableClusterDataStore ds;
+    private IMutableSpectrumDataStore ds;
 
     @Before
     public void setUp() throws Exception {

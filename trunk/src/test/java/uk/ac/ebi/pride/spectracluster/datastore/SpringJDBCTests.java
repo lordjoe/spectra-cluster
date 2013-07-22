@@ -21,8 +21,10 @@ public class SpringJDBCTests {
        NOTE - these  tests will work only when a MYSQL database is running on local_host and
         has a user pride-spectra password pride   has enough privileges to create and delete databases
      */
+
     /**
      * this test says you have a test database built and a proper table
+     *
      * @throws Exception
      */
     @Test
@@ -46,6 +48,7 @@ public class SpringJDBCTests {
     /**
      * clear then load the database and make sure that
      * what is read back is equivalent to what is read
+     *
      * @throws Exception
      */
     @SuppressWarnings({"unchecked", "ConstantConditions"})
@@ -58,25 +61,25 @@ public class SpringJDBCTests {
         db.clearAllData();
 
 
-        Iterable<ISpectrum> allSpectra = db.getAllSpectra();
+        Iterable<? extends ISpectrum> allSpectra = db.getAllSpectra();
         if (allSpectra.iterator().hasNext())
             return; // already loaded
 
-        List<ISpectrum>   originalSpectra = (List<ISpectrum>)((List)ClusteringTestUtilities.readISpectraFromResource());
+        List<? extends ISpectrum> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        db.storeSpectra( originalSpectra);
+        db.storeSpectra(originalSpectra);
 
         allSpectra = db.getAllSpectra();
         List<ISpectrum> holder = getAllSpectra(db);
-         Collections.sort(holder);
+        Collections.sort(holder);
         Collections.sort(originalSpectra);
 
         Assert.assertEquals(holder.size(), originalSpectra.size());
 
         for (int i = 0; i < holder.size(); i++) {
-            ISpectrum orig =  originalSpectra.get(i);
-            if(orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
-                orig = new PeptideSpectrumMatch(orig,SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
+            ISpectrum orig = originalSpectra.get(i);
+            if (orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
+                orig = new PeptideSpectrumMatch(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
             }
             ISpectrum read = holder.get(i);
             Assert.assertTrue(orig.equivalent(read));
@@ -90,6 +93,7 @@ public class SpringJDBCTests {
     /**
      * load the same spectra several times into the database and make sure that there are no errors
      * or duplicates
+     *
      * @throws Exception
      */
     @SuppressWarnings({"unchecked", "ConstantConditions"})
@@ -99,20 +103,20 @@ public class SpringJDBCTests {
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         SQLDataStore db = new SQLDataStore("test", ds);
 
-         // the returns list is a List<IPeptideSpectrumMatch>
-        List<ISpectrum>   originalSpectra = (List<ISpectrum>)((List)ClusteringTestUtilities.readISpectraFromResource());
+        // the returns list is a List<IPeptideSpectrumMatch>
+        List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringTestUtilities.readISpectraFromResource());
         List<ISpectrum> holder = getAllSpectra(db);
 
         // load up as needed
-       if(holder.size() != originalSpectra.size())  {
-           db.storeSpectra( originalSpectra);
-           holder = getAllSpectra(db);
-       }
+        if (holder.size() != originalSpectra.size()) {
+            db.storeSpectra(originalSpectra);
+            holder = getAllSpectra(db);
+        }
 
 
         // try duplicate inserts
-        List<ISpectrum> tryToReinsert = CollectionUtilities.subList(holder,NUMBER_MULTIPLE_LOAD_TEST);
-        db.storeSpectra( originalSpectra);
+        List<ISpectrum> tryToReinsert = CollectionUtilities.subList(holder, NUMBER_MULTIPLE_LOAD_TEST);
+        db.storeSpectra(originalSpectra);
 
         List<ISpectrum> holder2 = getAllSpectra(db);
 
@@ -123,7 +127,7 @@ public class SpringJDBCTests {
     }
 
     private List<ISpectrum> getAllSpectra(final SQLDataStore pDb) {
-        Iterable<ISpectrum> allSpectra = pDb.getAllSpectra();
+        Iterable<? extends ISpectrum> allSpectra = pDb.getAllSpectra();
         allSpectra = pDb.getAllSpectra();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
 
@@ -140,8 +144,8 @@ public class SpringJDBCTests {
 
         SQLDataStore db = new SQLDataStore("test", ds);
 
-        final Iterable<ISpectrum> allSpectra = db.getAllSpectra();
-        List  originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        final Iterable<? extends ISpectrum> allSpectra = db.getAllSpectra();
+        List originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
 
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
@@ -156,9 +160,9 @@ public class SpringJDBCTests {
         Assert.assertEquals(holder.size(), originalSpectra.size());
 
         for (int i = 0; i < holder.size(); i++) {
-            ISpectrum orig = (ISpectrum)originalSpectra.get(i);
-            if(orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
-                orig = new PeptideSpectrumMatch(orig,SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
+            ISpectrum orig = (ISpectrum) originalSpectra.get(i);
+            if (orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
+                orig = new PeptideSpectrumMatch(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
             }
             ISpectrum read = holder.get(i);
             final boolean equivalent = orig.equivalent(read);
