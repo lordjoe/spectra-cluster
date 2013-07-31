@@ -33,4 +33,15 @@ public interface IConsensusSpectrum extends  ISpectrumHolder,SpectrumHolderListe
      * @return  !null Spectrum
      */
        public ISpectrum getConsensusSpectrum();
+
+    /**
+     * Clear the consensus spectrum.
+     */
+    public void clear();
+
+    /**
+     * Returns the number of spectra making up the consensus spectrum.
+     * @return
+     */
+    public int getSpectraCount();
 }
