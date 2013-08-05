@@ -61,8 +61,8 @@ public class ClusteringEngine implements IClusteringEngine {
     protected void guaranteeClean() {
         if (isDirty()) {
             filterClustersToAdd();
-            List<ISpectralCluster> myClustersToAdd = internalGetClustersToAdd();
-            Collections.sort(myClustersToAdd, internalGetSpectrumComparator());
+            List<ISpectralCluster> myClustersToAdd = getClustersToAdd();
+            Collections.sort(myClustersToAdd, getSpectrumComparator());
             addToClusters();
             setDirty(false);
         }
@@ -72,7 +72,7 @@ public class ClusteringEngine implements IClusteringEngine {
      * Remove clusters which are size zero
      */
     protected void filterClustersToAdd() {
-        List<ISpectralCluster> myClustersToAdd = internalGetClustersToAdd();
+        List<ISpectralCluster> myClustersToAdd = getClustersToAdd();
         List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster sc : myClustersToAdd) {
             if (sc.getClusteredSpectraCount() > 0)
@@ -109,7 +109,7 @@ public class ClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addClusters(ISpectralCluster... cluster) {
-        List<ISpectralCluster> myClustersToAdd = internalGetClustersToAdd();
+        List<ISpectralCluster> myClustersToAdd = getClustersToAdd();
         if (cluster != null) {
             myClustersToAdd.addAll(Arrays.asList(cluster));
             setDirty(true);
@@ -142,14 +142,11 @@ public class ClusteringEngine implements IClusteringEngine {
      * for further clustering
      */
     protected void addToClusters() {
-        List<ISpectralCluster> myClustersToAdd = internalGetClustersToAdd();
+        List<ISpectralCluster> myClustersToAdd = getClustersToAdd();
         List<ISpectralCluster> myClusters = internalGetClusters();
-        SimilarityChecker sCheck = internalGetSimilarityChecker();
+        SimilarityChecker sCheck = getSimilarityChecker();
 
         for (ISpectralCluster clusterToAdd : myClustersToAdd) {
-            String id = clusterToAdd.getId();
-            //        if("11".equals(id))       // debugging stuff
-            //            id = clusterToAdd.getId(); // break here
 
             ISpectralCluster mostSimilarCluster = null;
             double highestSimilarityScore = 0;
@@ -171,10 +168,7 @@ public class ClusteringEngine implements IClusteringEngine {
             if (mostSimilarCluster != null) {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
-            }
-            else {
-                //           if(clusters.size() % 10 == 0)      // debugging stuff
-                ///               System.out.println(clusterToAdd);
+            } else {
                 myClusters.add(new SpectralCluster(clusterToAdd));
             }
         }
@@ -216,7 +210,7 @@ public class ClusteringEngine implements IClusteringEngine {
         boolean modified = false;
         boolean toMerge = true;
         List<ISpectralCluster> myClusters = internalGetClusters();
-        SimilarityChecker sCheck = internalGetSimilarityChecker();
+        SimilarityChecker sCheck = getSimilarityChecker();
 
         while (toMerge) {
             toMerge = false;
@@ -279,19 +273,16 @@ public class ClusteringEngine implements IClusteringEngine {
 
     protected List<ISpectrum> findNoneFittingSpectra(ISpectralCluster cluster) {
         List<ISpectrum> noneFittingSpectra = new ArrayList<ISpectrum>();
-        SimilarityChecker sCheck = internalGetSimilarityChecker();
+        SimilarityChecker sCheck = getSimilarityChecker();
 
         if (cluster.getClusteredSpectra().size() > 1) {
-            int index = 0;
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
                 final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                     noneFittingSpectra.add(spectrum);
                 }
-                index++;
             }
         }
 
@@ -303,7 +294,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected List<ISpectralCluster> internalGetClustersToAdd() {
+    protected List<ISpectralCluster> getClustersToAdd() {
         return clustersToAdd;
     }
 
@@ -321,7 +312,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected SimilarityChecker internalGetSimilarityChecker() {
+    protected SimilarityChecker getSimilarityChecker() {
         return similarityChecker;
     }
 
@@ -330,7 +321,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected Comparator<ISpectralCluster> internalGetSpectrumComparator() {
+    protected Comparator<ISpectralCluster> getSpectrumComparator() {
         return spectrumComparator;
     }
 

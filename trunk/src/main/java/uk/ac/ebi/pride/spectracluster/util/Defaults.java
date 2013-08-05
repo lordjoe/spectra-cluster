@@ -29,11 +29,9 @@ public class Defaults {
 
     private QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
-    private ClusterComparator defaultSpectrumComparator = new ClusterComparator(defaultQualityScorer);
+    private ClusterComparator defaultSpectrumComparator = new ClusterComparator();
 
     private IntensityNormalizer normalizer = new TotalIntensityNormalizer();
-
-    private ConsensusSpectrumBuilder defaultConsensusSpectrumBuilder;
 
     private IClusteringEngineFactory defaultClusteringEngineFactory;
 
@@ -113,15 +111,8 @@ public class Defaults {
         defaultClusteringEngineFactory = pDefaultClusteringEngineFactory;
     }
 
-    public void setDefaultConsensusSpectrumBuilder(final ConsensusSpectrumBuilder pDefaultConsensusSpectrumBuilder) {
-         defaultConsensusSpectrumBuilder = pDefaultConsensusSpectrumBuilder;
-    }
-
-    public ConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
-        if (defaultConsensusSpectrumBuilder == null) {
-            defaultConsensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder();
-        }
-         return defaultConsensusSpectrumBuilder;
+    public IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
+         return new ConsensusSpectrum();
     }
 
     public Comparator<ISpectralCluster> getDefaultSpectrumComparator() {

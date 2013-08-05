@@ -26,13 +26,13 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * adding and / or removing spectra from the consensus spectrum.
  * @author jg
  */
-public interface IConsensusSpectrum extends  ISpectrumHolder,SpectrumHolderListener,IAlgorithm {
+public interface IConsensusSpectrumBuilder extends  ISpectrumHolder,SpectrumHolderListener,IAlgorithm {
 
     /**
      * return the current spectrum represented as the data in the stored spectra
      * @return  !null Spectrum
      */
-       public ISpectrum getConsensusSpectrum();
+    public ISpectrum getConsensusSpectrum();
 
     /**
      * Clear the consensus spectrum.

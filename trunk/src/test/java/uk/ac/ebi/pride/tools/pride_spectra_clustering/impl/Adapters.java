@@ -94,7 +94,9 @@ public class Adapters {
      public static  List<IPeak>  fromPeaks(List<Peak> pks) {
          List<IPeak> ret = new ArrayList<IPeak>();
          for (Peak k : pks) {
-              ret.add(fromPeak(k));
+             if (k != null) {
+                ret.add(fromPeak(k));
+             }
          }
          Collections.sort(ret)   ;
          return ret;

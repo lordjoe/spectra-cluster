@@ -27,7 +27,7 @@ import java.util.List;
 public class NewConsensusSpectrumTests {
     private static final boolean IGNORE_KNOWN_TO_FAIL = true;
 
-    private IConsensusSpectrum consensusSpectrumBuilder;
+    private IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private FrankEtAlConsensusSpectrumBuilder originalConsensusSpectrumBuilder;
     private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
     private List<String> spectrumIdsPool2 = new ArrayList<String>(Arrays.asList("291", "13480"));

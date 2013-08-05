@@ -13,7 +13,7 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalent<ISpectralCluster>,Comparable<ISpectralCluster>,IMajorPeaksHolder  {
+public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
     /**
      * Get cluster id
      */
@@ -43,6 +43,7 @@ public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalen
     /**
      * real spectrum with the highest quality - this is a
      * good way to compare clusters
+     *
      * @return !null spectrum
      */
     public ISpectrum getHighestQualitySpectrum();
@@ -66,31 +67,32 @@ public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalen
     public void append(Appendable out);
 
 
+    /**
+     * write out the data as a .cgf fragment
+     *
+     * @param out place to append   // todo move out of SpectralCLustering
+     */
+    public void appendSpectra(Appendable out);
 
     /**
-       * write out the data as a .cgf fragment
-       *
-       * @param out place to append   // todo move out of SpectralCLustering
-       */
-    public void appendSpectra(Appendable out) ;
-
-    /**
-       * write out the data as a .clustering fragment
-       *
-       * @param out place to append     // todo move out of SpectralCLustering
-       */
-      public void appendClustering(Appendable out);
+     * write out the data as a .clustering fragment
+     *
+     * @param out place to append     // todo move out of SpectralCLustering
+     */
+    public void appendClustering(Appendable out);
 
     /**
      * needed so copy constructors work with the interface
+     *
      * @return
      */
-    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() ;
+    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder();
 
     /**
      * does the concensus spectrum contin this is a major peak
-     * @param mz   peak as int
-     * @return  true if so
+     *
+     * @param mz peak as int
+     * @return true if so
      */
     public boolean containsMajorPeak(int mz);
 
@@ -99,7 +101,6 @@ public interface ISpectralCluster extends ISpectrumHolder,IPeaksHolder,Equivalen
      * Add a list of spectrum to cluster
      */
     public void addSpectra(List<ISpectrum> added);
-
 
 
 }

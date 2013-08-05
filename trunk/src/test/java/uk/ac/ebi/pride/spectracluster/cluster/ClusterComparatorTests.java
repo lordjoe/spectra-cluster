@@ -23,7 +23,7 @@ public class ClusterComparatorTests {
 
     @Before
     public void setUp() throws Exception {
-        clusterComparator = new ClusterComparator(new SignalToNoiseChecker());
+        clusterComparator = new ClusterComparator();
         originalClusterComparator = new OriginalClusterComparator(new OriginalSignalToNoiseChecker());
 
         URL url = ClusterComparatorTests.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/two_spectra.mgf");

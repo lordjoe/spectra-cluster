@@ -13,6 +13,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * @author Rui Wang
  *
  */
+@Deprecated
 public interface ConsensusSpectrumBuilder extends IAlgorithm {
     /**
    	 * Creates a consensus spectrum based on the
