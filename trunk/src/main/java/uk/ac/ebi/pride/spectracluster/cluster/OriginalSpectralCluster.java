@@ -1,10 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrum;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
@@ -20,7 +18,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class OriginalSpectralCluster implements ISpectralCluster {
-    private final IConsensusSpectrum consensusSpectrum = new ConsensusSpectrum("magic_id");
+    private final IConsensusSpectrumBuilder consensusSpectrum = new ConsensusSpectrum("magic_id");
     private List<ISpectrum> spectra = new ArrayList<ISpectrum>();
 
     public OriginalSpectralCluster(ISpectralCluster cluster) {
@@ -137,7 +135,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     }
 
     @Override
-    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
         throw new UnsupportedOperationException();
     }
 

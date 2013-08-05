@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -11,7 +12,9 @@ import java.util.*;
  * performs clustering by looking at major peaks then merging clusters
  * - the this version tracks spectra already clustered
  * Original code in  PeakMatchClusteringEngineOriginal
- * and attempts to combine clusters * User: Steve
+ * and attempts to combine clusters
+ *
+ * User: Steve
  * Date: 6/28/13
  */
 public class PeakMatchClusteringEngine implements IClusteringEngine {
@@ -188,8 +191,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
             List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(singleSpectrumClusters);
             Collections.sort(ret);
             return ret;
-        }
-        else {
+        } else {
             List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(currentClusters);
             ret.addAll(singleSpectrumClusters);
             Collections.sort(ret);
@@ -257,7 +259,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     @Override
     public int size() {
-
         return singleSpectrumClusters.size();  // todo do better
     }
 

@@ -19,7 +19,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     private final String id;
     private boolean dirty;
-    private PeptideSpectrumMatch consensusSpectrum;
+    private ISpectrum consensusSpectrum;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
@@ -28,14 +28,14 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
-    private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
+    private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(ISpectralCluster copied) {
         this.id = copied.getId();
         this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
         this.dirty = false;
         this.consensusSpectrumBuilder = copied.getConsensusSpectrumBuilder();
-        qualityHolder = new SpectralQualityHolder();
+        this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
         addSpectra(clusteredSpectra1);
@@ -47,12 +47,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
-    public SpectralCluster(String id, ConsensusSpectrumBuilder consensusSpectrumBuilder) {
+    public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         this.id = id;
         this.consensusSpectrum = null;
         this.dirty = false;
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
-        qualityHolder = new SpectralQualityHolder();
+        this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
     }
 
@@ -85,9 +85,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      * notify any state change listeners - probably should
      * be protected but is in the interface to form an event cluster
      *
-     * @param oldState
-     * @param newState
-     * @param commanded
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
         if (m_SpectrumHolderListeners.isEmpty())
@@ -108,7 +105,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public float getPrecursorMz() {
-        guaranteeClean();
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();
         if (consensusSpectrum1 == null)
             return 0;
@@ -117,25 +113,22 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public int getPrecursorCharge() {
-        guaranteeClean();
         return getConsensusSpectrum().getPrecursorCharge();
     }
 
     @Override
     public List<IPeak> getPeaks() {
-        guaranteeClean();
         return getConsensusSpectrum().getPeaks();
     }
 
     @Override
     public int getPeaksCount() {
-        guaranteeClean();
         return getConsensusSpectrum().getPeaksCount();
     }
 
 
     @Override
-    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
         return consensusSpectrumBuilder;
     }
 
@@ -263,7 +256,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     protected void guaranteeClean() {
         if (dirty) {
             dirty = false;
-            consensusSpectrum = (PeptideSpectrumMatch) consensusSpectrumBuilder.buildConsensusSpectrum(this);
+            consensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
         }
     }
 

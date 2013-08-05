@@ -14,6 +14,8 @@ import java.util.*;
  *
  * @author jg
  */
+@Deprecated
+@SuppressWarnings("Deprecated")
 public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 
@@ -26,7 +28,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * The final m/z threshold to use to combine
      * peaks as identical.
      */
-   // private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
+   private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
     /**
      * The step size to use when iteratively
      * merging identical peaks. This is not
@@ -45,10 +47,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      */
     public FrankEtAlConsensusSpectrumBuilder() {
         this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
+        throw new UnsupportedOperationException("Deprecated");
     }
 
     public FrankEtAlConsensusSpectrumBuilder(IntensityNormalizer intensityNormalizer) {
         this.intensityNormalizer = intensityNormalizer;
+        throw new UnsupportedOperationException("Deprecated");
     }
 
     public void setIntensityNormalizer(IntensityNormalizer intensityNormalizer) {
@@ -115,34 +119,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         if (spectra.size() == 1)
              return spectra.get(0);   // ok 1 is a concensus
 
-           int numberSpectra = spectra.size();
-        // if there's only one spectrum in the list, return this spectrum
-//        if (numberSpectra == 0) {   // was 1
-//            ISpectrum singleSpectrum = spectra.get(0);
-//            List<IPeak> singleSpectrumPeaks = intensityNormalizer.normalizePeaks(singleSpectrum.getPeaks());
-//            return new PeptideSpectrumMatch(singleSpectrum.getId(),
-//                    null,
-//                    singleSpectrum.getPrecursorCharge(),
-//                    singleSpectrum.getPrecursorMz(), singleSpectrumPeaks);
-//        }
-
         // add the peaks from all spectra to the consensus spectrum
         List<IPeak> allPeaks = addAllPeaks(spectra);
         // Note alllPeaks is sorted by MZ
 
         // merge identical peaks in the consensus spectrum
-        List<IPeak> mergedConsensusSpectrum = null;
-        if (numberSpectra > 1) {
-            mergedConsensusSpectrum = mergeIdenticalPeaks(allPeaks);
-        }
-        else {
-            // normalize as needed
-            if(!(intensityNormalizer instanceof  TotalIntensityNormalizer) ||
-                    intensityNormalizer.getNormalizedValue() != spectra.get(0).getTotalIntensity())
-                mergedConsensusSpectrum = intensityNormalizer.normalizePeaks(allPeaks); // assume 1 is not normailized
-            else
-                mergedConsensusSpectrum = allPeaks; // already normalized
-        }
+        List<IPeak> mergedConsensusSpectrum = mergeIdenticalPeaks(allPeaks);
 
         // adapt the peak intensities using the following formula: I = I * (0.95 + 0.05 * (1 + pi))^5 where pi is the peaks probability
         mergedConsensusSpectrum = adaptPeakIntensities(mergedConsensusSpectrum, spectra.size());
@@ -285,50 +267,95 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
      * @param consensusSpectrum
      */
     public List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
-
         // convert the spectrum into a list of Peaks
-        List<IPeak> peaks = new ArrayList<IPeak>();
+        List<IPeak> peaks = new ArrayList<IPeak>(consensusSpectrum);
 
-        float sumMz = 0;
-        float sumIntensity = 0;
-        int currentCount = 0;
-        for (int i = 0; i < consensusSpectrum.size(); i++) {
-            IPeak testPeak = consensusSpectrum.get(i);
-            final int count = testPeak.getCount();
-            if (currentCount == 0) {
-                currentCount = count;
-                sumMz = testPeak.getMz() * count;
-                sumIntensity = testPeak.getIntensity() * count;
+        // based on the set range
+        for (double range = DEFUALT_MZ_THRESHOLD_STEP; range <= DEFAULT_FINAL_MZ_THRESHOLD; range += DEFUALT_MZ_THRESHOLD_STEP) {
 
-            }
-            else {
-                float currentMz = sumMz / currentCount;
-                double del = testPeak.getMz() - currentMz;
-                if (del < 0)
-                    throw new IllegalStateException("peaks not sorted");
-                if (del <= DEFUALT_MZ_THRESHOLD_STEP) {
-                    currentCount += count;
-                    sumMz += testPeak.getMz() * count;
-                    sumIntensity += testPeak.getIntensity() * count;
+            ListIterator<IPeak> peakIter = peaks.listIterator();
 
+            IPeak nextPeak;
+            IPeak previousPeak;
+            while (peakIter.hasNext()) {
+                if (peakIter.hasPrevious()) {
+                    // step backward one element
+                    previousPeak = peakIter.previous();
+
+                    // step forward two elements
+                    peakIter.next();
+                    nextPeak = peakIter.next();
+
+                    if (previousPeak.getMz() + range >= nextPeak.getMz()) {
+                        // calculate the new weighted m/z
+                        float weightedMz = (previousPeak.getIntensity() * previousPeak.getMz() + nextPeak.getIntensity() * nextPeak.getMz()) / (previousPeak.getIntensity() + nextPeak.getIntensity());
+
+                        Peak mergedPeak = new Peak(weightedMz, previousPeak.getIntensity() + nextPeak.getIntensity(), previousPeak.getCount() + nextPeak.getCount());
+
+                        peakIter.previous();
+                        peakIter.previous();
+                        peakIter.remove();
+
+                        peakIter.next();
+                        peakIter.set(mergedPeak);
+                    }
+                } else {
+                    peakIter.next();
                 }
-                else {
-                    peaks.add(new Peak(currentMz, sumIntensity , currentCount));   // add current
-                    currentCount = count;  // start with new
-                    sumMz = testPeak.getMz() * count;
-                    sumIntensity = testPeak.getIntensity() * count;
-                    currentMz = sumMz / count;
-                }
             }
-
         }
-        if (currentCount > 0) {
-            peaks.add(new Peak(sumMz / currentCount, sumIntensity, currentCount));   // add current
-        }
-
 
         return peaks;
     }
+
+//    /**
+//     * @param consensusSpectrum
+//     */
+//    public List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
+//
+//        // convert the spectrum into a list of Peaks
+//        List<IPeak> peaks = new ArrayList<IPeak>();
+//
+//        float sumMz = 0;
+//        float sumIntensity = 0;
+//        int currentCount = 0;
+//        for (int i = 0; i < consensusSpectrum.size(); i++) {
+//            IPeak testPeak = consensusSpectrum.get(i);
+//            final int count = testPeak.getCount();
+//            if (currentCount == 0) {
+//                currentCount = count;
+//                sumMz = testPeak.getMz() * count;
+//                sumIntensity = testPeak.getIntensity() * count;
+//
+//            }
+//            else {
+//                float currentMz = sumMz / currentCount;
+//                double del = testPeak.getMz() - currentMz;
+//                if (del < 0)
+//                    throw new IllegalStateException("peaks not sorted");
+//                if (del <= DEFUALT_MZ_THRESHOLD_STEP) {
+//                    currentCount += count;
+//                    sumMz += testPeak.getMz() * count;
+//                    sumIntensity += testPeak.getIntensity() * count;
+//
+//                }
+//                else {
+//                    peaks.add(new Peak(currentMz, sumIntensity , currentCount));   // add current
+//                    currentCount = count;  // start with new
+//                    sumMz = testPeak.getMz() * count;
+//                    sumIntensity = testPeak.getIntensity() * count;
+//                    currentMz = sumMz / count;
+//                }
+//            }
+//
+//        }
+//        if (currentCount > 0) {
+//            peaks.add(new Peak(sumMz / currentCount, sumIntensity, currentCount));   // add current
+//        }
+//
+//
+//        return peaks;
+//    }
 
 
     @Override

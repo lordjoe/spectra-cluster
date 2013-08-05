@@ -37,10 +37,10 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return ret;
     }
 
-    protected static ConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
-        ConsensusSpectrumBuilder ret = copied[0].getConsensusSpectrumBuilder();
+    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
+        IConsensusSpectrumBuilder ret = copied[0].getConsensusSpectrumBuilder();
         for (int i = 1; i < copied.length; i++) {
-            final ConsensusSpectrumBuilder spectrumBuilder = copied[i].getConsensusSpectrumBuilder();
+            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].getConsensusSpectrumBuilder();
             if (!ret.equals(spectrumBuilder)) {
                 final boolean equals = ret.equals(spectrumBuilder); // why not
                 throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
@@ -56,7 +56,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
     private final List<ISpectralCluster> constitutingClusters = new ArrayList<ISpectralCluster>();
-    private final ConsensusSpectrumBuilder consensusSpectrumBuilder;
+    private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private boolean locked;
@@ -66,14 +66,14 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         constitutingClusters.addAll(Arrays.asList(copied));
         qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
-        this.consensusSpectrumBuilder = getCommonConsensusSpectrumBuilder(copied);
+        this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         Set<ISpectrum> holder = new HashSet<ISpectrum>();
         for (ISpectralCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
         addSpectra(new ArrayList<ISpectrum>(holder));
         Collections.sort(clusteredSpectra);
-        this.consensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(this);
+        this.consensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
         locked = true; // now we are immutable
     }
 
@@ -151,7 +151,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      * @return
      */
     @Override
-    public ConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
         return consensusSpectrumBuilder;
     }
 

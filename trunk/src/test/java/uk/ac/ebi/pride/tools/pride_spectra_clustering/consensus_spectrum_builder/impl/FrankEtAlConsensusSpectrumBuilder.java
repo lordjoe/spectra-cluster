@@ -1,15 +1,11 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.PeakIntensityComparator;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.PeakMzComparator;
+
+import java.util.*;
 
 /**
  * Generates a consensus spectrum as described
@@ -160,7 +156,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements
 	 * 
 	 * @param consensusSpectrum
 	 */
-	private List<Peak> mergeIdenticalPeaks(Map<Double, Peak> consensusSpectrum) {
+	public List<Peak> mergeIdenticalPeaks(Map<Double, Peak> consensusSpectrum) {
 		// convert the spectrum into a list of Peaks
 		List<Peak> peaks = new ArrayList<Peak>( consensusSpectrum.values() );
 		

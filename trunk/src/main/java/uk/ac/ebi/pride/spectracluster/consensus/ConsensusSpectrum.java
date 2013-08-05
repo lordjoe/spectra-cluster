@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
  * consensus spectrum). Since this change increased the processing time of adding spectra at least two fold, it was
  * removed again. The function "round" that was used to the rounding is still part of the class.
  */
-public class ConsensusSpectrum implements IConsensusSpectrum {
+public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     private final String id;
     protected int nSpectra = 0;
     protected boolean isDirty = false;
@@ -65,6 +64,10 @@ public class ConsensusSpectrum implements IConsensusSpectrum {
      * Peaks of the actual consensusSpectrum
      */
     private final List<IPeak> consensusPeaks = new ArrayList<IPeak>();
+
+    public ConsensusSpectrum() {
+        this(null);
+    }
 
     public ConsensusSpectrum(String id) {
         this.id = id;

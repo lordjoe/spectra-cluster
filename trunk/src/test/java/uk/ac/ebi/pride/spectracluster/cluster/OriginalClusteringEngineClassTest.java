@@ -120,7 +120,14 @@ public class OriginalClusteringEngineClassTest {
     public class ClusterSizeComparator implements Comparator<ISpectralCluster> {
         @Override
         public int compare(ISpectralCluster o1, ISpectralCluster o2) {
-            return Integer.compare(o1.getClusteredSpectraCount(), o2.getClusteredSpectraCount());
+            int o1ClusteredSpectraCount = o1.getClusteredSpectraCount();
+            int o2ClusteredSpectraCount = o2.getClusteredSpectraCount();
+
+            if (o1ClusteredSpectraCount == o2ClusteredSpectraCount) {
+                return 0;
+            } else {
+                return o1ClusteredSpectraCount < o2ClusteredSpectraCount ? -1 : 1;
+            }
         }
     }
 }
