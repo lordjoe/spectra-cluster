@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
@@ -16,14 +15,6 @@ import static org.junit.Assert.assertEquals;
  * @version $Id$
  */
 public class FrankEtAClusterEngineTest {
-     private FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
-
-    @Before
-    public void setUp() throws Exception {
-//
-//        // create an instance of consensus spectrum builder
-        consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
-    }
 
     @Test
     public void testBuildConsensusSpectrum() throws Exception {
@@ -33,7 +24,8 @@ public class FrankEtAClusterEngineTest {
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
-
+            ConsensusSpectrum consensusSpectrumBuilder = new ConsensusSpectrum( );
+            consensusSpectrumBuilder.onSpectraAdd(consensusSpectrumBuilder,spectra.toArray(new ISpectrum[spectra.size()]));
 
             // make a concensus in bulk
 //            List<IPeak> jpeaks;
@@ -44,7 +36,7 @@ public class FrankEtAClusterEngineTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-            ISpectrum newConsensusSpectrum =  consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
+            ISpectrum newConsensusSpectrum =  consensusSpectrumBuilder.getConsensusSpectrum();
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail

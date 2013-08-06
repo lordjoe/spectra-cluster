@@ -1,24 +1,21 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * uk.ac.ebi.pride.spectracluster.cluster.OriginalSpectralCluster
  * User: jg
  * Date: 7/30/13
  * Time: 2:59 PM
  * To change this template use File | Settings | File Templates.
  */
 public class OriginalSpectralCluster implements ISpectralCluster {
-    private final IConsensusSpectrumBuilder consensusSpectrum = new ConsensusSpectrum("magic_id");
+    private final IConsensusSpectrumBuilder consensusSpectrum = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
     private List<ISpectrum> spectra = new ArrayList<ISpectrum>();
 
     public OriginalSpectralCluster(ISpectralCluster cluster) {
@@ -28,7 +25,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
 
     @Override
     public String getId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -56,9 +53,19 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         return spectra.get(0);
     }
 
+    /**
+     * stable clusters do not support remove others do
+     *
+     * @return as above
+     */
+    @Override
+    public boolean isRemoveSupported() {
+        return true;
+    }
+
     @Override
     public List<ISpectrum> getHighestQualitySpectra() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -71,6 +78,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         return consensusSpectrum.getSpectraCount();
     }
 
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void append(Appendable out) {
         int indent = 0;
@@ -135,7 +143,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     }
 
     @Override
-    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
         throw new UnsupportedOperationException();
     }
 
@@ -199,6 +207,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     public void addSpectra(ISpectrum... merged) {
         // spectra can deliberately added more than once
         consensusSpectrum.addSpectra(merged);
+        //noinspection ManualArrayToCollectionCopy
         for (ISpectrum spectrum : merged) {
             spectra.add(spectrum);
         }

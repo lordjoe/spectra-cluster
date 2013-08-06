@@ -15,20 +15,20 @@ import static org.junit.Assert.assertEquals;
  * @version $Id$
  */
 public class FrankEtAlConsensusSpectrumBuilderTest {
-     @Test
+    @Test
     public void testBuildConsensusSpectrum() throws Exception {
-            // load a file contains a list of clusters
-        List<ConsensusSpectraItems>  consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
+        // load a file contains a list of clusters
+        List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
 
-        // create an instance of consensus spectrum builder
-         FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder(Defaults.INSTANCE.getDefaultIntensityNormalizer());
         // iterate over all clusters
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
 
-
+            // create an instance of consensus spectrum builder
+            IConsensusSpectrumBuilder consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+            consensusSpectrumBuilder.addSpectra(spectra.toArray(new ISpectrum[spectra.size()]));
             // make a concensus in bulk
 //            List<IPeak> jpeaks;
 //            List<List<IPeak>> spectra1;
@@ -38,7 +38,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-             ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.buildConsensusSpectrum(spectra);
+            ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail
@@ -49,7 +49,6 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             index++; // track where we are
         }
     }
-
 
 
     private static List<List<IPeak>> asListOfLists(List<ISpectrum> spectra) {

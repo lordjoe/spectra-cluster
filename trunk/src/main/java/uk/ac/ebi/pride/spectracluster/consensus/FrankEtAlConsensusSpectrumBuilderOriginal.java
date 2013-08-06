@@ -14,9 +14,10 @@ import java.util.*;
  * by Frank etl al. (2008) JPR.
  *
  * @author jg
+ * deprecated use  ConsensusSpectrum
  */
 @Deprecated
-@SuppressWarnings("Deprecated")
+@SuppressWarnings({"Deprecated", "deprecation"})
 public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 

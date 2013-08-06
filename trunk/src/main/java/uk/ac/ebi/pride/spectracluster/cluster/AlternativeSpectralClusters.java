@@ -38,9 +38,9 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
     protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
-        IConsensusSpectrumBuilder ret = copied[0].getConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder ret = copied[0].cloneConsensusSpectrumBuilder();
         for (int i = 1; i < copied.length; i++) {
-            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].getConsensusSpectrumBuilder();
+            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].cloneConsensusSpectrumBuilder();
             if (!ret.equals(spectrumBuilder)) {
                 final boolean equals = ret.equals(spectrumBuilder); // why not
                 throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
@@ -151,8 +151,8 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      * @return
      */
     @Override
-    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-        return consensusSpectrumBuilder;
+    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
+        return consensusSpectrumBuilder.cloneSpectrumBuilder();
     }
 
     @Override
@@ -272,6 +272,19 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
         }
     }
+
+
+    /**
+     * stable clusters do not support remove others do
+     *
+     * @return as above
+     */
+    @Override
+    public boolean isRemoveSupported() {
+        return false;
+    }
+
+
 
     @Override
     public void removeSpectra(ISpectrum... removed) {

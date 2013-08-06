@@ -13,9 +13,10 @@ import java.util.*;
  * by Frank etl al. (2008) JPR.
  *
  * @author jg
+ * Debrecated - use ConsensusSpectrum
  */
 @Deprecated
-@SuppressWarnings("Deprecated")
+@SuppressWarnings({  "deprecation"})
 public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 
@@ -311,7 +312,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 //    /**
 //     * @param consensusSpectrum
 //     */
-//    public List<IPeak> mergeIdenticalPeaks(List<IPeak> consensusSpectrum) {
+//    public List<IPeak> mergeIdenticalPeaksInternal(List<IPeak> consensusSpectrum) {
 //
 //        // convert the spectrum into a list of Peaks
 //        List<IPeak> peaks = new ArrayList<IPeak>();
