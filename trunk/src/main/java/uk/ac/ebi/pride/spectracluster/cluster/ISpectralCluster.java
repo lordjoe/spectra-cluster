@@ -86,7 +86,7 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder();
+    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder();
 
     /**
      * does the concensus spectrum contin this is a major peak

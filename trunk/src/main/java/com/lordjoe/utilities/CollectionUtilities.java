@@ -41,4 +41,46 @@ public class CollectionUtilities {
         }
         return holder;
     }
+
+    /**
+      * because sometimes we find lists  containing nulls
+      * this makes a copy of the list guaranteed not to contain nulls
+      * @param inp  !null input list
+      * @param <T>  type of the input list
+      * @return !null output list as above
+      */
+     public static <T> List<T>  removeNulls(List<T> inp)
+     {
+         List<T> holder = new ArrayList<T>();
+         for (T t : inp) {
+              if(t != null)
+                  holder.add(t);
+         }
+
+         return holder;
+     }
+
+
+    /**
+      * because sometimes we find lists  containing duplicates
+      * this makes a copy of the list guaranteed not to contain duplicates
+     * but instead the first copy - i
+      * @param inp  !null input list
+      * @param <T>  type of the input list
+      * @return !null output list as above
+      */
+     public static <T> List<T>  removeDuplicates(List<T> inp)
+     {
+         Set<T> theSet = new HashSet<T>();
+         List<T> holder = new ArrayList<T>();
+         for (T t : inp) {
+              if(theSet.contains(t)) {
+                  holder.add(t);
+                  theSet.add(t); // no more copies
+              }
+         }
+
+         return holder;
+     }
+
 }

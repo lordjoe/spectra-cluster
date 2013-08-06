@@ -16,6 +16,13 @@ public interface ISpectrumHolder {
      */
     public void addSpectra(ISpectrum... merged);
 
+
+    /**
+     * stable clusters do not support remove others do
+     * @return as above
+     */
+    public boolean isRemoveSupported();
+
     /**
      * Remove an array of spectrum from cluster
      */

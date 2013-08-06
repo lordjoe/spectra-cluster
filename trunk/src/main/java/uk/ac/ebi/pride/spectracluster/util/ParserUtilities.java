@@ -123,7 +123,7 @@ public class ParserUtilities {
     public static ConsensusSpectraItems readConsensusSpectraItems(LineNumberReader inp, String line) {
         ConsensusSpectraItems ret = new ConsensusSpectraItems();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        FrankEtAlConsensusSpectrumBuilder sb = new  FrankEtAlConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder sb = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         ISpectrum concensus = null;
         try {
             if (line == null)
@@ -153,8 +153,10 @@ public class ParserUtilities {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-         ret.setSpectra(holder);
-        ret.setConcensus(sb.buildConsensusSpectrum(holder));
+        ret.setSpectra(holder);
+        // add all spectra
+        sb.onSpectraAdd(null,holder.toArray(new ISpectrum[holder.size()]));
+        ret.setConcensus(sb.getConsensusSpectrum( ));
         return ret; // nothing found or incloplete
     }
 

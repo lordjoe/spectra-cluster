@@ -34,7 +34,9 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         this.id = copied.getId();
         this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
         this.dirty = false;
-        this.consensusSpectrumBuilder = copied.getConsensusSpectrumBuilder();
+        this.consensusSpectrumBuilder = copied.cloneConsensusSpectrumBuilder();
+        addSpectrumHolderListener(this.consensusSpectrumBuilder);
+
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
@@ -52,6 +54,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         this.consensusSpectrum = null;
         this.dirty = false;
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+        addSpectrumHolderListener(this.consensusSpectrumBuilder);
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
     }
@@ -128,8 +131,8 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     @Override
-    public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-        return consensusSpectrumBuilder;
+    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
+        return consensusSpectrumBuilder.cloneSpectrumBuilder();
     }
 
     /**
@@ -194,6 +197,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         return consensusSpectrum1.asMajorPeakMZs();
     }
 
+
     @Override
     public List<ISpectrum> getClusteredSpectra() {
         guaranteeClean();
@@ -240,8 +244,23 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
     }
 
+
+    /**
+     * stable clusters do not support remove others do
+     *
+     * @return as above
+     */
+    @Override
+    public boolean isRemoveSupported() {
+        return true;
+    }
+
+
     @Override
     public void removeSpectra(ISpectrum... removed) {
+        if(!isRemoveSupported())
+            throw new UnsupportedOperationException("Remove not supported");
+
         if (removed != null && removed.length > 0) {
             dirty = false;
 

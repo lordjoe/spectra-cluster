@@ -15,7 +15,6 @@ public class ConsensusSpectrumTests {
 
     private List<String> spectrumIds = new ArrayList<String>(Arrays.asList("83931", "1258781", "3722"));
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
-    private FrankEtAlConsensusSpectrumBuilder consensusSpectrumBuilder;
 
 
     public boolean peakListsEquivalent(List<IPeak> l1, List<IPeak> l2) {
@@ -34,7 +33,6 @@ public class ConsensusSpectrumTests {
     public void setUp() throws Exception {
         List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        consensusSpectrumBuilder = (FrankEtAlConsensusSpectrumBuilder) Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 
         for (ISpectrum originalSpectrum : mgfSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
@@ -46,13 +44,21 @@ public class ConsensusSpectrumTests {
 
     @Test
     public void testConsensusSpectrum() throws Exception {
-        ISpectrum consensusSpectrum1 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+
+        IConsensusSpectrumBuilder consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
+
+        ISpectrum consensusSpectrum1 = consensusSpectrumBuilder.getConsensusSpectrum();
 
         Collections.shuffle(filteredOriginalSpectra);
-        ISpectrum consensusSpectrum2 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+        consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
+        ISpectrum consensusSpectrum2 = consensusSpectrumBuilder.getConsensusSpectrum();
 
         Collections.shuffle(filteredOriginalSpectra);
-        ISpectrum consensusSpectrum3 = consensusSpectrumBuilder.buildConsensusSpectrum(filteredOriginalSpectra);
+        consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
+        ISpectrum consensusSpectrum3 = consensusSpectrumBuilder.getConsensusSpectrum();
 
         final boolean equivalent = consensusSpectrum1.equivalent(consensusSpectrum2);
         Assert.assertTrue(equivalent);
@@ -60,20 +66,20 @@ public class ConsensusSpectrumTests {
         Assert.assertTrue(equivalent1);
     }
 
-
-    @Test
-    public void testConsensusSpectrumStepByStep() throws Exception {
-        for (int i = 0; i < 10; i++) {
-            Collections.shuffle(filteredOriginalSpectra);
-            List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
-            List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
-
-
-            Collections.shuffle(filteredOriginalSpectra);
-            List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
-            Assert.assertTrue(peakListsEquivalent(allPeaks, allPeaks1));
-            List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
-            Assert.assertTrue(peakListsEquivalent(mergedIdenticalPeaks, mergedIdenticalPeaks1));
-        }
-    }
+//
+//    @Test
+//    public void testConsensusSpectrumStepByStep() throws Exception {
+//        for (int i = 0; i < 10; i++) {
+//            Collections.shuffle(filteredOriginalSpectra);
+//            List<IPeak> allPeaks = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+//            List<IPeak> mergedIdenticalPeaks = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+//
+//
+//            Collections.shuffle(filteredOriginalSpectra);
+//            List<IPeak> allPeaks1 = consensusSpectrumBuilder.addAllPeaks(filteredOriginalSpectra);
+//            Assert.assertTrue(peakListsEquivalent(allPeaks, allPeaks1));
+//            List<IPeak> mergedIdenticalPeaks1 = consensusSpectrumBuilder.mergeIdenticalPeaks(allPeaks);
+//            Assert.assertTrue(peakListsEquivalent(mergedIdenticalPeaks, mergedIdenticalPeaks1));
+//        }
+//    }
 }

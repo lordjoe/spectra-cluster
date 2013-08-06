@@ -10,7 +10,12 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusterComparator implements Comparator<ISpectralCluster> {
-
+    /**
+     * compare with high quailty at the top
+     * @param cluster1
+     * @param cluster2
+     * @return
+     */
     @Override
     public int compare(ISpectralCluster cluster1, ISpectralCluster cluster2) {
         if (cluster1 == cluster2)
@@ -23,6 +28,6 @@ public class ClusterComparator implements Comparator<ISpectralCluster> {
         double quality1 = consensusSpectrum1.getQualityScore();
         double quality2 = consensusSpectrum2.getQualityScore();
 
-        return Double.compare(quality1, quality2);
+        return -Double.compare(quality1, quality2);
     }
 }
