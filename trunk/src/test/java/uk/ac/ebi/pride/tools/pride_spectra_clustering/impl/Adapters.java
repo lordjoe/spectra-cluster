@@ -180,4 +180,23 @@ public class Adapters {
         return ret;
     }
 
+
+
+    /**
+     * operations that merge peaks in lists had better preserve the total count
+     * useful in testing and debuggine
+     * @param lst !null list of peaks
+     * @return   total count from all peaks
+     */
+    public static int getTotalCount(List<Peak> lst)    {
+        int total = 0;
+        for (Peak pk : lst) {
+            if(pk != null)
+              total += pk.getCount();
+        }
+        return total;
+    }
+
+
+
 }

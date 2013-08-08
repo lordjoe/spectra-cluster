@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class SpringJDBCTests {
 
+
+    public static final boolean SKIP_DATABASE_TESTS = true; // these tests are long and not critical
     /*
        NOTE - these  tests will work only when a MYSQL database is running on local_host and
         has a user pride-spectra password pride   has enough privileges to create and delete databases
@@ -29,6 +31,8 @@ public class SpringJDBCTests {
      */
     @Test
     public void testDbAccessSetup() throws Exception {
+        if(SKIP_DATABASE_TESTS)
+            return;
         // run once with the right password - the machine will remember
         //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
@@ -54,6 +58,8 @@ public class SpringJDBCTests {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Test
     public void testDbLoad() throws Exception {
+        if(SKIP_DATABASE_TESTS)
+             return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         SQLDataStore db = new SQLDataStore("test", ds);
@@ -99,6 +105,8 @@ public class SpringJDBCTests {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Test
     public void testMultipleDbLoad() throws Exception {
+        if(SKIP_DATABASE_TESTS)
+             return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         SQLDataStore db = new SQLDataStore("test", ds);
@@ -140,6 +148,8 @@ public class SpringJDBCTests {
 
     @Test
     public void testDbAccess() throws Exception {
+        if(SKIP_DATABASE_TESTS)
+             return;
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
 
         SQLDataStore db = new SQLDataStore("test", ds);

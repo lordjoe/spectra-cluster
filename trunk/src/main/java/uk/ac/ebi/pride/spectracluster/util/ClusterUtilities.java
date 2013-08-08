@@ -29,6 +29,74 @@ public class ClusterUtilities {
 //         ID_TO_CLUSTER.clear();
 //     }
 
+    /**
+     * hard code a call to this to
+     */
+    public static void breakHere()
+    {
+        int i = 0;
+        i++; // Break here - something interesting happened in teh outer code
+    }
+
+    /**
+     * purely for debugging to allow handling of one bad case to be traces
+     * @param pk
+     * @return
+     */
+
+    public static final float MININUM_INTERESTING_MZ = 474.09F;
+    public static final float MAXINUM_INTERESTING_MZ = 475.4F;
+
+     public static boolean isPeakInteresting(IPeak pk)  {
+         float mz = pk.getMz();
+         return isMZInteresting(mz);
+     }
+
+    /**
+     * purely for debugging to allow handling of one bad case to be traces
+     * @param mz
+     * @return
+     */
+    public static boolean isMZInteresting(final float pMz) {
+        if(pMz < MININUM_INTERESTING_MZ)
+            return false;
+        if(pMz > MAXINUM_INTERESTING_MZ)
+            return false;
+
+        return true; // break here
+    }
+
+    /**
+     * operations that merge peaks in lists had better preserve the total count
+     * useful in testing and debuggine
+     * @param lst !null list of peaks
+     * @return   total count from all peaks
+     */
+    public static int getTotalCount(List<IPeak> lst)    {
+        int total = 0;
+        for (IPeak pk : lst) {
+              total += pk.getCount();
+        }
+        return total;
+    }
+
+
+    /**
+     * get all peaks from the cluster
+     * @param cluster !null cluster
+     * @return !null list of peaks
+     */
+    public static List<IPeak>  getAllPeaks(ISpectralCluster cluster)
+    {
+         List<IPeak> holder = new ArrayList<IPeak>();
+         for(ISpectrum spec : cluster.getClusteredSpectra() ) {
+             final List<IPeak> peaks = spec.getPeaks();
+             holder.addAll(peaks) ;
+         }
+          return holder;
+    }
+
+
 
     /**
      *  take out all clusters consisting of a single spectrum and return them as a list

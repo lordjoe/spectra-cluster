@@ -37,8 +37,18 @@ public class Defaults {
 
     private DataSource defaultDataSource;
 
+    private ConcensusSpectrumBuilderFactory consensusFactory =  ConsensusSpectrum.FACTORY;
+
     private Defaults() {
 
+    }
+
+    public ConcensusSpectrumBuilderFactory getConsensusFactory() {
+        return consensusFactory;
+    }
+
+    public void setConsensusFactory(final ConcensusSpectrumBuilderFactory pConsensusFactory) {
+        consensusFactory = pConsensusFactory;
     }
 
     public int getNumberReclusteringPasses() {
@@ -112,7 +122,7 @@ public class Defaults {
     }
 
     public IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
-         return new ConsensusSpectrum();
+         return consensusFactory.getConsensusSpectrumBuilder();
     }
 
     public Comparator<ISpectralCluster> getDefaultSpectrumComparator() {

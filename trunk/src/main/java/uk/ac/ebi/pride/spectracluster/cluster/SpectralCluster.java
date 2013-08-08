@@ -18,9 +18,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     private final String id;
-    private boolean dirty;
-    private ISpectrum consensusSpectrum;
-    // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
+      // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
@@ -32,9 +30,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     public SpectralCluster(ISpectralCluster copied) {
         this.id = copied.getId();
-        this.consensusSpectrum = new PeptideSpectrumMatch(copied.getConsensusSpectrum());
-        this.dirty = false;
-        this.consensusSpectrumBuilder = copied.cloneConsensusSpectrumBuilder();
+        this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
 
         this.qualityHolder = new SpectralQualityHolder();
@@ -51,9 +47,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         this.id = id;
-        this.consensusSpectrum = null;
-        this.dirty = false;
-        this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+          this.consensusSpectrumBuilder = consensusSpectrumBuilder;
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
@@ -130,10 +124,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     }
 
 
-    @Override
-    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
-        return consensusSpectrumBuilder.cloneSpectrumBuilder();
-    }
+
 
     /**
      * all internally spectrum
@@ -158,8 +149,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public ISpectrum getConsensusSpectrum() {
-        guaranteeClean();
-        return consensusSpectrum;
+         return internalGetConcensusSpectrum();
     }
 
     /**
@@ -170,7 +160,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      */
     @Override
     public ISpectrum internalGetConcensusSpectrum() {
-        return consensusSpectrum;
+        return consensusSpectrumBuilder.getConsensusSpectrum();
     }
 
 
@@ -182,7 +172,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      */
     @Override
     public boolean containsMajorPeak(final int mz) {
-        return consensusSpectrum.containsMajorPeak(mz);
+        return internalGetConcensusSpectrum().containsMajorPeak(mz);
     }
 
     /**
@@ -200,7 +190,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public List<ISpectrum> getClusteredSpectra() {
-        guaranteeClean();
         return new ArrayList<ISpectrum>(clusteredSpectra);
     }
 
@@ -233,7 +222,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     @Override
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
-            dirty = true;
 
             for (ISpectrum spectrumToMerge : merged) {
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
@@ -262,22 +250,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             throw new UnsupportedOperationException("Remove not supported");
 
         if (removed != null && removed.length > 0) {
-            dirty = false;
 
-            for (ISpectrum spectrumToRemove : removed) {
-                dirty |= clusteredSpectra.remove(spectrumToRemove);  // set dirty if we actually remove anything
-            }
-            notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
+                  notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
         }
     }
 
 
-    protected void guaranteeClean() {
-        if (dirty) {
-            dirty = false;
-            consensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
-        }
-    }
 
     /**
      * sort by mz - might be useful
