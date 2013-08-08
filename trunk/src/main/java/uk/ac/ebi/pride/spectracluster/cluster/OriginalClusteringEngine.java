@@ -1,22 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrumQuality;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: jg
  * Date: 7/30/13
  * Time: 2:29 PM
- * To change this template use File | Settings | File Templates.
- */
+  */
 public class OriginalClusteringEngine implements IClusteringEngine {
     private static final String algorithmName = "FrankEtAlClustering2";
     /**
@@ -24,6 +19,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
      */
     private static final SimilarityChecker spectrumSimilarityChecker = new FrankEtAlDotProductOld();
 
+    @SuppressWarnings("UnusedDeclaration")
     private static final QualityScorer qualityScorer = new SignalToNoiseChecker();
 
     private static final double SIMILARIY_THRESHOLD = 0.7;
@@ -46,6 +42,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
 
     @Override
     public void addClusters(ISpectralCluster... cluster) {
+        //noinspection ManualArrayToCollectionCopy
         for (ISpectralCluster c : cluster) {
             // TODO: @jg normalize the spectra
             clustersToAdd.add(c);
@@ -59,6 +56,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         // Step 1 - cluster
         long start = System.currentTimeMillis();
         boolean clustersAdded = processClusterToAdd();
+        //noinspection ConstantConditions
         dataChanged = dataChanged || clustersAdded;
         long durCluster1 = System.currentTimeMillis() - start;
 
@@ -77,8 +75,8 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         dataChanged = dataChanged || clustersAdded;
         long durCluster2 = System.currentTimeMillis() - start - durCluster1 - durMerge - durRemove;
 
-        System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",
-                durCluster1, durMerge, clustersMerged, durRemove, nSpectraRemoved, durCluster2);
+  //      System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",
+   //             durCluster1, durMerge, clustersMerged, durRemove, nSpectraRemoved, durCluster2);
 
         return dataChanged;
     }

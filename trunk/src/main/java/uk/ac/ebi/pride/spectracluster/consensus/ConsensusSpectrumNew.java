@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -18,12 +19,21 @@ import java.util.*;
  * can be increased by rounding the m/z value to f.e. 3 digits after the comma (this does not influence the final
  * consensus spectrum). Since this change increased the processing time of adding spectra at least two fold, it was
  * removed again. The function "round" that was used to the rounding is still part of the class.
- * KILL and copy working code
+ * NOTE This is Johannes code refactored so that critical methods take and return peak lists rather than
+ * using an internal list - this allows steps to be individually rewritten and tested
+ * Also internal methods are protected allowing tests to access them
+ * This is a version where we can try changes using ConsensusSpectrumBuilderTests to validate
  */
 public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
+    public static final float NOISE_FILTER_INCREMENT = 100;
+
+    @SuppressWarnings("UnusedDeclaration")
     public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
 
+    /**
+     * always use the factory to get an instance
+     */
     public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
         private ConsensusSpectrumFactory() {
         }
@@ -64,12 +74,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
     protected final float MZ_THRESHOLD_STEP = 0.1F;
 
     protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
-
-    /**
-     * Rounding factor to use. 1000 means 3 positions after the comma.
-     */
-    public final static int MZ_PRECISSION = 1000; // using a precision of 1000 reduces memory usages but leads to different results.
-    public final static boolean USE_ROUNDING = false;
+    public final static boolean USE_ROUNDING = true;
 
     /**
      * Holds all peaks from all added spectra. In case an exact m/z is found twice, the intensities are added.
@@ -79,22 +84,33 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
     /**
      * Peaks of the actual consensusSpectrum
      */
-    private final List<IPeak> consensusPeaksX = new ArrayList<IPeak>();
+    private final List<IPeak> consensusPeaks = new ArrayList<IPeak>();
 
-    /**
-      * private to force use of the factory
-      */
-    private ConsensusSpectrumNew() {
-        this(null);
-     }
 
     /**
      * private to force use of the factory
      */
+    private ConsensusSpectrumNew() {
+        this(null);
+    }
+
+    /**
+      * private to force use of the factory
+      */
     private ConsensusSpectrumNew(String id) {
         this.id = id;
-        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
+
+
+    /**
+     * expose a normally private field for testing
+     * @return
+     */
+    protected  List<IPeak> getInternalPeaks()
+    {
+        return consensusPeaks;
+    }
+
 
     @Override
     public void addSpectra(ISpectrum... merged) {
@@ -163,10 +179,10 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         for (int i = 0; i < peaksToRemove.size(); i++) {
             IPeak peakToRemove = peaksToRemove.get(i);
-            float mzToRemove = peakToRemove.getMz();
+            double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = round(mzToRemove, MZ_PRECISSION);
+                mzToRemove = ClusterUtilities.round(mzToRemove );
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -224,10 +240,10 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         for (int i = 0; i < peaksToAdd.size(); i++) {
             IPeak peakToAdd = peaksToAdd.get(i);
-            float mzToAdd = peakToAdd.getMz();
+            double  mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = round(mzToAdd, MZ_PRECISSION);
+                mzToAdd = ClusterUtilities.round(mzToAdd );
 
             boolean wasAdded = false;
 
@@ -235,17 +251,17 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
                 IPeak currentExistingPeak = allPeaks.get(j);
 
                 if (mzToAdd < currentExistingPeak.getMz()) {
-                    newPeaks.add(new Peak(mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
+                    newPeaks.add(new Peak((float)mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
                     posAllPeaks = j;
                     wasAdded = true;
                     break;
                 }
 
-                if (mzToAdd == currentExistingPeak.getMz()) {
+                if (mzToAdd == ClusterUtilities.round(currentExistingPeak.getMz() )) {
                     allPeaks.set(j, new Peak(
                             currentExistingPeak.getMz(),
                             peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
-                            currentExistingPeak.getCount() + 1)
+                            currentExistingPeak.getCount() + peakToAdd.getCount())
                     );
                     posAllPeaks = j;
                     wasAdded = true;
@@ -254,7 +270,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
             }
 
             if (!wasAdded)
-                newPeaks.add(new Peak(mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
+                newPeaks.add(new Peak((float)mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
         }
 
         // add all new peaks
@@ -293,21 +309,21 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
         }
 
 
-        if (consensusPeaksX.size() < 1) {
-            setIsDirty(false);
+        if (allPeaks.size() < 1) {
             List<IPeak> empty = new ArrayList<IPeak>();
             consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty);
+            setIsDirty(false);
             return;
         }
         List<IPeak> newPeaks = findConsensusPeaks(allPeaks);
 
         // update the consensus spectrum
-        consensusPeaksX.clear();
+        consensusPeaks.clear();
         // allPeaks is always sorted according to precursor m/z
-        consensusPeaksX.addAll(newPeaks);
+        consensusPeaks.addAll(newPeaks);
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaksX);
+        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks);
 
         setIsDirty(false);
     }
@@ -324,6 +340,8 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
         // Step 1: merge identical peaks
         List<IPeak> ret = mergeIdenticalPeaks(input);
 
+
+
         // Step 2: addapt the peak intensities based on the probability that the peak has been obeserved
         ret = adaptPeakIntensities(ret);
 
@@ -332,6 +350,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
         return ret;
     }
 
+    public static final int NUMBER_BUFFER_PEAKS = 5;
     /**
      * Filters the consensus spectrum keeping only the top 5 peaks per 100 m/z
      */
@@ -340,7 +359,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         int lowerBound = 0;
         // process the peaks using a sliding window of 100 m/z
-        for (double startMz = 0, endMz = 100; endMz <= IPeak.HIGHEST_USABLE_MZ; endMz += 100, startMz += 100) {
+        for (double startMz = 0, endMz = NOISE_FILTER_INCREMENT; endMz <= IPeak.HIGHEST_USABLE_MZ; endMz += NOISE_FILTER_INCREMENT, startMz += NOISE_FILTER_INCREMENT) {
             List<IPeak> peakBuffer = new ArrayList<IPeak>();
 
             // set the lower bound
@@ -369,9 +388,9 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
             Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
 
-            List<IPeak> fivePeaks = new ArrayList<IPeak>(5);
+            List<IPeak> fivePeaks = new ArrayList<IPeak>(NUMBER_BUFFER_PEAKS);
 
-            for (int i = 0; i < 5 && i < peakBuffer.size(); i++)
+            for (int i = 0; i < NUMBER_BUFFER_PEAKS && i < peakBuffer.size(); i++)
                 fivePeaks.add(peakBuffer.get(i));
 
             Collections.sort(fivePeaks, PeakMzComparator.getInstance());
@@ -387,6 +406,9 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      * where pi is the peaks probability
      */
     protected List<IPeak> adaptPeakIntensities(List<IPeak> inpx) {
+
+        int originalCount = ClusterUtilities.getTotalCount(inpx);   // for debugging
+
         List<IPeak> ret = new ArrayList<IPeak>(inpx);
         for (int i = 0; i < ret.size(); i++) {
             IPeak peak = ret.get(i);
@@ -395,6 +417,11 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
             ret.set(i, new Peak(peak.getMz(), newIntensity, peak.getCount()));
         }
+
+        int finalCount = ClusterUtilities.getTotalCount(ret);   // for debugging
+        if (originalCount != finalCount)
+            throw new IllegalStateException("Peak merge changed total count");
+
         return ret;
     }
 
@@ -402,45 +429,128 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      * Merges identical peaks in the consensusPeaks List based on FINAL_MZ_THRESHOLD and
      * MZ_THRESHOLD_STEP.
      */
+    protected List<IPeak> mergeIdenticalPeaksOldCode(List<IPeak> inPeaks) {
+        int originalCount = ClusterUtilities.getTotalCount(inPeaks);   // for debugging
+
+        List<IPeak> ret = new ArrayList<IPeak>();
+        if (inPeaks.size() == 0)
+            return ret; // should never happen
+
+        for (float range = MZ_THRESHOLD_STEP; range <= FINAL_MZ_THRESHOLD; range += MZ_THRESHOLD_STEP) {
+            List<IPeak> newPeakList = new ArrayList<IPeak>();
+            IPeak currentPeak = inPeaks.get(0);
+
+            for (int i = 1; i < inPeaks.size(); i++) {
+                IPeak nextPeak = inPeaks.get(i);
+
+                // check whether the next peak should be considered identical to the current one
+                final float nextPeakMz = nextPeak.getMz();
+                final float currentPeakMz = currentPeak.getMz();
+                final float testLimit = currentPeakMz + range;
+                if (nextPeakMz <= testLimit) {
+                    // calculate the new weighted m/z
+                    final double nextPeakIntensity = nextPeak.getIntensity();
+                    final double currentPeakIntensity = currentPeak.getIntensity();
+                    final double totalIntensity = nextPeakIntensity + currentPeakIntensity;
+                    final double nextPeakFraction = nextPeakIntensity / totalIntensity;
+                    final double currentPeakFraction = currentPeakIntensity / totalIntensity;
+
+                    final double totalFraction = nextPeakFraction +  currentPeakFraction;
+
+
+                    double weightedMz = (nextPeakFraction * nextPeakMz) + (currentPeakFraction * currentPeakMz);
+
+
+                    final double intensity = currentPeakIntensity + nextPeakIntensity;
+                    final int count = currentPeak.getCount() + nextPeak.getCount();
+                    IPeak newPeak = new Peak((float)weightedMz, (float)intensity, count);
+
+                    currentPeak = newPeak;
+                }
+                else {
+                    // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
+                    // list and are thereby removed from the consensusPeaks
+                    newPeakList.add(currentPeak);
+                    currentPeak = nextPeak;
+                }
+            }
+            newPeakList.add(currentPeak);
+
+            ret.clear();
+            ret.addAll(newPeakList);
+
+        }
+
+        int finalCount = ClusterUtilities.getTotalCount(ret);   // for debugging
+        if (originalCount != finalCount)
+            throw new IllegalStateException("Peak merge changed total count");
+
+        return ret;
+    }
+
 
     /**
      * Merges identical peaks in the consensusPeaks List based on FINAL_MZ_THRESHOLD and
      * MZ_THRESHOLD_STEP.
      */
     protected List<IPeak> mergeIdenticalPeaks(List<IPeak> inPeaks) {
-        List<IPeak> ret = new ArrayList<IPeak>();
-        for (float range = MZ_THRESHOLD_STEP; range <= FINAL_MZ_THRESHOLD; range += MZ_THRESHOLD_STEP) {
-            List<IPeak> newPeakList = new ArrayList<IPeak>();
+        int originalCount = ClusterUtilities.getTotalCount(inPeaks);   // for debugging
 
-            for (int i = 0; i < inPeaks.size() - 1; i++) {
-                IPeak currentPeak = inPeaks.get(i);
-                IPeak nextPeak = inPeaks.get(i + 1);
+        List<IPeak> newPeakList = inPeaks;
+        if (inPeaks.size() == 0)
+            return newPeakList; // should never happen
+         for (float range = MZ_THRESHOLD_STEP; range <= FINAL_MZ_THRESHOLD; range += MZ_THRESHOLD_STEP) {
+             newPeakList = getPeaksInRange(newPeakList, range);
 
-                // check whether the next peak should be considered identical to the current one
-                if (nextPeak.getMz() <= currentPeak.getMz() + range) {
-                    // calculate the new weighted m/z
-                    float weightedMz = (nextPeak.getIntensity() * nextPeak.getMz() + currentPeak.getIntensity() * currentPeak.getMz()) / (nextPeak.getIntensity() + currentPeak.getIntensity());
+        }
 
-                    IPeak newPeak = new Peak(
-                            weightedMz,
-                            currentPeak.getIntensity() + nextPeak.getIntensity(),
-                            currentPeak.getCount() + nextPeak.getCount()
-                    );
+        int finalCount = ClusterUtilities.getTotalCount(newPeakList);   // for debugging
+        if (originalCount != finalCount)
+            throw new IllegalStateException("Peak merge changed total count");
 
-                    inPeaks.set(i + 1, newPeak);
-                }
-                else {
-                    // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
-                    // list and are thereby removed from the consensusPeaks
-                    newPeakList.add(inPeaks.get(i));
-                }
+        return newPeakList;
+    }
+
+    protected List<IPeak> getPeaksInRange(final List<IPeak> inPeaks, final float pRange) {
+        List<IPeak> newPeakList = new ArrayList<IPeak>();
+        IPeak currentPeak = inPeaks.get(0);
+
+        for (int i = 1; i < inPeaks.size(); i++) {
+            IPeak nextPeak = inPeaks.get(i);
+
+            // check whether the next peak should be considered identical to the current one
+            final float nextPeakMz = nextPeak.getMz();
+            final float currentPeakMz = currentPeak.getMz();
+            final float testLimit = currentPeakMz + pRange;
+            if (nextPeakMz <= testLimit) {
+                // calculate the new weighted m/z
+                final double nextPeakIntensity = nextPeak.getIntensity();
+                final double currentPeakIntensity = currentPeak.getIntensity();
+                final double totalIntensity = nextPeakIntensity + currentPeakIntensity;
+                final double nextPeakFraction = nextPeakIntensity / totalIntensity;
+                final double currentPeakFraction = currentPeakIntensity / totalIntensity;
+
+                final double totalFraction = nextPeakFraction +  currentPeakFraction;
+
+
+                double weightedMz = (nextPeakFraction * nextPeakMz) + (currentPeakFraction * currentPeakMz);
+
+
+                final double intensity = currentPeakIntensity + nextPeakIntensity;
+                final int count = currentPeak.getCount() + nextPeak.getCount();
+                IPeak newPeak = new Peak((float)weightedMz, (float)intensity, count);
+
+                currentPeak = newPeak;
             }
-            ret.clear();
-            ret.addAll(newPeakList);
-
-         }
-
-        return ret;
+            else {
+                // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
+                // list and are thereby removed from the consensusPeaks
+                newPeakList.add(currentPeak);
+                currentPeak = nextPeak;
+            }
+        }
+        newPeakList.add(currentPeak);
+        return newPeakList;
     }
 
 
@@ -454,21 +564,13 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
     /**
      * access for test purposes
+     *
      * @return possibly null specterum
      */
     protected ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrum;
     }
 
-//    /**
-//     * return a copy of the spectrum builder used to put in a new concensus spectrum
-//     *
-//     * @return !null Spectrum
-//     */
-//    @Override
-//    public IConsensusSpectrumBuilder cloneSpectrumBuilder() {
-//        return new OriginalConsensusSpectrum();
-//    }
 
     @Override
     public void clear() {
@@ -478,7 +580,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
         nSpectra = 0;
 
         allPeaks.clear();
-        consensusPeaksX.clear();
+        consensusPeaks.clear();
 
         setIsDirty(true);
     }
@@ -506,20 +608,5 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
     @Override
     public void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed) {
         removeSpectra(removed);
-    }
-
-    /**
-     * Round to certain number of decimals
-     *
-     * @param f
-     * @param decimalPlace
-     * @return
-     */
-    public static float round(float f, int decimalPlace) {
-//        BigDecimal bd = new BigDecimal(Float.toString(d));
-//        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-//        return bd.floatValue();
-        int i = (int) ((f * decimalPlace) + 0.5);
-        return (float) i / (float) decimalPlace;
     }
 }
