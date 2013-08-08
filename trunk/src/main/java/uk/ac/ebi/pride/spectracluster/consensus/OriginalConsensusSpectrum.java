@@ -86,10 +86,16 @@ public class OriginalConsensusSpectrum implements IConsensusSpectrumBuilder {
      */
     private final List<IPeak> consensusPeaks = new ArrayList<IPeak>();
 
+    /**
+      * private to force use of the factory
+      */
     private OriginalConsensusSpectrum() {
         this(null);
     }
 
+    /**
+      * private to force use of the factory
+      */
     private OriginalConsensusSpectrum(String id) {
         this.id = id;
     }
