@@ -71,11 +71,6 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected final float MZ_THRESHOLD_STEP = 0.1F;
 
     protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
-
-    /**
-     * Rounding factor to use. 1000 means 3 positions after the comma.
-     */
-    public final static int MZ_PRECISSION = 1000; // using a precision of 1000 reduces memory usages but leads to different results.
     public final static boolean USE_ROUNDING = false;
 
     /**
@@ -102,6 +97,17 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     private ConsensusSpectrum(String id) {
         this.id = id;
     }
+
+
+    /**
+     * expose a normally private field for testing
+     * @return
+     */
+    protected  List<IPeak> getInternalPeaks()
+    {
+        return consensusPeaks;
+    }
+
 
     @Override
     public void addSpectra(ISpectrum... merged) {
@@ -173,7 +179,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = round(mzToRemove, MZ_PRECISSION);
+                mzToRemove = ClusterUtilities.round(mzToRemove );
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -234,7 +240,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double  mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = round(mzToAdd, MZ_PRECISSION);
+                mzToAdd = ClusterUtilities.round(mzToAdd );
 
             boolean wasAdded = false;
 
@@ -248,7 +254,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
                     break;
                 }
 
-                if (mzToAdd == round(currentExistingPeak.getMz(), MZ_PRECISSION)) {
+                if (mzToAdd == ClusterUtilities.round(currentExistingPeak.getMz() )) {
                     allPeaks.set(j, new Peak(
                             currentExistingPeak.getMz(),
                             peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
@@ -330,6 +336,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         // Step 1: merge identical peaks
         List<IPeak> ret = mergeIdenticalPeaks(input);
+
+
 
         // Step 2: addapt the peak intensities based on the probability that the peak has been obeserved
         ret = adaptPeakIntensities(ret);
@@ -530,20 +538,5 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     @Override
     public void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed) {
         removeSpectra(removed);
-    }
-
-    /**
-     * Round to certain number of decimals
-     *
-     * @param f
-     * @param decimalPlace
-     * @return
-     */
-    public static double round(double f, int decimalPlace) {
-//        BigDecimal bd = new BigDecimal(Float.toString(d));
-//        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-//        return bd.floatValue();
-        int i = (int) ((f * decimalPlace) + 0.5);
-        return  i / (double) decimalPlace;
     }
 }

@@ -480,4 +480,37 @@ public class ClusterUtilities {
      }
 
 
+    /**
+     * Rounding factor to use. 1000 means 3 positions after the comma.
+     */
+    public final static int MZ_PRECISSION = 1000; // using a precision of 1000 reduces memory usages but leads to different results.
+
+    /**
+     * Round to certain number of decimals
+     *
+     * @param f
+     * @param decimalPlace
+     * @return
+     */
+    public static double round(double f) {
+         return  round(f,MZ_PRECISSION);
+    }
+
+    /**
+       * Round to certain number of decimals
+       *
+       * @param f
+       * @param decimalPlace
+       * @return
+       */
+      public static double round(double f, int decimalPlace) {
+  //        BigDecimal bd = new BigDecimal(Float.toString(d));
+  //        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+  //        return bd.floatValue();
+          int i = (int) ((f * decimalPlace) + 0.5);
+          return  i / (double) decimalPlace;
+      }
+
+
+
 }

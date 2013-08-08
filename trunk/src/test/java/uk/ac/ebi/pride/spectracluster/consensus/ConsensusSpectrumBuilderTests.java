@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
@@ -17,55 +16,44 @@ import java.util.*;
 public class ConsensusSpectrumBuilderTests {
 
 
-    public static boolean peakListsEquivalent(List<IPeak> l1, List<IPeak> l2) {
-        if (l1.size() != l2.size())
-            return false;
-        for (int i = 0; i < l1.size(); i++) {
-            IPeak p1 = l1.get(i);
-            IPeak p2 = l2.get(i);
-            if (!p1.equivalent(p2))
-                return false;
-        }
-        return true;
-    }
-
-
 
     @Test
-    public void testConsensusSpectrum() throws Exception
-    {
+    public void testConsensusSpectrum() throws Exception {
+          ConcensusSpectrumBuilderFactory factory1 = JohannesConsensusSpectrum.FACTORY;
+     //     ConcensusSpectrumBuilderFactory factory2 = ConsensusSpectrum.FACTORY;
+         ConcensusSpectrumBuilderFactory factory2 = ConsensusSpectrumNew.FACTORY;
+
+
+         List<ISpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        int numberTested = 0;
+
         long start = System.currentTimeMillis();
-        List<ISpectralCluster>  clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
-        for (ISpectralCluster cluster : clusters) {
-             testSpectrumBuilder(cluster) ;
-        }
+        List<ISpectrum> fromFactory1 = ClusteringTestUtilities.buildConsessusSpectra(clusters, factory1);
         long end = System.currentTimeMillis();
-        double delSec = (end - start ) / 1000.0;
-        double delMin = delSec / 60.0;
+        double delSec1 = (end - start);  // how long did that take
+
+        start = System.currentTimeMillis();
+        List<ISpectrum> fromFactory2 = ClusteringTestUtilities.buildConsessusSpectra(clusters, factory2);
+        end = System.currentTimeMillis();
+        double delSec2 = (end - start);  // how long did that take
+
+
+        Assert.assertEquals(fromFactory1.size(),fromFactory2.size());
+        for (int i = 0; i < fromFactory1.size(); i++) {
+            final ISpectrum oldSpec = fromFactory1.get(i);
+            final ISpectrum newSpec = fromFactory2.get(i);
+            boolean equivalent = ClusteringTestUtilities.areSpectraVeryClose(oldSpec, newSpec);
+            if (!equivalent) {
+                equivalent = ClusteringTestUtilities.areSpectraVeryClose(oldSpec, newSpec);// break here do debug failure
+                Assert.assertTrue(equivalent);
+            }
+
+        }
 
     }
 
-    /**
-     * do all the work here
-     * @param cluster  !null cluster
-     * @throws Exception
-     */
-    public void testSpectrumBuilder(ISpectralCluster cluster) throws Exception
-      {
-
-          final ConsensusSpectrum currentCode = (ConsensusSpectrum) ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
-          final ConsensusSpectrumNew newCode  = (ConsensusSpectrumNew)ConsensusSpectrumNew.FACTORY.getConsensusSpectrumBuilder();
 
 
-          final List<IPeak> allPeaks = ClusterUtilities.getAllPeaks(cluster);
-
-          // use internal methods to add code
-          currentCode.addPeaks(allPeaks);
-          newCode.addPeaks(allPeaks);
-
-
-
-    }
 
 
 }
