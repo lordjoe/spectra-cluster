@@ -33,11 +33,6 @@ public interface IConsensusSpectrumBuilder extends  ISpectrumHolder,SpectrumHold
      * @return  !null Spectrum
      */
     public ISpectrum getConsensusSpectrum();
-    /**
-      * return a copy of the spectrum builder used to put in a new concensus spectrum
-      * @return  !null Spectrum
-      */
-     public IConsensusSpectrumBuilder cloneSpectrumBuilder();
 
     /**
      * Clear the consensus spectrum.

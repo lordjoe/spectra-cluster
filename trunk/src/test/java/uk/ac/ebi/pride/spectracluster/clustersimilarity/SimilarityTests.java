@@ -48,6 +48,7 @@ public class SimilarityTests {
         final List<ISpectralCluster> originalCLuster = ClusteringTestUtilities.readSpectraClustersFromResource();
         Collections.sort(originalCLuster);
         List<ISpectralCluster> l1 = new ArrayList<ISpectralCluster>(originalCLuster);
+
         final List<ISpectralCluster> originalCLuster2 = ClusteringTestUtilities.readSpectraClustersFromResource();
         Collections.sort(originalCLuster2);
         List<ISpectralCluster> l2 = new ArrayList<ISpectralCluster>(originalCLuster2);

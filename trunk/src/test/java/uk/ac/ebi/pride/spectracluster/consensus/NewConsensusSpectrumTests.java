@@ -1,21 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeakIntensityComparator;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.math.*;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,7 +37,7 @@ public class NewConsensusSpectrumTests {
 
     @Before
     public void setUp() throws Exception {
-        consensusSpectrumBuilder = new ConsensusSpectrum("some id");
+        consensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         originalConsensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder();
 
         List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
@@ -106,16 +101,32 @@ public class NewConsensusSpectrumTests {
         return true;
     }
 
-    public boolean arePeakListsEquivalent(List<IPeak> l1, List<Peak> l2) {
+    public boolean arePeakListsEquivalent(List<IPeak> l1x, List<Peak> l2x) {
+
+        int l1Count = ClusterUtilities.getTotalCount(l1x);   // for debugging
+        int l2Count = Adapters.getTotalCount(l2x);   // for debugging
+
+
         boolean isEqual = true;
+
+        if(l1x.size() != l2x.size())
+            return false;
+
+        // copy and sort by
+        List<IPeak> l1 = new ArrayList<IPeak>(l1x);
+        Collections.sort(l1);
+        List<IPeak> l2 = Adapters.fromPeaks(l2x);
+        Collections.sort(l2);
 
         for (int i = 0; i < l1.size(); i++) {
             IPeak p1 = l1.get(i);
-            Peak p2 = l2.get(i);
+            IPeak p2 = l2.get(i);
 
-            System.out.format(i + ": new = old\tm/z: %f = %f\t\tintens: %f = %f\tcount: %d = %d", p1.getMz(), p2.getMz(), p1.getIntensity(), p2.getIntensity(), p1.getCount(), p2.getCount());
+            final int count1 = p1.getCount();
+            final int count2 = p2.getCount();
+            System.out.format(i + ": new = old\tm/z: %f = %f\t\tintens: %f = %f\tcount: %d = %d", p1.getMz(), p2.getMz(), p1.getIntensity(), p2.getIntensity(), count1, count2);
 
-            if (p1.getCount() != p2.getCount()) {
+            if (count1 != count2) {
                 System.out.println(" <-- count differs!");
                 isEqual = false;
             }
@@ -137,6 +148,9 @@ public class NewConsensusSpectrumTests {
                 System.out.println("");
             }
         }
+           // not same total
+        if(l1Count != l2Count)
+              return false;
         return isEqual;
     }
 
@@ -195,7 +209,11 @@ public class NewConsensusSpectrumTests {
 
         Assert.assertTrue("number of peaks differ: original = " + originalConsensusSpectrum.size() + ", new = " + newConsensusSpectrum.getPeaks().size(), newConsensusSpectrum.getPeaks().size() == originalConsensusSpectrum.size());
         // compare the peaks
-        Assert.assertTrue("intensities differ", arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum));
+          boolean condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
+        if(!condition) {
+            condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum); // redo here
+            Assert.assertTrue("intensities differ", condition);
+        }
     }
 
     @Test
@@ -255,14 +273,14 @@ public class NewConsensusSpectrumTests {
         System.out.println("--Adding--");
         System.out.println("Original = " + duration2Orig + ", New = " + (durationAdd2 + durationUpdate2) + "(add = " + durationAdd2 + ", update = " + durationUpdate2 + ")");
 
-       // compare the total counts
+        // compare the total counts
         int newCounts = 0;
         for (IPeak p : newConsensusPeaks)
-                newCounts += p.getCount();
+            newCounts += p.getCount();
 
         int oldCounts = 0;
         for (Peak p : originalConsensusSpectrum)
-                oldCounts += p.getCount();
+            oldCounts += p.getCount();
 
         System.out.println(manySpectra.size() + " spectra");
         System.out.println("oldCounts = " + oldCounts + ", newCounts = " + newCounts);
@@ -317,16 +335,18 @@ public class NewConsensusSpectrumTests {
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(duplicateOldSpectra);
 
         // new builder
-        for (ISpectrum s : filteredOriginalSpectra)
+        for (ISpectrum s : filteredOriginalSpectra) {
             consensusSpectrumBuilder.addSpectra(s);
+        }
 
-        ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
+        ISpectrum newConsensusSpectrum1 = consensusSpectrumBuilder.getConsensusSpectrum();
 
-        for (ISpectrum s : filteredOriginalSpectra)
+        for (ISpectrum s : filteredOriginalSpectra) {
             consensusSpectrumBuilder.addSpectra(s);
+        }
 
         // make sure that regenerating the consensus spectrum does not make a difference
-        newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
+        ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
 
         // convert to peak list
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
@@ -334,7 +354,11 @@ public class NewConsensusSpectrumTests {
         Collections.reverse(newConsensusPeaks);
 
         // make sure the results are identical
-        Assert.assertTrue("Consensus spectra differ", arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum));
+        boolean condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
+        {
+            condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum); // break here
+            Assert.assertTrue("Consensus spectra differ", condition);
+        }
     }
 
     @Test
@@ -342,13 +366,14 @@ public class NewConsensusSpectrumTests {
         // test the original algorithm
         List<List<Peak>> manySpectraOld = new ArrayList<List<Peak>>();
         manySpectraOld.addAll(allOldOriginalSpectra);
-        manySpectraOld.addAll(allOldOriginalSpectra);
+  //      manySpectraOld.addAll(allOldOriginalSpectra);
 
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(manySpectraOld);
 
         // test the new algorithm
-        for (ISpectrum s : allOriginalSpectra)
+        for (ISpectrum s : allOriginalSpectra) {
             consensusSpectrumBuilder.addSpectra(s, s); // add every spectrum twice
+        }
 
         ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
 
@@ -375,7 +400,11 @@ public class NewConsensusSpectrumTests {
         Collections.reverse(newConsensusPeaks);
 
         // compare the two
-        Assert.assertTrue("Consensus spectra from pool 2 are different", arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum));
+        boolean condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
+        if (!condition) {
+            condition = arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
+            Assert.assertTrue("Consensus spectra from pool 2 are different", condition);
+        }
     }
 
     public List<Peak> convertSpectrum(List<IPeak> newPeaks) {

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
 
@@ -53,12 +54,17 @@ public class ClusterListSimilarity {
 
         while (t < nPK1 && e < nPK2) {
             ISpectralCluster sc1 = s1.get(t);
+
+            ISpectralCluster sc2 = s2.get(e);
+
+            final ISpectrum spc1 = sc1.getConsensusSpectrum();
+            final ISpectrum spc2 = sc2.getConsensusSpectrum();
+
             double mz1 = sc1.getPrecursorMz();
             if (mz1 < oldSC1MZ)
                 throw new IllegalStateException("Clusters must be sorted by MZ");
             oldSC1MZ = mz1;
 
-            ISpectralCluster sc2 = s2.get(e);
             double mz2 = sc2.getPrecursorMz();
             if (mz2 < oldSC2MZ)
                 throw new IllegalStateException("Clusters must be sorted by MZ");
@@ -100,16 +106,16 @@ public class ClusterListSimilarity {
                 }
                 else {
                     if (lastIsT) {
-                      e++;
-                      lastIsT = false;
-                  }
-                  else {
-                      t++;
-                      lastIsT = true;
-                  }
+                        e++;
+                        lastIsT = false;
+                    }
+                    else {
+                        t++;
+                        lastIsT = true;
+                    }
 
                 }
-             }
+            }
             else {
                 if (mass_difference < 0) {
                     alreadyMatched.clear();

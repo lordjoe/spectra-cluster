@@ -142,10 +142,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         }
     }
 
-    @Override
-    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
-        throw new UnsupportedOperationException();
-    }
+
 
     @Override
     public boolean containsMajorPeak(int mz) {

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.util;
 
+import uk.ac.ebi.pride.spectracluster.util.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +21,15 @@ public class Peak {
 	}
 	
 	public Peak(double mz, double intensity) {
-		this.mz = mz;
-		this.intensity = intensity;
-		this.count = 1;
+		this(mz,intensity,1);
 	}
 	public Peak(double mz, double intensity, int count) {
 		this.mz = mz;
 		this.intensity = intensity;
 		this.count = count;
+
+        if( count > 1 && ClusterUtilities.isMZInteresting((float)(mz)))   // debug some tough cases
+            ClusterUtilities.breakHere();
 	}
 	public double getMz() {
 		return mz;

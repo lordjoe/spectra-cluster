@@ -18,7 +18,8 @@ public class MergeIdenticalPeaksComparisonTests {
 
     @Test
     public void testSpectrumBuilderComparison() throws Exception {
-        ConsensusSpectrum frankEtAlConsensusSpectrumBuilder = new ConsensusSpectrum();
+
+        IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder =  ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
 
          List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();

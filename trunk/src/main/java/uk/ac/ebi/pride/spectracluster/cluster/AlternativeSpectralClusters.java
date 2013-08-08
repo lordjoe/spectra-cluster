@@ -38,14 +38,14 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
     protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
-        IConsensusSpectrumBuilder ret = copied[0].cloneConsensusSpectrumBuilder();
-        for (int i = 1; i < copied.length; i++) {
-            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].cloneConsensusSpectrumBuilder();
-            if (!ret.equals(spectrumBuilder)) {
-                final boolean equals = ret.equals(spectrumBuilder); // why not
-                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
-            }
-        }
+        IConsensusSpectrumBuilder ret = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+//        for (int i = 1; i < copied.length; i++) {
+//            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].cloneConsensusSpectrumBuilder();
+//            if (!ret.equals(spectrumBuilder)) {
+//                final boolean equals = ret.equals(spectrumBuilder); // why not
+//                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
+//            }
+//        }
         return ret;
     }
 
@@ -145,16 +145,16 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return getClusteredSpectra();   // todo fix
     }
 
-    /**
-     * needed so copy constructors work with the interface
-     *
-     * @return
-     */
-    @Override
-    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
-        return consensusSpectrumBuilder.cloneSpectrumBuilder();
-    }
-
+//    /**
+//     * needed so copy constructors work with the interface
+//     *
+//     * @return
+//     */
+//    @Override
+//    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
+//        return consensusSpectrumBuilder.cloneSpectrumBuilder();
+//    }
+//
     @Override
     public float getPrecursorMz() {
         guaranteeClean();

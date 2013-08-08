@@ -81,12 +81,12 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      */
     public void appendClustering(Appendable out);
 
-    /**
-     * needed so copy constructors work with the interface
-     *
-     * @return
-     */
-    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder();
+//    /**
+//     * needed so copy constructors work with the interface
+//     *
+//     * @return
+//     */
+//    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder();
 
     /**
      * does the concensus spectrum contin this is a major peak

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import uk.ac.ebi.pride.spectracluster.util.*;
+
 /**
  * @author Steve Lewis
  * @author Rui Wang
@@ -19,6 +21,10 @@ public class Peak implements IPeak{
         this.massChargeRatio = massChargeRatio;
         this.intensity = intensity;
         this.count = count;
+
+        // debugging code to track down a few bad cases
+        if(count > 1 && ClusterUtilities.isMZInteresting(massChargeRatio))
+            ClusterUtilities.breakHere();
     }
 
     /**

@@ -11,10 +11,10 @@ import java.util.*;
  */
 public class MergeIdenticalPeaksTests {
 
-    @SuppressWarnings("FieldCanBeLocal")
+    @SuppressWarnings({"FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection"})
     private List<IPeak> peaks;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    private  ConsensusSpectrum consensusSpectrumBuilder;
+    private IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -28,7 +28,7 @@ public class MergeIdenticalPeaksTests {
         peaks.add(new Peak(223.1F, 20, 1));
         peaks.add(new Peak(223.4F, 30, 1));
 
-        consensusSpectrumBuilder = new ConsensusSpectrum();
+        consensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
     }
 
     @Test
