@@ -18,6 +18,7 @@ import java.util.*;
  * can be increased by rounding the m/z value to f.e. 3 digits after the comma (this does not influence the final
  * consensus spectrum). Since this change increased the processing time of adding spectra at least two fold, it was
  * removed again. The function "round" that was used to the rounding is still part of the class.
+ * KILL and copy working code
  */
 public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
@@ -80,12 +81,19 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      */
     private final List<IPeak> consensusPeaksX = new ArrayList<IPeak>();
 
-    public ConsensusSpectrumNew() {
+    /**
+      * private to force use of the factory
+      */
+    private ConsensusSpectrumNew() {
         this(null);
-    }
+     }
 
-    public ConsensusSpectrumNew(String id) {
+    /**
+     * private to force use of the factory
+     */
+    private ConsensusSpectrumNew(String id) {
         this.id = id;
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
