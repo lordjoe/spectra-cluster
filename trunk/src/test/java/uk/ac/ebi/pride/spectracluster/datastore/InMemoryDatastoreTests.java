@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.datastore;
 
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 

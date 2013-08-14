@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import junit.framework.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
@@ -19,8 +19,11 @@ public class MergeIdenticalPeaksComparisonTests {
     @Test
     public void testSpectrumBuilderComparison() throws Exception {
 
+        //noinspection UnusedDeclaration
         IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder =  ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
-        uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
+        //noinspection UnusedDeclaration
+        uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder        //noinspection UnusedDeclaration
+        originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
 
          List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
         List<Spectrum> originalSpectra = ClusteringTestUtilities.readSpectrumsFromResource();
@@ -58,6 +61,7 @@ public class MergeIdenticalPeaksComparisonTests {
     }
 
 
+       @SuppressWarnings("UnusedDeclaration")
     private Map<Double, Peak> createPeakMap(List<Peak> originalPeaks) {
         Map<Double, Peak> originalPeakMap = new LinkedHashMap<Double, Peak>();
 

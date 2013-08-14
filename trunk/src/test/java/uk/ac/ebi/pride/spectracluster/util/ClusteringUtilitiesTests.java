@@ -4,7 +4,6 @@ import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 

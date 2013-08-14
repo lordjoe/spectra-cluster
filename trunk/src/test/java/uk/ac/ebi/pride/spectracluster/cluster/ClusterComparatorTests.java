@@ -5,10 +5,8 @@ import org.junit.*;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
 
 /**
@@ -26,12 +24,7 @@ public class ClusterComparatorTests {
         clusterComparator = new ClusterComparator();
         originalClusterComparator = new OriginalClusterComparator(new OriginalSignalToNoiseChecker());
 
-        URL url = ClusterComparatorTests.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/two_spectra.mgf");
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile = new File(url.toURI());
-        peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
+         peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
     }
 
     @Test

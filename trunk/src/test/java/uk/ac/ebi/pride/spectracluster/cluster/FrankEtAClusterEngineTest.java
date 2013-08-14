@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -20,6 +20,7 @@ public class FrankEtAClusterEngineTest {
     public void testBuildConsensusSpectrum() throws Exception {
         final List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
         // iterate over all clusters
+             //noinspection UnusedDeclaration
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
@@ -49,6 +50,8 @@ public class FrankEtAClusterEngineTest {
     }
 
 
+
+    @SuppressWarnings("UnusedDeclaration")
     private static List<List<IPeak>> asListOfLists(List<ISpectrum> spectra) {
         List<List<IPeak>> ret = new ArrayList<List<IPeak>>();
         for (ISpectrum sp : spectra) {
@@ -79,7 +82,9 @@ public class FrankEtAClusterEngineTest {
           // check the size of the peaks
         if (peaks1.size() != peaks2.size())
             return false;
+             //noinspection UnusedDeclaration
         double total1 = 0;
+           //noinspection UnusedDeclaration
         double total2 = 0;
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);
@@ -93,7 +98,7 @@ public class FrankEtAClusterEngineTest {
         // 2 we should compare without failing so we can look hard at the differenece
 
 
-        double del = 0;
+           double del ;
         // only look at MZ
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);

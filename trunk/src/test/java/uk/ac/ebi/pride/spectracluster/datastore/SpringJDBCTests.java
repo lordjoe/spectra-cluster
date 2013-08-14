@@ -4,7 +4,6 @@ import com.lordjoe.utilities.*;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import javax.sql.*;
 import java.sql.*;
@@ -41,7 +40,9 @@ public class SpringJDBCTests {
         final Statement statement = connection.createStatement();
         final ResultSet resultSet = statement.executeQuery("describe test.spectrums");
         while (resultSet.next()) {
+            //noinspection UnusedDeclaration
             final String field = resultSet.getString("field");
+              //noinspection UnusedDeclaration
             final String type = resultSet.getString("type");
         }
         connection.close();
@@ -75,6 +76,7 @@ public class SpringJDBCTests {
 
         db.storeSpectra(originalSpectra);
 
+        //noinspection UnusedAssignment
         allSpectra = db.getAllSpectra();
         List<ISpectrum> holder = getAllSpectra(db);
         Collections.sort(holder);
@@ -123,6 +125,7 @@ public class SpringJDBCTests {
 
 
         // try duplicate inserts
+        //noinspection UnusedDeclaration
         List<ISpectrum> tryToReinsert = CollectionUtilities.subList(holder, NUMBER_MULTIPLE_LOAD_TEST);
         db.storeSpectra(originalSpectra);
 
@@ -135,6 +138,7 @@ public class SpringJDBCTests {
     }
 
     private List<ISpectrum> getAllSpectra(final SQLDataStore pDb) {
+        //noinspection UnusedAssignment
         Iterable<? extends ISpectrum> allSpectra = pDb.getAllSpectra();
         allSpectra = pDb.getAllSpectra();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();

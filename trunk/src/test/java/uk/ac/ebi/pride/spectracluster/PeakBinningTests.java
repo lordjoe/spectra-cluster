@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 
@@ -34,6 +33,7 @@ public class PeakBinningTests {
         double minMZ = 0;
         double maxMZ = 5000;
         double binSize = 100;
+        //noinspection UnusedDeclaration
         List<IPeak> binned = ClusterUtilities.getHighestInBins(peaks, minMZ, maxMZ, binSize, maxPerBin);
 //        for (IPeak iPeak : binned) {
 //

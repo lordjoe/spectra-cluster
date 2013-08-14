@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.junit.*;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 

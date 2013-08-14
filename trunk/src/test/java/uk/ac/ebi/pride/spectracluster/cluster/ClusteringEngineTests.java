@@ -5,7 +5,6 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 
@@ -26,13 +25,14 @@ public class ClusteringEngineTests {
         List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
         IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-         IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             clusteringEngine.addClusters(originalSpectrum.asCluster());
             oldClusteringEngine.addClusters(originalSpectrum.asCluster());
         }
+        //noinspection UnusedAssignment
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
@@ -42,6 +42,7 @@ public class ClusteringEngineTests {
 //            }
 //        }
         long endNewEngine = System.currentTimeMillis();
+        //noinspection UnusedAssignment,UnusedDeclaration
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!oldClusteringEngine.processClusters()) {
@@ -49,7 +50,8 @@ public class ClusteringEngineTests {
             }
         }
         long endOldEngine = System.currentTimeMillis();
-        double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
+          //noinspection UnusedAssignment,UnusedDeclaration
+          double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
 
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 

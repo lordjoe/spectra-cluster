@@ -4,7 +4,6 @@ import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.io.*;
 import java.net.*;
@@ -42,8 +41,7 @@ public class ParserTests {
     public void testScansRead() {
         LineNumberReader inp = ParserUtilities.getDescribedReader(MGF_RESOURCE);
         Assert.assertNotNull(inp);  // make sure it exists
-        int number_scans = 1;
-        ISpectrum[] spectralClusters = ParserUtilities.readMGFScans(inp);
+           ISpectrum[] spectralClusters = ParserUtilities.readMGFScans(inp);
 
 
         Assert.assertEquals(4663, spectralClusters.length);
@@ -57,7 +55,7 @@ public class ParserTests {
         Assert.assertNotNull(inp);  // make sure it exists
 
         ISpectrum spectralCluster = ParserUtilities.readMGFScan(inp);
-        String id = spectralCluster.getId();
+         String id;
         int number_scans = 1;
 
         while (spectralCluster != null) {
@@ -76,6 +74,7 @@ public class ParserTests {
             number_scans++;
         }
 
+        //noinspection UnusedDeclaration,UnusedAssignment
         spectralCluster = ParserUtilities.readMGFScan(inp);
 
         Assert.assertEquals(4664, number_scans);
@@ -85,9 +84,9 @@ public class ParserTests {
     /**
      * test reading an MGF Scan and that all ids are unique
      *
-     * @param pIs
      */
     //  @Test
+    @SuppressWarnings("UnusedDeclaration")
     public void testUniqueIds() {
         LineNumberReader is = ParserUtilities.getDescribedReader(MGF_RESOURCE);
         testMGFStream(is);
@@ -97,12 +96,11 @@ public class ParserTests {
     /**
      * test reading an MGF Scan and that all ids are unique
      *
-     * @param pIs
      */
     protected void testMGFStream(final LineNumberReader inp) {
         Set<String> seenIds = new HashSet<String>();
         ISpectrum ISpectralCluster = ParserUtilities.readMGFScan(inp);
-        String id = ISpectralCluster.getId();
+        String id;
 
         while (ISpectralCluster != null) {
 
@@ -405,7 +403,6 @@ public class ParserTests {
     /**
      * test reading an MGF Scan and that all ids are unique
      *
-     * @param pIs
      */
     @Test
     public void testClusterParse() throws Exception {
@@ -429,8 +426,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-     *
-     * @param pIs
      */
     @Test
     public void testClusterWrite() throws Exception {
@@ -457,8 +452,7 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-     *
-     * @param pIs
+
      */
     @Test
     public void testClusterIterator() throws Exception {
@@ -486,8 +480,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan conventionally and with an iterator
-     *
-     * @param pIs
      */
     @Test
     public void testSpectrumIterator() throws Exception {
@@ -495,12 +487,12 @@ public class ParserTests {
         List<? extends ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
            // load a file contains a list of clusters
-        URL url = null;
+        URL url;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(ClusteringTestUtilities.SAMPLE_MGF_FILE);
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
-        File inputFile = null;
+        File inputFile;
         try {
             inputFile = new File(url.toURI());
         }
