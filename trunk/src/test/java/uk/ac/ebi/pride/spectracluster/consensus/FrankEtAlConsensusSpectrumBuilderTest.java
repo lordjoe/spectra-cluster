@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 
@@ -21,6 +20,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
 
         // iterate over all clusters
+                 //noinspection UnusedDeclaration
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
@@ -51,6 +51,8 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     }
 
 
+
+    @SuppressWarnings("UnusedDeclaration")
     private static List<List<IPeak>> asListOfLists(List<ISpectrum> spectra) {
         List<List<IPeak>> ret = new ArrayList<List<IPeak>>();
         for (ISpectrum sp : spectra) {
@@ -79,7 +81,9 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     }
 
     private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
+                 //noinspection UnusedDeclaration
         double total1 = 0;
+                 //noinspection UnusedDeclaration
         double total2 = 0;
 
         // check the size of the peaks
@@ -97,7 +101,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         // We need to compare all three spectra
         // 2 we should compare without failing so we can look hard at the differenece
 
-        double del = 0;
+        double del;
         // only look at MZ
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);

@@ -4,7 +4,6 @@ import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
@@ -42,12 +41,14 @@ public class OriginalClusteringEngineTests {
         }
 
 
+        //noinspection UnusedDeclaration,UnusedAssignment
         originalSpectraList = originalClustering.clusterSpectra(spectra);
 
         // convert all spectra into sorted peak lists
         List<ClusteringSpectrum> cs = new ArrayList<ClusteringSpectrum>(spectra.size());
         for (Spectrum s : spectra)
             cs.add(new ClusteringSpectrum(s));
+        //noinspection UnusedAssignment
         final List<SpectraCluster> scs = originalClustering.clusterConvertedSpectra(cs);
 
 
@@ -77,6 +78,7 @@ public class OriginalClusteringEngineTests {
 
         }
 
+             //noinspection UnusedDeclaration
         final List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
 
 

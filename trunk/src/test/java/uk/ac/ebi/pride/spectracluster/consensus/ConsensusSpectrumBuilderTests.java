@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -25,17 +25,22 @@ public class ConsensusSpectrumBuilderTests {
 
 
          List<ISpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        //noinspection UnusedDeclaration
         int numberTested = 0;
 
+          //noinspection UnusedDeclaration,UnusedAssignment
         long start = System.currentTimeMillis();
         List<ISpectrum> fromFactory1 = ClusteringTestUtilities.buildConsessusSpectra(clusters, factory1);
+        //noinspection UnusedDeclaration,UnusedAssignment
         long end = System.currentTimeMillis();
-        double delSec1 = (end - start);  // how long did that take
+       //noinspection UnusedDeclaration
+       //  double delSec1 = (end - start);  // how long did that take
 
         start = System.currentTimeMillis();
         List<ISpectrum> fromFactory2 = ClusteringTestUtilities.buildConsessusSpectra(clusters, factory2);
         end = System.currentTimeMillis();
-        double delSec2 = (end - start);  // how long did that take
+       //noinspection UnusedDeclaration
+       double delSec2 = (end - start);  // how long did that take
 
 
         Assert.assertEquals(fromFactory1.size(),fromFactory2.size());

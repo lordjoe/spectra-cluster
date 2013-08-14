@@ -4,7 +4,6 @@ import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 
@@ -20,7 +19,7 @@ public class ClusteringEngineMgfTests {
 //        List<String> spectrumIds = new ArrayList<String>(Arrays.asList("86434", "6777", "5", "291", "13480", "17877", "117146"));
         List<String> spectrumIds = new ArrayList<String>(Arrays.asList("6777", "291", "13480"));
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
-        IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
+  //      IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
         IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator()) ;
         IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 

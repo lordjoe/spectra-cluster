@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.fast_spectra_clustering.*;
 
 import java.util.*;
 
@@ -17,6 +16,7 @@ public class ConsensusSpectrumTests {
     private List<ISpectrum> filteredOriginalSpectra = new ArrayList<ISpectrum>();
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean peakListsEquivalent(List<IPeak> l1, List<IPeak> l2) {
         if (l1.size() != l2.size())
             return false;

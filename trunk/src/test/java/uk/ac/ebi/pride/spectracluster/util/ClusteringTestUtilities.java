@@ -1,11 +1,10 @@
-package uk.ac.ebi.pride.tools.fast_spectra_clustering;
+package uk.ac.ebi.pride.spectracluster.util;
 
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.mgf_parser.*;
@@ -17,7 +16,7 @@ import java.net.*;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.tools.fast_spectra_clustering.ClusteringTestUtilities
+ * uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities
  * User: Steve
  * Date: 6/19/13
  */
@@ -29,7 +28,6 @@ public class ClusteringTestUtilities {
     /**
      * read a resource mgf as a list of spectra
      *
-     * @param resName
      * @return
      */
     public static List<ISpectrum> readConsensusSpectralItems() {
@@ -44,12 +42,12 @@ public class ClusteringTestUtilities {
      */
     public static List<ISpectrum> readConsensusSpectralItems(String resName) {
         // load a file contains a list of clusters
-        URL url = null;
+        URL url;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(resName);
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
-        File inputFile = null;
+        File inputFile;
         try {
             inputFile = new File(url.toURI());
         }
@@ -82,7 +80,6 @@ public class ClusteringTestUtilities {
     /**
      * read a resource mgf as a list of spectra
      *
-     * @param resName
      * @return
      */
     public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
@@ -97,12 +94,12 @@ public class ClusteringTestUtilities {
      */
     public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
-        URL url = null;
+        URL url;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(resName);
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
-        File inputFile = null;
+        File inputFile;
         try {
             inputFile = new File(url.toURI());
         }
@@ -118,7 +115,6 @@ public class ClusteringTestUtilities {
     /**
      * read a resource mgf as a list of spectra
      *
-     * @param resName
      * @return
      */
     public static List<Spectrum> readSpectrumsFromResource() {
@@ -187,7 +183,6 @@ public class ClusteringTestUtilities {
     /**
      * read a resource mgf as a list of spectra
      *
-     * @param resName
      * @return
      */
     public static List<ConsensusSpectraItems> readConsensusSpectraItemsFromResource() {
@@ -209,7 +204,8 @@ public class ClusteringTestUtilities {
             }
             File inputFile = new File(url.toURI());
 
-            List<ConsensusSpectraItems> consensusSpectraItems = Arrays.asList(ParserUtilities.readClusters(inputFile));
+            //noinspection UnusedDeclaration,UnnecessaryLocalVariable
+           List<ConsensusSpectraItems> consensusSpectraItems = Arrays.asList(ParserUtilities.readClusters(inputFile));
             return consensusSpectraItems;
 
         }
@@ -297,7 +293,9 @@ public class ClusteringTestUtilities {
         double similarity = checker.assessSimilarity(sp1, sp2);
         // certainly in the same cluster
          double defaultThreshold = checker.getDefaultThreshold();  // 0.6 - 0.7
+         //noinspection UnusedDeclaration
          double highThreshold = 1.0 - ((1.0 - defaultThreshold) / 2); // 0.8 - 0.85
+        //noinspection RedundantIfStatement
         if ( similarity < defaultThreshold)     // similarity better be 0.95
             return false;  // dot producta not close enough
 
@@ -306,6 +304,7 @@ public class ClusteringTestUtilities {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean peakListsEquivalent(List<IPeak> l1, List<IPeak> l2) {
         if (l1.size() != l2.size())
             return false;
@@ -318,6 +317,7 @@ public class ClusteringTestUtilities {
         return true;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean mzEquivalent(List<IPeak> l1, List<uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak> l2) {
         if (l1.size() != l2.size())
             return false;

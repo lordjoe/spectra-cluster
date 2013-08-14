@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.tools.fast_spectra_clustering;
 
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
@@ -26,8 +27,11 @@ public class FrankEtAlClusteringTest {
 
         List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource( );
         // do the clustering
+         //noinspection UnusedDeclaration
         long start = System.currentTimeMillis();
+        //noinspection UnusedAssignment
         List<SpectraCluster> generatedCluster = clustering.clusterSpectra(spectra);
+         //noinspection UnusedDeclaration
         long stop = System.currentTimeMillis();
 
         if(IGNORE_KNOWN_TO_FAIL)
@@ -67,10 +71,13 @@ public class FrankEtAlClusteringTest {
         clustering.setClusteringRounds(2);
         clustering.setSimilarityThreshold(0.8);
 
-        List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource( );
+        List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource();
         // do the clustering
+         //noinspection UnusedDeclaration
         long start = System.currentTimeMillis();
+        //noinspection UnusedAssignment
         List<SpectraCluster> generatedCluster = clustering.clusterSpectra(spectra);
+         //noinspection UnusedDeclaration
         long stop = System.currentTimeMillis();
 
         // System.out.println("Clustering done in " + (stop - start) + " msec");

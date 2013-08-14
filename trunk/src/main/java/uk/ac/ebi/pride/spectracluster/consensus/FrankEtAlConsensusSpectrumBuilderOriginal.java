@@ -17,7 +17,7 @@ import java.util.*;
  * deprecated use  ConsensusSpectrum
  */
 @Deprecated
-@SuppressWarnings({"Deprecated", "deprecation"})
+@SuppressWarnings({"Deprecated", "deprecation", "UnusedDeclaration"})
 public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 
@@ -47,6 +47,7 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
      * Use Defaults which builds with reflection
      * Set the class with Defaults.setConsensusSpectrumBuilderClass
      */
+    @SuppressWarnings("UnusedDeclaration")
     public FrankEtAlConsensusSpectrumBuilderOriginal() {
         this(Defaults.INSTANCE.getDefaultIntensityNormalizer());
         throw new UnsupportedOperationException("Deprecated");
@@ -78,10 +79,12 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
       }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setIntensityNormalizer(IntensityNormalizer intensityNormalizer) {
         this.intensityNormalizer = intensityNormalizer;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected ISpectrum buildConsensusSpectrum(ISpectrum... spectra) {
         // make sure something sensible was passed
         if (spectra.length == 0)
@@ -143,6 +146,7 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
         filteredSpectrum = intensityNormalizer.normalizePeaks(filteredSpectrum);
 
         // create consensus spectrum
+        //noinspection UnnecessaryLocalVariable
         PeptideSpectrumMatch consensusSpectrum = createConsensusSpectrum(spectra, filteredSpectrum);
 
         return consensusSpectrum;
@@ -244,7 +248,6 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
         Collections.sort(allPeaks, PeakMzComparator.getInstance());
         List<IPeak> returnedPeaks = new ArrayList<IPeak>();
         IPeak start = null;
-        int index = 0;
         for (IPeak allPeak : allPeaks) {
             if (allPeak.getIntensity() == 0)
                 continue;
@@ -264,7 +267,6 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
                 returnedPeaks.add(start); // not merging
                 start = allPeak;  //  start is next peak
             }
-            index++;
         }
         returnedPeaks.add(start); //  add last peak
         return returnedPeaks;
@@ -316,6 +318,7 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
         return peaks;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private List<IPeak> originalMergeIdenticalPeaks(List<IPeak> peaks) {
 
         // based on the set range
@@ -356,6 +359,7 @@ public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpect
 
         final FrankEtAlConsensusSpectrumBuilderOriginal that = (FrankEtAlConsensusSpectrumBuilderOriginal) o;
 
+        //noinspection RedundantIfStatement
         if (intensityNormalizer != null ? !intensityNormalizer.equals(that.intensityNormalizer) : that.intensityNormalizer != null)
             return false;
 
