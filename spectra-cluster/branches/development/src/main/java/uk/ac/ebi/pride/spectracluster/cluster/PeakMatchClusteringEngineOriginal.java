@@ -13,12 +13,14 @@ import java.util.*;
  * User: Steve
  * Date: 6/28/13
  */
+@SuppressWarnings("UnusedDeclaration")
 public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
 
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
     private final Map<Integer, IClusteringEngine> engineForBin = new HashMap<Integer, IClusteringEngine>();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final Set<ISpectralCluster> readClusters = new HashSet<ISpectralCluster>();
     private final IClusteringEngineFactory factory;
     private String name = "PeakMatchClusteringEngineOriginal";
@@ -69,6 +71,22 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
 
 
+     /**
+      * find the engine for a bin creating one as needed
+      *
+      * @return
+      */
+     protected IClusteringEngine getSomeEngine( ) {
+         synchronized (engineForBin) {
+              if(engineForBin.isEmpty()) {
+                  return getEngine(0);
+              }
+             else {
+                  return engineForBin.entrySet().iterator().next().getValue();
+              }
+         }
+       }
+
     /**
      * find the engine for a bin creating one as needed
      * @param pBin
@@ -84,6 +102,17 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
             }
             return ret;
         }
+    }
+
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        return  getSomeEngine().findNoneFittingSpectra(cluster);
     }
 
     /**

@@ -20,6 +20,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
     private final Map<Integer, IClusteringEngine> engineForBin = new HashMap<Integer, IClusteringEngine>();
     private String name = "BinningClusteringEngine";
 
+    @SuppressWarnings("UnusedDeclaration")
     public BinningClusteringEngine() {
         this(new LinearWideBinner((int) (DEFAULT_MAX_BIN + 0.5), 1, DEFAULT_MIN_BIN, true));
     }
@@ -50,16 +51,45 @@ public class BinningClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addClusters(final ISpectralCluster... cluster) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cluster.length; i++) {
             ISpectralCluster cl = cluster[i];
             // only add ones in the right bin
             final float precursorMz = cl.getPrecursorMz();
             int[] bins = binner.asBins(precursorMz);
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
                 IClusteringEngine engine = getEngine(bin);
                 engine.addClusters(cl);
             }
+        }
+    }
+
+    /**
+      * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+      * usually is called on removed clusters
+      *
+      * @return !null Cluster
+      */
+     @Override
+     public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+         return getSomeEngine().findNoneFittingSpectra(cluster);
+      }
+
+
+    /**
+     * find the engine for a bin creating one as needed
+      * @return
+     */
+    protected IClusteringEngine getSomeEngine( ) {
+        synchronized (engineForBin) {
+             if(engineForBin.isEmpty()) {
+                 return getEngine(0);
+             }
+            else {
+                 return engineForBin.entrySet().iterator().next().getValue();
+             }
         }
     }
 
@@ -91,6 +121,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
         boolean anythingDone = false;
         // todo use multiple threads
         for (IClusteringEngine engine : engineForBin.values()) {
+            //noinspection UnusedDeclaration
             final List<ISpectralCluster> clusters = engine.getClusters();
             anythingDone |= engine.processClusters();
         }

@@ -13,9 +13,19 @@ import java.util.*;
  */
 public interface IIncrementalClusteringEngine extends IClusteringEngine {
 
+    public static interface IIncrementalClusteringEngineFactory {
+        /**
+         * build a new version
+         * @return
+         */
+           public IIncrementalClusteringEngine getIncrementalClusteringEngine();
+    }
+
     /**
      * add one cluster and return any clusters which are too far in mz from further consideration
-     * @return !null Cluster
+     * NOTE clusters MUST be added in ascending MZ order
+     * @param added  !null cluster to add
+     * @return !null list of clusters not far enough away they will no longer change
      */
     public List<ISpectralCluster> addClusterIncremental(ISpectralCluster added);
 

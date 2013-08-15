@@ -21,16 +21,16 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public static IClusteringEngineFactory getClusteringEngineFactory() {
+    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory() {
         return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
 
-    public static IClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
+    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
                                                                       Comparator<ISpectralCluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
-    protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
+    protected static class ClusteringEngineFactory implements IIncrementalClusteringEngineFactory {
         private final SimilarityChecker similarityChecker;
         private final Comparator<ISpectralCluster> spectrumComparator;
 
@@ -39,13 +39,14 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             spectrumComparator = pSpectrumComparator;
         }
 
+
         /**
-         * make a copy of the clustering engine
+         * build a new version
          *
          * @return
          */
         @Override
-        public IClusteringEngine getClusteringEngine() {
+        public IIncrementalClusteringEngine getIncrementalClusteringEngine() {
             return new IncrementalClusteringEngine(similarityChecker, spectrumComparator);
         }
     }
@@ -56,7 +57,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
     private final double defaultThreshold;
-    private double currentMZ;
+    private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(SimilarityChecker sck,
                                           Comparator<ISpectralCluster> scm) {
@@ -70,16 +71,17 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return defaultThreshold;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public double getCurrentMZ() {
-        return currentMZ;
+
+    public int getCurrentMZ() {
+        return currentMZAsInt;
     }
 
 
     public void setCurrentMZ(final double pCurrentMZ) {
-        if (currentMZ > pCurrentMZ)
+        int test = ClusterUtilities.mzToInt(pCurrentMZ);
+        if ( getCurrentMZ() > test)   // all ow roundoff error but not much
             throw new IllegalStateException("mz values MUST be added in order");
-        currentMZ = pCurrentMZ;
+        currentMZAsInt = test;
     }
 
 //    protected void guaranteeClean() {
@@ -105,6 +107,30 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return ret;
     }
 
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
+          SimilarityChecker sCheck = getSimilarityChecker();
+
+          if (cluster.getClusteredSpectra().size() > 1) {
+              for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                  final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                  final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                  final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                  if (similarityScore < defaultThreshold) {
+                      noneFittingSpectra.add(spectrum.asCluster());
+                  }
+              }
+          }
+
+          return noneFittingSpectra;
+    }
 
     /**
      * add some clusters

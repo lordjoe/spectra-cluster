@@ -48,5 +48,11 @@ public interface IClusteringEngine {
      */
     public int size();
 
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     * @return !null Cluster
+     */
+    public List<ISpectralCluster> findNoneFittingSpectra(ISpectralCluster cluster);
 
 }

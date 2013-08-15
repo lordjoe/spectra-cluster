@@ -78,6 +78,7 @@ public class ClusteringEngine implements IClusteringEngine {
             if (sc.getClusteredSpectraCount() > 0)
                 l2.add(sc);
             else
+                //noinspection UnusedAssignment
                 sc = null; // break point here for debugging
         }
         myClustersToAdd.clear();
@@ -168,7 +169,8 @@ public class ClusteringEngine implements IClusteringEngine {
             if (mostSimilarCluster != null) {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
-            } else {
+            }
+            else {
                 myClusters.add(new SpectralCluster(clusterToAdd));
             }
         }
@@ -185,7 +187,7 @@ public class ClusteringEngine implements IClusteringEngine {
     public boolean processClusters() {
         guaranteeClean();
 
-        if(size() < 2)
+        if (size() < 2)
             return false; // nothing to do
 
         // merge clusters
@@ -249,21 +251,23 @@ public class ClusteringEngine implements IClusteringEngine {
         List<ISpectralCluster> myClusters = internalGetClusters();
 
         for (ISpectralCluster cluster : myClusters) {
-            List<ISpectrum> noneFittingSpectra = findNoneFittingSpectra(cluster);
+            List<ISpectralCluster> noneFittingSpectra = findNoneFittingSpectra(cluster);
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
 
-                ISpectrum[] spectraToRemove = new ISpectrum[noneFittingSpectra.size()];
-                if (cluster.getClusteredSpectraCount() == spectraToRemove.length) {
-                    noneFittingSpectra = findNoneFittingSpectra(cluster);
+                List<ISpectrum> holder = new ArrayList<ISpectrum>();
+                for (ISpectralCluster removedCluster : noneFittingSpectra) {
+                    holder.addAll(removedCluster.getClusteredSpectra());
+                    clustersToAdd.add(removedCluster);
+                }
+
+                ISpectrum[] spectraToRemove = holder.toArray(new ISpectrum[holder.size()]);
+                cluster.removeSpectra( spectraToRemove);
+
+                if (cluster.getClusteredSpectraCount() == 0) {
                     emptyClusters.add(cluster); // nothing left remember this cluster
                 }
-                cluster.removeSpectra(noneFittingSpectra.toArray(spectraToRemove));
-
-                for (ISpectrum noneFittingSpectrum : noneFittingSpectra) {
-                    clustersToAdd.add(noneFittingSpectrum.asCluster());
-                }
-            }
+             }
         }
         if (!emptyClusters.isEmpty())    // any empty clusters
             clusters.removeAll(emptyClusters);   // drop them
@@ -271,8 +275,15 @@ public class ClusteringEngine implements IClusteringEngine {
         return noneFittingSpectraFound;
     }
 
-    protected List<ISpectrum> findNoneFittingSpectra(ISpectralCluster cluster) {
-        List<ISpectrum> noneFittingSpectra = new ArrayList<ISpectrum>();
+
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    public List<ISpectralCluster> findNoneFittingSpectra(ISpectralCluster cluster) {
+        List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
         if (cluster.getClusteredSpectra().size() > 1) {
@@ -281,7 +292,7 @@ public class ClusteringEngine implements IClusteringEngine {
                 final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum);
+                    noneFittingSpectra.add(spectrum.asCluster());
                 }
             }
         }

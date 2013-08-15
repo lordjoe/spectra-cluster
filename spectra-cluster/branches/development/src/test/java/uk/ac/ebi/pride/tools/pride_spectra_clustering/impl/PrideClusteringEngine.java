@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
 
@@ -76,24 +79,50 @@ public class PrideClusteringEngine implements IClusteringEngine {
     }
 
     /**
-      * nice for debugging to name an engine
-      *
-      * @return possibly null name
-      */
-     @Override
-     public String getName() {
-         return "PrideClusteringEngine";
-     }
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
+        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
-     /**
-      * nice for debugging to name an engine
-      *
-      * @param pName possibly null name
-      */
-     @Override
-     public void setName(final String pName) {
+        if (cluster.getClusteredSpectra().size() > 1) {
+            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                if (similarityScore < defaultThreshold) {
+                    noneFittingSpectra.add(spectrum.asCluster());
+                }
+            }
+        }
 
-     }
+        return noneFittingSpectra;
+
+    }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @return possibly null name
+     */
+    @Override
+    public String getName() {
+        return "PrideClusteringEngine";
+    }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @param pName possibly null name
+     */
+    @Override
+    public void setName(final String pName) {
+
+    }
 
     /**
      * total number of clusters including queued clustersToAdd

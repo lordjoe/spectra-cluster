@@ -33,11 +33,13 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public PeakMatchClusteringEngine(final Comparator<ISpectralCluster> spectrumComparator) {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker(), spectrumComparator);
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker) {
         this(similarityChecker, Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
@@ -50,11 +52,16 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     }
 
 
+    public SimilarityChecker getSimilarityChecker() {
+        return similarityChecker;
+    }
+
     /**
      * add some clusters
      */
     @Override
     public void addClusters(final ISpectralCluster... pClusters) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < pClusters.length; i++) {
             ISpectralCluster cluster = pClusters[i];
             if (cluster.getClusteredSpectraCount() == 1)
@@ -73,7 +80,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     @Override
     public boolean processClusters() {
-        boolean anythingDone = false;
         if (currentClusters.isEmpty()) {
             return clusterUsingPeaks();
         }
@@ -116,11 +122,14 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public static final double MAXIMUM_SINGLE_SPECTRUM_MERGE_MZ_DIFFERENCE = 0.6;
 
     /**
-     * @param mergable
+     *
+     * @param mergedClusters
+     * @param singleSpectra
      * @return
      */
     protected List<ISpectralCluster> mergeClustersWithSingles(List<ISpectralCluster> mergedClusters, List<ISpectralCluster> singleSpectra) {
         // let a shared function do all the dirty work so other engines can share code
+        //noinspection UnnecessaryLocalVariable
         List<ISpectralCluster> retained = ClusterUtilities.mergeClustersWithSingleSpectra(mergedClusters,
                 singleSpectra, internalGetSimilarityChecker(), MAXIMUM_SINGLE_SPECTRUM_MERGE_MZ_DIFFERENCE);
 
@@ -150,6 +159,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 throw new IllegalStateException("this should be a a single spectrum cluster"); // ToDo change
             final ISpectrum theSpectrum = readCluster.getHighestQualitySpectrum();
             final int[] peaks = theSpectrum.asMajorPeakMZs();
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < peaks.length; i++) {
                 if (alreadyClustered.contains(theSpectrum))    // we are already in a cluster
                     continue;
@@ -215,6 +225,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     protected Comparator<ISpectralCluster> internalGetSpectrumComparator() {
         return spectrumComparator;
     }
@@ -261,5 +272,31 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public int size() {
         return singleSpectrumClusters.size();  // todo do better
     }
+
+
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     * @return !null Cluster
+     */
+    public List<ISpectralCluster> findNoneFittingSpectra(ISpectralCluster cluster) {
+        List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
+        SimilarityChecker sCheck = getSimilarityChecker();
+
+        if (cluster.getClusteredSpectra().size() > 1) {
+            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                if (similarityScore < defaultThreshold) {
+                    noneFittingSpectra.add(spectrum.asCluster());
+                }
+            }
+        }
+
+        return noneFittingSpectra;
+    }
+
+
 
 }

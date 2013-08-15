@@ -18,7 +18,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     private final String id;
-      // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
+    // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
@@ -47,7 +47,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         this.id = id;
-          this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+        this.consensusSpectrumBuilder = consensusSpectrumBuilder;
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
@@ -81,7 +81,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     /**
      * notify any state change listeners - probably should
      * be protected but is in the interface to form an event cluster
-     *
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
         if (m_SpectrumHolderListeners.isEmpty())
@@ -124,8 +123,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     }
 
 
-
-
     /**
      * all internally spectrum
      */
@@ -149,7 +146,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public ISpectrum getConsensusSpectrum() {
-         return internalGetConcensusSpectrum();
+        return internalGetConcensusSpectrum();
     }
 
     /**
@@ -211,11 +208,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     /**
      * convenience method to all a list not individual spectra
+     *
      * @param merged !null list to add
      */
     @Override
-    public void addSpectra( List<ISpectrum> merged) {
-         addSpectra(merged.toArray(new ISpectrum[merged.size()]));
+    public void addSpectra(List<ISpectrum> merged) {
+        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
     }
 
 
@@ -246,15 +244,17 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     @Override
     public void removeSpectra(ISpectrum... removed) {
-        if(!isRemoveSupported())
+        if (!isRemoveSupported())
             throw new UnsupportedOperationException("Remove not supported");
 
         if (removed != null && removed.length > 0) {
+            for (ISpectrum spectrumToMerge : removed) {
+                clusteredSpectra.remove(spectrumToMerge);
+            }
 
-                  notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
+            notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
         }
     }
-
 
 
     /**
@@ -281,6 +281,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
         if (highestQualitySpectrum1 != highestQualitySpectrum2) {
             if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
+                //noinspection UnusedAssignment
                 highestQualitySpectrum1 = getHighestQualitySpectrum();
                 throw new IllegalStateException("problem"); // ToDo change
             }
@@ -290,10 +291,10 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
         int hash1 = hashCode();
         int hash2 = o.hashCode();
-        if(hash1 != hash2)
+        if (hash1 != hash2)
             return hash1 < hash2 ? -1 : 0;
 
-         return 0;
+        return 0;
     }
 
 
@@ -361,9 +362,9 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      * @param out place to append
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void append(Appendable out) {
-        int indent = 0;
 
         try {
             out.append("BEGIN CLUSTER");
@@ -395,9 +396,9 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      * @param out place to append
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void appendClustering(Appendable out) {
-        int indent = 0;
 
         try {
             out.append("=Cluster=\n");
@@ -464,6 +465,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      * @param out place to append
      */
+    @SuppressWarnings({"UnusedDeclaration", "StringConcatenationInsideStringBufferAppend"})
     public void appendMGF(Appendable out) {
 
         try {

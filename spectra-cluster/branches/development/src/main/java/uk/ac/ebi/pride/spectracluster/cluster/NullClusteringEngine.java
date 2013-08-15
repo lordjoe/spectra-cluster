@@ -10,6 +10,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date 20/05/13
  */
+@SuppressWarnings("UnusedDeclaration")
 public class NullClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
@@ -33,6 +34,7 @@ public class NullClusteringEngine implements IClusteringEngine {
     @Override
     public List<ISpectralCluster> getClusters() {
         guaranteeClean();
+        //noinspection UnnecessaryLocalVariable
         ArrayList<ISpectralCluster> scs = new ArrayList<ISpectralCluster>(clusters);
         return scs;
     }
@@ -55,6 +57,19 @@ public class NullClusteringEngine implements IClusteringEngine {
         setDirty(true);
 
     }
+
+    /**
+       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+       * usually is called on removed clusters
+       *
+       * @return !null Cluster
+       */
+      @Override
+      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+          return new ArrayList<ISpectralCluster>() ;
+       }
+
+
 
     /**
      * clusters are merged in the internal collection
