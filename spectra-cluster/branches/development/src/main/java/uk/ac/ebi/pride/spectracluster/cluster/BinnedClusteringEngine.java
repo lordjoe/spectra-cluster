@@ -16,16 +16,15 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     private final IWideBinner binner;
     private final int mainBin;
     private final IClusteringEngine engine;
-    private String name ;
+    private String name;
 
 
-    public BinnedClusteringEngine( final IWideBinner pBinner, final int pMainBin) {
+    public BinnedClusteringEngine(final IWideBinner pBinner, final int pMainBin) {
         binner = pBinner;
         mainBin = pMainBin;
         engine = Defaults.INSTANCE.getDefaultClusteringEngine();   // need a new engine every time
-        name = "Bin"  + mainBin;
+        name = "Bin" + mainBin;
     }
-
 
 
     /**
@@ -39,32 +38,45 @@ public class BinnedClusteringEngine implements IClusteringEngine {
         for (ISpectralCluster cluster : clusters) {
             final float precursorMz = cluster.getPrecursorMz();
             final int bin = binner.asBin(precursorMz);
-            if(bin == mainBin)
-                 holder.add(cluster); // only report clusters in the main bin
+            if (bin == mainBin)
+                holder.add(cluster); // only report clusters in the main bin
         }
-         return holder;
-     }
+        return holder;
+    }
 
     /**
      * add some clusters
      */
     @Override
     public void addClusters(final ISpectralCluster... cluster) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cluster.length; i++) {
             ISpectralCluster cl = cluster[i];
             // only add ones in the right bin
             final float precursorMz = cl.getPrecursorMz();
             int[] bins = binner.asBins(precursorMz);
             boolean useCluster = false;
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
-                if(mainBin == bins[j])  {
+                if (mainBin == bins[j]) {
                     useCluster = true;
                     break;
                 }
-               }
-            if(useCluster)
-                 engine.addClusters(cl);
-         }
+            }
+            if (useCluster)
+                engine.addClusters(cl);
+        }
+    }
+
+    /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        return engine.findNoneFittingSpectra(cluster);
     }
 
     /**
@@ -75,12 +87,13 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     @Override
     public boolean processClusters() {
         return engine.processClusters();
-     }
+    }
 
 
     /**
      * nice for debugging to name an engine
-     * @return  possibly null name
+     *
+     * @return possibly null name
      */
     @Override
     public String getName() {
@@ -89,7 +102,8 @@ public class BinnedClusteringEngine implements IClusteringEngine {
 
     /**
      * nice for debugging to name an engine
-     * @param pName   possibly null name
+     *
+     * @param pName possibly null name
      */
     @Override
     public void setName(final String pName) {
@@ -97,15 +111,16 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     }
 
     /**
-      * allow engines to be named
-      * @return
-      */
-     @Override
-     public String toString() {
-          if(name != null)
-              return name;
-         return super.toString();
-     }
+     * allow engines to be named
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        if (name != null)
+            return name;
+        return super.toString();
+    }
 
 
     /**

@@ -49,6 +49,33 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         }
     }
 
+    /**
+       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+       * usually is called on removed clusters
+       *
+       * @return !null Cluster
+       */
+      @Override
+      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+          List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
+        SimilarityChecker sCheck = spectrumSimilarityChecker;
+
+        if (cluster.getClusteredSpectra().size() > 1) {
+            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                if (similarityScore < defaultThreshold) {
+                    noneFittingSpectra.add(spectrum.asCluster());
+                }
+            }
+        }
+
+        return noneFittingSpectra;
+        }
+
+
+
     @Override
     public boolean processClusters() {
         boolean dataChanged = false;
@@ -73,6 +100,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         // Step 4 - cluster non-fitting peptides again, repeat at step 2
         clustersAdded = processClusterToAdd();
         dataChanged = dataChanged || clustersAdded;
+        //noinspection UnusedDeclaration
         long durCluster2 = System.currentTimeMillis() - start - durCluster1 - durMerge - durRemove;
 
   //      System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",

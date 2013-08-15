@@ -34,9 +34,25 @@ public class ClusterUtilities {
      */
     public static void breakHere()
     {
+        //noinspection UnusedDeclaration
         int i = 0;
+        //noinspection UnusedAssignment
         i++; // Break here - something interesting happened in teh outer code
     }
+
+
+    public static final int MZ_RESOLUTION = 1000; // we care about differences of 0.01 dalton
+
+    /**
+     * convert am int into an mz for east comparison
+     *
+     * @param mz input
+     * @return MZ_RESOLUTION * mz as int
+     */
+    public static int mzToInt(double mz) {
+        return (int) (MZ_RESOLUTION * mz + 0.5);
+    }
+
 
     /**
      * purely for debugging to allow handling of one bad case to be traces
@@ -47,6 +63,7 @@ public class ClusterUtilities {
     public static final float MININUM_INTERESTING_MZ = 474.09F;
     public static final float MAXINUM_INTERESTING_MZ = 475.4F;
 
+     @SuppressWarnings("UnusedDeclaration")
      public static boolean isPeakInteresting(IPeak pk)  {
          float mz = pk.getMz();
          return isMZInteresting(mz);
@@ -54,12 +71,14 @@ public class ClusterUtilities {
 
     /**
      * purely for debugging to allow handling of one bad case to be traces
-     * @param mz
+     * @param pMz
      * @return
      */
     public static boolean isMZInteresting(final float pMz) {
+         //noinspection RedundantIfStatement
         if(pMz < MININUM_INTERESTING_MZ)
             return false;
+        //noinspection RedundantIfStatement
         if(pMz > MAXINUM_INTERESTING_MZ)
             return false;
 
@@ -86,6 +105,7 @@ public class ClusterUtilities {
      * @param cluster !null cluster
      * @return !null list of peaks
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak>  getAllPeaks(ISpectralCluster cluster)
     {
          List<IPeak> holder = new ArrayList<IPeak>();
@@ -162,6 +182,7 @@ public class ClusterUtilities {
      */
     public static String mostCommonPeptides(ISpectralCluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        //noinspection UnnecessaryLocalVariable
         String petides =  mostCommonPeptides(clusteredSpectra) ;
         return petides;
     }
@@ -191,6 +212,7 @@ public class ClusterUtilities {
      * @param sc
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak> peaksByIntensity(ISpectrum sc) {
         List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
         Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
@@ -220,8 +242,7 @@ public class ClusterUtilities {
      */
     public static double minClusterMZ(List<ISpectralCluster> clusters) {
         double ret = Double.MAX_VALUE;
-        List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (ISpectralCluster cluster : clusters) {
+         for (ISpectralCluster cluster : clusters) {
             ret = Math.min(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -235,8 +256,7 @@ public class ClusterUtilities {
      */
     public static double maxClusterMZ(List<ISpectralCluster> clusters) {
         double ret = 0;
-        List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (ISpectralCluster cluster : clusters) {
+          for (ISpectralCluster cluster : clusters) {
             ret = Math.max(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -335,6 +355,7 @@ public class ClusterUtilities {
         // now grab all peaks in a list
         // will hold retained peaks
         List<IPeak> holder = new ArrayList<IPeak>();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < higheseEachBin.length; i++) {
             PriorityQueue<IPeak> hightestInBin = higheseEachBin[i];
             if (hightestInBin != null)
@@ -489,7 +510,6 @@ public class ClusterUtilities {
      * Round to certain number of decimals
      *
      * @param f
-     * @param decimalPlace
      * @return
      */
     public static double round(double f) {

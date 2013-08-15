@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
@@ -25,7 +24,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     }
 
     protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
-          private final IClusteringEngineFactory incrementalFactory;
+          private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
 
         public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ISpectralCluster> pSpectrumComparator) {
                 incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
@@ -38,7 +37,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
          */
         @Override
         public IClusteringEngine getClusteringEngine() {
-            return new WrappedIncrementalClusteringEngine((IIncrementalClusteringEngine)incrementalFactory.getClusteringEngine());
+            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine());
         }
     }
 
@@ -116,25 +115,17 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         return wasDirty;
      }
 
+    /**
+       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+       * usually is called on removed clusters
+       *
+       * @return !null Cluster
+       */
+      @Override
+      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+          return realEngine.findNoneFittingSpectra(  cluster);
+      }
 
-    @SuppressWarnings("UnusedDeclaration")
-    protected List<ISpectrum> findNoneFittingSpectra(ISpectralCluster cluster) {
-        List<ISpectrum> noneFittingSpectra = new ArrayList<ISpectrum>();
-        SimilarityChecker sCheck = ((IncrementalClusteringEngine)getRealEngine()).getSimilarityChecker();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum);
-                }
-            }
-        }
-
-        return noneFittingSpectra;
-    }
 
     /**
      * nice for debugging to name an engine
