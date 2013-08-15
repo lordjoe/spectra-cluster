@@ -54,11 +54,13 @@ public abstract class AbstractTandemMapper<T> extends Mapper<T, Text, Text, Text
 
 
         String defaultPath = conf.get(XTandemHadoopUtilities.PATH_KEY);
-        XTandemHadoopUtilities.setDefaultPath(defaultPath);
+        if(defaultPath != null)
+            XTandemHadoopUtilities.setDefaultPath(defaultPath);
         String forcePathPrefix = conf.get(XTandemHadoopUtilities.FORCE_PATH_PREFIX_KEY);
-        XTandemMain.setRequiredPathPrefix(forcePathPrefix);
+        if(forcePathPrefix != null)
+            XTandemMain.setRequiredPathPrefix(forcePathPrefix);
 
-        if(defaultPath.startsWith("s3n://"))  {
+        if(defaultPath != null && defaultPath.startsWith("s3n://"))  {
             try {
                 Class cls = Class.forName("org.systemsbiology.aws.AWSUtilities");
                 IConfigureFileSystem cfg = (IConfigureFileSystem)cls.getField("AWS_CONFIGURE_FILE_SYSTEM").get(null);

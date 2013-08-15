@@ -6,12 +6,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 
@@ -21,56 +20,11 @@ import java.io.*;
  * This uses a key based in charge,peakmz,PrecursorMZ
  * inout is MGF text
  */
-public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJobRunner {
+public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobRunner {
 
+    @SuppressWarnings("UnusedDeclaration")
+    public static final int MAX_TEST_PROTEINS = 2000;
 
-    /**
-     * maps ueing a ChargePeakMZKey key - use MajorPeakPartitioner to see all instances with a major peak
-     * go to the same reducer - NOTE every spectrum is emitted 3 times
-     */
-    public static class MajorPeakMapper extends Mapper<Writable, Text, Text, Text> {
-
-        private final Text onlyKey = new Text();
-        private final Text onlyValue = new Text();
-
-        public Text getOnlyValue() {
-            return onlyValue;
-        }
-
-        public Text getOnlyKey() {
-            return onlyKey;
-        }
-
-        @Override
-        public void map(Writable key, Text value, Context context
-        ) throws IOException, InterruptedException {
-
-            String label = key.toString();
-            String text = value.toString();
-            if (label == null || text == null)
-                return;
-            if (label.length() == 0 || text.length() == 0)
-                return;
-            // ready to read test as one MGF
-            LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
-            int precursorCharge = match.getPrecursorCharge();
-            double precursorMZ = match.getPrecursorMz();
-
-            Text onlyKey = getOnlyKey();
-            Text onlyValue = getOnlyValue();
-            for (int peakMz : match.asMajorPeakMZs()) {
-                ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
-                final String keyStr = mzKey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
-            }
-
-        }
-
-
-    }
 
     protected static void usage() {
         System.out.println("Usage <input file or directory> <output directory>");
@@ -91,7 +45,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 //            System.err.println("Usage: wordcount <in> <out>");
 //            System.exit(2);
 //        }
-            Job job = new Job(conf, "Spectrum Peak Clusterer");
+            Job job = new Job(conf, "Spectrum Peak Merger");
             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
@@ -106,19 +60,18 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
             if (params == null)
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
-            job.setJarByClass(SpectraPeakClustererPass1.class);
+            job.setJarByClass(SpectraClustererMerger.class);
 
-            job.setInputFormatClass(MGFInputFormat.class);
+            job.setInputFormatClass( SequenceFileInputFormat.class);
 
             // sequence files are faster but harder to debug
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-            job.setMapperClass(MajorPeakMapper.class);
-            job.setReducerClass(MajorPeakReducer.class);
-            // make sure all instances of a peak/charge hit the same reducer
-            job.setPartitionerClass(MajorPeakPartitioner.class);
+            job.setMapperClass(ChargeMZRegionMapper.class);
+            job.setReducerClass(SpectrumMergeReducer.class);
 
-            // We always do this
+
+             // We always do this
             job.setMapOutputKeyClass(Text.class);
             job.setMapOutputValueClass(Text.class);
             job.setOutputKeyClass(Text.class);
@@ -200,6 +153,6 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             usage();
             return;
         }
-        ToolRunner.run(new SpectraPeakClustererPass1(), args);
+        ToolRunner.run(new SpectraClustererMerger(), args);
     }
 }
