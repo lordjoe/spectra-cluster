@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>uk.ac.ebi.pride</groupId>
+    <groupId>uk.ac.ebi.pride.spectracluster</groupId>
     <artifactId>spectra-cluster-hadoop</artifactId>
     <packaging>jar</packaging>
     <name>spectra-cluster-hadoop</name>
@@ -104,17 +104,12 @@
         </dependency>
 
         <dependency>
-            <groupId>org.systemsbiology.mapreduce</groupId>
+            <groupId>uk.ac.ebi.pride.hydra</groupId>
             <artifactId>concurrenttools</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.systemsbiology.mapreduce</groupId>
-            <artifactId>proteos</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>spectra-cluster</groupId>
+            <groupId>uk.ac.ebi.pride.spectracluster</groupId>
             <artifactId>spectra-cluster</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
