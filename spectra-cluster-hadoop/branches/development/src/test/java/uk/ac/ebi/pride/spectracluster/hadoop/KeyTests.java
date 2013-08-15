@@ -22,7 +22,7 @@ public class KeyTests {
     }
 
     protected void validateSpectrum(ISpectrum spec) {
-        final float precursorMz = spec.getPrecursorMz();
+        final double precursorMz = spec.getPrecursorMz();
         final int charge = spec.getPrecursorCharge();
         MZKey k1 = new MZKey(precursorMz);
         ChargeMZKey k2 = new ChargeMZKey(charge, precursorMz);

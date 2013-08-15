@@ -6,70 +6,63 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.SpectraPeakClustererPass1
- * This uses a key based in charge,peakmz,PrecursorMZ
- * inout is MGF text
+ * uk.ac.ebi.pride.spectracluster.hadoop.ClusterConsolidator
+ * This sends ALL output to a single reducer to make a CGF file -
+ * primarily for use in early stage debugging
  */
-public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJobRunner {
+public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunner {
 
+    private static String outputFileName = "ConsolidatorOutput.cgf";
 
     /**
-     * maps ueing a ChargePeakMZKey key - use MajorPeakPartitioner to see all instances with a major peak
-     * go to the same reducer - NOTE every spectrum is emitted 3 times
+     * retucer to w
      */
-    public static class MajorPeakMapper extends Mapper<Writable, Text, Text, Text> {
+    public static class FileWriteReducer extends Reducer<Text, Text, Text, Text> {
 
-        private final Text onlyKey = new Text();
-        private final Text onlyValue = new Text();
+        private PrintWriter outputWriter;
 
-        public Text getOnlyValue() {
-            return onlyValue;
-        }
-
-        public Text getOnlyKey() {
-            return onlyKey;
+        @Override
+        protected void setup(final Context context) throws IOException, InterruptedException {
+            super.setup(context);
+            outputWriter = new PrintWriter(new FileWriter(outputFileName));
         }
 
         @Override
-        public void map(Writable key, Text value, Context context
-        ) throws IOException, InterruptedException {
+        protected void cleanup(final Context context) throws IOException, InterruptedException {
+            super.cleanup(context);
+            if(outputWriter != null)
+                outputWriter.close();
+        }
 
-            String label = key.toString();
-            String text = value.toString();
-            if (label == null || text == null)
-                return;
-            if (label.length() == 0 || text.length() == 0)
-                return;
-            // ready to read test as one MGF
-            LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
-            int precursorCharge = match.getPrecursorCharge();
-            double precursorMZ = match.getPrecursorMz();
+        /**
+         * write the values to a real file -
+         *   NOT useful in a cluster but very helpful in debugging
+         * @param key
+         * @param values
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        @Override
+        protected void reduce(final Text key, final Iterable<Text> values, final Context context) throws IOException, InterruptedException {
+            //noinspection LoopStatementThatDoesntLoop
+            for (Text val : values) {
+                String valStr = val.toString();
+                outputWriter.println(valStr);
 
-            Text onlyKey = getOnlyKey();
-            Text onlyValue = getOnlyValue();
-            for (int peakMz : match.asMajorPeakMZs()) {
-                ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
-                final String keyStr = mzKey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
             }
 
         }
-
-
     }
 
     protected static void usage() {
@@ -91,7 +84,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 //            System.err.println("Usage: wordcount <in> <out>");
 //            System.exit(2);
 //        }
-            Job job = new Job(conf, "Spectrum Peak Clusterer");
+            Job job = new Job(conf, "Cluster Consolidator");
             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
@@ -106,17 +99,17 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
             if (params == null)
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
-            job.setJarByClass(SpectraPeakClustererPass1.class);
+            job.setJarByClass(ClusterConsolidator.class);
 
-            job.setInputFormatClass(MGFInputFormat.class);
+            job.setInputFormatClass(SequenceFileInputFormat.class);
 
-            // sequence files are faster but harder to debug
-            job.setOutputFormatClass(SequenceFileOutputFormat.class);
+              // there is no output
+            job.setOutputFormatClass(TextOutputFormat.class);
 
-            job.setMapperClass(MajorPeakMapper.class);
-            job.setReducerClass(MajorPeakReducer.class);
-            // make sure all instances of a peak/charge hit the same reducer
-            job.setPartitionerClass(MajorPeakPartitioner.class);
+            job.setMapperClass(TextIdentityMapper.class);
+            job.setReducerClass(FileWriteReducer.class);
+
+            job.setNumReduceTasks(1);  // this is important
 
             // We always do this
             job.setMapOutputKeyClass(Text.class);
@@ -200,6 +193,6 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             usage();
             return;
         }
-        ToolRunner.run(new SpectraPeakClustererPass1(), args);
+        ToolRunner.run(new ClusterConsolidator(), args);
     }
 }

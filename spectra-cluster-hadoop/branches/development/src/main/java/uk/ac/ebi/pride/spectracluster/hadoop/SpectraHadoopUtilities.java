@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import uk.ac.ebi.pride.spectracluster.util.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectraHadoopUtilities
  * User: Steve
@@ -8,17 +10,6 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
  */
 public class SpectraHadoopUtilities {
 
-    public static final int MZ_RESOLUTION = 100; // we care about differences of 0.01 dalton
-
-    /**
-     * convert am int into an mz for east comparison
-     *
-     * @param mz input
-     * @return MZ_RESOLUTION * mz as int
-     */
-    public static int mzToInt(double mz) {
-        return (int) (MZ_RESOLUTION * mz);
-    }
 
     /**
      * convert am int into an mz for east comparison
@@ -27,7 +18,7 @@ public class SpectraHadoopUtilities {
      * @return MZ_RESOLUTION * mz as int
      */
     public static String mzToKey(double mz) {
-        int peak = SpectraHadoopUtilities.mzToInt(mz);
+        int peak = ClusterUtilities.mzToInt(mz);
         //noinspection UnnecessaryLocalVariable
         String str = String.format("%010d", peak);
         return str;
@@ -38,9 +29,9 @@ public class SpectraHadoopUtilities {
       * @param key input
       * @return MZ_RESOLUTION * mz as int
       */
-     public static double keyToMZ(String key) {
+     public static int keyToMZ(String key) {
          //noinspection UnnecessaryLocalVariable
-          double ret = Integer.parseInt(key) / (double)MZ_RESOLUTION;
+          int ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
           return ret;
      }
 
