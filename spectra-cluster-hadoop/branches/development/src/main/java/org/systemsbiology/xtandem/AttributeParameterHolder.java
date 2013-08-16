@@ -177,12 +177,12 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null value - null says parameter does not exist
      */
     @Override
-    public <T extends Enum> T getEnumParameter(String key, Class<T> cls)
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls)
     {
         String val = getParameter(key);
         if (val == null  || "".equals(val) )
             return null;
-        return (T) Enum.valueOf(cls, val);
+        return   Enum.valueOf(cls, val);
     }
 
     /**
@@ -268,12 +268,12 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null value - null says parameter does not exist
      */
     @Override
-    public <T extends Enum> T getEnumParameter(String key, Class<T> cls, T defaultValue)
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls, T defaultValue)
     {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
-        return (T) Enum.valueOf(cls, val);
+        return   Enum.valueOf(cls, val);
     }
 
 

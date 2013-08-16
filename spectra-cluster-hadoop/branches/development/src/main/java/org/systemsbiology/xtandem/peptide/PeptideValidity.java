@@ -1,9 +1,5 @@
 package org.systemsbiology.xtandem.peptide;
 
-import org.apache.tools.ant.taskdefs.condition.*;
-
-import javax.jnlp.*;
-
 /**
  * org.systemsbiology.xtandem.peptide.PeptideValidity
  * User: Steve
