@@ -83,7 +83,7 @@ public interface IParameterHolder extends IStreamOpener {
      * @param <T> type of enum
      * @return possibly null value - null says parameter does not exist
      */
-    public <T extends Enum> T getEnumParameter(String key, Class<T> cls);
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls);
 
 
     /**
@@ -141,7 +141,7 @@ public interface IParameterHolder extends IStreamOpener {
      * @return possibly null value - null says parameter does not exist
      * @defaultValue what to set when the parameter is null
      */
-    public <T extends Enum> T getEnumParameter(String key, Class<T> cls, T defaultValue);
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls, T defaultValue);
 
 
     public static class NullParameterHolder implements IParameterHolder {
@@ -245,7 +245,7 @@ public interface IParameterHolder extends IStreamOpener {
          * @return possibly null value - null says parameter does not exist
          */
         @Override
-        public <T extends Enum> T getEnumParameter(final String key, final Class<T> cls) {
+        public <T extends Enum<T>> T getEnumParameter(final String key, final Class<T> cls) {
             return null;
         }
 
@@ -320,7 +320,7 @@ public interface IParameterHolder extends IStreamOpener {
          * @return possibly null value - null says parameter does not exist
          */
         @Override
-        public <T extends Enum> T getEnumParameter(final String key, final Class<T> cls, final T defaultValue) {
+        public <T extends Enum<T>> T getEnumParameter(final String key, final Class<T> cls, final T defaultValue) {
             return defaultValue;
         }
     }

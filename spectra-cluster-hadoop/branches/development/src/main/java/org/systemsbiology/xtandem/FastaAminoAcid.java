@@ -1,9 +1,5 @@
 package org.systemsbiology.xtandem;
 
-import com.sun.xml.internal.ws.client.*;
-import org.apache.taglibs.standard.lang.jstl.*;
-import org.eclipse.jdt.internal.compiler.flow.*;
-
 import java.util.*;
 
 /**
