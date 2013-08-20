@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem.taxonomy;
 import com.lordjoe.utilities.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
+import com.lordjoe.utilities.ElapsedTimer;
 
 import java.io.*;
 import java.util.*;

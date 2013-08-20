@@ -5,13 +5,13 @@ import java.util.*;
 
 /**
  * org.systemsbiology.xtandem.AttributeParameterHolder
- *     an inplementation if  IParameterHolder  wherte the input is a line of the form
- *     name="value" as you would find in the attributes of an xml tag
+ * an inplementation if  IParameterHolder  wherte the input is a line of the form
+ * name="value" as you would find in the attributes of an xml tag
+ *
  * @author Steve Lewis
-  * Base class for a ParameterHolder -
+ *         Base class for a ParameterHolder -
  */
-public  class AttributeParameterHolder implements IParameterHolder
-{
+public class AttributeParameterHolder implements IParameterHolder {
     public static AttributeParameterHolder[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = AttributeParameterHolder.class;
 
@@ -21,36 +21,35 @@ public  class AttributeParameterHolder implements IParameterHolder
         m_Line = pLine;
     }
 
-         /**
-          * open a file from a string
-          *
-          * @param fileName  string representing the file
-          * @param otherData any other required data
-          * @return possibly null stream
-          */
-         @Override
-         public InputStream open(final String fileName, final Object... otherData) {
-             return null;
-         }
+    /**
+     * open a file from a string
+     *
+     * @param fileName  string representing the file
+     * @param otherData any other required data
+     * @return possibly null stream
+     */
+    @Override
+    public InputStream open(final String fileName, final Object... otherData) {
+        return null;
+    }
+
     /**
      * return a parameter configured in  default parameters
      *
      * @param key !null key
      * @return possibly null parameter
      */
-    public String getParameter(String key)
-    {
+    public String getParameter(String key) {
         String txt = key + "=\"";
         int index = m_Line.indexOf(txt);
-        if(index == -1)
+        if (index == -1)
             return null;
         index += txt.length();
-        int index2 = m_Line.indexOf("\"",index );
-        if(index2 == -1)
+        int index2 = m_Line.indexOf("\"", index);
+        if (index2 == -1)
             return null;
-        return m_Line.substring(index,index2);
+        return m_Line.substring(index, index2);
     }
-
 
 
     /**
@@ -60,8 +59,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return non-null array
      */
     @Override
-    public String[] getIndexedParameters(String key)
-    {
+    public String[] getIndexedParameters(String key) {
         List<String> holder = new ArrayList<String>();
         String value = getParameter(key);
         int index = 1;
@@ -81,8 +79,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @param key !null key
      * @return possibly null parameter
      */
-    public String getParameter(String key, String defaultVal)
-    {
+    public String getParameter(String key, String defaultVal) {
         final String s = getParameter(key);
         if (s == null)
             return defaultVal;
@@ -95,8 +92,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return !null key array
      */
     @Override
-    public String[] getParameterKeys()
-    {
+    public String[] getParameterKeys() {
         throw new UnsupportedOperationException("We do not support this");
     }
 
@@ -107,10 +103,9 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Integer getIntParameter(String key)
-    {
+    public Integer getIntParameter(String key) {
         String val = getParameter(key);
-        if (val == null  || "".equals(val))
+        if (val == null || "".equals(val))
             return null;
         return new Integer(val);
     }
@@ -122,10 +117,9 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Boolean getBooleanParameter(String key)
-    {
+    public Boolean getBooleanParameter(String key) {
         String val = getParameter(key);
-        if (val == null  || "".equals(val))
+        if (val == null || "".equals(val))
             return null;
         if ("yes".equalsIgnoreCase(val))
             return Boolean.TRUE;
@@ -145,10 +139,9 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Float getFloatParameter(String key)
-    {
+    public Float getFloatParameter(String key) {
         String val = getParameter(key);
-        if (val == null  || "".equals(val))
+        if (val == null || "".equals(val))
             return null;
         return new Float(val);
     }
@@ -160,8 +153,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Double getDoubleParameter(String key)
-    {
+    public Double getDoubleParameter(String key) {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return null;
@@ -177,12 +169,11 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null value - null says parameter does not exist
      */
     @Override
-    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls)
-    {
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls) {
         String val = getParameter(key);
-        if (val == null  || "".equals(val) )
+        if (val == null || "".equals(val))
             return null;
-        return   Enum.valueOf(cls, val);
+        return Enum.valueOf(cls, val);
     }
 
     /**
@@ -192,8 +183,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Integer getIntParameter(String key, int defaultValue)
-    {
+    public Integer getIntParameter(String key, int defaultValue) {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
@@ -207,8 +197,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Boolean getBooleanParameter(String key, boolean defaultValue)
-    {
+    public Boolean getBooleanParameter(String key, boolean defaultValue) {
         String val = getParameter(key);
         if (val == null)
             return defaultValue;
@@ -230,15 +219,13 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Float getFloatParameter(String key, float defaultValue)
-    {
+    public Float getFloatParameter(String key, float defaultValue) {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
         try {
             return new Float(val);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException(e);
 
         }
@@ -251,8 +238,7 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null parameter
      */
     @Override
-    public Double getDoubleParameter(String key, double defaultValue)
-    {
+    public Double getDoubleParameter(String key, double defaultValue) {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
@@ -268,12 +254,11 @@ public  class AttributeParameterHolder implements IParameterHolder
      * @return possibly null value - null says parameter does not exist
      */
     @Override
-    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls, T defaultValue)
-    {
+    public <T extends Enum<T>> T getEnumParameter(String key, Class<T> cls, T defaultValue) {
         String val = getParameter(key);
         if (val == null || "".equals(val))
             return defaultValue;
-        return   Enum.valueOf(cls, val);
+        return Enum.valueOf(cls, val);
     }
 
 

@@ -17,6 +17,9 @@ public interface ISetableParameterHolder extends IParameterHolder {
 
 
 
+    public String[] getParameterKeys();
+
+
     public String[] getUnusedKeys();
 
 

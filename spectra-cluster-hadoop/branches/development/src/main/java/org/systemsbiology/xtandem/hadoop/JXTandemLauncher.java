@@ -1,10 +1,10 @@
 package org.systemsbiology.xtandem.hadoop;
 
 import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.security.*;
 import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;

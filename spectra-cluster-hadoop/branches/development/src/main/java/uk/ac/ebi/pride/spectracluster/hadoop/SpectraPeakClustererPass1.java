@@ -28,18 +28,9 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
      * maps ueing a ChargePeakMZKey key - use MajorPeakPartitioner to see all instances with a major peak
      * go to the same reducer - NOTE every spectrum is emitted 3 times
      */
-    public static class MajorPeakMapper extends Mapper<Writable, Text, Text, Text> {
+    public static class MajorPeakMapper extends AbstractParameterizedMapper<Writable> {
 
-        private final Text onlyKey = new Text();
-        private final Text onlyValue = new Text();
 
-        public Text getOnlyValue() {
-            return onlyValue;
-        }
-
-        public Text getOnlyKey() {
-            return onlyKey;
-        }
 
         @Override
         public void map(Writable key, Text value, Context context
