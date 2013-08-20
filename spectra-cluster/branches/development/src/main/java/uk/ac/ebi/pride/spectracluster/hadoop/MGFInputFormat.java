@@ -27,10 +27,12 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
 
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getExtension() {
         return m_Extension;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setExtension(final String pExtension) {
         m_Extension = pExtension;
     }
@@ -45,6 +47,7 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
     @Override
     protected boolean isSplitable(JobContext context, Path file) {
         final String lcName = file.getName().toLowerCase();
+        //noinspection RedundantIfStatement
         if (lcName.endsWith("gz"))
             return false;
         return true;
@@ -122,7 +125,7 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
 
 
         {
-            int newSize = 0;
+            int newSize;
             while (current < m_Start) {
                 newSize = m_Input.readLine(buffer);
                 // we are done
@@ -135,7 +138,7 @@ public class MGFInputFormat extends FileInputFormat<Text, Text> {
             }
             StringBuilder sb = new StringBuilder();
             newSize = m_Input.readLine(buffer);
-            String str = null;
+            String str;
             while (newSize > 0) {
                 str = buffer.toString();
 
