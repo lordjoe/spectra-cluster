@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem.hadoop;
 import org.systemsbiology.xtandem.*;
 
 import java.util.*;
+import com.lordjoe.utilities.ElapsedTimer;
 
 /**
  * org.systemsbiology.xtandem.hadoop.JXTandemStatistics
@@ -15,8 +16,8 @@ public class JXTandemStatistics {
 
     public static final int ONE_SEC = 1000;
     public static final int ONE_MIN = 60 * ONE_SEC;
-    public static final int ONE_HOUR = 60 * ONE_MIN;;
-    public static final int ONE_DAY = 60 * ONE_HOUR;;
+    public static final int ONE_HOUR = 60 * ONE_MIN;
+    public static final int ONE_DAY = 60 * ONE_HOUR;
 
     /**
      * present a duration as a string
@@ -87,14 +88,15 @@ public class JXTandemStatistics {
 
 
     public String[] getDataKeys() {
-        String[] ret = m_Data.keySet().toArray(new String[0]);
+        Set<String> stx = m_Data.keySet();
+        String[] ret = stx.toArray(new String[stx.size()]);
         Arrays.sort(ret);
         return ret;
     }
 
 
     public JobTime[] getJobTimes() {
-        JobTime[] ret = m_JobTimes.toArray(new JobTime[0]);
+        JobTime[] ret = m_JobTimes.toArray(new JobTime[m_JobTimes.size()]);
          return ret;
     }
 
@@ -109,6 +111,7 @@ public class JXTandemStatistics {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String[] keys = getDataKeys();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
             sb.append(key + " = " + getData(key) + "\n");
@@ -116,8 +119,10 @@ public class JXTandemStatistics {
          sb.append( m_TotalTime.formatElapsed("total time") + "\n");
 
         JobTime[] jobs = getJobTimes();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < jobs.length; i++) {
             JobTime job = jobs[i];
+            //noinspection StringConcatenationInsideStringBufferAppend
             sb.append(job.toString() + "\n");
         }
 

@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.hadoop;
 
 import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
@@ -100,6 +101,7 @@ public class XTandemHadoopUtilities {
 
                 // standard DECOY_ prefix gets added to label and return that
 
+                //noinspection UnnecessaryLocalVariable
                 String post_label = DEFAULT_DECOY_PREFIX + processed_label;
 
 

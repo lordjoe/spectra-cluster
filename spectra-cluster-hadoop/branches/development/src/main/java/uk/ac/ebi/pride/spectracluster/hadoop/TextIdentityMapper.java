@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 
@@ -11,13 +12,14 @@ import java.io.*;
 * User: Steve
 * Date: 8/14/13
 */
-public class TextIdentityMapper extends Mapper<Text, Text, Text, Text> {
+public class TextIdentityMapper extends AbstractParameterizedMapper<Text> {
 
 
     @Override
-    public void map(Text key, Text value, Context context
+    public void map(Text key, Text value, Mapper.Context context
     ) throws IOException, InterruptedException {
-             context.write(key, value);
+        //noinspection unchecked
+        context.write(key, value);
 
     }
 

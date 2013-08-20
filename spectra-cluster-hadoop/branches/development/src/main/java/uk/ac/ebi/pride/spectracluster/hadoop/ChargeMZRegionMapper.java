@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import org.systemsbiology.hadoop.*;
+
 
 import java.io.*;
 
@@ -13,14 +12,13 @@ import java.io.*;
 * User: Steve
 * Date: 8/14/13
 */
-public class ChargeMZRegionMapper extends Mapper<Text, Text, Text, Text> {
+public class ChargeMZRegionMapper extends AbstractParameterizedMapper<Text> {
 
 
     @Override
-    public void map(Text key, Text value, Context context
-    ) throws IOException, InterruptedException {
-             context.write(key, value);
-
+    public void map(Text key, Text value, Context context) throws IOException, InterruptedException
+    {
+        context.write(key, value);
     }
 
 
