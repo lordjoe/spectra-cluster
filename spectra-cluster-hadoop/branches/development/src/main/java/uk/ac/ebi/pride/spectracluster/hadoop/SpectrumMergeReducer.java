@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -12,27 +12,17 @@ import java.util.*;
 /**
  * Form clusters from peaks
  */
-public class SpectrumMergeReducer extends Reducer<Text, Text, Text, Text> {
+public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
-    private int majorMZ;
+    private double majorMZ;
     private int currentCharge;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
 
-    private final Text onlyKey = new Text();
-    private final Text onlyValue = new Text();
-
-    public Text getOnlyValue() {
-        return onlyValue;
-    }
-
-    public Text getOnlyKey() {
-        return onlyKey;
-    }
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public int getMajorMZ() {
+    public double getMajorMZ() {
         return majorMZ;
     }
 
@@ -45,14 +35,15 @@ public class SpectrumMergeReducer extends Reducer<Text, Text, Text, Text> {
     }
 
     @Override
-    public void reduce(Text key, Iterable<Text> values,
+    public void reduceNormal(Text key, Iterable<Text> values,
                        Context context) throws IOException, InterruptedException {
 
         String keyStr = key.toString();
+        //    System.err.println(keyStr);
         ChargeMZKey mzKey = new ChargeMZKey(keyStr);
 
         // we only need to change engines for different charges
-        if (mzKey.getCharge() != getCurrentCharge()) {
+        if (mzKey.getCharge() != getCurrentCharge() || engine == null) {
             updateEngine(context, mzKey);
         }
 
@@ -62,13 +53,16 @@ public class SpectrumMergeReducer extends Reducer<Text, Text, Text, Text> {
         for (Text val : values) {
             String valStr = val.toString();
 
-
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
             final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
-            final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+            if (cluster != null) {  // todo why might this happen
+                if (engine != null) {     // todo why might this happen
+                    final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+                    writeClusters(context, removedClusters);
 
-            writeClusters(context, removedClusters);
+                }
+            }
         }
     }
 
@@ -92,37 +86,43 @@ public class SpectrumMergeReducer extends Reducer<Text, Text, Text, Text> {
      */
     protected void writeCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
         final List<ISpectralCluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
-         if (!allClusters.isEmpty()) {
-             for (ISpectralCluster removedCluster : allClusters) {
+        if (!allClusters.isEmpty()) {
+            for (ISpectralCluster removedCluster : allClusters) {
 
-                 // drop all spectra
-                 final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
-                 ISpectrum[] allRemoved = clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]);
-                 cluster.removeSpectra(allRemoved);
+                // drop all spectra
+                final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
+                ISpectrum[] allRemoved = clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]);
+                cluster.removeSpectra(allRemoved);
 
-                 // and write as stand alone
-                 writeOneCluster(context, removedCluster);
-             }
+                // and write as stand alone
+                writeOneCluster(context, removedCluster);
+            }
 
-         }
-         // now write the original
-         if (cluster.getClusteredSpectraCount() > 0)
-             writeOneCluster(context, cluster);     // nothing removed
+        }
+        // now write the original
+        if (cluster.getClusteredSpectraCount() > 0)
+            writeOneCluster(context, cluster);     // nothing removed
     }
 
+
     protected void writeOneCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
-        if(cluster.getClusteredSpectraCount() == 0)
+        if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
+
         final Text onlyKey = getOnlyKey();
         onlyKey.set(key.toString());
 
         final Text onlyValue = getOnlyValue();
         StringBuilder sb = new StringBuilder();
         cluster.append(sb);
-        onlyValue.set(sb.toString());
+        String string = sb.toString();
 
-        context.write(onlyKey, onlyValue);
+        if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
+            onlyValue.set(string);
+            context.write(onlyKey, onlyValue);
+
+        }
     }
 
     /**
