@@ -17,6 +17,7 @@ import java.util.*;
 public class OriginalSpectralCluster implements ISpectralCluster {
     private final IConsensusSpectrumBuilder consensusSpectrum = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
     private List<ISpectrum> spectra = new ArrayList<ISpectrum>();
+    private boolean stable;
 
     public OriginalSpectralCluster(ISpectralCluster cluster) {
         spectra.addAll(cluster.getClusteredSpectra());
@@ -53,15 +54,6 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         return spectra.get(0);
     }
 
-    /**
-     * stable clusters do not support remove others do
-     *
-     * @return as above
-     */
-    @Override
-    public boolean isRemoveSupported() {
-        return true;
-    }
 
     @Override
     public List<ISpectrum> getHighestQualitySpectra() {
@@ -81,6 +73,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void append(Appendable out) {
+        //noinspection UnusedDeclaration
         int indent = 0;
 
         try {
@@ -109,8 +102,10 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         }
     }
 
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void appendClustering(Appendable out) {
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration
         int indent = 0;
 
         try {
@@ -153,6 +148,37 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     public void addSpectra(List<ISpectrum> added) {
         addSpectra(added.toArray(new ISpectrum[added.size()]));
     }
+
+
+    /**
+     * stable clusters do not support remove others do
+     *
+     * @return as above
+     */
+    @Override
+    public boolean isRemoveSupported() {
+        return !isStable();
+    }
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @return
+     */
+    public boolean isStable() {
+        return stable;
+    }
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @param stable as
+     */
+    public void setStable(boolean stable) {
+        this.stable = stable;
+    }
+
+
 
     @Override
     /**
