@@ -11,6 +11,8 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
+import org.systemsbiology.xtandem.hadoop.HDFSStreamOpener;
+
 
 import java.io.*;
 
@@ -22,31 +24,45 @@ import java.io.*;
  */
 public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunner {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String outputFileName = "ConsolidatorOutput.cgf";
 
     /**
      * retucer to w
      */
-    public static class FileWriteReducer extends Reducer<Text, Text, Text, Text> {
+    public static class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 
         private PrintWriter outputWriter;
-
+        private NullWritable out = NullWritable.get();
         @Override
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
-            outputWriter = new PrintWriter(new FileWriter(outputFileName));
+
+            //noinspection SimplifiableIfStatement,ConstantIfStatement
+            if(true)
+                return;
+           //        setWriters(context,get)
+            final Configuration configuration = context.getConfiguration();
+              // note we are reading from hdsf
+            HDFSStreamOpener opener = new HDFSStreamOpener(configuration);
+            String filePath = opener.buildFilePath(outputFileName);
+            HDFSAccessor accesor = opener.getAccesor();
+            Path path = new Path(filePath);
+            OutputStream os = accesor.openFileForWrite(path);
+            outputWriter = new PrintWriter(new OutputStreamWriter(os));
         }
 
         @Override
         protected void cleanup(final Context context) throws IOException, InterruptedException {
             super.cleanup(context);
-            if(outputWriter != null)
+            if (outputWriter != null)
                 outputWriter.close();
         }
 
         /**
          * write the values to a real file -
-         *   NOT useful in a cluster but very helpful in debugging
+         * NOT useful in a cluster but very helpful in debugging
+         *
          * @param key
          * @param values
          * @param context
@@ -58,12 +74,22 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {
                 String valStr = val.toString();
-                outputWriter.println(valStr);
-
+                context.write(out,val);
+                if (outputWriter != null)
+                     outputWriter.println(valStr);
             }
 
         }
+
+//        protected void setWriters(Context context, HadoopTandemMain application, String inputFileNamex) {
+//
+//            System.err.println("Setting up writers");
+//            String s = inputFileNamex;
+//            outputWriter = SpectraHadoopUtilities.buildPrintWriter( getApplication(),inputFileNamex);
+//
+//        }
     }
+
 
     protected static void usage() {
         System.out.println("Usage <input file or directory> <output directory>");
@@ -85,9 +111,11 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 //            System.exit(2);
 //        }
             Job job = new Job(conf, "Cluster Consolidator");
-            setJob(job);
+             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
+
+
 
             // make default settings
             XTandemHadoopUtilities.setDefaultConfigurationArguments(conf);
@@ -103,11 +131,16 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 
-              // there is no output
+            // there is no output
             job.setOutputFormatClass(TextOutputFormat.class);
 
             job.setMapperClass(TextIdentityMapper.class);
             job.setReducerClass(FileWriteReducer.class);
+
+              // never do speculative execution
+            conf.set("mapreduce.reduce.speculative","false");
+            conf.set("mapreduce.reduce.speculative","false");
+            conf.set("mapreduce.reduce.speculative","false");
 
             job.setNumReduceTasks(1);  // this is important
 
@@ -157,16 +190,13 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             //       throw new IllegalStateException("problem"); // ToDo change
 
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
 
         }

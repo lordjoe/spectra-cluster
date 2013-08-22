@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 
-import java.io.*;
+
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakPartitioner
@@ -20,8 +20,7 @@ public class MajorPeakPartitioner  extends Partitioner<Text, Text> {
         String key = pText.toString();
         ChargePeakMZKey realKey = new ChargePeakMZKey(key);
 
-        int hash = realKey.getCharge() * 10000;
-        hash += realKey.getPeakMZ();
+        int hash = realKey.getPartitionHash();
         return hash % numberReducers;
      }
 }

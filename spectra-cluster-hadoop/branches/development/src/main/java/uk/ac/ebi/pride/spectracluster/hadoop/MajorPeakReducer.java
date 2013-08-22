@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -12,26 +12,16 @@ import java.util.*;
 /**
  * Form clusters from peaks
  */
-public class MajorPeakReducer extends Reducer<Text, Text, Text, Text> {
+public class MajorPeakReducer extends AbstractParameterizedReducer {
 
-    private int majorPeak;
+    private double majorPeak;
     private int currentCharge;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
 
-    private final Text onlyKey = new Text();
-    private final Text onlyValue = new Text();
-
-    public Text getOnlyValue() {
-        return onlyValue;
-    }
-
-    public Text getOnlyKey() {
-        return onlyKey;
-    }
 
 
-    public int getMajorPeak() {
+    public double getMajorPeak() {
         return majorPeak;
     }
 
@@ -44,7 +34,7 @@ public class MajorPeakReducer extends Reducer<Text, Text, Text, Text> {
     }
 
     @Override
-    public void reduce(Text key, Iterable<Text> values,
+    public void reduceNormal(Text key, Iterable<Text> values,
                        Context context) throws IOException, InterruptedException {
 
         String keyStr = key.toString();
@@ -119,9 +109,13 @@ public class MajorPeakReducer extends Reducer<Text, Text, Text, Text> {
         final Text onlyValue = getOnlyValue();
         StringBuilder sb = new StringBuilder();
         cluster.append(sb);
-        onlyValue.set(sb.toString());
+        String string = sb.toString();
 
-        context.write(onlyKey, onlyValue);
+        if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
+            onlyValue.set(string);
+            context.write(onlyKey, onlyValue);
+
+        }
     }
 
     /**

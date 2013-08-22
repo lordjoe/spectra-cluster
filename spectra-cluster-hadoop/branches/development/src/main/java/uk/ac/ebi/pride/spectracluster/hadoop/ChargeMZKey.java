@@ -11,12 +11,13 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 public class ChargeMZKey  implements Comparable<ChargeMZKey> {
 
     private final int charge;
-    private final int precursorMZ;
+    private final double precursorMZ;
     private String asString;
 
     public ChargeMZKey(final int pCharge, final double pPrecursorMZ) {
         charge = pCharge;
-        precursorMZ = ClusterUtilities.mzToInt(pPrecursorMZ);
+        precursorMZ = pPrecursorMZ;
+        asString = null;    // force string regeneration
      }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -24,6 +25,7 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
         final String[] split = str.split(":");
         charge = Integer.parseInt(split[0]);
         precursorMZ = SpectraHadoopUtilities.keyToMZ(split[1]);
+        asString = null;    // force string regeneration
     }
 
     public int getCharge() {
@@ -31,7 +33,7 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
     }
 
 
-    public int getPrecursorMZ() {
+    public double getPrecursorMZ() {
         return precursorMZ;
     }
 
@@ -41,7 +43,8 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
             StringBuilder sb = new StringBuilder();
             sb.append(String.format("%02d", getCharge()));
             sb.append(":");
-            sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
+            String str = SpectraHadoopUtilities.mzToKey(getPrecursorMZ());
+            sb.append(str);
 
             asString = sb.toString();
         }
@@ -71,4 +74,17 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
     public int compareTo(final ChargeMZKey o) {
         return toString().compareTo(o.toString());
     }
+
+
+    /**
+     * here is an int that a partitioner would use
+     * @return
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public int getPartitionHash() {
+        int ret = getCharge() * 10000;
+        ret += (int)(getPrecursorMZ() * ClusterUtilities.MZ_RESOLUTION + 0.5);
+        return ret;
+    }
+
 }
