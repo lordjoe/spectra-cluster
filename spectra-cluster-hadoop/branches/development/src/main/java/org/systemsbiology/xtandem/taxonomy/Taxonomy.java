@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.taxonomy;
 
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.sax.*;

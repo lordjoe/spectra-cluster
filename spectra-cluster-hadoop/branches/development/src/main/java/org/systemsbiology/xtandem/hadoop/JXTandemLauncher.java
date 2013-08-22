@@ -9,6 +9,7 @@ import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.remotecontrol.LocalFileSystem;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.reporting.*;
@@ -99,7 +100,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
 
     public static void logMessage(String message) {
-        XTandemUtilities.outputLine(message);
+        XMLUtilities.outputLine(message);
     }
 
     private static boolean gDatabaseRebuildForced;
@@ -560,15 +561,15 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 //    }
 
     public static void usage() {
-        XTandemUtilities.outputLine("Usage - JXTandem config=<confFile> params=<inputfile> <forceDatabaseRebuild> <buildDatabaseOnly>");
+        XMLUtilities.outputLine("Usage - JXTandem config=<confFile> params=<inputfile> <forceDatabaseRebuild> <buildDatabaseOnly>");
     }
 
     public static void usage2() {
-        XTandemUtilities.outputLine("Usage - JXTandem <inputfile>");
+        XMLUtilities.outputLine("Usage - JXTandem <inputfile>");
     }
 
     public static void usage(String filename) {
-        XTandemUtilities.outputLine("Usage - JXTandem <inputfile> cannot read file " + filename + " in directory " +
+        XMLUtilities.outputLine("Usage - JXTandem <inputfile> cannot read file " + filename + " in directory " +
                 System.getProperty("user.dir"));
     }
 
@@ -598,7 +599,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
             return null;
             // throw new IllegalArgumentException(s);
         } else
-            XTandemUtilities.outputLine("Copying file " + hdfsPath + " to " + localFile);
+            XMLUtilities.outputLine("Copying file " + hdfsPath + " to " + localFile);
         File out = new File(localFile);
         acc.copyFromFileSystem(hdfsPath, out);
         //      String remotepath = getOutputLocation(3) + "/" + fileName;
@@ -618,7 +619,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
             File file1 = files[i];
             if (file1.isFile()) {
                 String path = remotepath + "/" + file1.getName();
-                XTandemUtilities.outputLine("Writing to remote " + file1 + " " + file1.length() / 1000 + "kb");
+                XMLUtilities.outputLine("Writing to remote " + file1 + " " + file1.length() / 1000 + "kb");
                 accessor.writeToFileSystem(path, file1);
                 ret++;
             } else {
@@ -644,7 +645,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
     public void runJobs(IHadoopController launcher) {
 
-        XTandemUtilities.outputLine("Starting Job");
+        XMLUtilities.outputLine("Starting Job");
         guaranteeRemoteFiles();
 
         ElapsedTimer elapsed = getElapsed();
@@ -666,7 +667,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
         boolean buildDatabase = isDatabaseBuildRequired();
         IHadoopJob job = null;
         boolean ret;
-        //  XTandemUtilities.outputLine("Temporarily reusing data directory");
+        //  XMLUtilities.outputLine("Temporarily reusing data directory");
         if (buildDatabase) {
 
             clearAllParams(application);  // make sure we get a new params file
@@ -811,9 +812,9 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
     protected void guaranteeAccessibleFiles(final String pRbase) {
         IFileSystem pAccessor = getAccessor();
 
-        XTandemUtilities.outputLine("Finding Remote Directory");
+        XMLUtilities.outputLine("Finding Remote Directory");
         pAccessor.guaranteeDirectory(pRbase);
-        XTandemUtilities.outputLine("Writing Tandem Params");
+        XMLUtilities.outputLine("Writing Tandem Params");
         writeRemoteParamsFile(pRbase);
 
         //    guaranteeRemoteCopy(accessor, paramsPath);
@@ -821,11 +822,11 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
         // guaranteeRemoteCopy(accessor, m_DefaultParameters);
         //    guaranteeRemoteCopy(accessor, m_TaxonomyInfo);
 
-        XTandemUtilities.outputLine("Writing Taxonomy");
+        XMLUtilities.outputLine("Writing Taxonomy");
         writeRemoteTaxonomyFile(pAccessor, pRbase);
 
         // guaranteeRemoteCopy(accessor, m_TaxonomyName);
-        XTandemUtilities.outputLine("Writing Spectral Data");
+        XMLUtilities.outputLine("Writing Spectral Data");
         String spectrumPath = getSpectrumPath();
         File spectrumFile = new File(spectrumPath);
         // maybe we need to copy to the remote system or maybe it iw already there
@@ -846,7 +847,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
             guaranteExistanceofRemoteFile(spectrumFile, pRbase, "the Spectrum file designated by \"spectrum, path\" ");
         }
 
-        XTandemUtilities.outputLine("Writing Taxonomy database");
+        XMLUtilities.outputLine("Writing Taxonomy database");
         String[] tfs = m_Taxonomy.getTaxomonyFiles();
         if (tfs != null) {
             for (int i = 0; i < tfs.length; i++) {
@@ -872,7 +873,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
             int ret = guaranteeRemoteDirectory(pRemotePath, pFile1);
             return ret;
         }
-        String remotepath = pRemotePath + "/" + XTandemUtilities.asLocalFile(pFile1.getAbsolutePath());
+        String remotepath = pRemotePath + "/" + XMLUtilities.asLocalFile(pFile1.getAbsolutePath());
         // if it is small then always make a copy
         if (accessor.exists(remotepath)) {
             return 2;
@@ -891,11 +892,11 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
         long length = pFile1.length();
 
-        String remotepath = pRemotePath + "/" + XTandemUtilities.asLocalFile(pFile1.getAbsolutePath());
+        String remotepath = pRemotePath + "/" + XMLUtilities.asLocalFile(pFile1.getAbsolutePath());
         // if it is small then always make a copy
         if (length < SMALL_FILE_LENGTH) {
             accessor.deleteFile(remotepath);
-            XTandemUtilities.outputLine("Writing to remote " + pFile1 + " " + pFile1.length() / 1000 + "kb");
+            XMLUtilities.outputLine("Writing to remote " + pFile1 + " " + pFile1.length() / 1000 + "kb");
             accessor.guaranteeFile(remotepath, pFile1);
             return 1;
         } else {
@@ -1727,7 +1728,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
         File f = null;
         if (!isDatabaseBuildOnly() && passedBaseDirctory != null) {
-            String hdfsPath = passedBaseDirctory + "/" + XTandemUtilities.asLocalFile(outFile);
+            String hdfsPath = passedBaseDirctory + "/" + XMLUtilities.asLocalFile(outFile);
             //       String asLocal = XTandemUtilities.asLocalFile("/user/howdah/JXTandem/data/SmallSample/yeast_orfs_all_REV01_short.2011_11_325_10_35_19.t.xml");
             //       String hdfsPathEric = passedBaseDirctory + "/" + "yeast_orfs_all_REV01_short.2011_11_325_10_35_19.t.xml";
 
@@ -1740,7 +1741,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
                 } else {
                     for (int i = 0; i < outputFiles.length; i++) {
                         outFile = outputFiles[i];
-                        hdfsPath = passedBaseDirctory + "/" + XTandemUtilities.asLocalFile(outFile);
+                        hdfsPath = passedBaseDirctory + "/" + XMLUtilities.asLocalFile(outFile);
                         outFile = outFile.replace(".mzXML", "");
                         outFile = outFile.replace(".mzML", "");
                         outFile = outFile.replace(".mzxml", "");
@@ -1786,7 +1787,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
 
             } catch (IllegalArgumentException e) {
-                XTandemUtilities.outputLine("Cannot copy remote file " + hdfsPath + " to local file " + outFile +
+                XMLUtilities.outputLine("Cannot copy remote file " + hdfsPath + " to local file " + outFile +
                         " because " + e.getMessage());
                 e.printStackTrace();
                 throw e;
@@ -1808,7 +1809,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
         f = readRemoteFile(hdfsPath, outFile);
         if (f != null && f.length() < MAX_DISPLAY_LENGTH) {
             String s = FileUtilities.readInFile(f);
-            XTandemUtilities.outputLine(s);
+            XMLUtilities.outputLine(s);
         }
         if (outFile.endsWith(".hydra"))
             outFile = outFile.substring(0, outFile.length() - ".hydra".length());
@@ -1823,7 +1824,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
                 String outFileS = outFile + ".scans";
                 f = readRemoteFile(hdfsPath, outFileS);
                 if (f != null)
-                    XTandemUtilities.outputLine("Created output file " + f.getAbsolutePath());
+                    XMLUtilities.outputLine("Created output file " + f.getAbsolutePath());
             }
         }
         String parameter = application.getParameter(XTandemUtilities.WRITING_PEPXML_PROPERTY);
@@ -1860,17 +1861,17 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
 
     public static InputStream buildInputStream(String paramsFile) {
-        XTandemUtilities.outputLine("reading params file " + paramsFile);
+        XMLUtilities.outputLine("reading params file " + paramsFile);
         if (paramsFile.startsWith("res://"))
             return XTandemUtilities.getDescribedStream(paramsFile);
 
         File test = new File(paramsFile);
         if (!test.exists()) {
-            XTandemUtilities.outputLine("  params file does not exist " + test.getAbsolutePath());
+            XMLUtilities.outputLine("  params file does not exist " + test.getAbsolutePath());
             return null;
         }
         if (!test.canRead()) {
-            XTandemUtilities.outputLine("  params file cannot be read " + test.getAbsolutePath());
+            XMLUtilities.outputLine("  params file cannot be read " + test.getAbsolutePath());
             return null;
         }
         return XTandemUtilities.getDescribedStream(paramsFile);
@@ -1910,7 +1911,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
             InputStream is = buildInputStream(paramsFile);
             if (is == null) {
                 File test = new File(paramsFile);
-                XTandemUtilities.outputLine("CANNOT RUN BECAUSE CANNOT READ PARAMS FILE " + test.getAbsolutePath());
+                XMLUtilities.outputLine("CANNOT RUN BECAUSE CANNOT READ PARAMS FILE " + test.getAbsolutePath());
                 return;
             }
             JXTandemLauncher main = new JXTandemLauncher(is, paramsFile, cfg);
@@ -1998,14 +1999,14 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
 
             main.copyCreatedFiles(passedBaseDirctory, outFile);
 
-            XTandemUtilities.outputLine("Fragment Database Size " + main.getTotalFragments());
+            XMLUtilities.outputLine("Fragment Database Size " + main.getTotalFragments());
 
             main.getElapsed().showElapsed("Capture Output", System.out);
 
-            XTandemUtilities.outputLine();
-            XTandemUtilities.outputLine();
+            XMLUtilities.outputLine();
+            XMLUtilities.outputLine();
             JXTandemStatistics stats = main.getStatistics();
-            XTandemUtilities.outputLine(stats.toString());
+            XMLUtilities.outputLine(stats.toString());
             total.showElapsed("Total Time", System.out);
 
             // I think hadoop has launched some threads so we can shut down now
@@ -2015,11 +2016,11 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
                 while (e != e.getCause() && e.getCause() != null) {
                     e = e.getCause();
                 }
-                XTandemUtilities.outputLine(e.getMessage());
+                XMLUtilities.outputLine(e.getMessage());
                 StackTraceElement[] stackTrace = e.getStackTrace();
                 for (int i = 0; i < stackTrace.length; i++) {
                     StackTraceElement se = stackTrace[i];
-                    XTandemUtilities.outputLine(se.toString());
+                    XMLUtilities.outputLine(se.toString());
                 }
             }
         }

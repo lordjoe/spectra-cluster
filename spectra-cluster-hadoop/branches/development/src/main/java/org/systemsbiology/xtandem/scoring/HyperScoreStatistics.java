@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.scoring;
 
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.sax.*;
 

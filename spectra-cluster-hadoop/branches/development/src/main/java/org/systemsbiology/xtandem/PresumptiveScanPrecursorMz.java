@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
+
 
 /**
  * org.systemsbiology.xtandem.ScanPrecursorMz
@@ -19,6 +20,7 @@ public class PresumptiveScanPrecursorMz implements IScanPrecursorMZ {
 
 
     public PresumptiveScanPrecursorMz(String filterLine) {
+        //noinspection UnusedDeclaration,MismatchedReadAndWriteOfArray
         String[] items = filterLine.split(" ");
      //   if(items[items.length - 2].startsWith("cid"))
             if(filterLine.contains("cid"))
@@ -71,6 +73,7 @@ public class PresumptiveScanPrecursorMz implements IScanPrecursorMZ {
     public double getPrecursorMass(int charge) {
         double chargeRatio = getMassChargeRatio();
         double protonMass = XTandemUtilities.getProtonMass();
+        //noinspection UnnecessaryLocalVariable
         final double ret = (chargeRatio - protonMass) * charge + protonMass;
         return ret;
         // return getMassChargeRatio() * getPrecursorCharge();
@@ -93,6 +96,7 @@ public class PresumptiveScanPrecursorMz implements IScanPrecursorMZ {
                 return true;
             // try charge 3
             double test2 = (getMassChargeRatio() - XTandemUtilities.getProtonMass()) * 3 + XTandemUtilities.getProtonMass();
+            //noinspection SimplifiableIfStatement,RedundantIfStatement
             if (alg.isWithinLimits(test2, mass,charge))
                 return true;
             return false; // give up
@@ -100,6 +104,7 @@ public class PresumptiveScanPrecursorMz implements IScanPrecursorMZ {
         else {
             double test = getPrecursorMass();
             boolean withinLimits = alg.isWithinLimits(test, mass,charge);
+            //noinspection RedundantIfStatement
             if (withinLimits)
                 return true;
             return false; // give up
@@ -133,6 +138,7 @@ public class PresumptiveScanPrecursorMz implements IScanPrecursorMZ {
         if (m_PrecursorCharge != that.m_PrecursorCharge) return false;
         if (Math.abs(that.m_PrecursorIntensity - m_PrecursorIntensity) > 0.001)
              return false;
+        //noinspection SimplifiableIfStatement,RedundantIfStatement
           if (m_Method != that.m_Method) return false;
 
         return true;

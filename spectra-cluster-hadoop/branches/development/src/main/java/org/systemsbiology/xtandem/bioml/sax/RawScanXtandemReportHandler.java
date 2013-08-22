@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
@@ -9,7 +10,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 8/22/11
  */
-public class RawScanXtandemReportHandler extends AbstractElementSaxHandler<RawPeptideScan> {
+public class RawScanXtandemReportHandler extends AbstractXTandemElementSaxHandler<RawPeptideScan> {
     public static final RawScanXtandemReportHandler[] EMPTY_ARRAY = {};
 
     private String m_Id;

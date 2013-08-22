@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
@@ -27,6 +27,7 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
         m_Scan = scan;
         m_PrecursorCharge = precursorCharge;
         m_PrecursorMassChargeRatio = precursorMz;
+        //noinspection UnnecessaryLocalVariable
         double chargeRatio = precursorMz;
         double protonMass = XTandemUtilities.getProtonMass();
         int charge = precursorCharge;
@@ -46,6 +47,7 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
         // sort by mass
         Arrays.sort(mypeaks, ScoringUtilities.PeakMassComparatorINSTANCE);
         m_Peaks = mypeaks;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < m_Peaks.length; i++) {
             ISpectrumPeak pk = m_Peaks[i];
             float peak = pk.getPeak();
@@ -233,6 +235,7 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
     public ISpectrumPeak[] getNonZeroPeaks() {
         List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
         ISpectrumPeak[] peaks = getPeaks();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
             if (peak.getPeak() > 0)
@@ -264,6 +267,7 @@ public class ScoringMeasuredSpectrum implements IMeasuredSpectrum {
     public boolean equivalent(ISpectrum o) {
         if (this == o)
             return true;
+        //noinspection UnnecessaryLocalVariable
         ISpectrum realO = o;
         final ISpectrumPeak[] peaks1 = getPeaks();
         final ISpectrumPeak[] peaks2 = realO.getPeaks();

@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.testing;
 
 import com.lordjoe.utilities.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -72,15 +73,15 @@ public class JXTandem_XTandemCrossValidator {
         IScanScoring[] scanScoring = report.getScanScoring();
         for (int j = 0; j < scanScoring.length; j++) {
             IScanScoring scoring = scanScoring[j];
-            XTandemUtilities.outputLine("Scored " + scoring.getId());
+            XMLUtilities.outputLine("Scored " + scoring.getId());
             ITheoreticalScoring[] theoreticalScorings = scoring.getScorings();
             for (int k = 0; k < theoreticalScorings.length; k++) {
                 ITheoreticalScoring theoreticalScoring = theoreticalScorings[k];
-                XTandemUtilities.outputLine("Scored   " + theoreticalScoring);
+                XMLUtilities.outputLine("Scored   " + theoreticalScoring);
                 ITheoreticalIonsScoring[] scoringMasses = theoreticalScoring.getIonScorings();
                 for (int l = 0; l < scoringMasses.length; l++) {
                     ITheoreticalIonsScoring scoringMass = scoringMasses[l];
-                    XTandemUtilities.outputLine("Scored one " + scoringMass);
+                    XMLUtilities.outputLine("Scored one " + scoringMass);
                 }
             }
         }
@@ -164,7 +165,7 @@ public class JXTandem_XTandemCrossValidator {
     }
 
     private void writeScanReport(final IScanScoring[] pXScores, final IScanScoring[] pJScores) {
-        XTandemUtilities.outputLine("<scan_report>");
+        XMLUtilities.outputLine("<scan_report>");
         for (int i = 0; i < pXScores.length; i++) {
             IScanScoring theirScore = pXScores[i];
             IScanScoring myScore = pJScores[i];
@@ -178,14 +179,14 @@ public class JXTandem_XTandemCrossValidator {
             myScoreScorings = filterToBothScored(theirScorings, myScoreScorings);
 
 
-            XTandemUtilities.outputLine("<scored_id id=\"" + myScore.getId() + "\" size=\"" + myScoreScorings.length + "\"  >");
+            XMLUtilities.outputLine("<scored_id id=\"" + myScore.getId() + "\" size=\"" + myScoreScorings.length + "\"  >");
             int numberToPrint = Math.min(myScoreScorings.length, theirScorings.length);
             for (int k = 0; k < numberToPrint; k++) {
                 ITheoreticalScoring jscore = myScoreScorings[k];
                 double totalJKScore = jscore.getTotalKScore();
                 ITheoreticalScoring xtscore = theirScorings[k];
                 double totalKScore = xtscore.getTotalKScore();
-                XTandemUtilities.outputLine("<scored_fragment" +
+                XMLUtilities.outputLine("<scored_fragment" +
                         " seguence=\"" + xtscore.getSequence() +
                         "\" score=\"" + totalKScore +
                         " jseguence=\"" + jscore.getSequence() +
@@ -194,11 +195,11 @@ public class JXTandem_XTandemCrossValidator {
                         "\" />");
 
             }
-            XTandemUtilities.outputLine("</scored_id>");
+            XMLUtilities.outputLine("</scored_id>");
 
 
         }
-        XTandemUtilities.outputLine("</scan_report>");
+        XMLUtilities.outputLine("</scan_report>");
     }
 
     /**
@@ -240,7 +241,7 @@ public class JXTandem_XTandemCrossValidator {
             String msg = "Different Number Scored under id " + jid +
                     " X " + xscorings.length +
                     " J " + jscorings.length;
-            XTandemUtilities.outputLine(msg);
+            XMLUtilities.outputLine(msg);
             showScoringDifferences(jscorings, xscorings);
             return msg;
         }
@@ -282,7 +283,7 @@ public class JXTandem_XTandemCrossValidator {
             jscores.add(seq); // do not repeat
             if (xscoring.getTotalKScore() <= 0)
                 continue;
-            XTandemUtilities.outputLine("Only XScore " + seq + "  " + xscoring.getMZRatio());
+            XMLUtilities.outputLine("Only XScore " + seq + "  " + xscoring.getMZRatio());
 
         }
         for (int i = 0; i < pJscorings.length; i++) {
@@ -290,7 +291,7 @@ public class JXTandem_XTandemCrossValidator {
             if (xscores.contains(seq))
                 continue;
             xscores.add(seq); // do not repeat
-            XTandemUtilities.outputLine("Only JScore " + seq);
+            XMLUtilities.outputLine("Only JScore " + seq);
 
         }
 
@@ -308,7 +309,7 @@ public class JXTandem_XTandemCrossValidator {
 
 
     private static void usage() {
-        XTandemUtilities.outputLine("Usage XTandemFile JXTandemFile");
+        XMLUtilities.outputLine("Usage XTandemFile JXTandemFile");
     }
 
 
@@ -432,7 +433,7 @@ public class JXTandem_XTandemCrossValidator {
 //        reportScanDifferences(xtandemScans,jxTandemScans);
 //        String valid = validator.validateScoredScans();
 //        if (valid != null)
-//            XTandemUtilities.outputLine(valid);
+//            XMLUtilities.outputLine(valid);
 //        //     throw new IllegalStateException(valid);
 
     }

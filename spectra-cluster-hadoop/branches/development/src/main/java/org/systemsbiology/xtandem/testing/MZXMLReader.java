@@ -2,6 +2,7 @@ package org.systemsbiology.xtandem.testing;
 
 import org.apache.hadoop.fs.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
@@ -24,7 +25,7 @@ public class MZXMLReader {
     public static RawPeptideScan[] processFile(final File pFile)   {
         try {
             String name = pFile.getAbsolutePath();
-            XTandemUtilities.outputLine(name);
+            XMLUtilities.outputLine(name);
             InputStream is = XTandemUtilities.getDescribedStream(name);
             return processStream(is);
         }
@@ -96,7 +97,7 @@ public class MZXMLReader {
         }
         else {
             String name = pArg;
-            XTandemUtilities.outputLine(name);
+            XMLUtilities.outputLine(name);
             Path path = new Path(name);
             InputStream is = fs.openFileForRead(path);
             processStream(is);

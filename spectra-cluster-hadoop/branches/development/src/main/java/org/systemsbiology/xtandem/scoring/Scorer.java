@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.scoring;
 
 import org.systemsbiology.common.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -583,7 +584,7 @@ public class Scorer {
                 dot_product = pSa.dot_product(pScan, scoredScan, pCounter, holder, pPeaksByMass, usage);
 
             if (LOG_INTERMEDIATE_RESULTS)
-                XTandemUtilities.outputLine("Sequence=" + sequence +
+                XMLUtilities.outputLine("Sequence=" + sequence +
                         " charge=" + charge +
                         " score=" + dot_product
                 );
@@ -903,15 +904,15 @@ public class Scorer {
 
             if (sequence.equals("LSYTEFSVPVAAMG")) {
                 LOG_INTERMEDIATE_RESULTS = true;
-                XTandemUtilities.outputLine("Sequence=" + sequence);
+                XMLUtilities.outputLine("Sequence=" + sequence);
             }
             if (sequence.equals("GEQVNGEKPDNASK")) {
                 LOG_INTERMEDIATE_RESULTS = true;
-                XTandemUtilities.outputLine("Sequence=" + sequence);
+                XMLUtilities.outputLine("Sequence=" + sequence);
             }
             if (sequence.equals("LAIKMCKPG")) {
                 LOG_INTERMEDIATE_RESULTS = true;
-                XTandemUtilities.outputLine("Sequence=" + sequence);
+                XMLUtilities.outputLine("Sequence=" + sequence);
             }
 
 
@@ -958,7 +959,7 @@ public class Scorer {
 
                 double dot_product = sa.dot_product(scan, scoredScan, pCounter, holder);
                 if (LOG_INTERMEDIATE_RESULTS)
-                    XTandemUtilities.outputLine("Sequence=" + sequence +
+                    XMLUtilities.outputLine("Sequence=" + sequence +
                             " charge=" + charge +
                             " score=" + dot_product
                     );
@@ -1109,7 +1110,7 @@ public class Scorer {
 
     public void generateTheoreticalSpectra() {
         IPolypeptide[] peptides = getPeptides();
-        XTandemUtilities.outputLine("Total Peptides  " + peptides.length);
+        XMLUtilities.outputLine("Total Peptides  " + peptides.length);
         generateTheoreticalSpectra(peptides);
 
     }
@@ -1218,12 +1219,12 @@ public class Scorer {
             final IPolypeptide[] polypeptides = digester.digest(p);
             // show all fragments
             if (false) {
-                XTandemUtilities.outputLine("// from protein \"" + p.getSequence() + "\",");
+                XMLUtilities.outputLine("// from protein \"" + p.getSequence() + "\",");
             }
             for (int i = 0; i < polypeptides.length; i++) {
                 IPolypeptide pp = polypeptides[i];
                 if (false) {
-                    XTandemUtilities.outputLine("\"" + pp.getSequence() + "\",");
+                    XMLUtilities.outputLine("\"" + pp.getSequence() + "\",");
                 }
                 addPeptide(pp);
 

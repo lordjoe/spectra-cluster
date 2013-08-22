@@ -16,7 +16,9 @@ import org.apache.hadoop.mapreduce.TaskID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -356,7 +358,7 @@ public class XTandemHadoopUtilities {
         Arrays.sort(keys);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
-            XTandemUtilities.outputLine(key + ":" + counters.get(key).getValue());
+            XMLUtilities.outputLine(key + ":" + counters.get(key).getValue());
         }
     }
 
@@ -712,7 +714,7 @@ public class XTandemHadoopUtilities {
      * @param <T>     type to return
      * @return !null return
      */
-    public static <T> T parseXMLString(String text, AbstractElementSaxHandler<T> handler) {
+    public static <T> T parseXMLString(String text, AbstractXTandemElementSaxHandler<T> handler) {
         ByteArrayInputStream inp = null;
         byte[] bytes = null;
         try {

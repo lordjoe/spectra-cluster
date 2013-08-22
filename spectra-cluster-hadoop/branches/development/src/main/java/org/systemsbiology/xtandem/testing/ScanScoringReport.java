@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.util.*;
@@ -47,7 +48,7 @@ public class ScanScoringReport implements IEquivalent<ScanScoringReport> {
     public boolean equivalent(final ScanScoringReport o) {
         if(getTotalScoreCount() != o.getTotalScoreCount())
             return false;
-        XTandemUtilities.outputLine("<scan_report>");
+        XMLUtilities.outputLine("<scan_report>");
         IScanScoring[] myScores = getScanScoring();
         IScanScoring[] theirScores = o.getScanScoring();
         for (int i = 0; i < theirScores.length; i++) {
@@ -57,7 +58,7 @@ public class ScanScoringReport implements IEquivalent<ScanScoringReport> {
                 return false;
 
         }
-        XTandemUtilities.outputLine("</scan_report>");
+        XMLUtilities.outputLine("</scan_report>");
          return true;
     }
 

@@ -60,6 +60,7 @@ public class RemoteHadoopConfiguration {
      */
     public void buildRemoteConfiguration() {
         IFileSystem fs = getRemoteFiles();
+        //noinspection UnusedDeclaration
         HadoopConfigurationPropertySet ps = new HadoopConfigurationPropertySet();
         readConfigurationFile(fs, "mapred-site.xml");
         readConfigurationFile(fs, "core-site.xml");
@@ -71,6 +72,7 @@ public class RemoteHadoopConfiguration {
         String hdfsPath = home + "/conf/" + file;
 
         String configString = fs.readFromFileSystem(hdfsPath);
+        //noinspection deprecation
         InputStream is = new StringBufferInputStream(configString);
 
         HadoopConfigurationPropertySet ps = XTandemHadoopUtilities.parseHadoopProperties(is);

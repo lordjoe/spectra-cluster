@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem.hadoop;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -102,7 +103,7 @@ public class HDFSStreamOpener implements IStreamOpener {
         else {
             if(fileName.contains(":"))  {
                 // pc absolute
-                fileName = XTandemUtilities.asLocalFile(fileName);
+                fileName = XMLUtilities.asLocalFile(fileName);
             }
             hdsfPath += fileName;
         }

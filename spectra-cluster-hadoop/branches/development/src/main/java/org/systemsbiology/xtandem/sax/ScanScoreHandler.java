@@ -1,6 +1,8 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.xml.sax.*;
 
@@ -12,7 +14,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class ScanScoreHandler extends AbstractElementSaxHandler<ScoredScan> implements IMainDataHolder {
+public class ScanScoreHandler extends AbstractXTandemElementSaxHandler<ScoredScan> implements IMainDataHolder {
     public static ScanScoreHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = ScanScoreHandler.class;
 

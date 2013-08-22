@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem.scoring;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 
 import java.util.*;
 

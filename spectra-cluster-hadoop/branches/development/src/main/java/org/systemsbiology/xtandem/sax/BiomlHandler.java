@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.xml.sax.*;
 
 /**
@@ -8,14 +10,14 @@ import org.xml.sax.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class BiomlHandler<T> extends AbstractElementSaxHandler<AbstractElementSaxHandler<T>> implements ITopLevelSaxHandler {
+public class BiomlHandler<T> extends AbstractXTandemElementSaxHandler<AbstractXTandemElementSaxHandler<T>> implements ITopLevelSaxHandler {
     public static BiomlHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = BiomlHandler.class;
 
-    private final AbstractElementSaxHandler<T> m_InternalHandler;
+    private final AbstractXTandemElementSaxHandler<T> m_InternalHandler;
     private final String m_Url;
 
-    public BiomlHandler(DelegatingSaxHandler hdlr,AbstractElementSaxHandler<T>  internal,String file) {
+    public BiomlHandler(DelegatingSaxHandler hdlr,AbstractXTandemElementSaxHandler<T>  internal,String file) {
         super("bioml", hdlr);
         m_InternalHandler = internal;
         m_InternalHandler.setParent(this);

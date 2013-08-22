@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 import org.xml.sax.*;
 

@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.xml.sax.*;
 
 /**
@@ -8,7 +10,7 @@ import org.xml.sax.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class NoteSaxHandler extends AbstractElementSaxHandler<KeyValuePair> {
+public class NoteSaxHandler extends AbstractXTandemElementSaxHandler<KeyValuePair> {
     public static NoteSaxHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = NoteSaxHandler.class;
 

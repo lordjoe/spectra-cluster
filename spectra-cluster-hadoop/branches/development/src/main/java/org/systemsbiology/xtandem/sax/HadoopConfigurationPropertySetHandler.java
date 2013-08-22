@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.xml.sax.*;
 
@@ -11,7 +13,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class HadoopConfigurationPropertySetHandler extends AbstractElementSaxHandler<HadoopConfigurationPropertySet>  implements ITopLevelSaxHandler
+public class HadoopConfigurationPropertySetHandler extends AbstractXTandemElementSaxHandler<HadoopConfigurationPropertySet> implements ITopLevelSaxHandler
 {
     public static HadoopConfigurationPropertySetHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = HadoopConfigurationPropertySetHandler.class;

@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem;
 
 import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;

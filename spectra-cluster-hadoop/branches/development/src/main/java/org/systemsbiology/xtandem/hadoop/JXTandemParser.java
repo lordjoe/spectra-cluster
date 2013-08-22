@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 
@@ -110,7 +111,7 @@ public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
 
             setShowProteins(application.getBooleanParameter("org.systemsbiology.useSingleFastaItemSplit",false));
 
-            XTandemUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
+            XMLUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
                     " minimum " + String.format("%7.2fmb", getMinimumFreeMemory() / 1000000.0));
         }
 
@@ -170,7 +171,7 @@ public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
             m_ProteinsReported = m_Proteins;
 
             long freemem = setMinimalFree();
-            XTandemUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
+            XMLUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
                     " minimum " + String.format("%7.2fmb", getMinimumFreeMemory() / 1000000.0));
             elapsed.reset();
         }
@@ -319,7 +320,7 @@ public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
             // how much timeis in my code
 
             long freemem = setMinimalFree();
-            XTandemUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
+            XMLUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
                     " minimum " + String.format("%7.2fmb", getMinimumFreeMemory() / 1000000.0));
             elapsed.reset();
         }

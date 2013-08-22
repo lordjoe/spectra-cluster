@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -14,7 +15,7 @@ public class DebuggingXtandemMain {
 
 
     public static void usage() {
-         XTandemUtilities.outputLine("Usage - JXTandem <inputfile>");
+        XMLUtilities.outputLine("Usage - JXTandem <inputfile>");
      }
 
      public static void main(String[] args) {

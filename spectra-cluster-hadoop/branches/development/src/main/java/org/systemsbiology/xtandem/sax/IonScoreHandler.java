@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.xml.sax.*;
 
@@ -9,7 +11,7 @@ import org.xml.sax.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class IonScoreHandler extends AbstractElementSaxHandler<IonUseScore> {
+public class IonScoreHandler extends AbstractXTandemElementSaxHandler<IonUseScore> {
     public static IonScoreHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = IonScoreHandler.class;
 

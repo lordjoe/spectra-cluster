@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.scoring;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -528,7 +530,7 @@ public class OriginatingScoredScan implements IScoredScan, IAddable<IScoredScan>
             return false;
         if (!getVersion().equals(scan.getVersion()))
             return false;
-        XTandemUtilities.outputLine("For Now forgiving expected value differences");
+        XMLUtilities.outputLine("For Now forgiving expected value differences");
         //    if (!XTandemUtilities.equivalentDouble(getExpectedValue(), scan.getExpectedValue()))
         //        return false;
         final RawPeptideScan raw1 = getRaw();

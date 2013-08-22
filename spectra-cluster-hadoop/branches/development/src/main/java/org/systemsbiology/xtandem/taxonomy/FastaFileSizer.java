@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.taxonomy;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -53,7 +54,7 @@ public class FastaFileSizer
         FastaFileSizer fs = new FastaFileSizer();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            XTandemUtilities.outputLine("File " + arg + " has " + fs.numberProteins(arg));
+            XMLUtilities.outputLine("File " + arg + " has " + fs.numberProteins(arg));
         }
     }
 }

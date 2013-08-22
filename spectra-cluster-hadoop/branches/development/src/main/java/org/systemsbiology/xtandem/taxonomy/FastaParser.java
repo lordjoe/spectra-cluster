@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.taxonomy;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -73,9 +74,9 @@ public class FastaParser implements IFastaHandler{
 
     protected static int showProteinProgress(int pNumberProtein) {
         if(++pNumberProtein % SHOWN_NUMBER == 0)  {
-            XTandemUtilities.outputText(".");
+            XMLUtilities.outputText(".");
             if(pNumberProtein % (80 * SHOWN_NUMBER) == 0)
-              XTandemUtilities.outputLine();
+                XMLUtilities.outputLine();
         }
         return pNumberProtein;
     }

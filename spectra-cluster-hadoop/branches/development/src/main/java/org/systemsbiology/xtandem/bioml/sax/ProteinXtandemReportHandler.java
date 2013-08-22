@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.ionization.*;
@@ -14,7 +15,7 @@ import java.util.*;
  * User: steven
  * Date: 8/22/11
  */
-public class ProteinXtandemReportHandler extends AbstractElementSaxHandler<XTandemReportProtein> {
+public class ProteinXtandemReportHandler extends AbstractXTandemElementSaxHandler<XTandemReportProtein> {
     public static final ProteinXtandemReportHandler[] EMPTY_ARRAY = {};
 
     private List<LocatedPeptideModification> m_Modification = new ArrayList<LocatedPeptideModification>();

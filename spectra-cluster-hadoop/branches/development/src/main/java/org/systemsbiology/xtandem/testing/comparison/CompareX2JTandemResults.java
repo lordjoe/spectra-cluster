@@ -2,6 +2,7 @@ package org.systemsbiology.xtandem.testing.comparison;
 
 
 import com.lordjoe.utilities.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -34,12 +35,12 @@ public class CompareX2JTandemResults {
     public static void main(String[] args) throws Exception {
  
         if (  1 > args.length  ) {
-            XTandemUtilities.outputLine("usage: CompareX2JTandemResults <xtandem infile> <jtandem infile> [<outfile path>]");
+            XMLUtilities.outputLine("usage: CompareX2JTandemResults <xtandem infile> <jtandem infile> [<outfile path>]");
             return;
           }
         File xinfile = new File(args[0]);
         if (!xinfile.exists()) {
-            XTandemUtilities.outputLine(args[0] + " is not a valid file path");
+            XMLUtilities.outputLine(args[0] + " is not a valid file path");
             return;
            }
 
@@ -51,7 +52,7 @@ public class CompareX2JTandemResults {
 
 
           if (!jinfile.exists()) {
-            XTandemUtilities.outputLine(jinfile.getAbsolutePath() + " is not a valid file path");
+              XMLUtilities.outputLine(jinfile.getAbsolutePath() + " is not a valid file path");
             return;
         }
 
@@ -62,11 +63,11 @@ public class CompareX2JTandemResults {
         else {
             outfile = new File(args[0] + ".compare");
         }
-        XTandemUtilities.outputLine("Output will be saved in " + outfile.getPath());
+        XMLUtilities.outputLine("Output will be saved in " + outfile.getPath());
 
-        XTandemUtilities.outputLine("begin parsing xtandem");
+        XMLUtilities.outputLine("begin parsing xtandem");
         XTandemScoringReport xreport = XTandemUtilities.readXTandemFile(xinfile.getAbsolutePath());
-        XTandemUtilities.outputLine("\nbegin parsing jtandem");
+        XMLUtilities.outputLine("\nbegin parsing jtandem");
         XTandemScoringReport jreport = XTandemUtilities.readScanScoring(jinfile.getAbsolutePath());
 
         ScoredScan[] xscans = xreport.getScans();
@@ -77,10 +78,10 @@ public class CompareX2JTandemResults {
         Arrays.fill(binMatches, 0);
         int[] topBinMatches = new int[BinMatchType.values().length];
         Arrays.fill(topBinMatches, 0);
-        XTandemUtilities.outputLine("match up peptides");
+        XMLUtilities.outputLine("match up peptides");
         Map<ClassificationType, Set<Record>> records = createRecords(xscans, jscans, numberUnmatchedCharge, binMatches, topBinMatches);
 
-        XTandemUtilities.outputLine();
+        XMLUtilities.outputLine();
         String unmatches = "";
         for (int i = 0; i < numberUnmatchedCharge.length; i++) {
 		    if (0 == numberUnmatchedCharge[i]) {
@@ -106,14 +107,14 @@ public class CompareX2JTandemResults {
 	    }
         writeRecords(outfile, records, xreport, jreport, unmatches, bins, topBins);
 
-        XTandemUtilities.outputLine();
-        XTandemUtilities.outputText("\nwithin " + (int)(FRACTION_ALLOWED_SCORE_ERROR * 100) + "%: " + records.get(ClassificationType.perfect_match).size() + "\ntotal top matches: " + (records.get(ClassificationType.perfect_match).size() +
+        XMLUtilities.outputLine();
+        XMLUtilities.outputText("\nwithin " + (int)(FRACTION_ALLOWED_SCORE_ERROR * 100) + "%: " + records.get(ClassificationType.perfect_match).size() + "\ntotal top matches: " + (records.get(ClassificationType.perfect_match).size() +
                 records.get(ClassificationType.perfect_match_different_expected).size()));
-        XTandemUtilities.outputText("\nmatching lower ranked: " + records.get(ClassificationType.partial_match).size() + "\nno match of peptides: " + records.get(ClassificationType.other_match).size());
-        XTandemUtilities.outputText("\nno matching scan: " + records.get(ClassificationType.no_match).size() + '\n');
-        XTandemUtilities.outputText("\nunmatched by charge: " + unmatches + '\n');
-        XTandemUtilities.outputText("Bin matches: " + bins + '\n');
-        XTandemUtilities.outputText("Top bin matches: " + topBins + '\n');
+        XMLUtilities.outputText("\nmatching lower ranked: " + records.get(ClassificationType.partial_match).size() + "\nno match of peptides: " + records.get(ClassificationType.other_match).size());
+        XMLUtilities.outputText("\nno matching scan: " + records.get(ClassificationType.no_match).size() + '\n');
+        XMLUtilities.outputText("\nunmatched by charge: " + unmatches + '\n');
+        XMLUtilities.outputText("Bin matches: " + bins + '\n');
+        XMLUtilities.outputText("Top bin matches: " + topBins + '\n');
      }
 
     public static enum BinMatchType {
@@ -337,7 +338,7 @@ public class CompareX2JTandemResults {
 		} else {
 			Set<Record> records = ret.get(ClassificationType.perfect_match_different_expected);
 			Record rec = new Record(type, entry.getKey(), xid, xcharge, getPeptides(innerEntry.getValue()), xHyperscore, jHyperscore, xscan.getExpectedValue(), jExpectedValue);
-			//XTandemUtilities.outputLine(rec);
+			//XMLUtilities.outputLine(rec);
 			records.add(rec);
 		}
 		binMatches[entry.getKey().ordinal()]++;
@@ -368,7 +369,7 @@ public class CompareX2JTandemResults {
 		String jBestSequence = jBestMatch.getPeptide().getSequence();
 		Set<Record> records = ret.get(type);
 		Record rec = new Record(type, entry.getKey(), xid, xcharge, getPeptides(innerEntry.getValue()), xHyperscore, jBestSequence, jBestHyperscore, jHyperscore, curJMatch, xscan.getExpectedValue(), -1);
-		//XTandemUtilities.outputLine(rec);
+		//XMLUtilities.outputLine(rec);
 		records.add(rec);
 		binMatches[entry.getKey().ordinal()]++;
 	}
@@ -545,7 +546,7 @@ public class CompareX2JTandemResults {
 		Set<Record>[] asArray = new Set[ClassificationType.values().length];
         int index = 0;
         for (ClassificationType c : ClassificationType.values()) {
-            XTandemUtilities.outputLine("\n" + c.toString());
+            XMLUtilities.outputLine("\n" + c.toString());
             writer.write(c.toString());
             Set<Record> recordSet = records.get(c);
             asArray[index++] = recordSet;
@@ -572,7 +573,7 @@ public class CompareX2JTandemResults {
                 writer.write('\n' + header + '\n');
             }
             if (0 == count++ % 128) {
-                XTandemUtilities.outputText(".");
+                XMLUtilities.outputText(".");
             }
             writer.write(record.toString());
             writer.write('\n');

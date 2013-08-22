@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 
 /**
  * org.systemsbiology.xtandem.ScanPrecursorMz
@@ -80,6 +80,7 @@ public class ScanPrecursorMz implements IScanPrecursorMZ {
     public double getPrecursorMass(int charge) {
         double chargeRatio = getMassChargeRatio();
         double protonMass = XTandemUtilities.getProtonMass();
+        //noinspection UnnecessaryLocalVariable
         final double ret = ((chargeRatio - protonMass) * charge) + protonMass;
         return ret;
         // return getMassChargeRatio() * getPrecursorCharge();
@@ -106,17 +107,17 @@ public class ScanPrecursorMz implements IScanPrecursorMZ {
                   return true;
             // try charge 1 -NOTE THIS IS NEW
               double test3 =  getMassChargeRatio() ;
+              //noinspection RedundantIfStatement
               if (alg.isWithinLimits(test3, mass,0))
                   return true;
             return false; // give up
         }
         else {
             double test = getPrecursorMass();
-            boolean withinLimits = alg.isWithinLimits(test, mass,m_PrecursorCharge);
-            if (withinLimits)
-                return true;
-            return false; // give up
-        }
+              //noinspection UnnecessaryLocalVariable
+              boolean withinLimits = alg.isWithinLimits(test, mass,m_PrecursorCharge);
+              return withinLimits;
+          }
     }
 
     /*
@@ -158,7 +159,8 @@ public class ScanPrecursorMz implements IScanPrecursorMZ {
         if (m_PrecursorCharge != that.m_PrecursorCharge) return false;
         if (Math.abs(that.m_PrecursorIntensity - m_PrecursorIntensity) > 0.001)
              return false;
-          if (m_Method != that.m_Method) return false;
+        //noinspection RedundantIfStatement
+        if (m_Method != that.m_Method) return false;
 
         return true;
     }

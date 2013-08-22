@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -14,7 +16,7 @@ import java.util.*;
  * User: steven
  * Date: 6/22/11
  */
-public class XTandemScoringHandler extends AbstractElementSaxHandler<List<ScoredScan>> implements ITopLevelSaxHandler {
+public class XTandemScoringHandler extends AbstractXTandemElementSaxHandler<List<ScoredScan>> implements ITopLevelSaxHandler {
     public static final XTandemScoringHandler[] EMPTY_ARRAY = {};
 
 
@@ -267,14 +269,14 @@ public class XTandemScoringHandler extends AbstractElementSaxHandler<List<Scored
 
         for (int j = 0; j < scanScoring.length; j++) {
             IScanScoring scoring = scanScoring[j];
-            XTandemUtilities.outputLine("Scored " + scoring.getId());
+            XMLUtilities.outputLine("Scored " + scoring.getId());
             ITheoreticalScoring[] tss = scoring.getScorings();
             TheoreticalScoring.sortByKScore(tss);
             if (tss.length > 0) {
-                XTandemUtilities.outputLine("Scored   " + tss[0] + " best Score " + tss[0].getTotalKScore());
+                XMLUtilities.outputLine("Scored   " + tss[0] + " best Score " + tss[0].getTotalKScore());
             }
             if (tss.length > 1) {
-                XTandemUtilities.outputLine("Scored Next   " + tss[1] + " next best Score " + tss[1].getTotalKScore());
+                XMLUtilities.outputLine("Scored Next   " + tss[1] + " next best Score " + tss[1].getTotalKScore());
             }
         }
 

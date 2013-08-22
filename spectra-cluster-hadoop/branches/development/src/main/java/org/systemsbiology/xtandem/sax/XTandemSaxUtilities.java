@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.xml.sax.*;
 
@@ -19,7 +21,7 @@ public class XTandemSaxUtilities {
     public static void limitTagCount(String filein,String fileOut,final String initTag,String tag,int maxCount)
     {
         TagLimitingParser th = new TagLimitingParser( initTag,null,fileOut,tag,maxCount );
-         XTandemUtilities.parseFile(new File(filein), th);
+         XMLUtilities.parseFile(new File(filein), th);
     }
     /**
       * code to return an attribute as an integer the attribute must exist

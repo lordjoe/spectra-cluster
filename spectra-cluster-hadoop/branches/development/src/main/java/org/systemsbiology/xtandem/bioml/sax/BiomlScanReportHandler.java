@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -11,7 +12,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 8/22/11
  */
-public class BiomlScanReportHandler extends AbstractElementSaxHandler<ScoredScan> {
+public class BiomlScanReportHandler extends AbstractXTandemElementSaxHandler<ScoredScan> {
     public static final BiomlScanReportHandler[] EMPTY_ARRAY = {};
 
     private String m_Id;

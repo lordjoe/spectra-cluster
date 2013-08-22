@@ -5,6 +5,8 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -365,7 +367,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
                     " at " + XTandemUtilities.nowTimeString()
             );
 
-            XTandemUtilities.outputLine(XTandemUtilities.freeMemoryString());
+            XMLUtilities.outputLine(XMLUtilities.freeMemoryString());
             scorer.clearPeptides();
             scorer.clearSpectra();
             application.clearRetainedData();

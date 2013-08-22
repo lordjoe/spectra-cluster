@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.ionization;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.sax.*;
 
 /**

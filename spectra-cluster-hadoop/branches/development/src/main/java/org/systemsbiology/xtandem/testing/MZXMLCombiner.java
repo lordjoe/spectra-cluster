@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
@@ -25,7 +26,7 @@ public class MZXMLCombiner {
 
     private static void appendFile(final PrintWriter out, final File pFile, final boolean isFirst, final boolean isLast) throws IOException {
         String name = pFile.getAbsolutePath();
-        XTandemUtilities.outputLine(name);
+        XMLUtilities.outputLine(name);
         InputStream is = XTandemUtilities.getDescribedStream(name);
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(is));
         String line = rdr.readLine();
@@ -83,7 +84,7 @@ public class MZXMLCombiner {
                 outw.println("</msRun>");
                 outw.println("</mzXML>");
             }
-            XTandemUtilities.outputLine("total scans " + gTotalScans);
+            XMLUtilities.outputLine("total scans " + gTotalScans);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -112,7 +113,7 @@ public class MZXMLCombiner {
             setMaxScans(maxScans);
             String fileName = baseFile.replace(".mzxml", Integer.toString(maxScans) + ".mzxml");
             saveCombinedScans(fileName, files);
-            XTandemUtilities.outputLine(fileName);
+            XMLUtilities.outputLine(fileName);
         }
 
     }

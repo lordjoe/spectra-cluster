@@ -74,6 +74,7 @@ public class FastaStatistics implements IFastaHandler {
         IProtein prot = Protein.getProtein( annotation, annotation, sequence, null);
         IPolypeptide[] pps = digester.digest(prot);
         Arrays.sort(pps);
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < pps.length; i++) {
             IPolypeptide pp = pps[i];
             String psequence = pp.getSequence();
@@ -129,14 +130,16 @@ public class FastaStatistics implements IFastaHandler {
         System.out.println("Total frgaments " + fstat.getTotalMembers());
    //     fstat.show(System.out, 5);
 
+        //noinspection UnusedDeclaration
         CountStatistics astat = fs.getMonoisotopicMassStatistics();
  //       astat.show(System.out, 20);
-
+        //noinspection UnusedDeclaration
         CountStatistics mstat = fs.getAveragecMassStatistics();
  //       mstat.show(System.out, 20);
     }
 
     public static void main(String[] args) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             IPeptideDigester digester = PeptideBondDigester.getDigester("trypsin");
