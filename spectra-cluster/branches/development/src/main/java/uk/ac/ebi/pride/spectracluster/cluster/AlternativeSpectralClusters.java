@@ -37,7 +37,9 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return ret;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
+        //noinspection UnnecessaryLocalVariable
         IConsensusSpectrumBuilder ret = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 //        for (int i = 1; i < copied.length; i++) {
 //            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].cloneConsensusSpectrumBuilder();
@@ -56,6 +58,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
     private final List<ISpectralCluster> constitutingClusters = new ArrayList<ISpectralCluster>();
+    @SuppressWarnings("FieldCanBeLocal")
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
@@ -122,6 +125,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public List<ISpectralCluster> getConstitutingClusters() {
         return Collections.unmodifiableList(constitutingClusters);
     }
@@ -145,7 +149,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return getClusteredSpectra();   // todo fix
     }
 
-//    /**
+    //    /**
 //     * needed so copy constructors work with the interface
 //     *
 //     * @return
@@ -285,10 +289,29 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
 
-
     @Override
     public void removeSpectra(ISpectrum... removed) {
         throw new UnsupportedOperationException("Cannot change AlternativeSpectralClusters");
+    }
+
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @return
+     */
+    public boolean isStable() {
+        return true;
+    }
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @param stable as
+     */
+    public void setStable(boolean stable) {
+        if (!isStable())
+            throw new UnsupportedOperationException("AlternativeSpectralClusters are always stable");
     }
 
 
@@ -313,6 +336,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             return getHighestQualitySpectrum().getQualityScore() < o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
         }
 
+        //noinspection ConstantIfStatement
         if (true)
             throw new UnsupportedOperationException("Fix This"); // This should never happen
         return 0;
@@ -355,12 +379,11 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
                     return false;
             }
             return true; // just one spectrum so check peaks
-        }
-        else {
+        } else {
             if (spc1.size() != spc2.size())
                 return false;
 
-
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < spc1.size(); i++) {
                 ISpectrum pk1 = spc1.get(i);
                 ISpectrum pk2 = spc2.get(i);
@@ -377,13 +400,14 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      *
      * @param out place to append
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void append(Appendable out) {
-        int indent = 0;
 
         try {
             out.append("BEGIN CLUSTER");
             out.append(" Id=" + getId());
+            //noinspection StringConcatenationInsideStringBufferAppend
             out.append(" Charge=" + getPrecursorCharge());
 
             out.append("\n");
@@ -397,8 +421,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -411,8 +434,10 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      *
      * @param out place to append
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void appendClustering(Appendable out) {
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration
         int indent = 0;
 
         try {
@@ -432,8 +457,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
                 out.append("\ttrue\n");
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -472,6 +496,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      *
      * @param out place to append
      */
+    @SuppressWarnings("UnusedDeclaration , StringConcatenationInsideStringBufferAppend")
     public void appendMGF(Appendable out) {
 
         try {
@@ -484,6 +509,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             double precursorCharge = getPrecursorCharge();
             double massChargeRatio = getPrecursorMz();
 
+            //noinspection StringConcatenationInsideStringBufferAppend
             out.append("PEPMASS=" + massChargeRatio);
             out.append("\n");
 
@@ -498,8 +524,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             }
             out.append("END IONS");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

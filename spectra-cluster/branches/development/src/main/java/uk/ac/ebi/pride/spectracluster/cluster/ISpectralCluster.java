@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -101,6 +100,19 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      * Add a list of spectrum to cluster
      */
     public void addSpectra(List<ISpectrum> added);
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     * @return
+     */
+    public boolean isStable();
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     * @param stable as
+       */
+    @SuppressWarnings("UnusedDeclaration")
+    public void setStable(boolean stable);
 
 
 }

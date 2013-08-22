@@ -18,6 +18,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     private final String id;
+    private boolean stable;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
@@ -238,9 +239,26 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      */
     @Override
     public boolean isRemoveSupported() {
-        return true;
+        return !isStable();
     }
 
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @return
+     */
+    public boolean isStable() {
+        return stable;
+    }
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
+     * @param stable as
+     */
+    public void setStable(boolean stable) {
+        this.stable = stable;
+    }
 
     @Override
     public void removeSpectra(ISpectrum... removed) {
@@ -340,8 +358,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
                     return false;
             }
             return true; // just one spectrum so check peaks
-        }
-        else {
+        } else {
             if (spc1.size() != spc2.size())
                 return false;
 
@@ -382,8 +399,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -422,8 +438,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
                 out.append("\ttrue\n");
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -492,8 +507,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             }
             out.append("END IONS");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

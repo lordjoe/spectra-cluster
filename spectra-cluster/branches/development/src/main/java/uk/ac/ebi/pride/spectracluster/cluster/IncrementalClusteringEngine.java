@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
+import com.lordjoe.utilities.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.IncrementalClusteringEngine
@@ -26,7 +27,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
-                                                                      Comparator<ISpectralCluster> spectrumComparator) {
+                                                                                 Comparator<ISpectralCluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
@@ -79,8 +80,19 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     public void setCurrentMZ(final double pCurrentMZ) {
         int test = ClusterUtilities.mzToInt(pCurrentMZ);
-        if ( getCurrentMZ() > test)   // all ow roundoff error but not much
-            throw new IllegalStateException("mz values MUST be added in order");
+        if (getCurrentMZ() > test) {  // all ow roundoff error but not much
+            double del = getCurrentMZ() - test;  // difference
+
+            if (Math.abs(del) > ClusterUtilities.MZ_RESOLUTION * IPeak.SMALL_MZ_DIFFERENCE) {
+                throw new IllegalStateException("mz values MUST be added in order - was "
+                        + Util.formatDouble(getCurrentMZ(), 3) + " new " +
+                        Util.formatDouble(pCurrentMZ, 3) + " del  " +
+                        del
+                );
+
+            }
+
+        }
         currentMZAsInt = test;
     }
 
@@ -116,20 +128,20 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Override
     public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
         List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
-          SimilarityChecker sCheck = getSimilarityChecker();
+        SimilarityChecker sCheck = getSimilarityChecker();
 
-          if (cluster.getClusteredSpectra().size() > 1) {
-              for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                  final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                  final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                  final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                  if (similarityScore < defaultThreshold) {
-                      noneFittingSpectra.add(spectrum.asCluster());
-                  }
-              }
-          }
+        if (cluster.getClusteredSpectra().size() > 1) {
+            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
+                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                if (similarityScore < defaultThreshold) {
+                    noneFittingSpectra.add(spectrum.asCluster());
+                }
+            }
+        }
 
-          return noneFittingSpectra;
+        return noneFittingSpectra;
     }
 
     /**
@@ -138,7 +150,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Override
     public void addClusters(ISpectralCluster... cluster) {
         // or use a WrappedIncrementalClusteringEngine
-            throw new UnsupportedOperationException("Use addClusterIncremental instead or use a WrappedIncrementalClusteringEngine ");
+        throw new UnsupportedOperationException("Use addClusterIncremental instead or use a WrappedIncrementalClusteringEngine ");
 
     }
 
@@ -173,7 +185,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         List<ISpectralCluster> clustersToremove = findClustersTooLow(precursorMz);
         // either add as an existing cluster if make a new cluster
         addToClusters(added);
-         return clustersToremove;
+        return clustersToremove;
     }
 
     /**
@@ -230,8 +242,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         if (mostSimilarCluster != null) {
             ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
             mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
-        }
-        else {
+        } else {
             myClusters.add(new SpectralCluster(clusterToAdd));
         }
     }
@@ -245,7 +256,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     public boolean processClusters() {
         throw new UnsupportedOperationException("Don\'t do this using an IncrementalClusteringEngine use a WrappedIncrementalClusteringEngine"); // ToDo
     }
-
 
 
     /**
