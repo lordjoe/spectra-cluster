@@ -2,6 +2,8 @@ package org.systemsbiology.xtandem.hadoop;
 
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -90,7 +92,7 @@ public class ScoreCombiningReducer extends AbstractTandemReducer {
         String scanXML = first.toString();
 
         if (gPrintThisLine)
-            XTandemUtilities.outputLine(scanXML);
+            XMLUtilities.outputLine(scanXML);
         //   scanXML = XTandemHadoopUtilities.cleanXML(scanXML); // we find bad characters i.e 0
         MultiScorer start = XTandemUtilities.readMultiScore(scanXML, app);
 
@@ -103,7 +105,7 @@ public class ScoreCombiningReducer extends AbstractTandemReducer {
             String textStr = text.toString();
             //       textStr = XTandemHadoopUtilities.cleanXML(textStr); // we find bad characters i.e 0
             if (gPrintThisLine)   {
-                XTandemUtilities.outputLine(textStr);
+                XMLUtilities.outputLine(textStr);
               }
 
             MultiScorer next = XTandemUtilities.readMultiScore(textStr, app);
@@ -130,7 +132,7 @@ public class ScoreCombiningReducer extends AbstractTandemReducer {
             scanXML = sb.toString();
 
             if (gPrintThisLine)    {
-                XTandemUtilities.outputLine(scanXML);
+                XMLUtilities.outputLine(scanXML);
                 gPrintThisLine = false;
               }
 

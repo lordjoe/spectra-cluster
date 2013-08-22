@@ -1,6 +1,8 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.testing.*;
 import org.xml.sax.*;
@@ -10,7 +12,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 6/22/11
  */
-public class DotProductScoringHandler extends AbstractElementSaxHandler<TheoreticalIonsScoring> implements ITopLevelSaxHandler {
+public class DotProductScoringHandler extends AbstractXTandemElementSaxHandler<TheoreticalIonsScoring> implements ITopLevelSaxHandler {
     public static final DotProductScoringHandler[] EMPTY_ARRAY = {};
 
 

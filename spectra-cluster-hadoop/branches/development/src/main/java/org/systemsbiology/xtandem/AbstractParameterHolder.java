@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem;
 
+import org.systemsbiology.hadoop.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -12,7 +14,8 @@ import java.util.*;
  * @author Steve Lewis
   * Base class for a ParameterHolder -
  */
-public  class AbstractParameterHolder implements ISetableParameterHolder
+public abstract class AbstractParameterHolder implements ISetableParameterHolder
+
 {
     public static AbstractParameterHolder[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = AbstractParameterHolder.class;

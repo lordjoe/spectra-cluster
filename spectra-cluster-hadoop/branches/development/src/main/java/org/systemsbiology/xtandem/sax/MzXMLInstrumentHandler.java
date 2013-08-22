@@ -1,6 +1,8 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.xml.sax.*;
 
 /**
@@ -9,7 +11,7 @@ import org.xml.sax.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class MzXMLInstrumentHandler extends AbstractElementSaxHandler<MassSpecInstrument> {
+public class MzXMLInstrumentHandler extends AbstractXTandemElementSaxHandler<MassSpecInstrument> {
     public static MzXMLInstrumentHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = MzXMLInstrumentHandler.class;
 

@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
-import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
@@ -16,7 +16,7 @@ public class ScanScoring implements IScanScoring {
 
     private final String m_Id;
 
-    private Map<String, ITheoreticalScoring> m_Scoring = new HashMap<String, ITheoreticalScoring>();
+    private final Map<String, ITheoreticalScoring> m_Scoring = new HashMap<String, ITheoreticalScoring>();
 
 
     public ScanScoring(final String pId) {
@@ -40,17 +40,17 @@ public class ScanScoring implements IScanScoring {
             return false;
         ITheoreticalScoring[] myScores = getScorings();
         ITheoreticalScoring[] theirScores = o.getScorings();
-        XTandemUtilities.outputLine("<scored_id id=\"" + o.getId() + "\"  >");
+        XMLUtilities.outputLine("<scored_id id=\"" + o.getId() + "\"  >");
         for (int i = 0; i < theirScores.length; i++) {
             ITheoreticalScoring myScore = myScores[i];
             ITheoreticalScoring theirScore = theirScores[i];
             if (!myScore.equivalent(theirScore))
                 return false;
             double totalKScore = theirScore.getTotalKScore();
-            XTandemUtilities.outputLine("<scored_fragment seguence=\"" + myScore.getSequence() + "\" score=" + totalKScore + "\" />");
+            XMLUtilities.outputLine("<scored_fragment seguence=\"" + myScore.getSequence() + "\" score=" + totalKScore + "\" />");
 
         }
-        XTandemUtilities.outputLine("</scored_id>");
+        XMLUtilities.outputLine("</scored_id>");
 
         return true;
     }
@@ -70,7 +70,7 @@ public class ScanScoring implements IScanScoring {
 
     @Override
     public String toString() {
-        return getId().toString() + " " + getScoreCount();    //To change body of overridden methods use File | Settings | File Templates.
+        return getId() + " " + getScoreCount();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ScanScoring implements IScanScoring {
         return m_Scoring.size();
     }
 
-
+     @SuppressWarnings("UnusedDeclaration")
     public void addScoring(String key, ITheoreticalScoring added) {
         // what happens on dupoicates
         if (m_Scoring.containsKey(key))
@@ -86,14 +86,14 @@ public class ScanScoring implements IScanScoring {
         m_Scoring.put(key, added);
     }
 
-
+      @SuppressWarnings("UnusedDeclaration")
     public void removeScoring(String removed) {
         m_Scoring.remove(removed);
     }
 
     @Override
     public ITheoreticalScoring[] getScorings() {
-        ITheoreticalScoring[] scorings = m_Scoring.values().toArray(new ITheoreticalScoring[0]);
+        ITheoreticalScoring[] scorings = m_Scoring.values().toArray(new ITheoreticalScoring[m_Scoring.size()]);
         Arrays.sort(scorings);
         return scorings;
     }
@@ -106,7 +106,7 @@ public class ScanScoring implements IScanScoring {
     public ITheoreticalScoring[] getValidScorings() {
         ITheoreticalScoring[] scorings = getScorings();
         List<ITheoreticalScoring> holder = new ArrayList<ITheoreticalScoring>();
-
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < scorings.length; i++) {
             ITheoreticalScoring scoring = scorings[i];
             if (scoring.getIonScorings().length == 0)
@@ -127,6 +127,7 @@ public class ScanScoring implements IScanScoring {
     public ISpectralMatch[] getSpectralMatches() {
         ITheoreticalScoring[] tss = getValidScorings();
         List<ISpectralMatch> holder = new ArrayList<ISpectralMatch>();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < tss.length; i++) {
             ITheoreticalScoring ts = tss[i];
             holder.add(ts.asSpectralMatch());
@@ -138,6 +139,7 @@ public class ScanScoring implements IScanScoring {
 
     @Override
     public ITheoreticalScoring getScoring(String sequence) {
+        //noinspection SynchronizeOnNonFinalField
         synchronized (m_Scoring) {
             ITheoreticalScoring scanScoring = m_Scoring.get(sequence);
             if (scanScoring == null) {
@@ -155,7 +157,9 @@ public class ScanScoring implements IScanScoring {
 
     @Override
     public ITheoreticalScoring getExistingScoring(String sequence) {
+        //noinspection SynchronizeOnNonFinalField
         synchronized (m_Scoring) {
+            //noinspection UnnecessaryLocalVariable
             ITheoreticalScoring scanScoring = m_Scoring.get(sequence);
             return scanScoring;
         }
@@ -165,6 +169,7 @@ public class ScanScoring implements IScanScoring {
 
     @Override
     public ITheoreticalIonsScoring getIonScoring(ScanScoringIdentifier key) {
+        //noinspection SynchronizeOnNonFinalField
         synchronized (m_Scoring) {
             String sequence = key.getSequence();
             ITheoreticalScoring ts = getScoring(sequence);

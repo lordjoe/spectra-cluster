@@ -3,6 +3,7 @@
  */
 package org.systemsbiology.xtandem.testing.pickscored;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -26,12 +27,12 @@ public class PickScoredScans {
      */
     public static void main(String[] args) throws Exception {
     	if (null == args || 0 == args.length || null == args[0] || "" == args[0]) {
-			XTandemUtilities.outputLine("usage: PickTopSpectrum <infile> [<outfile>]");
+            XMLUtilities.outputLine("usage: PickTopSpectrum <infile> [<outfile>]");
 			System.exit(1);
 		}
     	File infile = new File(args[0]);
     	if (!infile.exists()) {
-			XTandemUtilities.outputLine(args[0] + " is not a valid file path");
+            XMLUtilities.outputLine(args[0] + " is not a valid file path");
 			System.exit(2);
 		}
     	
@@ -42,7 +43,7 @@ public class PickScoredScans {
     	else {
 			outfile = new File(args[0] + ".score"); 
 		}
-		XTandemUtilities.outputLine("Output will be saved in " + outfile.getPath());
+        XMLUtilities.outputLine("Output will be saved in " + outfile.getPath());
     	
     	Properties properties = new Properties();
     	properties.load(PickScoredScans.class.getResourceAsStream ("scoring.properties"));
@@ -86,17 +87,17 @@ public class PickScoredScans {
         
         for (int i = 0; i < scans.length; i++) {
 			if (null != scans[i]) {
-				XTandemUtilities.outputText(scans[i].getBestMatch().getHyperScore() + " ");
+                XMLUtilities.outputText(scans[i].getBestMatch().getHyperScore() + " ");
 			}
 		}
-        XTandemUtilities.outputLine("\n");
+        XMLUtilities.outputLine("\n");
         
         for (int i = 0; i < scoredScans.length; i++) {
 			if (null != scoredScans[i]) {
-				XTandemUtilities.outputText(scoredScans[i].getBestMatch().getHyperScore() + " ");
+                XMLUtilities.outputText(scoredScans[i].getBestMatch().getHyperScore() + " ");
 			}
 		}
-        XTandemUtilities.outputLine("\n");
+        XMLUtilities.outputLine("\n");
 
         if (null != scoredScans[0]) {
             // write out the ids to the output file

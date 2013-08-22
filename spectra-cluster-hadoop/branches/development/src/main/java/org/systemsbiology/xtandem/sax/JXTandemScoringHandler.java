@@ -1,6 +1,9 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.testing.*;
 import org.xml.sax.*;
 
@@ -11,7 +14,7 @@ import java.io.*;
  * User: steven
  * Date: 6/22/11
  */
-public class JXTandemScoringHandler extends AbstractElementSaxHandler<ScanScoringReport> implements ITopLevelSaxHandler {
+public class JXTandemScoringHandler extends AbstractXTandemElementSaxHandler<ScanScoringReport> implements ITopLevelSaxHandler {
     public static final JXTandemScoringHandler[] EMPTY_ARRAY = {};
 
 
@@ -95,18 +98,18 @@ public class JXTandemScoringHandler extends AbstractElementSaxHandler<ScanScorin
             IScanScoring[] scanScoring = report.getScanScoring();
             for (int j = 0; j < scanScoring.length; j++) {
                 IScanScoring scoring = scanScoring[j];
-                XTandemUtilities.outputLine("Scored " + scoring.getId());
+                XMLUtilities.outputLine("Scored " + scoring.getId());
                 ITheoreticalScoring[] theoreticalScorings = scoring.getScorings();
                 for (int k = 0; k < theoreticalScorings.length; k++) {
                     ITheoreticalScoring ts = theoreticalScorings[k];
-                    XTandemUtilities.outputLine("Scored   " + ts);
+                    XMLUtilities.outputLine("Scored   " + ts);
                     ITheoreticalIonsScoring[] inos = ts.getIonScorings();
                     for (int l = 0; l < inos.length; l++) {
                         ITheoreticalIonsScoring ino = inos[l];
                         DebugMatchPeak[] scoringMasses = ino.getScoringMasses();
                         for (int m = 0; m < scoringMasses.length; m++) {
                             DebugMatchPeak scoringMass = scoringMasses[m];
-                            XTandemUtilities.outputLine("Scored one " + scoringMass);
+                            XMLUtilities.outputLine("Scored one " + scoringMass);
                         }
 
                     }

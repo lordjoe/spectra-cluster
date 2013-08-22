@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.bioml;
 
 import com.lordjoe.utilities.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.scoring.*;
 
@@ -48,14 +49,14 @@ public class XTandemScoringReport {
         String[] tandemFiles = FileUtilities.getAllFilesWithExtension(".", ".tandem");
         for (int i = 0; i < tandemFiles.length; i++) {
             String tandemFile = tandemFiles[i];
-            XTandemUtilities.outputLine(tandemFile);
+            XMLUtilities.outputLine(tandemFile);
             XTandemScoringReport report = XTandemUtilities.readXTandemFile(tandemFile);
             ScoredScan[] scans = report.getScans();
             for (int j = 0; j < scans.length; j++) {
                 ScoredScan scan = scans[j];
                 scan = null;
             }
-            XTandemUtilities.outputLine( );
+            XMLUtilities.outputLine( );
 
         }
      }

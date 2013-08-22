@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem;
 
+import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.testing.*;
@@ -493,7 +495,7 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
             dSpectrumArea += thisPeak * thisPeak;
             // to debug a tough issue with the results
             if (false)
-                XTandemUtilities.outputLine("mass=" + (int) allPeak.getMassChargeRatio() +
+                XMLUtilities.outputLine("mass=" + (int) allPeak.getMassChargeRatio() +
                         " peak=" + XTandemUtilities.formatDouble(thisPeak, 5) +
                         " number=" + i +
                         " sum=" + XTandemUtilities.formatDouble(dSpectrumArea, 5)
@@ -613,7 +615,7 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
             value -= sum;
             value = Math.max(0, value);
             if (false)
-                XTandemUtilities.outputLine("" + index +
+                XMLUtilities.outputLine("" + index +
                         " " + XTandemUtilities.formatDouble(value, 4) +
                         " old " + XTandemUtilities.formatDouble(pk.getPeak(), 4) +
                         " decrease " + sum
@@ -1165,8 +1167,8 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
             for (IonType type : IonType.values()) {
                 final StringBuilder sb = matchStrings[IonType.asIndex(type)];
                 if (sb.length() > 0) {
-                    XTandemUtilities.outputLine(type + "Ions");
-                    XTandemUtilities.outputLine(sb.toString());
+                    XMLUtilities.outputLine(type + "Ions");
+                    XMLUtilities.outputLine(sb.toString());
                 }
             }
 

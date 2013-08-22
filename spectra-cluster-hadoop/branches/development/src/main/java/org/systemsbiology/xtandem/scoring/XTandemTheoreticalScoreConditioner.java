@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.scoring;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -49,7 +50,7 @@ public class XTandemTheoreticalScoreConditioner implements ITheoreticalPeakCondi
         }
 
         if(ScoringUtilities.SHOW_SCORING)
-            XTandemUtilities.outputLine(peptide + ":" + type + " mass:" + XTandemUtilities.formatDouble(mass, 2) + " weight:" + weight);
+            XMLUtilities.outputLine(peptide + ":" + type + " mass:" + XTandemUtilities.formatDouble(mass, 2) + " weight:" + weight);
 
         return new TheoreticalPeak(mass, weight, peptide, type);
     }

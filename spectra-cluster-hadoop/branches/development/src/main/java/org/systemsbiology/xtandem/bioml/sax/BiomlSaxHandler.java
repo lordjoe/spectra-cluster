@@ -1,8 +1,8 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
-import org.systemsbiology.xtandem.*;
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.bioml.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.xml.sax.*;
 
@@ -11,7 +11,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 8/22/11
  */
-public class BiomlSaxHandler extends AbstractElementSaxHandler<XTandemScoringReport> implements ITopLevelSaxHandler {
+public class BiomlSaxHandler extends AbstractXTandemElementSaxHandler<XTandemScoringReport> implements ITopLevelSaxHandler {
     public static final BiomlSaxHandler[] EMPTY_ARRAY = {};
 
     private int m_NumberGroups;
@@ -37,20 +37,20 @@ public class BiomlSaxHandler extends AbstractElementSaxHandler<XTandemScoringRep
     @Override
     public void startDocument() throws SAXException {
         super.startDocument();
-        m_NumberGroups= 0;
+        m_NumberGroups = 0;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public int getNumberGroups() {
         return m_NumberGroups;
     }
 
-    public void incrementNumberGroups()
-    {
-         m_NumberGroups++;
-        if(m_NumberGroups %100 == 0)
-            XTandemUtilities.outputText(".");
-        if(m_NumberGroups % 8000 == 0)
-            XTandemUtilities.outputLine(".");
+    public void incrementNumberGroups() {
+        m_NumberGroups++;
+        if (m_NumberGroups % 100 == 0)
+            XMLUtilities.outputText(".");
+        if (m_NumberGroups % 8000 == 0)
+            XMLUtilities.outputLine(".");
     }
 
     @Override

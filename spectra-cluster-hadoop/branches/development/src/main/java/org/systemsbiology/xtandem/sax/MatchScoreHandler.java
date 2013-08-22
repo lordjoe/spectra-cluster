@@ -1,7 +1,9 @@
 package org.systemsbiology.xtandem.sax;
 
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -16,7 +18,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class MatchScoreHandler extends AbstractElementSaxHandler<SpectralMatch> {
+public class MatchScoreHandler extends AbstractXTandemElementSaxHandler<SpectralMatch> {
     public static MatchScoreHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = MatchScoreHandler.class;
 

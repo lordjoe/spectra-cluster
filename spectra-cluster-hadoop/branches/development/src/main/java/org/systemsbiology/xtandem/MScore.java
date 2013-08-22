@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem;
 
+import org.systemsbiology.hadoop.*;
+
 import java.io.*;
 import java.util.*;
 

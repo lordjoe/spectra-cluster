@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 
 import java.util.*;
@@ -49,6 +49,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
         return m_PrecursorMassChargeRatio;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setPrecursorMassChargeRatio(final double pPrecursorMassChargeRatio) {
         m_PrecursorMassChargeRatio = pPrecursorMassChargeRatio;
     }
@@ -121,6 +122,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
         m_PrecursorCharge = pPrecursorCharge;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setPrecursorMass(final double pPrecursorMass) {
         m_PrecursorMass = pPrecursorMass;
     }
@@ -138,9 +140,8 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
 
     public synchronized  void addPeak(final ISpectrumPeak  added) {
         ISpectrumPeak[] np = new ISpectrumPeak[m_Peaks.length + 1];
-        for (int i = 0; i < m_Peaks.length; i++) {
-              np[i] = m_Peaks[i];
-        }
+        //noinspection ForLoopReplaceableByForEach
+        System.arraycopy(m_Peaks, 0, np, 0, m_Peaks.length);
         np[ m_Peaks.length] = added;
         Arrays.sort(np, ScoringUtilities.PeakMassComparatorINSTANCE);
          m_Peaks = np;
@@ -238,6 +239,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public double getMaxIntensity() {
         ISpectrumPeak[] pks = getPeaks();
         double ret = 0;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < pks.length; i++) {
             ISpectrumPeak pk = pks[i];
             ret = Math.max(pk.getPeak(),ret);
@@ -254,6 +256,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public double getSumIntensity() {
         ISpectrumPeak[] pks = getPeaks();
           double ret = 0;
+        //noinspection ForLoopReplaceableByForEach
           for (int i = 0; i < pks.length; i++) {
               ISpectrumPeak pk = pks[i];
               ret += pk.getPeak();
@@ -270,6 +273,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public ISpectrumPeak[] getNonZeroPeaks() {
         List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
         ISpectrumPeak[] peaks = getPeaks();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
             if(peak.getPeak() > 0)
@@ -300,6 +304,7 @@ public class MutableMeasuredSpectrum implements IMeasuredSpectrum {
     public boolean equivalent(ISpectrum o) {
         if (this == o)
             return true;
+        //noinspection UnnecessaryLocalVariable
         ISpectrum realO = o;
         final ISpectrumPeak[] peaks1 = getPeaks();
         final ISpectrumPeak[] peaks2 = realO.getPeaks();

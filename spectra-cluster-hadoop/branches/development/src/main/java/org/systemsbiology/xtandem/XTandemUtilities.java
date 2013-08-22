@@ -3,6 +3,8 @@ package org.systemsbiology.xtandem;
 
 import com.lordjoe.utilities.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.bioml.*;
 import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -212,59 +214,6 @@ public class XTandemUtilities {
     public static String xTandemDate(Date time) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
         return df.format(time);
-    }
-
-    public static void outputLine() {
-        System.out.println();
-    }
-
-    public static void outputLine(String text) {
-        System.out.println(text);
-    }
-
-    public static void outputText(String text) {
-        System.out.print(text);
-    }
-
-    public static void errorLine(String text) {
-        System.err.println(text);
-    }
-
-    public static void errorLine() {
-        System.err.println();
-    }
-
-    public static void errorText(String text) {
-        System.err.print(text);
-    }
-
-    public static String freeMemoryString() {
-        StringBuilder sb = new StringBuilder();
-        Runtime rt = Runtime.getRuntime();
-        double mem = rt.freeMemory() / 1000000;
-        double totmem = rt.totalMemory() / 1000000;
-
-        sb.append(String.format("%5.1f", mem));
-        sb.append(String.format(" %4.2f", mem / totmem));
-        return sb.toString();
-    }
-
-    /**
-     * convert a name like  C:\Inetpub\wwwroot\ISB\data\parameters\isb_default_input_kscore.xml
-     * to  isb_default_input_kscore.xml
-     *
-     * @param fileName !null file name
-     * @return !null name
-     */
-    public static String asLocalFile(String fileName) {
-        fileName = fileName.replace("\\", "/");
-        File f = new File(fileName);
-        return f.getName();
-    }
-
-
-    public static boolean isAbsolute(final String pName) {
-        return new File(pName).isAbsolute();
     }
 
 
@@ -1157,6 +1106,57 @@ public class XTandemUtilities {
         return readNotes(is, str);
     }
 
+
+
+    /**
+     * parse an xml file using a specific handler
+     *
+     * @param is !null stream
+     * @return !null key value set
+     */
+    public static <T> T parseFileString(String str, AbstractXTandemElementSaxHandler<T> handler1) {
+        final InputStream is = getDescribedStream(str);
+        try {
+            return parseFile(is, handler1, str);
+        }
+        finally {
+            try {
+                is.close();
+            }
+            catch (IOException e) {
+
+            }
+        }
+    }
+
+
+    /**
+     * parse an xml file using a specific handler
+     *
+     * @param is !null stream
+     * @return !null key value set
+     */
+    public static <T> T parseFile(InputStream is, AbstractXTandemElementSaxHandler<T> handler1, String url) {
+        DelegatingSaxHandler handler = new DelegatingSaxHandler();
+        if (handler1 instanceof ITopLevelSaxHandler) {
+            handler1.setHandler(handler);
+            handler.pushCurrentHandler(handler1);
+            handler.parseDocument(is);
+            T ret = handler1.getElementObject();
+            return ret;
+
+        }
+        else {
+            final BiomlHandler<T> bh = new BiomlHandler(handler, handler1, url);
+            handler.pushCurrentHandler(bh);
+            handler.parseDocument(is);
+
+            T ret = bh.getFileObject();
+            return ret;
+        }
+    }
+
+
     /**
      * parse an xml file using a specific handler
      *
@@ -1191,8 +1191,8 @@ public class XTandemUtilities {
             XTandemUtilities.breakHere();
 
         if (isInterestingPeak(pk))
-            XTandemUtilities.outputLine("Droppiing interesting peak " + pk);
-        XTandemUtilities.outputLine("Droppiing peak " + pk);
+            XMLUtilities.outputLine("Droppiing interesting peak " + pk);
+        XMLUtilities.outputLine("Droppiing peak " + pk);
     }
 
 
@@ -1208,80 +1208,16 @@ public class XTandemUtilities {
         handler.pushCurrentHandler(handler1);
         handler.parseDocument(is);
 
-        Map<String, String> notes = handler1.getNotes();
-        return notes;
-    }
-
-    /**
-     * * Convert String to InputStream using ByteArrayInputStream
-     * class. This class constructor takes the string byte array
-     * which can be done by calling the getBytes() method.
-     *
-     * @param text !null string
-     * @return !null inputstream
-     */
-    public static InputStream stringToInputStream(String text) {
-
-        try {
-
-            InputStream is = new ByteArrayInputStream(text.getBytes("UTF-8"));
-            return is;
+        if (handler1 instanceof AbstractXTandemElementSaxHandler) {
+            AbstractXTandemElementSaxHandler handlerx = (AbstractXTandemElementSaxHandler) handler1;
+            Map<String, String> notes = handlerx.getNotes();
+          return notes;
 
         }
-        catch (UnsupportedEncodingException e) {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
 
-            throw new RuntimeException(e);
-        }
-    }
+     }
 
-    /**
-     * * Convert String a reader
-     *
-     * @param text !null string
-     * @return !null Reader
-     */
-    public static Reader stringToReader(String text) {
-
-        return new InputStreamReader(stringToInputStream(text));
-    }
-
-    public static String extractTag(String tagName, String xml) {
-        String startStr = tagName + "=\"";
-        int index = xml.indexOf(startStr);
-        if (index == -1) {
-            String xmlLc = xml.toLowerCase();
-            if (xmlLc.equals(xml))
-                throw new IllegalArgumentException("cannot find tag " + tagName);
-            String tagLc = tagName.toLowerCase();
-              return  extractTag(tagLc,xmlLc); // rey without case
-        }
-        index += startStr.length();
-        int endIndex = xml.indexOf("\"", index);
-        if (endIndex == -1)
-            throw new IllegalArgumentException("cannot terminate tag " + tagName);
-        // new will uncouple old and long string
-        return new String(xml.substring(index, endIndex));
-    }
-
-    /**
-     * grab a tag that might not exist
-     * @param tagName
-     * @param xml
-     * @return
-     */
-    public static String maybeExtractTag(String tagName, String xml) {
-        String startStr = tagName + "=\"";
-        int index = xml.indexOf(startStr);
-        if (index == -1) {
-            return null;
-        }
-        index += startStr.length();
-        int endIndex = xml.indexOf("\"", index);
-        if (endIndex == -1)
-            return null;
-        // new will uncouple old and long string
-        return new String(xml.substring(index, endIndex));
-    }
 
     /**
      * parse a bioml file holding nothing but note tags
@@ -1293,7 +1229,7 @@ public class XTandemUtilities {
         DelegatingSaxHandler handler = new DelegatingSaxHandler();
         final MultiScoreHandler handler1 = new MultiScoreHandler(god, handler);
         handler.pushCurrentHandler(handler1);
-        InputStream is = stringToInputStream(text);
+        InputStream is = XMLUtilities.stringToInputStream(text);
         handler.parseDocument(is);
 
         MultiScorer notes = handler1.getElementObject();
@@ -1311,7 +1247,7 @@ public class XTandemUtilities {
         DelegatingSaxHandler handler = new DelegatingSaxHandler();
         final ScanScoreHandler handler1 = new ScanScoreHandler(god, handler);
         handler.pushCurrentHandler(handler1);
-        InputStream is = stringToInputStream(text);
+        InputStream is = XMLUtilities.stringToInputStream(text);
         handler.parseDocument(is);
 
         ScoredScan notes = handler1.getElementObject();
@@ -1819,89 +1755,6 @@ public class XTandemUtilities {
     }
 
 
-    /**
-     * parse an xml file using a specific handler
-     *
-     * @param is !null stream
-     * @return !null key value set
-     */
-    public static <T> T parseFileString(String str, AbstractElementSaxHandler<T> handler1) {
-        final InputStream is = getDescribedStream(str);
-        try {
-            return parseFile(is, handler1, str);
-        }
-        finally {
-            try {
-                is.close();
-            }
-            catch (IOException e) {
-
-            }
-        }
-    }
-
-    public static void showProgress(int value) {
-        if (value % 1000 == 0)
-            XTandemUtilities.outputText(".");
-        if (value % 50000 == 0)
-            XTandemUtilities.outputLine();
-
-    }
-
-    public static void printProgress(int value, int resolution) {
-        if (value % resolution == 0) {
-            XTandemUtilities.outputText(Integer.toString(value));
-            XTandemUtilities.outputText(",");
-        }
-        if (value % (5 * resolution) == 0)
-            XTandemUtilities.outputLine();
-
-    }
-
-    /**
-     * parse an xml file using a specific handler
-     *
-     * @param is !null stream
-     * @return !null key value set
-     */
-    public static <T> T parseFile(InputStream is, AbstractElementSaxHandler<T> handler1, String url) {
-        DelegatingSaxHandler handler = new DelegatingSaxHandler();
-        if (handler1 instanceof ITopLevelSaxHandler) {
-            handler1.setHandler(handler);
-            handler.pushCurrentHandler(handler1);
-            handler.parseDocument(is);
-            T ret = handler1.getElementObject();
-            return ret;
-
-        }
-        else {
-            final BiomlHandler<T> bh = new BiomlHandler(handler, handler1, url);
-            handler.pushCurrentHandler(bh);
-            handler.parseDocument(is);
-
-            T ret = bh.getFileObject();
-            return ret;
-        }
-    }
-
-    /**
-     * parse an xml file using a specific handler
-     *
-     * @param is !null existing readible file
-     * @return !null key value set
-     */
-    public static <T> T parseFile(File file, AbstractElementSaxHandler<T> handler1) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-        }
-        catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return parseFile(is, handler1, file.getName());
-    }
-
-
     public static ISpectrumPeak[] decodePeaks64(String base64, boolean decompress) {
         byte[] decoded = Base64.decode(base64);
         if (decompress) {
@@ -2291,7 +2144,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
 
     public static MassSpecRun[] parseMZXMLStream(InputStream is, String url) {
         MzXMLHandler handler = new MzXMLHandler();
-        MassSpecRun[] runs = XTandemUtilities.parseFile(is, handler, url);
+        MassSpecRun[] runs =  parseFile(is, handler, url);
         return runs;
     }
 
@@ -2353,7 +2206,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         }
         finally {
             out.close();
-            XTandemUtilities.outputLine("Scans Seen " + numberScans);
+     //       m_Notes.outputLine("Scans Seen " + numberScans);
         }
 
     }
@@ -2499,7 +2352,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         ScansReportHandler handler = new ScansReportHandler((DelegatingSaxHandler) null);
         InputStream is = XTandemUtilities.getDescribedStream(resource);
         String name = resource.replace("res://", "");
-        XTandemUtilities.parseFile(is, handler, name);
+        XMLUtilities.parseFile(is, handler, name);
         XTandemScoringReport ret = handler.getElementObject();
 
         return ret;
@@ -2515,7 +2368,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         BiomlSaxHandler handler = new BiomlSaxHandler((DelegatingSaxHandler) null);
         InputStream is = XTandemUtilities.getDescribedStream(resource);
         String name = resource.replace("res://", "");
-        XTandemUtilities.parseFile(is, handler, name);
+        XMLUtilities.parseFile(is, handler, name);
         XTandemScoringReport ret = handler.getElementObject();
 
         return ret;
@@ -2539,10 +2392,10 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
             }
             while (c != '\n');
             if (b == 1) { // error
-                XTandemUtilities.outputText(sb.toString());
+                XMLUtilities.outputText(sb.toString());
             }
             if (b == 2) { // fatal error
-                XTandemUtilities.outputText(sb.toString());
+                XMLUtilities.outputText(sb.toString());
             }
         }
         return b;

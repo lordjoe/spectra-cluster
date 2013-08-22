@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.peptide;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.sax.*;
@@ -32,7 +34,7 @@ public class DigesterDescription implements IEquivalent<DigesterDescription> {
     }
 
     public DigesterDescription(String str) {
-        this(XTandemUtilities.stringToInputStream(str));
+        this(XMLUtilities.stringToInputStream(str));
     }
 
     public DigesterDescription(InputStream is) {

@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -69,11 +70,11 @@ public class XTandemTestUtilities {
                continue;
            }
            if(mz1 < mz2)  {
-               XTandemUtilities.outputLine("Theirs Missing " + mz2);
+               XMLUtilities.outputLine("Theirs Missing " + mz2);
                index1++;
            }
             else {
-               XTandemUtilities.outputLine("Mine Missing " + mz1);
+               XMLUtilities.outputLine("Mine Missing " + mz1);
                 index2++;
 
            }
@@ -89,9 +90,9 @@ public class XTandemTestUtilities {
             ISpectrumPeak sp2 = masses2[i];
             if(sp1 == null)  {
                 if(sp2 != null) {
-                    XTandemUtilities.outputLine("Theirs Missing " + sp2);
+                    XMLUtilities.outputLine("Theirs Missing " + sp2);
                     if( masses1[i -1] == null && masses1[i +1] == null)
-                        XTandemUtilities.outputLine("Really missing " + sp2);
+                        XMLUtilities.outputLine("Really missing " + sp2);
                 }
                 else {
                     continue;
@@ -99,9 +100,9 @@ public class XTandemTestUtilities {
             }
             if(sp2 == null)  {
                 if(sp1 != null) {
-                    XTandemUtilities.outputLine("Mine Missing " + sp1);
+                    XMLUtilities.outputLine("Mine Missing " + sp1);
                     if( masses2[i -1] == null && masses2[i +1] == null)
-                        XTandemUtilities.outputLine("Really missing " + sp1);
+                        XMLUtilities.outputLine("Really missing " + sp1);
                 }
                 else {
                     continue;

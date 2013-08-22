@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.testing.*;
@@ -10,7 +12,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 6/22/11
  */
-public class TheoreticalSpectrumHandler extends AbstractElementSaxHandler<ITheoreticalSpectrum> implements ITopLevelSaxHandler {
+public class TheoreticalSpectrumHandler extends AbstractXTandemElementSaxHandler<ITheoreticalSpectrum> implements ITopLevelSaxHandler {
     public static final TheoreticalSpectrumHandler[] EMPTY_ARRAY = {};
 
 

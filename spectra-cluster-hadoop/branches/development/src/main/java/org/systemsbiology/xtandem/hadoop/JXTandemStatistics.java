@@ -1,6 +1,5 @@
 package org.systemsbiology.xtandem.hadoop;
 
-import org.systemsbiology.xtandem.*;
 
 import java.util.*;
 import com.lordjoe.utilities.ElapsedTimer;
@@ -96,14 +95,20 @@ public class JXTandemStatistics {
 
 
     public JobTime[] getJobTimes() {
-        JobTime[] ret = m_JobTimes.toArray(new JobTime[m_JobTimes.size()]);
-         return ret;
+        return m_JobTimes.toArray(new JobTime[m_JobTimes.size()]);
     }
 
     public void endJob(String name) {
         long now = System.currentTimeMillis();
-        m_JobTimes.add(new JobTime(name, now - m_Jobs.get(name)));
-        m_Jobs.remove(name);
+        Long myJob = m_Jobs.get(name);
+        if(myJob != null)  {
+            m_JobTimes.add(new JobTime(name, now - myJob));
+            m_Jobs.remove(name);
+
+        }
+        else {
+            throw new UnsupportedOperationException("Fix This"); // huh
+        }
 
     }
 
@@ -114,8 +119,10 @@ public class JXTandemStatistics {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
+            //noinspection StringConcatenationInsideStringBufferAppend
             sb.append(key + " = " + getData(key) + "\n");
         }
+            //noinspection StringConcatenationInsideStringBufferAppend
          sb.append( m_TotalTime.formatElapsed("total time") + "\n");
 
         JobTime[] jobs = getJobTimes();

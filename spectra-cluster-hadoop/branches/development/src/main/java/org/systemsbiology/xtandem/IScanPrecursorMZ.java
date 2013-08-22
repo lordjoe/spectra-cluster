@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 
 /**
  * org.systemsbiology.xtandem.IScanPrecursorMZ

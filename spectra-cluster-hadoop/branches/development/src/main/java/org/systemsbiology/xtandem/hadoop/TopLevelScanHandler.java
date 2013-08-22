@@ -1,12 +1,13 @@
 package org.systemsbiology.xtandem.hadoop;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
 
 /**
  * needed to work as a top level handler
  */
-public class TopLevelScanHandler extends MzXMLScanHandler implements ITopLevelSaxHandler    {
+public class TopLevelScanHandler extends MzXMLScanHandler implements ITopLevelSaxHandler {
     public TopLevelScanHandler( ) {
         super(null);
     }

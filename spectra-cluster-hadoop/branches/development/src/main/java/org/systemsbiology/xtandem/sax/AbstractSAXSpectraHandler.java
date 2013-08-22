@@ -300,7 +300,7 @@ public abstract class AbstractSAXSpectraHandler extends AbstractSaxParser
             addSpectrum(m_specCurrent);
             m_lLoaded++;
             if (m_lLoaded == lLimit) {
-                XTandemUtilities.outputText(".");
+                XMLUtilities.outputText(".");
                 m_lLoaded = 0;
             }
         }

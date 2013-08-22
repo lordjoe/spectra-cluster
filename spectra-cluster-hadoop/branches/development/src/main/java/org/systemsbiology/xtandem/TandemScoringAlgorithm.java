@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem;
 
+import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.testing.*;
@@ -349,7 +351,7 @@ public abstract class TandemScoringAlgorithm extends AbstractScoringAlgorithm {
         double product = computeDotProduce(start, end, counter, theoreticalHolder, measuredHolder,
                 theoreticalPeaks, holder);
         if (false && counter.getNumberMatchedPeaks() > 0)
-            XTandemUtilities.outputLine("dot_product=" + XTandemUtilities.formatDouble(product, 3) +
+            XMLUtilities.outputLine("dot_product=" + XTandemUtilities.formatDouble(product, 3) +
                     " id=" + measured.getId() +
                     " sequence=" + theory.getPeptide().getSequence() +
                     " charge=" + charge +
@@ -411,7 +413,7 @@ public abstract class TandemScoringAlgorithm extends AbstractScoringAlgorithm {
                 product += value;
                 counter.addScore(type, value);
                 if (ScoringUtilities.SHOW_SCORING)
-                    XTandemUtilities.outputLine(
+                    XMLUtilities.outputLine(
                             "matched " + peakMass + "theory " + XTandemUtilities.formatDouble(
                                     theoryPk, 4) +
                                     " measured " + XTandemUtilities.formatDouble(measuredPeak, 4));

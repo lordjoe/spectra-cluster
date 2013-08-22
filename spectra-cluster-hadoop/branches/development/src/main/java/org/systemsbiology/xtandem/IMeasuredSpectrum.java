@@ -1,6 +1,6 @@
 package org.systemsbiology.xtandem;
 
-import org.systemsbiology.xtandem.sax.*;
+import org.systemsbiology.sax.*;
 
 /**
  * org.systemsbiology.xtandem.IMeasuredSpectrum
@@ -32,6 +32,7 @@ public interface IMeasuredSpectrum extends ISpectrum
      * return true if the spectrum is immutable
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isImmutable();
 
     /**

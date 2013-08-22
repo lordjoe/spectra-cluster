@@ -8,6 +8,8 @@ package org.systemsbiology.xtandem;
  */
 
 
+import org.systemsbiology.xml.*;
+
 /**
  * Encodes and decodes to and from Base64 notation.
  * NOTE - we took this off the web  http://iharder.sourceforge.net/base64/
@@ -737,10 +739,10 @@ public static final int FLOAT64_SIZE = 8; // bytes per float 64
                 return 3;
             }
             catch (Exception e) {
-                XTandemUtilities.outputLine("" + source[srcOffset] + ": " + (DECODABET[source[srcOffset]]));
-                XTandemUtilities.outputLine("" + source[srcOffset + 1] + ": " + (DECODABET[source[srcOffset + 1]]));
-                XTandemUtilities.outputLine("" + source[srcOffset + 2] + ": " + (DECODABET[source[srcOffset + 2]]));
-                XTandemUtilities.outputLine("" + source[srcOffset + 3] + ": " + (DECODABET[source[srcOffset + 3]]));
+                XMLUtilities.outputLine("" + source[srcOffset] + ": " + (DECODABET[source[srcOffset]]));
+                XMLUtilities.outputLine("" + source[srcOffset + 1] + ": " + (DECODABET[source[srcOffset + 1]]));
+                XMLUtilities.outputLine("" + source[srcOffset + 2] + ": " + (DECODABET[source[srcOffset + 2]]));
+                XMLUtilities.outputLine("" + source[srcOffset + 3] + ": " + (DECODABET[source[srcOffset + 3]]));
                 return -1;
             }   //e nd catch
         }

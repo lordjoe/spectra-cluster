@@ -1,6 +1,8 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.xml.sax.*;
 
@@ -10,7 +12,7 @@ import org.xml.sax.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class ProteinPositionHandler extends AbstractElementSaxHandler<IProteinPosition> {
+public class ProteinPositionHandler extends AbstractXTandemElementSaxHandler<IProteinPosition> {
     public static ProteinPositionHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = ProteinPositionHandler.class;
 

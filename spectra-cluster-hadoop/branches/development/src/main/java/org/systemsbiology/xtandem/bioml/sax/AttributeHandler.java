@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
 
@@ -8,7 +9,7 @@ import org.xml.sax.*;
  * User: steven
  * Date: 8/22/11
  */
-public class AttributeHandler extends AbstractElementSaxHandler<String> {
+public class AttributeHandler extends AbstractXTandemElementSaxHandler<String> {
     public static final AttributeHandler[] EMPTY_ARRAY = {};
 
     private String m_Type;

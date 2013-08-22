@@ -1,10 +1,10 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
 import org.systemsbiology.xtandem.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.xml.sax.*;
-
-import java.util.*;
 
 /**
  * org.systemsbiology.xtandem.sax.SaxMzXMLHandler
@@ -12,7 +12,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date Dec 23, 2010
  */
-public class MultiScoreHandler extends AbstractElementSaxHandler<MultiScorer> implements IMainDataHolder {
+public class MultiScoreHandler extends AbstractXTandemElementSaxHandler<MultiScorer> implements IMainDataHolder {
     public static MultiScoreHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = MultiScoreHandler.class;
 

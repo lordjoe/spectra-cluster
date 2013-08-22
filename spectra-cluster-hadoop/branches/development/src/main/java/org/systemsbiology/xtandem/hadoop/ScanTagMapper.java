@@ -3,6 +3,7 @@ package org.systemsbiology.xtandem.hadoop;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.util.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -245,15 +246,15 @@ public class ScanTagMapper extends AbstractTandemMapper<Writable> {
         ElapsedTimer elapsed = getElapsed();
         elapsed.showElapsed("Processed " + REPORT_INTERVAL_SCANS + " scans at " + XTandemUtilities.nowTimeString());
         // how much timeis in my code
-        XTandemUtilities.outputLine("Parsing time " + String.format("%7.2f", m_ParsingTime / 1000.0));
-        XTandemUtilities.outputLine("processing time " + String.format("%7.2f", m_CohortProcessingTime / 1000.0));
-        XTandemUtilities.outputLine("writing time " + String.format("%7.2f", m_KeyWriteTime / 1000.0) +
+        XMLUtilities.outputLine("Parsing time " + String.format("%7.2f", m_ParsingTime / 1000.0));
+        XMLUtilities.outputLine("processing time " + String.format("%7.2f", m_CohortProcessingTime / 1000.0));
+        XMLUtilities.outputLine("writing time " + String.format("%7.2f", m_KeyWriteTime / 1000.0) +
                 " for " + m_KeyWriteCount + " writes");
 
         // how much timeis in my code
 
         long freemem = setMinimalFree();
-        XTandemUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
+        XMLUtilities.outputLine("Free Memory " + String.format("%7.2fmb", freemem / 1000000.0) +
                 " minimum " + String.format("%7.2fmb", getMinimumFreeMemory() / 1000000.0));
         elapsed.reset();
 

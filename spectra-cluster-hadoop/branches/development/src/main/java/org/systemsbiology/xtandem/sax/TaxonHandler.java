@@ -1,5 +1,7 @@
 package org.systemsbiology.xtandem.sax;
 
+import org.systemsbiology.sax.*;
+import org.systemsbiology.xtandem.bioml.sax.*;
 import org.xml.sax.*;
 
 import java.util.*;
@@ -11,7 +13,7 @@ import java.util.*;
  * @date Dec 23, 2010
  * reads a fle list from a taxon tax
  */
-public class TaxonHandler extends AbstractElementSaxHandler<String[]> {
+public class TaxonHandler extends AbstractXTandemElementSaxHandler<String[]> {
     public static TaxonHandler[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = TaxonHandler.class;
 

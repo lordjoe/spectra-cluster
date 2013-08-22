@@ -1,6 +1,8 @@
 package org.systemsbiology.xtandem;
 
+
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.reporting.*;
@@ -32,7 +34,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
     public static IStreamOpener[] getPreloadOpeners() {
-        return gPreLoadOpeners.toArray(IStreamOpener.EMPTY_ARRAY);
+        return gPreLoadOpeners.toArray(new IStreamOpener[gPreLoadOpeners.size()]);
     }
 
     public static final int MAX_SCANS = Integer.MAX_VALUE;
@@ -146,7 +148,8 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
     @SuppressWarnings("UnusedDeclaration")
     public String[] getPerformanceKeys() {
-        String[] ret = m_PerformanceParameters.keySet().toArray(new String[0]);
+        Set<String> strings = m_PerformanceParameters.keySet();
+        String[] ret = strings.toArray(new String[strings.size()]);
         Arrays.sort(ret);
         return ret;
     }
@@ -195,7 +198,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public RawPeptideScan[] getRawScans() {
         if (m_RawScans.isEmpty())
             loadSpectra();
-        return m_RawScans.values().toArray(new RawPeptideScan[0]);
+        return m_RawScans.values().toArray(new RawPeptideScan[m_RawScans.size()]);
     }
 
     @Override
@@ -208,7 +211,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         m_Scorings.put(added.getId(), added);
     }
 
-
+      @SuppressWarnings("UnusedDeclaration")
     public void removeScoring(Integer removed) {
         m_Scorings.remove(removed);
     }
@@ -281,6 +284,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
      */
     @Override
     public String getDigestandModificationsString() {
+        //noinspection UnusedDeclaration
         IPeptideDigester digester = getDigester();
 
         //    if(true)
@@ -371,6 +375,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
     protected void addAlternateParameters(final String pParameter) {
         String[] items = pParameter.split(";");
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < items.length; i++) {
             String item = items[i];
             addAlternateParameter(item);
@@ -395,6 +400,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public void addAlgorithm(ITandemScoringAlgorithm added) {
         if (m_Algorithms.size() > 0) {
             ITandemScoringAlgorithm[] existing = getAlgorithms();
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < existing.length; i++) {
                 ITandemScoringAlgorithm present = existing[i];
                 if (added.getClass() == present.getClass())
@@ -422,7 +428,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         if (m_Algorithms.size() == 0) {
             return TandemKScoringAlgorithm.DEFAULT_ALGORITHMS;
         }
-        return m_Algorithms.toArray(ITandemScoringAlgorithm.EMPTY_ARRAY);
+        return m_Algorithms.toArray(new ITandemScoringAlgorithm[m_Algorithms.size()]);
     }
 
 
@@ -447,6 +453,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     protected static File getInputFile(Map<String, String> notes, String key) {
         File ret = new File(notes.get(key));
         if (!ret.exists() || !ret.canRead())
@@ -454,6 +461,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return ret;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected static File getOutputFile(Map<String, String> notes, String key) {
         String athname = notes.get(key);
         File ret = new File(athname);
@@ -481,10 +489,12 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         throw new UnsupportedOperationException("Never get here");
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getTaskFile() {
         return m_TaskFile;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getDefaultParameters() {
         return m_DefaultParameters;
     }
@@ -497,10 +507,12 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return m_SpectrumPath;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getOutputPath() {
         return m_OutputPath;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public String getOutputResults() {
         return m_OutputResults;
     }
@@ -521,6 +533,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return m_SpectrumParameters;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setSpectrumParameters(SpectrumCondition pSpectrumParameters) {
         m_SpectrumParameters = pSpectrumParameters;
     }
@@ -534,9 +547,11 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
 
         m_Runs = new MassSpecRun[pRuns.length];
         System.arraycopy(pRuns, 0, m_Runs, 0, pRuns.length);
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < pRuns.length; i++) {
             MassSpecRun run = pRuns[i];
             RawPeptideScan[] scans = run.getScans();
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < scans.length; j++) {
                 RawPeptideScan scan = scans[j];
                 addRawScan(scan);
@@ -615,6 +630,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         return m_ScoringMods;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public TaxonomyProcessor getProteinHandler() {
         return m_ProteinHandler;
     }
@@ -871,6 +887,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
         ITandemScoringAlgorithm scorer = XTandemUtilities.buildObject(ITandemScoringAlgorithm.class, defaultScoringClass);
         scorer.configure(this); // let the scorer ste its parameters
         addAlgorithm(scorer);
+        //noinspection UnnecessaryReturnStatement
         return;
     }
 
@@ -937,8 +954,6 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
             is = open(path);
             String[] annotationfiles = XTandemUtilities.parseFile(is, taxonHandler, path);
 
-        } else {
-
         }
 
     }
@@ -992,7 +1007,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
                     }
                     paramName = f.getName();
                 } else {
-                    paramName = XTandemUtilities.asLocalFile(m_DefaultParameters);
+                    paramName = XMLUtilities.asLocalFile(m_DefaultParameters);
                     is = open(paramName);
                 }
             }
@@ -1023,7 +1038,7 @@ public class XTandemMain extends AbstractParameterHolder implements IMainData {
     }
 
     public static void usage() {
-        XTandemUtilities.outputLine("Usage - JXTandem <inputfile>");
+        XMLUtilities.outputLine("Usage - JXTandem <inputfile>");
     }
 
     public static void main(String[] args) {
