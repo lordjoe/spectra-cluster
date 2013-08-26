@@ -18,7 +18,7 @@ import java.util.*;
  */
 @Deprecated
 @SuppressWarnings({"Deprecated", "deprecation", "UnusedDeclaration"})
-public class FrankEtAlConsensusSpectrumBuilderOriginal implements ConsensusSpectrumBuilder {
+public class FrankEtAlConsensusSpectrumBuilderOriginal implements DeprecatedConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 
     public static final int SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS = 5;
