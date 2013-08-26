@@ -17,7 +17,7 @@ import java.util.*;
  */
 @Deprecated
 @SuppressWarnings({"Deprecated", "deprecation", "UnusedDeclaration"})
-public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuilder {
+public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpectrumBuilder {
     public static final String VERSION = "1.0";
 
     public static final int SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS = 5;
@@ -137,6 +137,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
         filteredSpectrum = intensityNormalizer.normalizePeaks(filteredSpectrum);
 
         // create consensus spectrum
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         PeptideSpectrumMatch consensusSpectrum = createConsensusSpectrum(spectra, filteredSpectrum);
 
         return consensusSpectrum;
@@ -366,6 +367,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements ConsensusSpectrumBuild
 
         final FrankEtAlConsensusSpectrumBuilder that = (FrankEtAlConsensusSpectrumBuilder) o;
 
+        //noinspection SimplifiableIfStatement,PointlessBooleanExpression,ConstantConditions,RedundantIfStatement
         if (intensityNormalizer != null ? !intensityNormalizer.equals(that.intensityNormalizer) : that.intensityNormalizer != null)
             return false;
 
