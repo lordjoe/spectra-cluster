@@ -1,7 +1,6 @@
 package org.systemsbiology.xtandem.bioml.sax;
 
 import org.systemsbiology.sax.*;
-import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.xml.sax.*;
@@ -46,6 +45,7 @@ public abstract class AbstractXTandemElementSaxHandler<T> extends AbstractElemen
      {
          boolean  forgiven = false;
          if(m_Notes.containsKey(key) ) {
+             //noinspection ForLoopReplaceableByForEach
              for (int i = 0; i < FORGIVEN_DUPLICATES_FROM_DEFAULT_ISB.length; i++) {
                  String test = FORGIVEN_DUPLICATES_FROM_DEFAULT_ISB[i];
                  if(test.equals(key)) {
