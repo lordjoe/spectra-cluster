@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem;
 
 
+import com.lordjoe.utilities.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -23,6 +24,8 @@ import java.util.*;
  * Singleton representing a JXTandem job -
  * This has the program main
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "WhileLoopReplaceableByForEach", "PointlessBooleanExpression", "SuspiciousMethodCalls", "MismatchedReadAndWriteOfArray", "unchecked", "UnnecessaryReturnStatement"})
 public class XTandemMain extends AbstractParameterHolder implements IMainData {
     public static final IMainData[] EMPTY_ARRAY = {};
 

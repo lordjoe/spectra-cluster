@@ -18,10 +18,7 @@ import java.lang.reflect.*;
 import java.text.*;
 import java.util.*;
 import java.util.zip.*;
-
-//import org.systemsbiology.xtandem.taxonomy.*;
-//import org.springframework.jdbc.core.simple.*;
-
+ 
 
 /**
  * org.systemsbiology.xtandem.XTandemUtilities
@@ -29,9 +26,12 @@ import java.util.zip.*;
  * @author Steve Lewis
  * @date Dec 29, 2010
  */
+
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "WhileLoopReplaceableByForEach", "PointlessBooleanExpression", "SuspiciousMethodCalls", "MismatchedReadAndWriteOfArray", "unchecked", "UnnecessaryReturnStatement", "deprecation", "RedundantIfStatement", "MismatchedQueryAndUpdateOfStringBuilder"})
 public class XTandemUtilities {
     public static XTandemUtilities[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = XTandemUtilities.class;
+    public static Class<XTandemUtilities> THIS_CLASS = XTandemUtilities.class;
 
     public static final String WRITING_PEPXML_PROPERTY = "org.systemsbiology.xtandem.hadoop.WritePepXML";
     public static final String WRITING_MGF_PROPERTY = "org.systemsbiology.xtandem.hadoop.WriteMGFSpectraWithHyperscoreGreaterThan";
@@ -129,6 +129,7 @@ public class XTandemUtilities {
         return null; // not found
     }
 
+    @SuppressWarnings("FinalStaticMethod")
     protected static final void rerunComparisons(PeptideModification modification, Set<PeptideModification> pModifications) {
         for (PeptideModification mod : pModifications) {
             if (modification.equals(mod))
@@ -312,7 +313,7 @@ public class XTandemUtilities {
     }
 
     public static boolean hasMissedCleavages(IPolypeptide pp, int missed) {
-        return hasMissedCleavages(pp, missed);
+        return hasMissedCleavages(pp.toString(), missed);
     }
 
     public static boolean hasMissedCleavages(String pp, int missed) {
@@ -958,7 +959,7 @@ public class XTandemUtilities {
         float[] ret = new float[size];
 
         for (int i = 0; i < size; i++) {
-            ret[i] = Base64.bytesToFloat(decoded, i * FLOAT_SIZE);
+            ret[i] = Base64Float.bytesToFloat(decoded, i * FLOAT_SIZE);
         }
         return ret;
     }
@@ -970,9 +971,10 @@ public class XTandemUtilities {
         List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
 
         for (int i = 0; i < decoded.length; i += (2 * FLOAT_SIZE)) {
-            float mass = Base64.bytesToFloat(decoded, i);
+            float mass = Base64Float.bytesToFloat(decoded, i);
+             //noinspection UnnecessaryLocalVariable
             float mass4 = 4 * mass;
-            float peak = Base64.bytesToFloat(decoded, i + FLOAT_SIZE);
+            float peak = Base64Float.bytesToFloat(decoded, i + FLOAT_SIZE);
             holder.add(new SpectrumPeak(mass, peak));
 
         }
@@ -987,17 +989,17 @@ public class XTandemUtilities {
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
             data[2 * i] = (float) peak.getMassChargeRatio();
-            data[2 * i + 1] = (float) peak.getPeak();
+            data[2 * i + 1] = peak.getPeak();
         }
         byte[] bytes = new byte[peaks.length * 2 * FLOAT_SIZE];
         int index = 0;
         for (int i = 0; i < data.length; i++) {
             float v = data[i];
-            Base64.floatToBytes(v, bytes, index);
+            Base64Float.floatToBytes(v, bytes, index);
             index += FLOAT_SIZE;
 
         }
-        String s = Base64.encodeBytesAsString(bytes);
+        String s = Base64Float.encodeBytesAsString(bytes);
         s = XTandemHadoopUtilities.cleanXML(s); // we find bad characters i.e 0
         return s;
     }
@@ -1012,59 +1014,64 @@ public class XTandemUtilities {
         }
         byte[] bytes = new byte[peaks.length * 2 * FLOAT64_SIZE];
         int index = 0;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < data.length; i++) {
             double v = data[i];
-            Base64.float64ToBytes(v, bytes, index);
+            Base64Float.float64ToBytes(v, bytes, index);
             index += FLOAT64_SIZE;
 
         }
-        String s = Base64.encodeBytesAsString(bytes);
+        String s = Base64Float.encodeBytesAsString(bytes);
         s = XTandemHadoopUtilities.cleanXML(s); // we find bad characters i.e 0
         return s;
     }
 
-
+    @SuppressWarnings("UnusedDeclaration")
     public static String encodeData64(int[] data) {
         byte[] bytes = new byte[data.length * INTEGER_SIZE];
         int index = 0;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < data.length; i++) {
             int v = data[i];
-            Base64.floatToBytes(v, bytes, index);
+            Base64Float.floatToBytes(v, bytes, index);
             index += INTEGER_SIZE;
 
         }
-        final String s = Base64.encodeBytesAsString(bytes);
+        final String s = Base64Float.encodeBytesAsString(bytes);
         return s;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static String encodeData64(float[] data) {
         byte[] bytes = new byte[data.length * FLOAT_SIZE];
         int index = 0;
         for (int i = 0; i < data.length; i++) {
             float v = data[i];
-            Base64.floatToBytes(v, bytes, index);
+            Base64Float.floatToBytes(v, bytes, index);
             index += FLOAT_SIZE;
 
         }
-        final String s = Base64.encodeBytesAsString(bytes);
+        final String s = Base64Float.encodeBytesAsString(bytes);
         return s;
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static String encodeData64(double[] data) {
         byte[] bytes = new byte[data.length * FLOAT64_SIZE];
         int index = 0;
         for (int i = 0; i < data.length; i++) {
             double v = data[i];
-            Base64.float64ToBytes(v, bytes, index);
+            Base64Float.float64ToBytes(v, bytes, index);
             index += FLOAT64_SIZE;
 
         }
-        final String s = Base64.encodeBytesAsString(bytes);
+        final String s = Base64Float.encodeBytesAsString(bytes);
         return s;
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static double[] convertToValueType(Double[] inp) {
         double[] ret = new double[inp.length];
         for (int i = 0; i < inp.length; i++) {
@@ -1075,6 +1082,7 @@ public class XTandemUtilities {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static int[] convertToValueType(Integer[] inp) {
         int[] ret = new int[inp.length];
         for (int i = 0; i < inp.length; i++) {
@@ -1123,7 +1131,7 @@ public class XTandemUtilities {
             try {
                 is.close();
             }
-            catch (IOException e) {
+            catch (IOException ignored) {
 
             }
         }
@@ -1147,7 +1155,7 @@ public class XTandemUtilities {
 
         }
         else {
-            final BiomlHandler<T> bh = new BiomlHandler(handler, handler1, url);
+            final BiomlHandler<T> bh = new BiomlHandler<T>(handler, handler1, url);
             handler.pushCurrentHandler(bh);
             handler.parseDocument(is);
 
@@ -1185,6 +1193,7 @@ public class XTandemUtilities {
     }
 
     public static void showDroppedPeak(ISpectrumPeak pk) {
+        //noinspection ConstantIfStatement
         if (true)
             return;
         if (Math.abs(pk.getMassChargeRatio() - 656) < 2)
@@ -1209,7 +1218,7 @@ public class XTandemUtilities {
         handler.parseDocument(is);
 
         if (handler1 instanceof AbstractXTandemElementSaxHandler) {
-            AbstractXTandemElementSaxHandler handlerx = (AbstractXTandemElementSaxHandler) handler1;
+            AbstractXTandemElementSaxHandler<AbstractXTandemElementSaxHandler> handlerx = handler1;
             Map<String, String> notes = handlerx.getNotes();
           return notes;
 
@@ -1763,8 +1772,8 @@ public class XTandemUtilities {
         List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
 
         for (int i = 0; i < decoded.length; i += (FLOAT64_SIZE + FLOAT64_SIZE)) {
-            double mass = Base64.bytesToFloat64(decoded, i);
-            float peak = (float) Base64.bytesToFloat64(decoded, i + FLOAT64_SIZE);
+            double mass = Base64Float.bytesToFloat64(decoded, i);
+            float peak = (float) Base64Float.bytesToFloat64(decoded, i + FLOAT64_SIZE);
             holder.add(new SpectrumPeak(mass, peak));
 
         }
@@ -1817,8 +1826,8 @@ public class XTandemUtilities {
      */
     public static <T> T buildObject(Class<? extends T> cls, String className) {
         try {
-            Class target = Class.forName(className);
-            T ret = (T) target.newInstance();
+            Class<T> target = ( Class<T> )Class.forName(className);
+            T ret = target.newInstance();
             return ret;
         }
         catch (ClassNotFoundException e) {
@@ -2050,7 +2059,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
      * @param <T> same as cls
      * @return !null array
      */
-    public static <T> T[] getSortedValues(Map<? extends Object, T> map, Class<T> cls) {
+    public static <T> T[] getSortedValues(Map<?, T> map, Class<T> cls) {
         Object[] keys = map.keySet().toArray();
         Arrays.sort(keys);
         List<T> holder = new ArrayList<T>();
@@ -2103,12 +2112,14 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         }
         String path = inFile.getPath();
         File tmpFile = new File(path + ".tmp");
+        //noinspection ResultOfMethodCallIgnored
         tmpFile.delete(); // we need to make sure this is not there so we can rename
         if (!inFile.renameTo(tmpFile))
             throw new IllegalStateException("cannot make temp file from " + path);
 
         File outFile = new File(path);
         fixScanTags(tmpFile, outFile);
+        //noinspection ResultOfMethodCallIgnored
         tmpFile.delete();
     }
 
@@ -2349,7 +2360,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
      * @return !null    XTandemScoringReport
      */
     public static XTandemScoringReport readScanScoring(String resource) {
-        ScansReportHandler handler = new ScansReportHandler((DelegatingSaxHandler) null);
+        ScansReportHandler handler = new ScansReportHandler(null);
         InputStream is = XTandemUtilities.getDescribedStream(resource);
         String name = resource.replace("res://", "");
         XMLUtilities.parseFile(is, handler, name);
@@ -2365,7 +2376,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
      * @return !null    XTandemScoringReport
      */
     public static XTandemScoringReport readXTandemFile(String resource) {
-        BiomlSaxHandler handler = new BiomlSaxHandler((DelegatingSaxHandler) null);
+        BiomlSaxHandler handler = new BiomlSaxHandler(null);
         InputStream is = XTandemUtilities.getDescribedStream(resource);
         String name = resource.replace("res://", "");
         XMLUtilities.parseFile(is, handler, name);
@@ -2384,7 +2395,7 @@ use contrast angle - controls the use of contrast angle duplicate spectrum delet
         if (b == -1) return b;
 
         if (b == 1 || b == 2) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int c;
             do {
                 c = in.read();

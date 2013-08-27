@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
@@ -11,6 +13,28 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 public class SpectraHadoopUtilities {
 
     public static final int MIMIMUM_CLUSTER_LENGTH = 5 * "BEGIN IONS\n".length();
+
+    public static final double NARRROW_BIN_WIDTH = 0.005; // 0.3;
+    public static final double  NARRROW_BIN_OVERLAP = 0.002; // 0.1;
+
+
+    public static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
+            IPeak.HIGHEST_USABLE_MZ,
+            IPeak.LOWEST_USABLE_MZ,
+            NARRROW_BIN_WIDTH,
+            NARRROW_BIN_OVERLAP);
+
+
+
+    public static final double WIDE_BIN_WIDTH = 1.0;
+    public static final double  WIDE_BIN_OVERLAP = 0.3;
+
+     @SuppressWarnings("UnusedDeclaration")
+    public static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
+            IPeak.HIGHEST_USABLE_MZ,
+            IPeak.LOWEST_USABLE_MZ,
+            WIDE_BIN_WIDTH,
+            WIDE_BIN_OVERLAP);
 
     /**
      * convert am int into an mz for easy comparison

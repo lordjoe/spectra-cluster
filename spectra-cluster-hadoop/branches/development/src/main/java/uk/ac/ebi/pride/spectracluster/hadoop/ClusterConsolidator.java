@@ -142,7 +142,6 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             conf.set("mapreduce.reduce.speculative","false");
             conf.set("mapreduce.reduce.speculative","false");
 
-            job.setNumReduceTasks(1);  // this is important
 
             // We always do this
             job.setMapOutputKeyClass(Text.class);
@@ -154,6 +153,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
             XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            job.setNumReduceTasks(1);  // this is important
 
 
             if (otherArgs.length > 1) {

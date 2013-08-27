@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.reporting;
 
+import com.lordjoe.utilities.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
@@ -19,10 +20,13 @@ import java.util.*;
  * Class responsible for writing a report -
  * similar responsibilities to mreport in the C++ version
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "WhileLoopReplaceableByForEach", "PointlessBooleanExpression"})
 public class BiomlReporter {
     public static BiomlReporter[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = BiomlReporter.class;
 
+    @SuppressWarnings("UnusedDeclaration")
     public static final String[] PERFORMANCE_PARAMETER_KEYS =
             {
                     "list path, sequence source #1",   //yeast_orfs_pruned.fasta</note>
@@ -75,6 +79,7 @@ public class BiomlReporter {
 
       //  System.err.println("No File name forced building file name");
         if ("yes".equals(pParameters.getParameter("output, path hashing"))) {
+            //noinspection ConstantConditions
             final int index = name.lastIndexOf(".");
             String extension = name.substring(index);
             String dataHash = getDateHash();
@@ -86,6 +91,7 @@ public class BiomlReporter {
     // make sure that the output date is hashed only once
     private static String gDateHash;
 
+    @SuppressWarnings("UnusedDeclaration")
     public static synchronized void clearDateHash() {
         gDateHash = null;
     }
@@ -137,6 +143,7 @@ public class BiomlReporter {
     private int m_NumberProteins;
     private int m_NumberPeptidess;
 
+    @SuppressWarnings("UnusedDeclaration")
     private String m_OutputResultsType; // todo should this be an enum
     private final IScoredScan[] m_Scans;
 
@@ -217,6 +224,7 @@ public class BiomlReporter {
      *
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isDataShown() {
         return isSpectraShown() || isHistogramsShown() || isSequencesShown();
     }
@@ -225,14 +233,17 @@ public class BiomlReporter {
         return m_ParametersShown;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isCompressed() {
         return m_Compressed;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public double getMaxValidExpectedValue() {
         return m_MaxValidExpectedValue;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public double getMaxExpectedProteinValue() {
         return m_MaxExpectedProteinValue;
     }
@@ -657,6 +668,7 @@ public class BiomlReporter {
         indent(out, indent);
         out.print("<note ");
         out.print("label=\"Description\">" + text);
+        //noinspection StatementWithEmptyBody
         if (onTwoLines) {
             out.println();
             indent(out, indent);
@@ -676,7 +688,7 @@ public class BiomlReporter {
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
             double mass = peak.getMassChargeRatio();
-            Base64.float64ToBytes(mass, ret, index);
+            Base64Float.float64ToBytes(mass, ret, index);
             index += chunkSize;
         }
 
@@ -691,13 +703,14 @@ public class BiomlReporter {
         for (int i = 0; i < peaks.length; i++) {
             ISpectrumPeak peak = peaks[i];
             float intensity = peak.getPeak();
-            Base64.floatToBytes(intensity, ret, index);
+            Base64Float.floatToBytes(intensity, ret, index);
             index += chunkSize;
         }
 
         return ret;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected void writeSupportingData(PrintWriter out, int indent, int id, double hyperA0,
                                        double hyperA1) {
         indent(out, indent);
@@ -924,6 +937,7 @@ public class BiomlReporter {
         indent(pOut, indent);
         pOut.println("<group label=\"performance parameters\" type=\"parameters\">");
 
+        //noinspection ForLoopReplaceableByForEach
         for (int j = 0; j < params.length; j++) {
             String param = params[j];
             writePerformanceParameter(param, pOut, indent + 1);
@@ -949,6 +963,7 @@ public class BiomlReporter {
         indent(pOut, indent);
         pOut.println("<group label=\"unused input parameters\" type=\"parameters\">");
 
+        //noinspection ForLoopReplaceableByForEach
         for (int j = 0; j < params.length; j++) {
             String param = params[j];
             writeParameter(param, pOut, indent + 1);
@@ -980,6 +995,7 @@ public class BiomlReporter {
         indent(pOut, indent);
         pOut.println("<group label=\"input parameters\" type=\"parameters\">");
 
+        //noinspection ForLoopReplaceableByForEach
         for (int j = 0; j < params.length; j++) {
             String param = params[j];
             if (unused.contains(param))

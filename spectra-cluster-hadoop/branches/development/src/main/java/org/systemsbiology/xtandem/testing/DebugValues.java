@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.reporting.*;
@@ -33,6 +34,7 @@ public class DebugValues
         return m_Params;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean loadDebugValues()
     {
         InputStream degugFile = BiomlReporter.buildDebugFileStream(m_Params);
@@ -153,23 +155,28 @@ public class DebugValues
 
         XTandemMain params = getParams();
         int realId = Integer.parseInt(id);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         int defaultCharge = 1;
         if (realId > 100000000) {
             realId -= 100000000;
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             defaultCharge = 2;
             id = Integer.toString(realId);
         }
         if (realId < -100000000) {
             realId += 100000000;
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             defaultCharge = 3;
             id = Integer.toString(realId);
         }
 
         RawPeptideScan rawScan = params.getRawScan(id);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         int precursorCharge = rawScan.getPrecursorCharge();
 
         DebugDotProduct dp =  getDebugDotProduct(id, type, charge, params.seqenceToID(sequence));
 
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String nowLine = dp.readDotProduceEntries(pReader, pLine);
 
         // handle scores
@@ -196,11 +203,14 @@ public class DebugValues
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public Map<String, IMeasuredSpectrum> getMeasuredSpectrumMap(Integer key)
     {
+        //noinspection SuspiciousMethodCalls
         return m_MeasuredSpectrums.get(key);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public IMeasuredSpectrum getMeasuredSpectrum(String key, String type)
     {
         Map<String, IMeasuredSpectrum> themap = m_MeasuredSpectrums.get(key);
@@ -221,11 +231,13 @@ public class DebugValues
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public Map<String, ITheoreticalSpectrum> getTheoreticalSpectrumMap(String key)
     {
         return m_TheoreticalSpectrums.get(key);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public ITheoreticalSpectrum getTheoreticalSpectrum(String key, String type)
     {
         Map<String, ITheoreticalSpectrum> themap = m_TheoreticalSpectrums.get(key);
@@ -234,11 +246,11 @@ public class DebugValues
         return themap.get(type);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static String readMeasuredSpectrum(MutableMeasuredSpectrum ret, LineNumberReader reader,
                                               String currentLine)
     {
         try {
-            ISpectralScan scan = null;
 
             List<ISpectrumPeak> holder = new ArrayList<ISpectrumPeak>();
 
@@ -293,6 +305,7 @@ public class DebugValues
             throw new IllegalStateException("problem"); // ToDo change
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void addDebugDotProduct(IMeasuredSpectrum ms, ITheoreticalSpectrum sp,
                                    DebugDotProduct added)
     {
@@ -323,6 +336,7 @@ public class DebugValues
     public static String buildKeyString(final String pScanId, IonType type,int charge)
     {
 
+        //noinspection UnnecessaryLocalVariable
         final String key = pScanId  + ":" + type + ":" + charge;
         return key;
     }
@@ -338,6 +352,7 @@ public class DebugValues
         return m_DotProductMap.get(key);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public DebugDotProduct getDebugDotProduct(String key)
     {
         return m_DotProductMap.get(key);
@@ -352,6 +367,7 @@ public class DebugValues
     {
         DebugDotProduct[] dps = getDebugDotProducts();
         List<DebugDotProduct> holder = new ArrayList<DebugDotProduct>();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < dps.length; i++) {
             DebugDotProduct dp = dps[i];
             if (dp.getScanId().equals(id))

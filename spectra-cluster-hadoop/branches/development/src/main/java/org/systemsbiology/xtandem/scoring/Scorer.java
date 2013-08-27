@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.scoring;
 
+import com.lordjoe.utilities.*;
 import org.systemsbiology.common.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
@@ -17,6 +18,8 @@ import java.util.concurrent.*;
  * @author Steve Lewis
  * @date Jan 11, 2011
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal"})
 public class Scorer {
     public static Scorer[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = Scorer.class;
@@ -230,7 +233,8 @@ public class Scorer {
      */
     public synchronized IPolypeptide[] getPeptides() {
         if (m_CachedPeptides == null) {
-            IPolypeptide[] iPolypeptides = m_Peptides.values().toArray(IPolypeptide.EMPTY_ARRAY);
+            Collection<IPolypeptide> values = m_Peptides.values();
+            IPolypeptide[] iPolypeptides = values.toArray(new IPolypeptide[values.size()]);
             Arrays.sort(iPolypeptides);
             m_CachedPeptides = iPolypeptides;
         }
@@ -646,7 +650,8 @@ public class Scorer {
         double hyperscore = pSa.buildHyperscoreScore(score, pScan, pTsSet, pCounter);
         final IonUseScore useScore = new IonUseScore(pCounter);
 
-        ITheoreticalIonsScoring[] ionMatches = ScoringIons.values().toArray(ITheoreticalIonsScoring.EMPTY_ARRAY);
+        Collection<ITheoreticalIonsScoring> values = ScoringIons.values();
+        ITheoreticalIonsScoring[] ionMatches = values.toArray(new ITheoreticalIonsScoring[values.size()]);
         IExtendedSpectralMatch match = new ExtendedSpectralMatch(pTsSet.getPeptide(), pScan, score, hyperscore, oldscore,
                 useScore, pTsSet, ionMatches);
 
@@ -793,7 +798,8 @@ public class Scorer {
 
         final IonUseScore useScore = new IonUseScore(pCounter);
 
-        ITheoreticalIonsScoring[] ionMatches = ScoringIons.values().toArray(ITheoreticalIonsScoring.EMPTY_ARRAY);
+        Collection<ITheoreticalIonsScoring> values = ScoringIons.values();
+        ITheoreticalIonsScoring[] ionMatches = values.toArray(new ITheoreticalIonsScoring[values.size()]);
         IExtendedSpectralMatch match = new ExtendedSpectralMatch(pTsSet.getPeptide(), pScan, score, hyperscore, oldscore,
                 useScore, pTsSet, ionMatches);
 
@@ -1020,7 +1026,8 @@ public class Scorer {
             double hyperscore = sa.buildHyperscoreScore(score, scan, tsSet, pCounter);
             final IonUseScore useScore = new IonUseScore(pCounter);
 
-            ITheoreticalIonsScoring[] ionMatches = ScoringIons.values().toArray(ITheoreticalIonsScoring.EMPTY_ARRAY);
+            Collection<ITheoreticalIonsScoring> values = ScoringIons.values();
+            ITheoreticalIonsScoring[] ionMatches = values.toArray(new ITheoreticalIonsScoring[values.size()]);
             IExtendedSpectralMatch match = new ExtendedSpectralMatch(tsSet.getPeptide(), scan, score, hyperscore, oldscore,
                     useScore, tsSet, ionMatches);
 
@@ -1166,7 +1173,8 @@ public class Scorer {
 
 
     public ITheoreticalSpectrumSet[] getAllSpectra() {
-        return m_Spectrum.values().toArray(new ITheoreticalSpectrumSet[0]);
+        Collection<ITheoreticalSpectrumSet> values = m_Spectrum.values();
+        return values.toArray(new ITheoreticalSpectrumSet[values.size()]);
     }
 
 
@@ -1218,14 +1226,11 @@ public class Scorer {
         for (IProtein p : getProteins()) {
             final IPolypeptide[] polypeptides = digester.digest(p);
             // show all fragments
-            if (false) {
-                XMLUtilities.outputLine("// from protein \"" + p.getSequence() + "\",");
-            }
-            for (int i = 0; i < polypeptides.length; i++) {
-                IPolypeptide pp = polypeptides[i];
-                if (false) {
-                    XMLUtilities.outputLine("\"" + pp.getSequence() + "\",");
-                }
+      //             XMLUtilities.outputLine("// from protein \"" + p.getSequence() + "\",");
+              for (int i = 0; i < polypeptides.length; i++) {
+                    IPolypeptide pp = polypeptides[i];
+               // XMLUtilities.outputLine("\"" + pp.getSequence() + "\",");
+
                 addPeptide(pp);
 
             }

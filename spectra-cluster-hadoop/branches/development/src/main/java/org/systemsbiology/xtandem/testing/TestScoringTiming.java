@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.xtandem.*;
@@ -17,6 +18,7 @@ import java.util.*;
  * User: steven
  * Date: 12/1/11
  */
+@SuppressWarnings("ThrowFromFinallyBlock")
 public class TestScoringTiming {
     public static final TestScoringTiming[] EMPTY_ARRAY = {};
 
@@ -30,6 +32,7 @@ public class TestScoringTiming {
     public static Set<Integer> SAVED_MASS_SET = new HashSet<Integer>();
 
     static {
+        //noinspection ForLoopReplaceableByForEachq,ForLoopReplaceableByForEach
         for (int i = 0; i < SAVED_MASSES.length; i++) {
             SAVED_MASS_SET.add(SAVED_MASSES[i]);
 
@@ -74,6 +77,7 @@ public class TestScoringTiming {
         IPolypeptide pp = Polypeptide.fromString("AVLEFTPETPSPLIGILENK[8.014]");
         double matchingMass = pp.getMatchingMass();
         testMassRead(main, configuration,(int)matchingMass);
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < SAVED_MASSES.length; i++) {
             testMassRead(main, configuration, SAVED_MASSES[i]);
 
@@ -85,6 +89,7 @@ public class TestScoringTiming {
         SequenceFile.Reader rdr = XTandemHadoopUtilities.buildScanStoreReader(configuration, mass);
         try {
             HadoopTandemMain application = main.getApplication();
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             String dir = application.getDatabaseName();
             HadoopFileTaxonomy ftax = new HadoopFileTaxonomy(application, "foo", configuration);
             main.loadTaxonomy();
@@ -106,6 +111,7 @@ public class TestScoringTiming {
              while (scan != null) {
                  ElapsedTimer scanTine = new ElapsedTimer();
                 RawPeptideScan rscan = XTandemHadoopUtilities.readScan(scan,null);
+                 //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                  IScoredScan iScoredScan = handleScan(rscan, scorer);
                  scan = XTandemHadoopUtilities.readNextScan(rdr);
                 scanTine.showElapsed("Handled scan " + rscan.getId());
@@ -128,6 +134,7 @@ public class TestScoringTiming {
          IScoredScan scoring = new OriginatingScoredScan(scan);
         IonUseCounter counter = new IonUseCounter();
         final ITheoreticalSpectrumSet[] tss = scorer.getAllSpectra();
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         int numberDotProducts = scorer.scoreScan(counter, tss, scoring);
         return scoring;
     }

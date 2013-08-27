@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
@@ -16,9 +17,10 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
     private double majorMZ;
     private int currentCharge;
+    private int currentBin;
+    private IWideBinner binner = SpectraHadoopUtilities.NARROW_MZ_BINNER; // todo stop hard coding
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
-
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -34,16 +36,26 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         return engine;
     }
 
+    public int getCurrentBin() {
+        return currentBin;
+    }
+
+    public IWideBinner getBinner() {
+        return binner;
+    }
+
     @Override
     public void reduceNormal(Text key, Iterable<Text> values,
-                       Context context) throws IOException, InterruptedException {
+                             Context context) throws IOException, InterruptedException {
 
         String keyStr = key.toString();
         //    System.err.println(keyStr);
-        ChargeMZKey mzKey = new ChargeMZKey(keyStr);
+        ChargeBinMZKey mzKey = new ChargeBinMZKey(keyStr);
 
         // we only need to change engines for different charges
-        if (mzKey.getCharge() != getCurrentCharge() || engine == null) {
+        if (mzKey.getCharge() != getCurrentCharge() ||
+                mzKey.getBin() != getCurrentBin() ||
+                engine == null) {
             updateEngine(context, mzKey);
         }
 
@@ -108,7 +120,14 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     protected void writeOneCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
+
+        IWideBinner binner1 = getBinner();
+        float precursorMz = cluster.getPrecursorMz();
+        int bin = binner1.asBin(precursorMz);
+        // you can merge clusters outside the current bin but not write them
+        if(bin != currentBin)
+            return;
+        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
         final Text onlyKey = getOnlyKey();
         onlyKey.set(key.toString());
@@ -131,7 +150,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
      * @param context !null context
      * @param pMzKey  !null unless done
      */
-    protected void updateEngine(final Context context, final ChargeMZKey pMzKey) throws IOException, InterruptedException {
+    protected void updateEngine(final Context context, final ChargeBinMZKey pMzKey) throws IOException, InterruptedException {
         if (engine != null) {
             final List<ISpectralCluster> clusters = engine.getClusters();
             writeClusters(context, clusters);
@@ -141,6 +160,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         if (pMzKey != null) {
             engine = factory.getIncrementalClusteringEngine();
             majorMZ = pMzKey.getPrecursorMZ();
+            currentBin = pMzKey.getBin();
             currentCharge = pMzKey.getCharge();
         }
     }

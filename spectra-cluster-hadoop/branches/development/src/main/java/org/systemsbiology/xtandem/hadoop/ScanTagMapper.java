@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.hadoop;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.util.*;
@@ -7,8 +8,6 @@ import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
 import org.systemsbiology.xtandem.scoring.*;
-import org.systemsbiology.xtandem.testing.*;
-import org.apache.hadoop.util.VersionInfo;
 
 import java.io.*;
 import java.util.*;
@@ -18,6 +17,8 @@ import java.util.*;
  * User: steven
  * Date: 3/7/11
  */
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions"})
+
 public class ScanTagMapper extends AbstractTandemMapper<Writable> {
     public static final ScanTagMapper[] EMPTY_ARRAY = {};
 
@@ -147,26 +148,19 @@ public class ScanTagMapper extends AbstractTandemMapper<Writable> {
             extension = realName.substring(fileName.lastIndexOf("."));
         }
 
-        RawPeptideScan scan = null;
-//        if (".mzml".equalsIgnoreCase(extension)) {
-//            //   RawPeptideScan scan2 = MzMLReader.scanFromFragment(text);
-//            scan = XTandemHadoopUtilities.readSpectrum(textv);
-//            //      if (!scan2.equivalent(scan))
-//            //         throw new IllegalStateException("problem"); // ToDo change
-//        }
-        if (".mgf".equalsIgnoreCase(extension)) {
+        RawPeptideScan scan;
+         if (".mgf".equalsIgnoreCase(extension)) {
             //   RawPeptideScan scan2 = MzMLReader.scanFromFragment(text);
             scan = XTandemHadoopUtilities.readMGFText(textv);
-            //      if (!scan2.equivalent(scan))
-            //         throw new IllegalStateException("problem"); // ToDo change
-        }
+          }
         else {
             scan = XTandemHadoopUtilities.readScan(textv,fileName);
             if(!textv.contains("url=\"") && fileName != null)
                 textv = textv.replace("msLevel=\"", " url=\"" + fileName  + "\" " +    "msLevel=\"");
         }
-        if (scan == null)
+        if (scan == null) {
             return; // todo or is an exception proper
+        }
 
 
         String id = scan.getId();

@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.hadoop;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
@@ -8,7 +9,6 @@ import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * org.systemsbiology.xtandem.hadoop.AbstractTandemReducer
@@ -27,6 +27,7 @@ public abstract class AbstractTandemReducer extends Reducer<Text, Text, Text, Te
     private final ElapsedTimer m_Elapsed = new ElapsedTimer();
     private Context m_Context;
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isAllSpecialKeysHandled() {
         return m_AllSpecialKeysHandled;
     }
@@ -132,6 +133,7 @@ public abstract class AbstractTandemReducer extends Reducer<Text, Text, Text, Te
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     protected boolean isKeySpecial(String s) {
         return s.startsWith("#");
     }
@@ -162,8 +164,9 @@ public abstract class AbstractTandemReducer extends Reducer<Text, Text, Text, Te
     protected abstract void reduceNormal(Text key, Iterable<Text> values,
                                          Context context) throws IOException, InterruptedException;
 
+    @SuppressWarnings("UnusedDeclaration")
     protected void reduceSpecial(Text key, Iterable<Text> values,
-                                 Context context) throws IOException, InterruptedException {
+                                 @SuppressWarnings("UnusedParameters") Context context) throws IOException, InterruptedException {
         // Handle special early keys
     }
 }
