@@ -182,12 +182,13 @@ public class OuterMzXMLScanHandler extends AbstractXTandemElementSaxHandler<RawP
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public void removeEmbeddedScan(RawPeptideScan removed) {
         m_EmbeddedScan.remove(removed);
     }
 
     public RawPeptideScan[] getEmbeddedScans() {
-        return m_EmbeddedScan.toArray(new RawPeptideScan[0]);
+        return m_EmbeddedScan.toArray(new RawPeptideScan[m_EmbeddedScan.size()]);
     }
 
     @Override
@@ -225,6 +226,7 @@ public class OuterMzXMLScanHandler extends AbstractXTandemElementSaxHandler<RawP
 
         setInstrumentId(attr.getValue("msInstrumentID")); // msInstrumentID="IC1">
 
+        //noinspection UnnecessaryReturnStatement
         return;
     }
 

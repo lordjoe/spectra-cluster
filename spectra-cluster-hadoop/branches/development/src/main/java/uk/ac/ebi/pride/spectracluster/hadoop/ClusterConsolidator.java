@@ -11,7 +11,6 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
-import org.systemsbiology.xtandem.hadoop.HDFSStreamOpener;
 
 
 import java.io.*;
