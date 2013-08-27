@@ -24,6 +24,9 @@ import java.util.prefs.*;
  */
 public class ClusterLauncher implements IStreamOpener { //extends AbstractParameterHolder implements IParameterHolder {
 
+    // for development you can skip the fiirst jobs ot work on issues in the second
+    public static final int START_AT_JOB = 0; // 1;
+
     // files larger than this are NEVER copied from the remote cluster
     public static final int MAX_DATA_TO_COPY = 1 * 1024 * 1024 * 1024;
 
@@ -39,7 +42,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
 
     public static final int MAX_DISPLAY_LENGTH = 4 * 1000 * 1000;
-    public static final int NUMBER_STAGES = 3;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    public static final int NUMBER_STAGES = 3 - START_AT_JOB;
 
     private static HadoopMajorVersion g_RunningHadoopVersion = HadoopMajorVersion.CURRENT_VERSION;
 
@@ -114,7 +118,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     private final DelegatingFileStreamOpener m_Openers = new DelegatingFileStreamOpener();
     private int m_PassNumber;
-      private boolean m_BuildJar = true;
+    private boolean m_BuildJar = true;
     private final Map<String, String> m_PerformanceParameters = new HashMap<String, String>();
     private IFileSystem m_Accessor;
 
@@ -191,8 +195,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     @SuppressWarnings("UnusedDeclaration")
     public boolean isDataOnCluster() {
         SpectraHadoopMain application = getApplication();
-         return application.getBooleanParameter(DATA_ON_PATH_PROPERTY,false);
-     }
+        return application.getBooleanParameter(DATA_ON_PATH_PROPERTY, false);
+    }
 
 
     /**
@@ -244,7 +248,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public String getOutputFileName() {
         if (m_OutputFileName == null) {
             SpectraHadoopMain application = getApplication();
-            m_OutputFileName =  buildDefaultFileName(application);
+            m_OutputFileName = buildDefaultFileName(application);
         }
 
         return m_OutputFileName;
@@ -261,9 +265,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             return name;
         }
 
-        if(name == null)
+        if (name == null)
             name = "MyOutputFile.txt";
-         return name;
+        return name;
     }
 
 
@@ -476,7 +480,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
 
-
     protected int guaranteeRemoteDirectory(String baseDir, File file) {
         IFileSystem accessor = getAccessor();
         String remotepath = baseDir + "/" + file.getName();
@@ -534,7 +537,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         boolean ret;
 
         List<IHadoopJob> jobs = buildJobs();
-        if(jobs.size() != NUMBER_STAGES)
+        if (jobs.size() != NUMBER_STAGES)
             throw new IllegalStateException("Number of jobs must equal NUMBER_STAGES");
         for (IHadoopJob job : jobs) {
             String jobName = job.getName();
@@ -552,7 +555,11 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
 
 
+        //noinspection UnusedAssignment
         String property = HadoopUtilities.getProperty(DELETE_OUTPUT_DIRECTORIES_PROPERTY);
+
+        property = null;
+
         if ("true".equalsIgnoreCase(property))
             deleteRemoteIntermediateDirectories();
 
@@ -650,7 +657,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             int ret = guaranteeRemoteDirectory(pRemotePath, pFile1);
             return ret;
         }
-        String remotepath = pRemotePath + "/" +  XMLUtilities.asLocalFile(pFile1.getAbsolutePath());
+        String remotepath = pRemotePath + "/" + XMLUtilities.asLocalFile(pFile1.getAbsolutePath());
         // if it is small then always make a copy
         if (accessor.exists(remotepath)) {
             return 2;
@@ -833,17 +840,30 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     protected List<IHadoopJob> buildJobs() {
         List<IHadoopJob> holder = new ArrayList<IHadoopJob>();
         int jobNumber = 0;
-        holder.add(buildJob(getSpectrumPath(), SpectraPeakClustererPass1.class,jobNumber));
+        //noinspection ConstantConditions
+        if (START_AT_JOB <= jobNumber)
+            holder.add(buildJob(getSpectrumPath(), SpectraPeakClustererPass1.class, jobNumber));
+
         jobNumber++;
-        holder.add(buildJob(getOutputLocation(jobNumber), SpectraClustererMerger.class,jobNumber));
+        if (START_AT_JOB <= jobNumber) {
+            String job0Output = getOutputLocation(jobNumber);
+            //noinspection ConstantConditions
+            if(START_AT_JOB > 0)    // hard code test input for debugging
+                   job0Output = "OutputDataTest"; // debug input files
+            IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
+            holder.add(j1);
+        }
+
         jobNumber++;
-        holder.add(buildJob(getOutputLocation(jobNumber), ClusterConsolidator.class,jobNumber));
+        {
+            holder.add(buildJob(getOutputLocation(jobNumber), ClusterConsolidator.class, jobNumber));
+        }
         //noinspection UnusedAssignment
         jobNumber++;
         return holder;
     }
 
-    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass,int jobNumber, String... addedArgs) {
+    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass, int jobNumber, String... addedArgs) {
         boolean buildJar = isBuildJar();
         HadoopJob.setJarRequired(buildJar);
         String outputLocation = getOutputLocation(jobNumber + 1);
@@ -876,16 +896,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
 
-
-
     public void expungeOutputDirectories(IFileSystem accessor) {
         for (int i = 0; i < NUMBER_STAGES; i++) {
-            expungeLocalDirectory(accessor,i);
+            expungeLocalDirectory(accessor, i);
 
         }
     }
 
-    protected void expungeLocalDirectory(IFileSystem accessor,final int index) {
+    protected void expungeLocalDirectory(IFileSystem accessor, final int index) {
         String outputLocation = getOutputLocation(index + 1);
         accessor.expunge(outputLocation);
     }
@@ -1103,8 +1121,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             return;
         }
         if (COMPRESS_INTERMEDIATE_FILES_PROPERTY.equals(pProperty)) {
-               return;
-         }
+            return;
+        }
         throw new UnsupportedOperationException("Property " + pProperty + " with value " + pValue + " Not handled");
     }
 
@@ -1296,12 +1314,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             //noinspection UnnecessaryLocalVariable
             String defaultBasePath = passedBaseDirctory; //RemoteUtilities.getDefaultPath() + "/JXTandem/JXTandemOutput";
             accessor.guaranteeDirectory(defaultBasePath);
-            main.setOutputLocationBase(defaultBasePath + "/OutputData" );
+            main.setOutputLocationBase(defaultBasePath + "/OutputData");
             if (isRemote) {
                 // make sure directory exists
                 // we will kill output directories to guarantee empty
                 HDFSUtilities.setOutputDirectoriesPrecleared(true);
-                  elapsed.showElapsed("Finished Setup");
+                elapsed.showElapsed("Finished Setup");
             }
 
             main.expungeOutputDirectories(accessor);

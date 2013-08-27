@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.fs.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
@@ -76,6 +77,7 @@ public class MZXMLReader {
         File indir = new File(pArg);
         if (indir.isDirectory()) {
             File[] files = indir.listFiles();
+            //noinspection ForLoopReplaceableByForEach,ConstantConditions
             for (int i = 0; i < files.length; i++) {
                 File file = files[i];
                 processFile(file);
@@ -96,6 +98,7 @@ public class MZXMLReader {
             throw new UnsupportedOperationException("Fix This"); // ToDo
         }
         else {
+            //noinspection UnnecessaryLocalVariable
             String name = pArg;
             XMLUtilities.outputLine(name);
             Path path = new Path(name);
@@ -106,7 +109,7 @@ public class MZXMLReader {
     }
 
 
-    private static RawPeptideScan handleScan(final StringBuilder pSb, final int pScanLevel) {
+    private static RawPeptideScan handleScan(final StringBuilder pSb, @SuppressWarnings("UnusedParameters") final int pScanLevel) {
         String scn = pSb.toString().trim();
         if (scn.startsWith("<scan")) {
             RawPeptideScan scan = XTandemHadoopUtilities.readScan(scn,null);

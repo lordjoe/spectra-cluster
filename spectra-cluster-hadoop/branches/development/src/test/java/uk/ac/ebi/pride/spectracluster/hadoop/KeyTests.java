@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.algorithms.*;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -31,6 +32,7 @@ public class KeyTests {
         }
         int maxCounts = 0;
         int minCounts = Integer.MAX_VALUE;
+        //noinspection ForLoopReplaceableByForEach
        for (int i = 0; i < counts.length; i++) {
             int count = counts[i];
            maxCounts = Math.max(maxCounts,count);
@@ -64,11 +66,25 @@ public class KeyTests {
         if(!chargePeakKey1.equals(chargePeakKey2))
           Assert.assertEquals(chargePeakKey1,chargePeakKey2);
 
+        IWideBinner binner = SpectraHadoopUtilities.NARROW_MZ_BINNER;
+
         List<String> holder = new ArrayList<String>();
         List<ChargePeakMZKey> keyholder = new ArrayList<ChargePeakMZKey>();
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        List<ChargeBinMZKey> binKeyholder = new ArrayList<ChargeBinMZKey>();
         for (IPeak pk : spec.getPeaks()) {
             final float mz = pk.getMz();
             ChargePeakMZKey key = new ChargePeakMZKey(charge, mz, precursorMz);
+            int[] bins = binner.asBins(precursorMz);
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < bins.length; i++) {
+                int bin = bins[i];
+                ChargeBinMZKey binkey = new ChargeBinMZKey(charge, bin, precursorMz);
+                binKeyholder.add(binkey) ;
+                String binKeyStr = binkey.toString();
+                ChargeBinMZKey binky2 = new ChargeBinMZKey(binKeyStr);
+                 Assert.assertEquals(binkey,binky2);
+            }
             String keyStr = key.toString();
             ChargePeakMZKey ky2 = new ChargePeakMZKey(keyStr);
             Assert.assertEquals(key,ky2);

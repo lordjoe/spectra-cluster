@@ -1,16 +1,15 @@
 package org.systemsbiology.xtandem.hadoop;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.common.*;
-import org.systemsbiology.hadoop.*;
 import org.systemsbiology.sax.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.peptide.*;
-import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 import org.systemsbiology.xtandem.taxonomy.*;
 import org.systemsbiology.xtandem.testing.*;
@@ -25,6 +24,8 @@ import java.util.*;
  * User: steven
  * Date: 3/7/11
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "WhileLoopReplaceableByForEach", "PointlessBooleanExpression"})
 public class ScoringReducer extends AbstractTandemReducer implements SpectrumGenerationListener, INoticationListener {
 
 
@@ -38,6 +39,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
 
     public static final Set<String> INTERESTING_SEQUENCE_SET = new HashSet<String>(Arrays.asList(INTERESTING_SEQUENCES));
 
+    @SuppressWarnings("UnusedDeclaration")
     public static boolean isInterestingSequence(IPolypeptide peptide) {
 
         if(peptide.isModified() ) {
@@ -80,6 +82,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
         return m_CreateDecoyPeptides;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setCreateDecoyPeptides(boolean createDecoyPeptides) {
         m_CreateDecoyPeptides = createDecoyPeptides;
     }
@@ -129,6 +132,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
 
         // log if running in local mode
         // we need to test performance
+        //noinspection PointlessBooleanExpression
         if (false && XTandemHadoopUtilities.isLocal(conf)) {
             m_Logger = XTandemHadoopUtilities.buildDebugWriter(context, application);
             XTandemDebugging.setDebugging(true, application);
@@ -181,6 +185,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
      * @param keyStr
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static int keyStringToMass(String keyStr) {
         return Integer.parseInt(keyStr);
     }
@@ -582,7 +587,7 @@ public class ScoringReducer extends AbstractTandemReducer implements SpectrumGen
     protected void cleanup(final Context context) throws IOException, InterruptedException {
         if (m_Logger != null) {
             appendLine("</JXTandem>");
-            ((PrintWriter) m_Logger).close();
+            m_Logger.close();
         }
         //   context.getCounter("Performance", "TotalPeptide").increment(m_TotalPeptidesScored);
 

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;

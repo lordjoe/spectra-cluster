@@ -1,11 +1,11 @@
 package org.systemsbiology.xtandem.hadoop;
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
-import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -23,9 +23,11 @@ public abstract class AbstractTandemMapper<T> extends Mapper<T, Text, Text, Text
     private final Text m_OnlyValue = new Text();
     private long m_MinimumFreeMemory = Long.MAX_VALUE;
     private final ElapsedTimer m_Elapsed = new ElapsedTimer();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<ITandemScoringAlgorithm> m_Algorithms = new ArrayList<ITandemScoringAlgorithm>();
     private Context m_Context;
 
+    @SuppressWarnings("UnusedDeclaration")
     public final Context getContext() {
         return m_Context;
     }
@@ -39,8 +41,10 @@ public abstract class AbstractTandemMapper<T> extends Mapper<T, Text, Text, Text
         Configuration conf = context.getConfiguration();
 
          // debugging code to show my keys
+        //noinspection ConstantIfStatement
         if(false)  {
             Iterator<Map.Entry<String, String>> iterator = conf.iterator();
+            //noinspection WhileLoopReplaceableByForEach
             while(iterator.hasNext())   {
                 Map.Entry<String, String> next = iterator.next();
                 String key = next.getKey();
@@ -103,6 +107,7 @@ public abstract class AbstractTandemMapper<T> extends Mapper<T, Text, Text, Text
 
     protected void addAlternateParameters(final String pParameter, IMainData params) {
         String[] items = pParameter.split(";");
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < items.length; i++) {
             String item = items[i];
             addAlternateParameter(item, params);

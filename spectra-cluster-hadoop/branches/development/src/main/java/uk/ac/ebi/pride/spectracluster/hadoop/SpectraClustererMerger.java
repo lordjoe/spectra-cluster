@@ -67,8 +67,9 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             // sequence files are faster but harder to debug
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-            job.setMapperClass(ChargeMZRegionMapper.class);
+            job.setMapperClass(ChargeMZNarrowBinMapper.class);
             job.setReducerClass(SpectrumMergeReducer.class);
+            job.setPartitionerClass(ChargeBinPartitioner.class);
 
 
              // We always do this

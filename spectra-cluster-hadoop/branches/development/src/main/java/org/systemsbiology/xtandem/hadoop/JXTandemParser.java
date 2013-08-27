@@ -1,6 +1,7 @@
 package org.systemsbiology.xtandem.hadoop;
 
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
@@ -19,6 +20,8 @@ import java.io.*;
 /**
  * org.systemsbiology.xtandem.hadoop.JXTandemParser
  */
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment"})
+
 public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
 
     public static final int MAX_TEST_PROTEINS = 0; // 2000;
@@ -67,7 +70,7 @@ public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
             if (COUNT_AMINO_ACIDS) {
                 int[] aaCount = new int[20];
                 for (int i = 0; i < sequence.length(); i++) {
-                    FastaAminoAcid aa = null;
+                    FastaAminoAcid aa;
                     try {
                         aa = FastaAminoAcid.fromChar(sequence.charAt(i));
                     } catch (BadAminoAcidException e) {
@@ -269,8 +272,9 @@ public class JXTandemParser extends ConfiguredJobRunner implements IJobRunner {
 
             if (numberDecoy > 0) {
                 // same peptide is in decoy and non-decoy
+                //noinspection SimplifiableIfStatement,PointlessBooleanExpression,ConstantConditions,RedundantIfStatement
                 if (numberNonDecoy > 0) {
-                    // todo handle mixed decoy/non-decoy peptide
+                    throw new UnsupportedOperationException("Fix This");
                 }
 
             }

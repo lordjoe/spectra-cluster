@@ -1,5 +1,6 @@
 package org.systemsbiology.xtandem.testing;
 
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.ionization.*;
 import org.systemsbiology.xtandem.scoring.*;
@@ -12,6 +13,9 @@ import java.util.*;
  * User: steven
  * Date: 3/3/11
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection"})
+
 public class DebugDotProduct  implements Comparable<DebugDotProduct> {
     public static final DebugDotProduct[] EMPTY_ARRAY = {};
 
@@ -64,7 +68,7 @@ public class DebugDotProduct  implements Comparable<DebugDotProduct> {
     }
 
     public ISpectrumPeak[] getTheoreticalPeaks() {
-        return m_TheoreticalPeak.toArray(new ISpectrumPeak[0]);
+        return m_TheoreticalPeak.toArray(new ISpectrumPeak[m_TheoreticalPeak.size()]);
     }
 
 
@@ -78,7 +82,7 @@ public class DebugDotProduct  implements Comparable<DebugDotProduct> {
 
 
     public ISpectrumPeak[] getMeasuredPeaks() {
-        return m_MeasuredPeak.toArray(new ISpectrumPeak[0]);
+        return m_MeasuredPeak.toArray(new ISpectrumPeak[m_MeasuredPeak.size()]);
     }
 
 
@@ -210,7 +214,7 @@ public class DebugDotProduct  implements Comparable<DebugDotProduct> {
 
 
     public DebugMatchPeak[] getMatchedPeakss() {
-        return m_MatchedPeaks.toArray(new DebugMatchPeak[0]);
+        return m_MatchedPeaks.toArray(new DebugMatchPeak[m_MatchedPeaks.size()]);
     }
 
 
