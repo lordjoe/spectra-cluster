@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 /**
- * uk.ac.ebi.pride.spectracluster.util.Cast
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.util.Cast
  * User: Steve
  * Date: 6/21/13
  */

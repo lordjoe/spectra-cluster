@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
  * <p/>
  * This object does the clusters
  *

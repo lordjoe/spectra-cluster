@@ -35,12 +35,12 @@ public interface ISpectrumHolder {
      *
      * @param added non-null change listener
      */
-    public  void addSpectrumHolderListener(SpectrumHolderListener added);
+    public  void addSpectrumHolderListener(ISpectrumHolderListener added);
 
     /**
      * remove a change listener
      *
      * @param removed non-null change listener
      */
-    public void removeSpectrumHolderListener(SpectrumHolderListener removed) ;
+    public void removeSpectrumHolderListener(ISpectrumHolderListener removed) ;
 }

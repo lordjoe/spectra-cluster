@@ -3,14 +3,14 @@ package uk.ac.ebi.pride.spectracluster.quality;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker
  *
  * @author Steve Lewis
  * @date 29/05/13

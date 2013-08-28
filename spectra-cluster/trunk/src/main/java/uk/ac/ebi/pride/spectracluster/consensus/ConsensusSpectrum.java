@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +55,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      */
     protected final float MZ_THRESHOLD_STEP = 0.1F;
 
-    protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
+    protected List<ISpectrumHolderListener> listeners = new ArrayList<ISpectrumHolderListener>();
     public final static boolean USE_ROUNDING = false;
 
     /**
@@ -86,8 +88,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * expose a normally private field for testing
      * @return
      */
-    protected  List<IPeak> getInternalPeaks()
-    {
+    protected  List<IPeak> getInternalPeaks() {
         return consensusPeaks;
     }
 
@@ -110,8 +111,13 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         setIsDirty(true);
 
-        for (SpectrumHolderListener listener : listeners)
-            listener.onSpectraAdd(this, merged);
+        SpectrumHolderEvent spectrumHolderEvent = new SpectrumHolderEvent(this, SpectrumHolderEvent.Type.ADD, merged);
+        fireSpectrumHolderEvent(spectrumHolderEvent);
+    }
+
+    private void fireSpectrumHolderEvent(SpectrumHolderEvent event) {
+        for (ISpectrumHolderListener listener : listeners)
+            listener.update(event);
     }
 
     @Override
@@ -132,8 +138,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         setIsDirty(true);
 
-        for (SpectrumHolderListener listener : listeners)
-            listener.onSpectraRemove(this, removed);
+        SpectrumHolderEvent spectrumHolderEvent = new SpectrumHolderEvent(this, SpectrumHolderEvent.Type.REMOVE, removed);
+        fireSpectrumHolderEvent(spectrumHolderEvent);
     }
 
     /**
@@ -197,12 +203,12 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     }
 
     @Override
-    public void addSpectrumHolderListener(SpectrumHolderListener added) {
+    public void addSpectrumHolderListener(ISpectrumHolderListener added) {
         listeners.add(added);
     }
 
     @Override
-    public void removeSpectrumHolderListener(SpectrumHolderListener removed) {
+    public void removeSpectrumHolderListener(ISpectrumHolderListener removed) {
         listeners.remove(removed);
     }
 
@@ -319,8 +325,6 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         // Step 1: merge identical peaks
         List<IPeak> ret = mergeIdenticalPeaks(input);
-
-
 
         // Step 2: addapt the peak intensities based on the probability that the peak has been obeserved
         ret = adaptPeakIntensities(ret);
@@ -514,12 +518,15 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     }
 
     @Override
-    public void onSpectraAdd(ISpectrumHolder holder, ISpectrum... added) {
-        addSpectra(added);
-    }
-
-    @Override
-    public void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed) {
-        removeSpectra(removed);
+    public void update(SpectrumHolderEvent event) {
+        ISpectrum[] spectra = event.getSpectra().toArray(new ISpectrum[event.getSpectra().size()]);
+        switch (event.getType()) {
+            case ADD:
+                addSpectra(spectra);
+                break;
+            case REMOVE:
+                removeSpectra(spectra);
+                break;
+        }
     }
 }

@@ -3,9 +3,8 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -13,7 +12,7 @@ import java.util.*;
  * PeptideSepctrumMatch represents a peptide and a spectrum match
  * <p/>  This class is effectively immutable - some measures are computed lazily but
  * it cannot be manipulated from the outside
-  *
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -21,48 +20,49 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
 
     private final String peptide;
+    /**
+     * Additional annotation about the PSM, it might be used for storing the entire line that parsed
+     * from the original file
+     */
     private final String annotation;
-    // Dot products always get the highest peaks of a specific intensity -
-    // this caches thoes and returns a list sorted by MZ
+    /**
+     * Dot products always get the highest peaks of a specific intensity -
+     * this caches those and returns a list sorted by MZ
+     */
     private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
+
     private double qualityMeasure = BAD_QUALITY_MEASURE;
+
     private BigInteger majorBits;
+
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
 
     /**
      * simple copy constructor
      *
-     * @param spectrum
+     * @param spectrum  spectrum to copy
      */
     public PeptideSpectrumMatch(ISpectrum spectrum) {
-        super(spectrum, spectrum.getPeaks());
-        if (spectrum instanceof IPeptideSpectrumMatch) {
-            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-        }
-        else {
-            peptide = null;
-            annotation = null;
-         }
+        this(spectrum, spectrum.getPeaks());
     }
 
     /**
      * copy with different peaks
      *
      * @param spectrum base used for charge, mz
-     * @param inpeaks    new peaks
+     * @param inpeaks  new peaks
      */
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         super(spectrum, inpeaks);
+
         if (spectrum instanceof IPeptideSpectrumMatch) {
-             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-             annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-         }
-         else {
-             peptide = null;
-             annotation = null;
-          }
-         makeAdvancedCalculations();
+            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
+        } else {
+            peptide = null;
+            annotation = null;
+        }
+        makeAdvancedCalculations();
     }
 
     public PeptideSpectrumMatch(String id,
@@ -70,7 +70,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                                 int precursorCharge,
                                 float precursorMz,
                                 List<IPeak> peaks) {
-        this(id,peptide, precursorCharge, precursorMz, peaks,null);
+        this(id, peptide, precursorCharge, precursorMz, peaks, null);
 
     }
 
@@ -79,8 +79,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                                 int precursorCharge,
                                 float precursorMz,
                                 List<IPeak> peaks,
-                                String pAnnotation
-    ) {
+                                String pAnnotation) {
         super(id, precursorCharge, precursorMz, peaks);
         this.peptide = peptide;
         this.annotation = pAnnotation;
@@ -121,6 +120,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
      * @return
      */
     @Override
@@ -141,20 +141,19 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         Arrays.sort(peaks);
         int[] ret = new int[peaks.length];
         for (int i = 0; i < ret.length; i++) {
-             ret[i] = peaks[i];
+            ret[i] = peaks[i];
 
         }
         return ret;
     }
 
     protected void guaranteeMajorPeaks() {
-        if(majorPeakMZ.isEmpty()) {
-             IPeaksSpectrum peaks = asMajorPeaks();
-            int index = 0;
-            for(IPeak peak : peaks.getPeaks())  {
-                majorPeakMZ.add(  (int)peak.getMz());
+        if (majorPeakMZ.isEmpty()) {
+            IPeaksSpectrum peaks = asMajorPeaks();
+            for (IPeak peak : peaks.getPeaks()) {
+                majorPeakMZ.add((int) peak.getMz());
             }
-          }
+        }
     }
 
     /**
@@ -191,16 +190,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         return annotation;
     }
 
-    /**
-     * return a spectrum normalized to the specific total intensity
-     *
-     * @return !null spectrum - might be this
-     */
-    @Override
-    public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
-        return new NormailzedPeptideSpectrumMatch(this, totalIntensity);   // build a new normalized intensity
-    }
-
 
     protected double buildQualityMeasure() {
         return Defaults.INSTANCE.getDefaultQualityScorer().calculateQualityScore(this);
@@ -209,7 +198,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
 
     public double getQualityScore() {
-        //   guaranteeClean();
         if (qualityMeasure == BAD_QUALITY_MEASURE) {
             qualityMeasure = buildQualityMeasure();
         }
@@ -223,7 +211,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      * @return
      */
     public ISpectralCluster asCluster() {
-        //   guaranteeClean();
         SpectralCluster ret = new SpectralCluster(getId());
         ret.addSpectra(this);
         return ret;
@@ -237,7 +224,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     @Override
     public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
-        //  guaranteeClean();
         IPeaksSpectrum ret = highestPeaks.get(numberRequested);
         if (ret == null) {
             ret = buildHighestPeaks(numberRequested);
@@ -269,22 +255,4 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this, holder);
         return ret;
     }
-
-
-    /**
-     * override to add peptide
-     *
-     * @param out
-     * @throws java.io.IOException
-     */
-    @Override
-    protected void appendTitle(final Appendable out) throws IOException {
-        String csq = "TITLE=" + getId();
-        final String peptide1 = getPeptide();
-        if (peptide1 != null && peptide1.length() > 0)
-            csq = "TITLE==id=" + getId() + ",sequence=" + peptide1;
-        out.append(csq);
-    }
-
-
 }

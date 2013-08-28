@@ -5,12 +5,13 @@ import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.util.*;
 
 
 /**
- * uk.ac.ebi.pride.spectracluster.util.ClusterUtilities
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.util.ClusterUtilities
  *    a lits of stateless static functions for manipulating clusters, lists of clusters
  *    and performing other common chores
  * @author Steve Lewis

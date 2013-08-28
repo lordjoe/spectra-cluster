@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.PeakMzComparator;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.comparator.InversePeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +28,6 @@ import java.util.List;
 public class FrankEtAlDotProduct implements SimilarityChecker {
 
     public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
-    /**
-     * The logger to use.
-     */
-    //private static final Logger logger = Logger.getLogger(FrankEtAlDotProduct.class);
 
     /**
      * The versions available from this algorithm. The only
@@ -41,21 +39,21 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         JPR_2008, NAT_METH_2011
     }
 
-    /**
-     * Use Defaults which builds with reflection
-     * Set the class with Defaults.setSimilarityCheckerClass
-     */
-
-    public FrankEtAlDotProduct() {
-    }
-
     private double mzRange = 0.5;
+
     /**
      * The algorithm version to use. By
      * default the version described in
      * Nature Methods 2011 will be used.
      */
     private AlgorithmVersion version = AlgorithmVersion.NAT_METH_2011;
+
+    /**
+     * Use Defaults which builds with reflection
+     * Set the class with Defaults.setSimilarityCheckerClass
+     */
+    public FrankEtAlDotProduct() {
+    }
 
     /**
      * return a name which should not change

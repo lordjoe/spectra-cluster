@@ -15,30 +15,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Equivalent<ISpectralCluster> {
 
 
     private final String id;
+
       // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
-    private final SpectralQualityHolder qualityHolder;
-    private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
+    private final SpectralQualityHolderListener qualityHolderListener;
+
+    private final List<ISpectrumHolderListener> spectrumHolderListeners = new CopyOnWriteArrayList<ISpectrumHolderListener>();
 
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
+
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(ISpectralCluster copied) {
-        this.id = copied.getId();
-        this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
-        addSpectrumHolderListener(this.consensusSpectrumBuilder);
+        this(copied.getId(), Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
 
-        this.qualityHolder = new SpectralQualityHolder();
-        addSpectrumHolderListener(qualityHolder);
-        final List<ISpectrum> clusterDefaultsedSpectra1 = copied.getClusteredSpectra();
+        List<ISpectrum> clusterDefaultsedSpectra1 = copied.getClusteredSpectra();
         addSpectra(clusterDefaultsedSpectra1);
-
     }
 
 
@@ -48,10 +46,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         this.id = id;
-          this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+
+        this.consensusSpectrumBuilder = consensusSpectrumBuilder;
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
-        this.qualityHolder = new SpectralQualityHolder();
-        addSpectrumHolderListener(qualityHolder);
+
+        this.qualityHolderListener = new SpectralQualityHolderListener();
+        addSpectrumHolderListener(qualityHolderListener);
     }
 
 
@@ -62,9 +62,9 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      * @param added non-null change listener
      */
     @Override
-    public final void addSpectrumHolderListener(SpectrumHolderListener added) {
-        if (!m_SpectrumHolderListeners.contains(added))
-            m_SpectrumHolderListeners.add(added);
+    public final void addSpectrumHolderListener(ISpectrumHolderListener added) {
+        if (!spectrumHolderListeners.contains(added))
+            spectrumHolderListeners.add(added);
     }
 
     /**
@@ -73,9 +73,9 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      * @param removed non-null change listener
      */
     @Override
-    public final void removeSpectrumHolderListener(SpectrumHolderListener removed) {
-        while (m_SpectrumHolderListeners.contains(removed))
-            m_SpectrumHolderListeners.remove(removed);
+    public final void removeSpectrumHolderListener(ISpectrumHolderListener removed) {
+        while (spectrumHolderListeners.contains(removed))
+            spectrumHolderListeners.remove(removed);
     }
 
 
@@ -85,13 +85,14 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
-        if (m_SpectrumHolderListeners.isEmpty())
+        if (spectrumHolderListeners.isEmpty())
             return;
-        for (SpectrumHolderListener listener : m_SpectrumHolderListeners) {
+
+        for (ISpectrumHolderListener listener : spectrumHolderListeners) {
             if (isAdd)
-                listener.onSpectraAdd(this, spectra);
+                listener.update(new SpectrumHolderEvent(this, SpectrumHolderEvent.Type.ADD, spectra));
             else
-                listener.onSpectraRemove(this, spectra);
+                listener.update(new SpectrumHolderEvent(this, SpectrumHolderEvent.Type.REMOVE, spectra));
         }
     }
 
@@ -124,15 +125,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         return getConsensusSpectrum().getPeaksCount();
     }
 
-
-
-
     /**
      * all internally spectrum
      */
     @Override
     public List<ISpectrum> getHighestQualitySpectra() {
-        return qualityHolder.getHighestQualitySpectra();
+        return qualityHolderListener.getHighestQualitySpectra();
     }
 
 
@@ -144,7 +142,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      */
     @Override
     public ISpectrum getHighestQualitySpectrum() {
-        return qualityHolder.getHighestQualitySpectrum();
+        return qualityHolderListener.getHighestQualitySpectrum();
     }
 
 
@@ -159,7 +157,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      * @return exactly the current concensus spectrum
      */
-    @Override
     public ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrumBuilder.getConsensusSpectrum();
     }
@@ -205,7 +202,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      *
      * @return
      */
-    @Override
     public List<ISpectrum> internalGetClusteredSpectra() {
         return clusteredSpectra;
     }
@@ -317,11 +313,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
 
         List<ISpectrum> spc1 = internalGetClusteredSpectra();
-        List<ISpectrum> spc2;
-        if (o instanceof InternalSpectralCluster)
-            spc2 = ((InternalSpectralCluster) o).internalGetClusteredSpectra();  // no copy or clean needed
-        else
-            spc2 = o.getClusteredSpectra();
+        List<ISpectrum> spc2 = o.getClusteredSpectra();
 
         if (spc1.size() != spc2.size()) {
             return false;

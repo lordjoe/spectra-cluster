@@ -67,10 +67,12 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
     }
 
     /**
-     * return the value normalized to - especial;ly useful for total intensity normalization where
+     * return the value normalized to - especially useful for total intensity normalization where
      * we may not weed to normalize
      *
      * @return as above
+     *
+     * TODO: @Steve do we really need this method?
      */
     @Override
     public double getNormalizedValue() {
@@ -78,7 +80,7 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
     }
 
     @Override
-    public List<IPeak> normalizePeaks(List<IPeak> peaks) {
+    public List<IPeak> normalize(List<IPeak> peaks) {
 		// get the max intensity
 		Double specTotalIntensity = 0.0;
 

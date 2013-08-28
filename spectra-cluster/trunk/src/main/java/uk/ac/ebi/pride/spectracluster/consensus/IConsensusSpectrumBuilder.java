@@ -16,7 +16,7 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
 
@@ -27,7 +27,7 @@ import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
  * adding and / or removing spectra from the consensus spectrum.
  * @author jg
  */
-public interface IConsensusSpectrumBuilder extends ISpectrumHolder,SpectrumHolderListener,IAlgorithm {
+public interface IConsensusSpectrumBuilder extends ISpectrumHolder,ISpectrumHolderListener,IAlgorithm {
 
     /**
      * return the current spectrum represented as the data in the stored spectra
