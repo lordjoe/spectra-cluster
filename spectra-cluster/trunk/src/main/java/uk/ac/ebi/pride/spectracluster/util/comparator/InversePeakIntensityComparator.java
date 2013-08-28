@@ -14,7 +14,7 @@ import java.util.Comparator;
  */
 public final class InversePeakIntensityComparator implements Comparator<IPeak> {
 
-    public static final InversePeakIntensityComparator INSTANCE = new InversePeakIntensityComparator();
+    private static final InversePeakIntensityComparator INSTANCE = new InversePeakIntensityComparator();
 
     public InversePeakIntensityComparator() {
 

@@ -13,7 +13,7 @@ public class SpectrumHolderEvent extends EventObject {
     /**
      * Event type enum
      */
-    public enum Type {ADD, REMOVE};
+    public enum Type {ADD, REMOVE}
 
     private final Type type;
 

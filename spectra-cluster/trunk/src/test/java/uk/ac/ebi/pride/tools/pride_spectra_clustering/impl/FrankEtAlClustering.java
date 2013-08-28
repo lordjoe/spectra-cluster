@@ -63,7 +63,7 @@ public class FrankEtAlClustering implements SpectraClustering {
      * and returns the resulting clusters
      * as a List of SpectraClusterS.
      *
-     * @param spectra List of spectra to cluster
+     * @param inputSpectra List of spectra to cluster
      * @return A List of resulting SpectraCluster
      */
     public List<SpectraCluster> clusterSpectra(List<Spectrum> inputSpectra) {

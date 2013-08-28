@@ -10,7 +10,7 @@ import java.util.Comparator;
  */
 public class PeakMzComparator implements Comparator<IPeak> {
 
-    public final static PeakMzComparator INSTANCE = new PeakMzComparator();
+    private final static PeakMzComparator INSTANCE = new PeakMzComparator();
 
     private PeakMzComparator() {
 
