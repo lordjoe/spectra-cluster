@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderEvent;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.util.ParserUtilities
  * Classes for reading clusters
  *
  * @author Steve Lewis
@@ -157,8 +158,9 @@ public class ParserUtilities {
         }
         ret.setSpectra(holder);
         // add all spectra
-        sb.onSpectraAdd(null,holder.toArray(new ISpectrum[holder.size()]));
-        ret.setConcensus(sb.getConsensusSpectrum( ));
+        // TODO: may be we should think another way of adding spectra
+        sb.update(new SpectrumHolderEvent(new SpectralCluster("test"), SpectrumHolderEvent.Type.ADD,holder.toArray(new ISpectrum[holder.size()])));
+        ret.setConsensus(sb.getConsensusSpectrum());
         return ret; // nothing found or incloplete
     }
 
@@ -564,29 +566,97 @@ public class ParserUtilities {
         }
     }
 
-    public static void main(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            boolean isMGF = arg.toLowerCase().endsWith(".mgf");
-
-            ConsensusSpectraItems[] items = readClusters(new File(arg));
-            for (int j = 0; j < items.length; j++) {
-                ConsensusSpectraItems item = items[j];
-
-            }
-
-            ISpectralCluster[] scs = readSpectralCluster(arg);
-            for (int j = 0; j < scs.length; j++) {
-                ISpectralCluster sc = scs[j];
-                StringBuilder sb = new StringBuilder();
-                if (isMGF)
-                    sc.appendSpectra(sb);
-                else
-                    sc.append(sb);
-
-                // System.out.println(sb.toString());
-            }
-        }
-    }
+//    /**
+//     * write out the data as an MGF file
+//     *
+//     * @param out place to append
+//     */
+//    public void appendMGF(Appendable out) {
+//
+//
+//        try {
+//            out.append("BEGIN IONS");
+//            out.append("\n");
+//
+//            appendTitle(out);
+//            out.append("\n");
+//
+//            double precursorCharge = getPrecursorCharge();
+//            double massChargeRatio = getPrecursorMz();
+//
+//            out.append("PEPMASS=" + massChargeRatio);
+//            out.append("\n");
+//
+//            out.append("CHARGE=" + precursorCharge);
+//            if (precursorCharge > 0)
+//                out.append("+");
+//            out.append("\n");
+//
+//            for (IPeak peak : internalGetPeaks()) {
+//                String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
+//                        String.format("%10.3f", peak.getIntensity()).trim();
+//                out.append(line);
+//                out.append("\n");
+//            }
+//            out.append("END IONS");
+//            out.append("\n");
+//        }
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//
+//        }
+//
+//    }
+//
+//
+//    /**
+//     * override to add peptide later
+//     *
+//     * @param out
+//     * @throws java.io.IOException
+//     */
+//    protected void appendTitle(final Appendable out) throws IOException {
+//        out.append("TITLE=" + getId());
+//    }
+//
+//    /**
+//     * override to add peptide
+//     *
+//     * @param out
+//     * @throws java.io.IOException
+//     */
+//    @Override
+//    protected void appendTitle(final Appendable out) throws IOException {
+//        String csq = "TITLE=" + getId();
+//        final String peptide1 = getPeptide();
+//        if (peptide1 != null && peptide1.length() > 0)
+//            csq = "TITLE==id=" + getId() + ",sequence=" + peptide1;
+//        out.append(csq);
+//    }
+//
+//    public static void main(String[] args) {
+//        for (int i = 0; i < args.length; i++) {
+//            String arg = args[i];
+//            boolean isMGF = arg.toLowerCase().endsWith(".mgf");
+//
+//            ConsensusSpectraItems[] items = readClusters(new File(arg));
+//            for (int j = 0; j < items.length; j++) {
+//                ConsensusSpectraItems item = items[j];
+//
+//            }
+//
+//            ISpectralCluster[] scs = readSpectralCluster(arg);
+//            for (int j = 0; j < scs.length; j++) {
+//                ISpectralCluster sc = scs[j];
+//                StringBuilder sb = new StringBuilder();
+//                if (isMGF)
+//                    sc.appendSpectra(sb);
+//                else
+//                    sc.append(sb);
+//
+//                // System.out.println(sb.toString());
+//            }
+//        }
+//    }
 
 }

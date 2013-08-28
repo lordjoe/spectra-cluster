@@ -1,38 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
-import uk.ac.ebi.pride.spectracluster.util.PeakMzComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
  * User: Steve
  * Date: 6/20/13
  */
 public class PeaksSpectrum implements IPeaksSpectrum {
 
-    /**
-     * who knows why Johannes does this but we can as well
-     * todo generalize
-     *
-     * @param p1
-     * @return
-     */
-    public static double johannesIntensityConverted(IPeak p1) {
-        double intensity = p1.getIntensity();
-        if (intensity == 0)
-            return 0;
-        double intensity2 = 1 + Math.log(intensity);
-        return intensity2;
-
-    }
-
-
-    public static final PeaksSpectrum[] EMPTY_ARRAY = {};
     private final String id;
     private final int precursorCharge;
     private final float precursorMz;
@@ -43,27 +24,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     private final double totalIntensity;
     private final double sumSquareIntensity;
 
-
-    public PeaksSpectrum(final String pId, final int pPrecursorCharge, final float pPrecursorMz, List<IPeak> peaks) {
-        id = pId;
-        precursorCharge = pPrecursorCharge;
-        precursorMz = pPrecursorMz;
-        this.peaks.clear();
-        Collections.sort(peaks);
-        this.peaks.addAll(peaks);
-        Collections.sort(this.peaks, PeakMzComparator.getInstance());
-        double totalIntensityX = 0;
-        double sumSquareIntensityX = 0;
-        for (IPeak peak : peaks) {
-            double intensity = peak.getIntensity();
-            totalIntensityX += intensity;
-            // johannes uses this in his dotProduct // todo generalize for other algorithms
-            double ji = johannesIntensityConverted(peak);
-            sumSquareIntensityX += ji * ji;
-        }
-        totalIntensity = totalIntensityX;
-        sumSquareIntensity = sumSquareIntensityX;
-    }
 
     /**
      * simple copy constructor
@@ -78,34 +38,53 @@ public class PeaksSpectrum implements IPeaksSpectrum {
      * copy with different peaks
      *
      * @param spectrum base used for charge, mz
-     * @param inpeaks    new peaks
      */
-    public PeaksSpectrum(ISpectrum spectrum, List<IPeak> inpeaks) {
+    public PeaksSpectrum(ISpectrum spectrum, List<IPeak> peaks) {
+        this(spectrum.getId(),
+             spectrum.getPrecursorCharge(),
+             spectrum.getPrecursorMz(),
+             peaks);
+    }
 
-        this.id = spectrum.getId();
-        this.precursorCharge = spectrum.getPrecursorCharge();
-        this.precursorMz = spectrum.getPrecursorMz();
+    public PeaksSpectrum(String pId,
+                         int pPrecursorCharge,
+                         float pPrecursorMz,
+                         List<IPeak> peaks) {
+        id = pId;
+        precursorCharge = pPrecursorCharge;
+        precursorMz = pPrecursorMz;
 
-        peaks.clear();
-        peaks.addAll(inpeaks);
-
+        this.peaks.addAll(peaks);
         Collections.sort(this.peaks, PeakMzComparator.getInstance());
+
+
         double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
         for (IPeak peak : peaks) {
             double intensity = peak.getIntensity();
             totalIntensityX += intensity;
-            // johannes uses this in his dotProduct // todo generalize for other algorithms
-            double ji = johannesIntensityConverted(peak);
+            // johannes uses this in his dotProduct
+            // todo: generalize for other algorithms
+            double ji = convertIntensity(peak);
             sumSquareIntensityX += ji * ji;
         }
         totalIntensity = totalIntensityX;
         sumSquareIntensity = sumSquareIntensityX;
-
     }
 
 
-    protected void makeCalculations() {
+    /**
+     *
+     * @param p1
+     * @return
+     *
+     * todo: why are doing this ?
+     */
+    private double convertIntensity(IPeak p1) {
+        double intensity = p1.getIntensity();
+        if (intensity == 0)
+            return 0;
+        return 1 + Math.log(intensity);
     }
 
 
@@ -122,7 +101,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     }
 
     public double getTotalIntensity() {
-        //    guaranteeClean();
         return totalIntensity;
     }
 
@@ -130,19 +108,16 @@ public class PeaksSpectrum implements IPeaksSpectrum {
      * return the sum  Square of all intensities
      */
     public double getSumSquareIntensity() {
-        //  guaranteeClean();
         return sumSquareIntensity;
     }
 
     /**
      * return an unmodifiable version of the internal list
-     * ??? should this be a copy
      *
      * @return as above
      */
     @Override
     public List<IPeak> getPeaks() {
-        // guaranteeClean();
         return Collections.unmodifiableList(peaks);
     }
 
@@ -152,7 +127,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
      * @return
      */
     protected List<IPeak> internalGetPeaks() {
-        // guaranteeClean();
         return peaks;
     }
 
@@ -162,62 +136,8 @@ public class PeaksSpectrum implements IPeaksSpectrum {
      * @return count
      */
     public int getPeaksCount() {
-        //   guaranteeClean();
         return peaks.size();
     }
-
-    /**
-     * write out the data as an MGF file
-     *
-     * @param out place to append
-     */
-    public void appendMGF(Appendable out) {
-
-
-        try {
-            out.append("BEGIN IONS");
-            out.append("\n");
-
-            appendTitle(out);
-            out.append("\n");
-
-            double precursorCharge = getPrecursorCharge();
-            double massChargeRatio = getPrecursorMz();
-
-            out.append("PEPMASS=" + massChargeRatio);
-            out.append("\n");
-
-            out.append("CHARGE=" + precursorCharge);
-            if (precursorCharge > 0)
-                out.append("+");
-            out.append("\n");
-
-            for (IPeak peak : internalGetPeaks()) {
-                String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
-                        String.format("%10.3f", peak.getIntensity()).trim();
-                out.append(line);
-                out.append("\n");
-            }
-            out.append("END IONS");
-            out.append("\n");
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-    /**
-     * override to add peptide later
-     *
-     * @param out
-     * @throws java.io.IOException
-     */
-    protected void appendTitle(final Appendable out) throws IOException {
-        out.append("TITLE=" + getId());
-    }
-
 
     @Override
     public String toString() {
@@ -236,7 +156,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     public int compareTo(ISpectrum o) {
         if (this == o)
             return 0;
-        //    guaranteeClean();
         if (getPrecursorCharge() != o.getPrecursorCharge())
             return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
         if (getPrecursorMz() != o.getPrecursorMz())
@@ -257,7 +176,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     public boolean equivalent(ISpectrum o) {
         if (o == this)
             return true;
-        //   guaranteeClean();
         if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > IPeak.SMALL_MZ_DIFFERENCE) {
             return false;
         }
@@ -316,7 +234,6 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = id.hashCode();
         result = 31 * result + precursorCharge;
         result = 31 * result + (precursorMz != +0.0f ? Float.floatToIntBits(precursorMz) : 0);

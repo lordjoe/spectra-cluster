@@ -11,8 +11,10 @@ import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
  * @version $Id$
  */
 public interface QualityScorer extends IAlgorithm {
+
     /**
-     * return the quality of the spectrum
+     * Calculate the quality of the spectrum
+     *
      * @param spectrum !null spectrum
      * @return quality >= 0
      */

@@ -13,16 +13,21 @@ import java.util.List;
 public interface IntensityNormalizer  extends IAlgorithm {
 
     /**
-     * return the value normalized to - especial;ly useful for total intensity normalization where
+     * return the value normalized to - especially useful for total intensity normalization where
      * we may not weed to normalize
      * @return  as above
+     *
+     * TODO: @steve do we really need to this method?
      */
     public double getNormalizedValue();
+
+
+
     /**
-     * normalize alist of peaks - all the dirty work is here
+     * normalize a list of peaks
      *
      * @param peaks
      * @return
      */
-    public List<IPeak> normalizePeaks(List<IPeak> peaks);
+    public List<IPeak> normalize(List<IPeak> peaks);
 }

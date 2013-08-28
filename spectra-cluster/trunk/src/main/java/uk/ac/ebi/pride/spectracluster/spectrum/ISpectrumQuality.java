@@ -14,6 +14,4 @@ public interface ISpectrumQuality extends IPeaksSpectrum   {
      * Get the quality measure of a spectrum
      */
     public double getQualityScore();
-
-
 }

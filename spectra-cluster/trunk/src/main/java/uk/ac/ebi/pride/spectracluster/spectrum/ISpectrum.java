@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import java.math.BigInteger;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
  * interface implemented by a specIMajorPeaksHoldertrum which may or mat not be a cluster
  *
  * @author Steve Lewis
@@ -30,32 +30,21 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
     public IPeaksSpectrum getHighestNPeaks(int numberRequested);
 
     /**
-     * return a spectrum normalized to the specific total intensity
-     *
-     * @return !null spectrum - might be this
-     */
-    public INormalizedSpectrum asNormalizedTo(double totalIntensity);
-
-    /**
      * an optimization to return a Biginteger representing bits at the mz values where the
      * majors (top MAJOR_PEAK_NUMBER are
      * @return  !null value - lazily built
+     *
+     * TODO: @Steve do we really need this?
      */
     public BigInteger asMajorPeakBits();
 
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     * this follows Frank et all's suggestion that all spectra in a cluster will share at least one of these
      * @return
      */
      public IPeaksSpectrum asMajorPeaks();
 
-    /**
-      * does the concensus spectrum contin this is a major peak
-      * @param mz   peak as int
-      * @return  true if so
-      */
-     public boolean containsMajorPeak(int mz);
 
 
 

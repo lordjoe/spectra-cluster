@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster
  *
  * @author Steve Lewis
  * @author Rui Wang
@@ -50,6 +50,8 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
 
     /**
      * all internally spectrum
+     *
+     * TODO: @Steve and Johannes, what is the difference between this method and the method below?
      */
     public List<ISpectrum> getHighestQualitySpectra();
 
@@ -62,15 +64,6 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      * count of internal spectrum
      */
     public int getClusteredSpectraCount();
-
-
-    /**
-     * does the concensus spectrum contin this is a major peak
-     *
-     * @param mz peak as int
-     * @return true if so
-     */
-    public boolean containsMajorPeak(int mz);
 
 
     /**

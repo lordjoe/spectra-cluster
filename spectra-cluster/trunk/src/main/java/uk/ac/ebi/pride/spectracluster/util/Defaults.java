@@ -11,11 +11,12 @@ import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 import java.util.Comparator;
 
 /**
- * uk.ac.ebi.pride.spectracluster.util.Defaults
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.util.Defaults
  *
  * @author Steve Lewis
  * @date 20/05/13

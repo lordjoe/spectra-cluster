@@ -16,4 +16,12 @@ public interface IMajorPeaksHolder {
      */
      public int[] asMajorPeakMZs();
 
+
+    /**
+     * does the concensus spectrum contin this is a major peak
+     * @param mz   peak as int
+     * @return  true if so
+     */
+    public boolean containsMajorPeak(int mz);
+
 }

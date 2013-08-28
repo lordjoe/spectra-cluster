@@ -3,22 +3,22 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.ConcensusSpectraItems
+ * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.spectrum.ConcensusSpectraItems
  *
  * @author Steve Lewis
  * @date 19/05/13
  */
 public class ConsensusSpectraItems {
 
-    private ISpectrum concensus;
+    private ISpectrum consensus;
     private List<ISpectrum> spectra;
 
-    public ISpectrum getConcensus() {
-        return concensus;
+    public ISpectrum getConsensus() {
+        return consensus;
     }
 
-    public void setConcensus(ISpectrum concensus) {
-        this.concensus = concensus;
+    public void setConsensus(ISpectrum consensus) {
+        this.consensus = consensus;
     }
 
     public List<ISpectrum> getSpectra() {
