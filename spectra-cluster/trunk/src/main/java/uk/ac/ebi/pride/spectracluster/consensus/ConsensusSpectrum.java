@@ -55,7 +55,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      */
     protected final float MZ_THRESHOLD_STEP = 0.1F;
 
-    protected List<ISpectrumHolderListener> listeners = new ArrayList<ISpectrumHolderListener>();
+    protected final List<ISpectrumHolderListener> listeners = new ArrayList<ISpectrumHolderListener>();
+
     public final static boolean USE_ROUNDING = false;
 
     /**
@@ -163,12 +164,11 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         int posAllPeaks = 0;
 
-        for (int i = 0; i < peaksToRemove.size(); i++) {
-            IPeak peakToRemove = peaksToRemove.get(i);
+        for (IPeak peakToRemove : peaksToRemove) {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = ClusterUtilities.round(mzToRemove );
+                mzToRemove = ClusterUtilities.round(mzToRemove);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -224,12 +224,11 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         int posAllPeaks = 0;
         List<IPeak> newPeaks = new ArrayList<IPeak>(); // peaks with m/z values that do not yet exist
 
-        for (int i = 0; i < peaksToAdd.size(); i++) {
-            IPeak peakToAdd = peaksToAdd.get(i);
-            double  mzToAdd = peakToAdd.getMz();
+        for (IPeak peakToAdd : peaksToAdd) {
+            double mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = ClusterUtilities.round(mzToAdd );
+                mzToAdd = ClusterUtilities.round(mzToAdd);
 
             boolean wasAdded = false;
 
@@ -237,13 +236,13 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
                 IPeak currentExistingPeak = allPeaks.get(j);
 
                 if (mzToAdd < currentExistingPeak.getMz()) {
-                    newPeaks.add(new Peak((float)mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
+                    newPeaks.add(new Peak((float) mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
                     posAllPeaks = j;
                     wasAdded = true;
                     break;
                 }
 
-                if (mzToAdd == ClusterUtilities.round(currentExistingPeak.getMz() )) {
+                if (mzToAdd == ClusterUtilities.round(currentExistingPeak.getMz())) {
                     allPeaks.set(j, new Peak(
                             currentExistingPeak.getMz(),
                             peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
@@ -256,7 +255,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             }
 
             if (!wasAdded)
-                newPeaks.add(new Peak((float)mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
+                newPeaks.add(new Peak((float) mzToAdd, peakToAdd.getIntensity(), peakToAdd.getCount()));
         }
 
         // add all new peaks

@@ -174,8 +174,7 @@ public class ParserUtilities {
     protected static String idFromClusterLine(String line) {
         line = line.replace(BEGIN_CLUSTER, "").trim();
         String[] split = line.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            String s = split[i];
+        for (String s : split) {
             if (s.startsWith("Id=")) {
                 return s.substring("Id=".length());
             }
@@ -192,8 +191,7 @@ public class ParserUtilities {
     protected static int chargeFromClusterLine(String line) {
         line = line.replace(BEGIN_CLUSTER, "").trim();
         String[] split = line.split(" ");
-        for (int i = 0; i < split.length; i++) {
-            String s = split[i];
+        for (String s : split) {
             if (s.startsWith("Charge=")) {
                 return (int) (0.5 + Double.parseDouble(s.substring("Charge=".length())));
             }
@@ -250,8 +248,7 @@ public class ParserUtilities {
      public static List<ISpectralCluster> readMGFClusters(File inp) {
          IPeptideSpectrumMatch[] scans = readMGFScans(  inp);
          List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-         for (int i = 0; i < scans.length; i++) {
-             IPeptideSpectrumMatch scan = scans[i];
+         for (IPeptideSpectrumMatch scan : scans) {
              final ISpectralCluster e = scan.asCluster();
              holder.add(e);
          }
@@ -353,8 +350,8 @@ public class ParserUtilities {
 
                     boolean tagIsNotHandled = false;
                     // ignored for now
-                    for (int i = 0; i < NOT_HANDLED_MGF_TAGS.length; i++) {
-                        if (line.startsWith(NOT_HANDLED_MGF_TAGS[i])) {
+                    for (String NOT_HANDLED_MGF_TAG : NOT_HANDLED_MGF_TAGS) {
+                        if (line.startsWith(NOT_HANDLED_MGF_TAG)) {
                             tagIsNotHandled = true;
                             line = inp.readLine();
                             break;
@@ -367,7 +364,6 @@ public class ParserUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if (END_IONS.equals(line)) {
-                    double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
                     String peptide = sequence;
                     sequence = null;
@@ -375,7 +371,7 @@ public class ParserUtilities {
                             title,
                             peptide,
                             dcharge,
-                            (float) mz,
+                            (float) massToChargeCalledPpMass,
                             holder,
                             title // save title - sequence as annotation
                     );
@@ -419,8 +415,7 @@ public class ParserUtilities {
     protected static void handleTitleLine(PeaksSpectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
-        for (int i = 0; i < items.length; i++) {
-            String item = items[i];
+        for (String item : items) {
             // if(item.startsWith(""))
         }
 
@@ -496,8 +491,7 @@ public class ParserUtilities {
 
     protected static String buildMGFTitle(String line) {
         String[] items = line.split(",");
-        String label = line.substring("TITLE=".length());
-        String spectrumId = label;
+        String spectrumId = line.substring("TITLE=".length());
         if (items.length > 1) {
             spectrumId = items[0].trim().substring("TITLE=id=".length());
         }

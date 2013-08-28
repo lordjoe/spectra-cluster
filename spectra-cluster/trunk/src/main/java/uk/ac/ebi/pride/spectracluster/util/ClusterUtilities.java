@@ -40,12 +40,7 @@ public class ClusterUtilities {
      * @return
      */
     public static boolean isMZInteresting(final float pMz) {
-        if(pMz < MININUM_INTERESTING_MZ)
-            return false;
-        if(pMz > MAXINUM_INTERESTING_MZ)
-            return false;
-
-        return true; // break here
+        return pMz >= MININUM_INTERESTING_MZ && pMz <= MAXINUM_INTERESTING_MZ;
     }
 
     /**
@@ -175,7 +170,7 @@ public class ClusterUtilities {
      */
     public static List<IPeak> peaksByIntensity(ISpectrum sc) {
         List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
-        Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
+        Collections.sort(peaks, PeakIntensityComparator.getInstance());
         return peaks;
     }
 
@@ -317,8 +312,7 @@ public class ClusterUtilities {
         // now grab all peaks in a list
         // will hold retained peaks
         List<IPeak> holder = new ArrayList<IPeak>();
-        for (int i = 0; i < higheseEachBin.length; i++) {
-            PriorityQueue<IPeak> hightestInBin = higheseEachBin[i];
+        for (PriorityQueue<IPeak> hightestInBin : higheseEachBin) {
             if (hightestInBin != null)
                 holder.addAll(hightestInBin);
         }

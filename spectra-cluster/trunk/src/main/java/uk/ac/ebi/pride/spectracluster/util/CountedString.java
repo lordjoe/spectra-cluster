@@ -28,12 +28,10 @@ public class CountedString implements Comparable<CountedString> {
         List<CountedString> holder = new ArrayList<CountedString>();
 
 
-        for (int i = 0; i < items.length; i++) {
-            String peptide = items[i];
+        for (String peptide : items) {
             if (peptide.equals(current)) {
                 currentCount++;
-            }
-            else {
+            } else {
                 if (!current.isEmpty())    // ignore empty
                     holder.add(new CountedString(current, currentCount));
 
