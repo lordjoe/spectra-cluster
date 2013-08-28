@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ChargePeakMZKey
  * key represents charge bin number and precursor mz
+ * this change forces a commit
  * User: Steve
  * Date: 8/13/13
  * key object using charge,mz,peak
@@ -16,16 +17,14 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
     private String asString;
     private int partitionHash;
 
-    @SuppressWarnings("UnusedDeclaration")
-    public ChargeBinMZKey(final int pCharge, final int pBin, final double pPrecursorMZ) {
+      public ChargeBinMZKey(final int pCharge, final int pBin, final double pPrecursorMZ) {
         charge = pCharge;
         bin = pBin;
         precursorMZ = pPrecursorMZ;
         asString = null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public ChargeBinMZKey(String str) {
+     public ChargeBinMZKey(String str) {
         final String[] split = str.split(":");
         charge = Integer.parseInt(split[0]);
         String key1 = split[1];
@@ -64,7 +63,9 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
             sb.append(String.format("%02d", getCharge()));
             sb.append(":");
             sb.append(String.format("%06d", getBin()));
+            // only include charge and bin
             partitionHash = sb.toString().hashCode();
+            sb.append(":");
             sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
 
             asString = sb.toString();
