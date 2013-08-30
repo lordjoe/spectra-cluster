@@ -1,10 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+
+import java.io.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectraHadoopUtilities
@@ -138,5 +142,34 @@ public class SpectraHadoopUtilities {
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargeBinMZKey mzKey) {
         int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context,"Bin", hash);
+    }
+
+    /**
+     * build a reader for  a local sequence file
+     * @param file !null existing readabl;e non-directory file
+     * @param conf  !null Configuration
+     * @return  !null reader
+     */
+    public static SequenceFile.Reader buildSequenceFileReader(File file,Configuration conf)
+    {
+        String fileName = file.getPath();
+        Path filePath = new Path(fileName);
+        return buildSequenceFileReader(conf, filePath);
+
+    }
+
+    /**
+     * build a reader for  a local sequence file
+     * @param conf  !null Configuration
+     * @param filePath !null existing path
+     * @return  !null reader
+      */
+    public static  SequenceFile.Reader buildSequenceFileReader(Configuration conf, Path filePath) {
+        try {
+             FileSystem fs = FileSystem.get(conf);
+             return new SequenceFile.Reader(fs, filePath, conf);
+         } catch (IOException e) {
+             throw new RuntimeException(e);
+         }
     }
 }

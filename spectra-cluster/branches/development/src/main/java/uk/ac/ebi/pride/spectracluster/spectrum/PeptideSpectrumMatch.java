@@ -148,7 +148,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     protected void guaranteeMajorPeaks() {
         if(majorPeakMZ.isEmpty()) {
              IPeaksSpectrum peaks = asMajorPeaks();
-            int index = 0;
             for(IPeak peak : peaks.getPeaks())  {
                 majorPeakMZ.add(  (int)peak.getMz());
             }
@@ -264,6 +263,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             if (holder.size() >= numberRequested)
                 break;
         }
+        //noinspection UnnecessaryLocalVariable
         PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this, holder);
         return ret;
     }
