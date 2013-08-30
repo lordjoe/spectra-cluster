@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -15,7 +17,7 @@ public class SpectraHadoopUtilities {
     public static final int MIMIMUM_CLUSTER_LENGTH = 5 * "BEGIN IONS\n".length();
 
     public static final double NARRROW_BIN_WIDTH = 0.005; // 0.3;
-    public static final double  NARRROW_BIN_OVERLAP = 0.002; // 0.1;
+    public static final double NARRROW_BIN_OVERLAP = 0.002; // 0.1;
 
 
     public static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
@@ -25,11 +27,10 @@ public class SpectraHadoopUtilities {
             NARRROW_BIN_OVERLAP);
 
 
-
     public static final double WIDE_BIN_WIDTH = 1.0;
-    public static final double  WIDE_BIN_OVERLAP = 0.3;
+    public static final double WIDE_BIN_OVERLAP = 0.3;
 
-     @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("UnusedDeclaration")
     public static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             IPeak.LOWEST_USABLE_MZ,
@@ -48,17 +49,18 @@ public class SpectraHadoopUtilities {
         String str = String.format("%010d", peak);
         return str;
     }
+
     /**
-      * convert am int into an mz for east comparison
-      *
-      * @param key input
-      * @return MZ_RESOLUTION * mz as int
-      */
-     public static double keyToMZ(String key) {
-         //noinspection UnnecessaryLocalVariable
-          double ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
-          return ret / ClusterUtilities.MZ_RESOLUTION;
-     }
+     * convert am int into an mz for east comparison
+     *
+     * @param key input
+     * @return MZ_RESOLUTION * mz as int
+     */
+    public static double keyToMZ(String key) {
+        //noinspection UnnecessaryLocalVariable
+        double ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
+        return ret / ClusterUtilities.MZ_RESOLUTION;
+    }
 
 
 //    public static PrintWriter buildPrintWriter(TaskInputOutputContext context, String paramsFile, String added) {
@@ -105,4 +107,36 @@ public class SpectraHadoopUtilities {
 //        return os;
 //    }
 
+    /**
+     * track how balanced is partitioning
+     *
+     * @param context !null context
+     * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
+     */
+    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context,String prefix, int hash) {
+        String counterName = prefix + String.format("%04d", hash).trim();
+        context.getCounter("Partition", counterName).increment(1);
+    }
+
+    /**
+     * track how balanced is partitioning
+     *
+     * @param context !null context
+     * @param mzKey   !null key
+     */
+    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargePeakMZKey mzKey) {
+        int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        incrementPartitionCounter(context,"Peak", hash);
+    }
+
+    /**
+      * track how balanced is partitioning
+      *
+      * @param context !null context
+      * @param mzKey   !null key
+      */
+    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargeBinMZKey mzKey) {
+        int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        incrementPartitionCounter(context,"Bin", hash);
+    }
 }

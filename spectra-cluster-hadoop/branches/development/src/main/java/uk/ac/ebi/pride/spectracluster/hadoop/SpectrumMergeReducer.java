@@ -144,6 +144,24 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         }
     }
 
+    public void setMajorMZ(double majorMZ) {
+        this.majorMZ = majorMZ;
+    }
+
+    public void setCurrentCharge(int currentCharge) {
+        if(currentCharge == this.currentCharge)
+            return;
+        this.currentCharge = currentCharge;
+        System.err.println("Setting charge   " + currentCharge);
+    }
+
+    public void setCurrentBin(int currentBin) {
+        this.currentBin = currentBin;
+        double mid = getBinner().fromBin(currentBin);
+        String midStr = String.format("%10.1f",mid).trim();
+        System.err.println("Handling bin " + currentBin + " " + midStr);
+    }
+
     /**
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null
      *
@@ -160,9 +178,9 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         if (pMzKey != null) {
             engine = factory.getIncrementalClusteringEngine();
             majorMZ = pMzKey.getPrecursorMZ();
-            currentBin = pMzKey.getBin();
-            currentCharge = pMzKey.getCharge();
-        }
+            setCurrentBin(pMzKey.getBin());
+            setCurrentCharge(pMzKey.getCharge());
+           }
     }
 
 

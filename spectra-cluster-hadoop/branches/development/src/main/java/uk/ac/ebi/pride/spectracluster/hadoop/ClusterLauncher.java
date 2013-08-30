@@ -24,6 +24,9 @@ import java.util.prefs.*;
  */
 public class ClusterLauncher implements IStreamOpener { //extends AbstractParameterHolder implements IParameterHolder {
 
+    // Hard code this so we can debug partitioner code
+    public static final int DEFAULT_NUMBER_REDUCERS = 300;
+
     // for development you can skip the fiirst jobs ot work on issues in the second
     public static final int START_AT_JOB = 0; // 1;
 
@@ -42,8 +45,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
 
     public static final int MAX_DISPLAY_LENGTH = 4 * 1000 * 1000;
+    public static final int TOTAL_STAGES = 3;
     @SuppressWarnings("PointlessArithmeticExpression")
-    public static final int NUMBER_STAGES = 3 - START_AT_JOB;
+    public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
 
     private static HadoopMajorVersion g_RunningHadoopVersion = HadoopMajorVersion.CURRENT_VERSION;
 
@@ -855,8 +859,11 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
 
         jobNumber++;
+        if (START_AT_JOB <= jobNumber)
         {
-            holder.add(buildJob(getOutputLocation(jobNumber), ClusterConsolidator.class, jobNumber));
+            String job0Output = getOutputLocation(jobNumber);
+            IHadoopJob job = buildJob(job0Output, ClusterConsolidator.class, jobNumber);
+            holder.add(job);
         }
         //noinspection UnusedAssignment
         jobNumber++;
