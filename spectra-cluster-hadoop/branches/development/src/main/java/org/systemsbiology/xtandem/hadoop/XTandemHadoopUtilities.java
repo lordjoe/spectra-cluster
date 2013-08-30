@@ -28,11 +28,13 @@ import java.util.*;
 
 /**
  * org.systemsbiology.xtandem.hadoop.XTandemHadoopUtilities
- * Common code as statis functions shared by much of the Hadoop implementation
+ * Common code as static functions shared by much of the Hadoop implementation
  *
  * @author Steve Lewis
  * @date Mar 8, 2011
  */
+// NOTE WE WILL GTE RID OF THIS CLASS
+@SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "UnusedParameters", "UnusedDeclaration", "ForLoopReplaceableByForEach", "RedundantStringToString", "ConstantConditions", "UnusedAssignment", "UnnecessaryLocalVariable", "UnnecessaryContinue", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "WhileLoopReplaceableByForEach", "PointlessBooleanExpression"})
 public class XTandemHadoopUtilities {
     public static XTandemHadoopUtilities[] EMPTY_ARRAY = {};
     public static Class THIS_CLASS = XTandemHadoopUtilities.class;
@@ -159,6 +161,7 @@ public class XTandemHadoopUtilities {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static void cleanFile(FileSystem fs, Path directory, String file) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
@@ -190,6 +193,7 @@ public class XTandemHadoopUtilities {
     public static final String FORCE_PATH_PREFIX_KEY = "org.systemsbiology.xtandem.hdfs.forcePathPrefix";
     public static final String HOST_KEY = "org.systemsbiology.xtandem.hdfs.host";
     public static final String HOST_PORT_KEY = "org.systemsbiology.xtandem.hdfs.port";
+    @SuppressWarnings("UnusedDeclaration")
     public static final String HOST_PREFIX_KEY = "org.systemsbiology.xtandem.hostprefix";
 
     public static final int DEFAULT_MAX_SCORED_PEPTIDES = 30000;
@@ -309,6 +313,7 @@ public class XTandemHadoopUtilities {
             gDefaultPath = new Path(s);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static Path getDefaultPath() {
         return gDefaultPath;
     }
@@ -327,6 +332,7 @@ public class XTandemHadoopUtilities {
      * @param job
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static Counter[] getAllCounters(Job job) {
         List<Counter> holder = new ArrayList<Counter>();
 
@@ -353,8 +359,10 @@ public class XTandemHadoopUtilities {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static void showAllCounters(Map<String, Counter> counters) {
-        String[] keys = counters.keySet().toArray(new String[0]);
+        Set<String> strings = counters.keySet();
+        String[] keys = strings.toArray(new String[strings.size()]);
         Arrays.sort(keys);
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
@@ -387,6 +395,7 @@ public class XTandemHadoopUtilities {
             }
             if ("-filecache".equals(arg)) {
                 String file = args[++i];
+                //noinspection SimplifiableIfStatement,PointlessBooleanExpression,ConstantConditions,RedundantIfStatement,ConstantIfStatement
                 if (true)
                     throw new UnsupportedOperationException("Fix This"); // ToDo
                 continue;
@@ -513,6 +522,7 @@ public class XTandemHadoopUtilities {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static int getNumberReducers(Configuration conf) {
         String n = conf.get("mapred.reduce.tasks");
         return Integer.parseInt(n);
@@ -532,7 +542,7 @@ public class XTandemHadoopUtilities {
             System.err.println("Read Database Sizes");
             if (ret != null && ret.size() > 0)
                 return ret;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         return buildDatabaseSizes(pApplication);
@@ -718,7 +728,7 @@ public class XTandemHadoopUtilities {
         ByteArrayInputStream inp = null;
         byte[] bytes = null;
         try {
-            bytes = text.toString().getBytes();
+            bytes = text.getBytes();
 
             inp = new ByteArrayInputStream(bytes);
 
@@ -912,6 +922,7 @@ public class XTandemHadoopUtilities {
         String name = buildFileNameFromMass(mass);
         String DataDirectory = md.getDatabaseName();
         Path dd = getRelativePath(DataDirectory);
+        //noinspection UnnecessaryLocalVariable
         Path myPath = new Path(dd, name);
         return myPath;
     }
@@ -955,6 +966,7 @@ public class XTandemHadoopUtilities {
             //   opener = new FileStreamOpener();
         }
 
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         final String basedir = pConfiguration.get(PATH_KEY);
         final String paramsFile = pConfiguration.get(PARAMS_KEY);
         if (context != null) {
@@ -1039,6 +1051,7 @@ public class XTandemHadoopUtilities {
                                                HadoopTandemMain data) {
         InputStream os = buildInputStream(context, data);
 
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         LineNumberReader ret = new LineNumberReader(new InputStreamReader(os));
 
 
@@ -1058,6 +1071,7 @@ public class XTandemHadoopUtilities {
         safeWrite(context, "Output File", paramsFile);
         HDFSAccessor accesor = opener.getAccesor();
         Path path = new Path(paramsFile);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         OutputStream os = accesor.openFileForWrite(path);
 
         return os;
@@ -1068,6 +1082,7 @@ public class XTandemHadoopUtilities {
 //        if (added != null)
 //            paramsFile += added;
         OutputStream out = buildOutputStream(context, paramsFile, added);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         PrintWriter ret = new PrintWriter(out);
         return ret;
     }
@@ -1129,7 +1144,7 @@ public class XTandemHadoopUtilities {
         return ret;
     }
 
-
+    @SuppressWarnings("UnusedDeclaration")
     public static OutputStream buildOutputStream(TaskInputOutputContext context,
                                                  HadoopTandemMain data) {
         return buildOutputStream(context, data, null);
@@ -1168,6 +1183,7 @@ public class XTandemHadoopUtilities {
     public static void safeWrite(final TaskInputOutputContext context, final String key,
                                  final String value) {
         try {
+            //noinspection unchecked
             context.write(new Text(key), new Text(value));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -1239,6 +1255,7 @@ public class XTandemHadoopUtilities {
         XTandemMain.addPreLoadOpener(opener);
 
         final String paramsFile = BiomlReporter.buildDefaultFileName(data);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         InputStream os = opener.open(paramsFile);
         return os;
     }
@@ -1251,6 +1268,7 @@ public class XTandemHadoopUtilities {
      * @param context  ignores
      * @return !null file
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static File getDistributedFile2(String fileName, final TaskInputOutputContext context) {
         final File[] files = HadoopUtilities.getDistributedCacheFiles(context);
         for (int i = 0; i < files.length; i++) {
@@ -1285,6 +1303,7 @@ public class XTandemHadoopUtilities {
      * @param f existing readable file
      * @return number of lines
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static int getNumberLines(final Path path, Configuration conf) {
         try {
             FileSystem fs = FileSystem.get(conf);
@@ -1320,6 +1339,8 @@ public class XTandemHadoopUtilities {
      * @param fs
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
+
     public static String[] ls(String hdfsPath, FileSystem fs) {
         try {
             FileStatus[] statuses = fs.listStatus(new Path(hdfsPath));
@@ -1397,7 +1418,8 @@ public class XTandemHadoopUtilities {
         try {
             FSDataOutputStream os = fileSystem.create(p, true); // create with overwrite
             out = new PrintWriter(new OutputStreamWriter(os));
-            String[] items = counters.keySet().toArray(new String[0]);
+            Set<String> strings = counters.keySet();
+            String[] items = strings.toArray(new String[strings.size()]);
             Arrays.sort(items);
             for (String s : items) {
                 out.println(s + "=" + counters.get(s));
@@ -1513,6 +1535,7 @@ public class XTandemHadoopUtilities {
         try {
             Configuration cfg = application.getContext();
             Path databasePath = XTandemHadoopUtilities.getRelativePath(application.getDatabaseName());
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             FileSystem fs = FileSystem.get(cfg);
             Map<Integer, Integer> ret = getDatabaseSizes(databasePath, cfg);
             return ret;
