@@ -45,6 +45,10 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             // ready to read test as one MGF
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
+            if(match == null )    {
+                System.err.println("No Match fount in text\n" + text);
+                return;
+            }
             int precursorCharge = match.getPrecursorCharge();
             double precursorMZ = match.getPrecursorMz();
 
@@ -52,6 +56,9 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             Text onlyValue = getOnlyValue();
             for (int peakMz : match.asMajorPeakMZs()) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
+
+                SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
+
                 final String keyStr = mzKey.toString();
                 onlyKey.set(keyStr);
                 onlyValue.set(text);   // send on the MGF
