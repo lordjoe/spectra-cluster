@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.algorithms.*;
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 
@@ -29,13 +31,13 @@ public class PartitioningTests {
         this.targetDirectory = targetDirectory;
     }
 
-    public void addKey(String key)   {
+    public void addKey(String key) {
         keys.add(key);
     }
 
     protected void writeKeys(File out) {
         try {
-            PrintWriter pout = new PrintWriter(new FileWriter(out)) ;
+            PrintWriter pout = new PrintWriter(new FileWriter(out));
             for (String key : keys) {
                 pout.println(key);
             }
@@ -57,8 +59,7 @@ public class PartitioningTests {
         }
     }
 
-    public void readKeys(File file)  throws RuntimeException
-    {
+    public void readKeys(File file) throws RuntimeException {
         SequenceFile.Reader rdr = SpectraHadoopUtilities.buildSequenceFileReader(file, conf);
         try {
             while (rdr.next(onlyKey)) {
@@ -80,7 +81,8 @@ public class PartitioningTests {
 
     }
 
-    public static void main(String[] args) {
+    @SuppressWarnings("UnusedDeclaration")
+    protected static void readAndWriteKeys(String[] args) {
         File f = new File(args[0]);
         if (!f.exists() || !f.isDirectory())
             throw new IllegalArgumentException("Directory does not exits " + args[0]);
@@ -90,5 +92,53 @@ public class PartitioningTests {
         pt.readKeys();
         pt.writeKeys(out);
     }
+
+
+    protected static void partitionKeys(String[] args) {
+        IWideBinner binner = SpectraHadoopUtilities.WIDE_MZ_BINNER;
+        File f = new File(args[0]);
+        if (!f.exists() || !f.isFile())
+            throw new IllegalArgumentException("File does not exits " + args[0]);
+        String[] lines = FileUtilities.readInLines(f);
+        List<ChargeBinMZKey> holder = new ArrayList<ChargeBinMZKey>();
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            ChargeMZKey k1 = new ChargeMZKey(line);
+            int charge = k1.getCharge();
+            double mz = k1.getPrecursorMZ();
+            int[] bins = binner.asBins(mz);
+            for (int j = 0; j < bins.length; j++) {
+                int bin = bins[j];
+                holder.add(new ChargeBinMZKey(charge, bin, mz));
+            }
+        }
+        ChargeBinMZKey[] keys = holder.toArray(new ChargeBinMZKey[holder.size()]);
+        examinePartitions(keys);
+
+    }
+
+
+    protected static void examinePartitions(ChargeBinMZKey[] keys) {
+        int numberReducers = ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        int[] partitions = new int[numberReducers];
+        for (int i = 0; i < keys.length; i++) {
+            ChargeBinMZKey key = keys[i];
+            int hash = key.getPartitionHash();
+            int partition = hash % numberReducers;
+            partitions[partition]++;
+        }
+
+        for (int i = 0; i < partitions.length; i++) {
+            int partition = partitions[i];
+            System.out.println("partition " + partition);
+        }
+    }
+
+    public static void main(String[] args) {
+        //    readAndWriteKeys(args);
+        partitionKeys(args);
+    }
+
 
 }
