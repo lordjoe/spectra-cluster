@@ -11,6 +11,8 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 
 import java.io.*;
@@ -23,8 +25,38 @@ import java.io.*;
  */
 public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunner {
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private static String outputFileName = "ConsolidatorOutput.cgf";
+
+    public static class MZKeyMapper extends AbstractParameterizedMapper<Text> {
+
+
+        @Override
+        public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+            String label = key.toString();
+            String text = value.toString();
+            if (label == null || text == null)
+                return;
+            if (label.length() == 0 || text.length() == 0)
+                return;
+
+
+            Text onlyKey = getOnlyKey();
+            Text onlyValue = getOnlyValue();
+
+
+            LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
+            ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < clusters.length; i++) {
+                ISpectralCluster cluster = clusters[i];
+                MZKey mzkey = new MZKey(cluster.getPrecursorMz());
+                final String keyStr = mzkey.toString();
+                onlyKey.set(keyStr);
+                onlyValue.set(text);   // send on the MGF
+                context.write(onlyKey, onlyValue);
+            }
+        }
+
+    }
 
     /**
      * retucer to w
@@ -32,30 +64,67 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
     public static class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 
         private PrintWriter outputWriter;
-        private NullWritable out = NullWritable.get();
+        private boolean currentWriterWritten;
+
         @Override
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
-
-            //noinspection SimplifiableIfStatement,ConstantIfStatement
-            if(true)
-                return;
-           //        setWriters(context,get)
-            final Configuration configuration = context.getConfiguration();
-              // note we are reading from hdsf
-            HDFSStreamOpener opener = new HDFSStreamOpener(configuration);
-            String filePath = opener.buildFilePath(outputFileName);
-            HDFSAccessor accesor = opener.getAccesor();
-            Path path = new Path(filePath);
-            OutputStream os = accesor.openFileForWrite(path);
-            outputWriter = new PrintWriter(new OutputStreamWriter(os));
         }
 
-        @Override
-        protected void cleanup(final Context context) throws IOException, InterruptedException {
-            super.cleanup(context);
-            if (outputWriter != null)
-                outputWriter.close();
+
+        private PrintWriter outWriter;
+        private MZKey currentKey;
+
+        @SuppressWarnings("UnusedDeclaration")
+        public MZKey getCurrentKey() {
+            return currentKey;
+        }
+
+        public void setCurrentWriterWritten(boolean currentWriterWritten) {
+            this.currentWriterWritten = currentWriterWritten;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void setCurrentKey(MZKey key, final Context context) {
+            if (outWriter != null) {
+                outWriter.close();
+                if (isCurrentWriterWritten()) {
+                    String baseName = getFileNameString(currentKey);
+                    SpectraHadoopUtilities.renameAttemptFile(context, baseName, getFileNameString(currentKey) + ".cgf");
+                }
+                setOutWriter(null);
+            }
+            currentKey = key;
+            if (key == null)
+                return;
+            String baseName = getFileNameString(key);
+            PrintWriter outWriter1 = SpectraHadoopUtilities.buildReducerWriter(context, baseName);
+            setOutWriter(outWriter1);
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public PrintWriter getOutputWriter() {
+            return outputWriter;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void setOutputWriter(PrintWriter outputWriter) {
+            this.outputWriter = outputWriter;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public PrintWriter getOutWriter() {
+            return outWriter;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void setOutWriter(PrintWriter ow) {
+            outWriter = ow;
+           setCurrentWriterWritten(false);
+        }
+
+        public boolean isCurrentWriterWritten() {
+            return currentWriterWritten;
         }
 
         /**
@@ -70,23 +139,39 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
          */
         @Override
         protected void reduce(final Text key, final Iterable<Text> values, final Context context) throws IOException, InterruptedException {
+
+            MZKey realkey = new MZKey(key.toString());
+            MZKey currentKey1 = getCurrentKey();
+            int currentKeyInt = 0;
+            if(currentKey1 != null)
+                currentKeyInt = currentKey1.getAsInt();
+            int keyInt = realkey.getAsInt();
+            if (currentKeyInt != keyInt) {
+                setCurrentKey(realkey, context);
+            }
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {
                 String valStr = val.toString();
-                context.write(out,val);
-                if (outputWriter != null)
-                     outputWriter.println(valStr);
+                outWriter.println(valStr);
+                setCurrentWriterWritten(true);
             }
 
         }
 
-//        protected void setWriters(Context context, HadoopTandemMain application, String inputFileNamex) {
-//
-//            System.err.println("Setting up writers");
-//            String s = inputFileNamex;
-//            outputWriter = SpectraHadoopUtilities.buildPrintWriter( getApplication(),inputFileNamex);
-//
-//        }
+
+        @Override
+        protected void cleanup(final Context context) throws IOException, InterruptedException {
+            super.cleanup(context);
+            if (outputWriter != null)
+                outputWriter.close();
+            setCurrentKey(null, context);
+        }
+
+
+    }
+
+    private static String getFileNameString(MZKey key) {
+        return "BinFile" + String.format("%04d", key.getAsInt());
     }
 
 
@@ -110,10 +195,9 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 //            System.exit(2);
 //        }
             Job job = new Job(conf, "Cluster Consolidator");
-             setJob(job);
+            setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
-
 
 
             // make default settings
@@ -133,13 +217,13 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             // there is no output
             job.setOutputFormatClass(TextOutputFormat.class);
 
-            job.setMapperClass(TextIdentityMapper.class);
+            job.setMapperClass(MZKeyMapper.class);
             job.setReducerClass(FileWriteReducer.class);
+            // partition by MZ as int
+            job.setPartitionerClass(MZPartitioner.class);
 
-              // never do speculative execution
-            conf.set("mapreduce.reduce.speculative","false");
-            conf.set("mapreduce.reduce.speculative","false");
-            conf.set("mapreduce.reduce.speculative","false");
+            // never do speculative execution
+            conf.set("mapreduce.reduce.speculative", "false");
 
 
             // We always do this
@@ -152,7 +236,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
             XTandemHadoopUtilities.setRecommendedMaxReducers(job);
-            job.setNumReduceTasks(1);  // this is important
+       //     job.setNumReduceTasks(1);  // Ignore we write multiple files
 
 
             if (otherArgs.length > 1) {
@@ -183,10 +267,6 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 XTandemHadoopUtilities.saveCounters(fileSystem, XTandemHadoopUtilities.buildCounterFileName(this, conf), job);
             else
                 throw new IllegalStateException("Job Failed");
-
-
-            //    if (numberMapped != numberReduced)
-            //       throw new IllegalStateException("problem"); // ToDo change
 
             return ret;
         } catch (IOException e) {

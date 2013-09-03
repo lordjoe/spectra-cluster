@@ -11,23 +11,30 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 public class MZKey implements Comparable<MZKey> {
 
     private final double precursorMZ;
+    private final int asInt;
     private String asString;
 
     @SuppressWarnings("UnusedDeclaration")
     public MZKey(final double pPrecursorMZ) {
         precursorMZ = pPrecursorMZ;
+        asInt = (int)pPrecursorMZ;
         asString = null;    // force string regeneration
      }
 
     @SuppressWarnings("UnusedDeclaration")
     public MZKey(String str) {
         precursorMZ = SpectraHadoopUtilities.keyToMZ(str);
+        asInt = (int)precursorMZ;
         asString = null;    // force string regeneration
     }
 
 
     public double getPrecursorMZ() {
         return precursorMZ;
+    }
+
+    public int getAsInt() {
+        return asInt;
     }
 
     @Override
@@ -44,6 +51,8 @@ public class MZKey implements Comparable<MZKey> {
 
     @Override
     public boolean equals(final Object o) {
+        if(o == null)
+            return false;
         //noinspection SimplifiableIfStatement
         if(getClass() != o.getClass())
             return false;

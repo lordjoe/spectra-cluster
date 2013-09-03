@@ -172,4 +172,56 @@ public class SpectraHadoopUtilities {
              throw new RuntimeException(e);
          }
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+        protected static final String ATTEMPT = "attempt";
+        protected static final char SEPARATOR = '_';
+
+        @SuppressWarnings("UnusedDeclaration")
+        public static PrintWriter buildReducerWriter(Reducer.Context ctxt, String baseName) {
+            try {
+                FileSystem fs = FileSystem.get(ctxt.getConfiguration());
+                Path path = getAttempPath(ctxt, fs, baseName);
+                final FSDataOutputStream dsOut = fs.create(path);
+                //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(dsOut));
+                return out;
+
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+
+            }
+
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public static Path getAttempPath(final Reducer.Context ctxt, final FileSystem pFs, String baseName) {
+            final TaskAttemptID taskAttemptID = ctxt.getTaskAttemptID();
+            String str = taskAttemptID.toString();
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment,MismatchedReadAndWriteOfArray
+            String[] parts = str.split(Character.toString(SEPARATOR));
+
+
+            String fileName = baseName + parts[4] +  ".tmp";
+            Path workingDirectory = pFs.getWorkingDirectory();
+            return new Path(workingDirectory, fileName);
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public static void renameAttemptFile(Reducer.Context ctxt, String baseName, String outName) {
+            try {
+                FileSystem fs = FileSystem.get(ctxt.getConfiguration());
+                Path pathstartPath = getAttempPath(ctxt, fs, baseName);
+                Path outpath = new Path(fs.getWorkingDirectory(), outName);
+
+                fs.rename(pathstartPath, outpath);
+
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+
+            }
+
+        }
 }
