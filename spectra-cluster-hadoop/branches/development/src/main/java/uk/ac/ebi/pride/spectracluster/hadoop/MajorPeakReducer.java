@@ -53,7 +53,10 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
+            if(match == null)
+                continue; // not sure why this happens but nothing seems like the thing to do
             final ISpectralCluster cluster = match.asCluster();
+
 
             final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
 

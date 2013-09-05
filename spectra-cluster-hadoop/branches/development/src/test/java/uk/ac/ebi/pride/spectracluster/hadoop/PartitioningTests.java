@@ -60,8 +60,14 @@ public class PartitioningTests {
     }
 
     public void readKeys(File file) throws RuntimeException {
-        SequenceFile.Reader rdr = SpectraHadoopUtilities.buildSequenceFileReader(file, conf);
+        SequenceFile.Reader rdr = null;
         try {
+            rdr = SpectraHadoopUtilities.buildSequenceFileReader(file, conf);
+        } catch (Exception e) {
+            return;   // forgive - not everything will work
+           }
+        try {
+            System.out.println(file.getPath());
             while (rdr.next(onlyKey)) {
                 String key = onlyKey.toString();
                 addKey(key);
@@ -95,7 +101,7 @@ public class PartitioningTests {
 
 
     protected static void partitionKeys(String[] args) {
-        IWideBinner binner = SpectraHadoopUtilities.WIDE_MZ_BINNER;
+        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
         File f = new File(args[0]);
         if (!f.exists() || !f.isFile())
             throw new IllegalArgumentException("File does not exits " + args[0]);

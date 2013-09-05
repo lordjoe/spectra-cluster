@@ -18,7 +18,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     private double majorMZ;
     private int currentCharge;
     private int currentBin;
-    private IWideBinner binner = SpectraHadoopUtilities.NARROW_MZ_BINNER; // todo stop hard coding
+    private IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
 

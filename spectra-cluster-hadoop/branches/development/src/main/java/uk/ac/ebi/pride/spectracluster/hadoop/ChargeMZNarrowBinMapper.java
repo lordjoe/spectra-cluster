@@ -27,7 +27,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = SpectraHadoopUtilities.NARROW_MZ_BINNER; // todo dont hardcode
+        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
 
         Text onlyKey = getOnlyKey();
         Text onlyValue = getOnlyValue();
@@ -59,6 +59,8 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         }
 
     }
+
+
 
     public static final int NUMBER_REDUCERS = 300;
 
