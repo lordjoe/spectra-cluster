@@ -66,7 +66,7 @@ public class KeyTests {
         if(!chargePeakKey1.equals(chargePeakKey2))
           Assert.assertEquals(chargePeakKey1,chargePeakKey2);
 
-        IWideBinner binner = SpectraHadoopUtilities.NARROW_MZ_BINNER;
+        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
 
         List<String> holder = new ArrayList<String>();
         List<ChargePeakMZKey> keyholder = new ArrayList<ChargePeakMZKey>();

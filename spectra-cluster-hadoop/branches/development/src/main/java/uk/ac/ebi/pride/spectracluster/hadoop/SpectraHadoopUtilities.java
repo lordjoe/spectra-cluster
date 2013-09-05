@@ -24,7 +24,8 @@ public class SpectraHadoopUtilities {
     public static final double NARRROW_BIN_OVERLAP = 0.002; // 0.1;
 
 
-    public static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
+    @SuppressWarnings("UnusedDeclaration")
+    private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             NARRROW_BIN_WIDTH,
             IPeak.LOWEST_USABLE_MZ,
@@ -35,11 +36,14 @@ public class SpectraHadoopUtilities {
     public static final double WIDE_BIN_OVERLAP = 0.3;
 
     @SuppressWarnings("UnusedDeclaration")
-    public static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
+    private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
             IPeak.LOWEST_USABLE_MZ,
                 WIDE_BIN_OVERLAP);
+
+
+    public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = WIDE_MZ_BINNER;
 
     /**
      * convert am int into an mz for easy comparison
