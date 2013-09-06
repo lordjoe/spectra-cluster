@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
@@ -9,6 +10,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -17,13 +19,22 @@ import java.util.List;
  * uk.ac.ebi.uk.ac.ebi.pride.spectracluster.cluster.OriginalClusteringEngineClassTest
  * User: jg
   */
-public class OriginalClusteringEngineClassTest {
+public class PublishedClusteringEngineTests {
 
-    public static final boolean PRINT_OUTPUT = false;
+    public static final boolean PRINT_OUTPUT = true;
     public static final boolean IGNORE_KNOWN_TO_FAIL = true;
 
-    private final OriginalClusteringEngine originalClusteringEngine = new OriginalClusteringEngine();
+    private final PublishedClusteringEngine oldClusteringEngine = new PublishedClusteringEngine();
     private List<IPeptideSpectrumMatch> spectra;
+
+    // these are the clustering results using the original algorithm, only "reliable clusters" considered
+    public static final Integer[][] RELIABLE_CLUSTERS = {
+            {1248200, 1252317, 1249841, 1249768, 1249747, 40528, 1250989, 90564, 1249832, 1250984, 58604, 1252580, 1256417, 1250081, 1249589, 1250448, 1253211, 1253077, 99609, 1249952, 1253232, 1252157, 1252923, 1248993, 18834},
+            {1248516, 135891, 135678, 135571, 1247848},
+            {1255756, 1255466, 1255888, 1255489},
+            {113572, 80075, 11629},
+            {81076, 1248193, 2975}
+    };
 
     @Before
     public void setUp() {
@@ -42,6 +53,15 @@ public class OriginalClusteringEngineClassTest {
         return null;
     }
 
+    private boolean clusterHasSpectrum(ISpectralCluster cluster, String spectrumId) {
+        for (ISpectrum s : cluster.getClusteredSpectra()) {
+            if (s.getId().equals(spectrumId))
+                return true;
+        }
+
+        return false;
+    }
+
     private void printCluster(ISpectralCluster cluster, String header) {
         //noinspection PointlessBooleanExpression,ConstantConditions
         if(!PRINT_OUTPUT)
@@ -54,16 +74,55 @@ public class OriginalClusteringEngineClassTest {
     }
 
     @Test
-    public void testClustering() {
+    public void testReliableClusters() {
         for (IPeptideSpectrumMatch psm : spectra)
-            originalClusteringEngine.addClusters(psm.asCluster());
+            oldClusteringEngine.addClusters(psm.asCluster());
 
         boolean resultChanged = true;
 
         for (int round = 1; round <= 4 && resultChanged; round++)
-            resultChanged = originalClusteringEngine.processClusters();
+            resultChanged = oldClusteringEngine.processClusters();
 
-        List<ISpectralCluster> cluster = originalClusteringEngine.getClusters();
+        List<ISpectralCluster> cluster = oldClusteringEngine.getClusters();
+
+        // make sure that no empty or null cluster exist
+        for (ISpectralCluster c : cluster) {
+            TestCase.assertNotNull(c);
+            TestCase.assertTrue(c.getClusteredSpectraCount() > 0);
+        }
+
+        // compare the reliable clusters, 80% of the spectra must be identical
+        for (int i = 0; i < RELIABLE_CLUSTERS.length; i++) {
+            Integer[] reliableCluster = RELIABLE_CLUSTERS[i];
+
+            // get the cluster simply based on the first found id
+            Integer firstId = reliableCluster[0];
+
+            ISpectralCluster clusterToCheck = getClusterWithSpectrum(cluster, firstId.toString());
+
+            float requiredIdentical = ((float) reliableCluster.length) * 0.9F;
+            int identical = 0;
+
+            for (Integer id : reliableCluster) {
+                if (clusterHasSpectrum(clusterToCheck, id.toString()))
+                    identical++;
+            }
+
+            TestCase.assertTrue(identical >= requiredIdentical);
+        }
+    }
+
+    @Test
+    public void testClustering() {
+        for (IPeptideSpectrumMatch psm : spectra)
+            oldClusteringEngine.addClusters(psm.asCluster());
+
+        boolean resultChanged = true;
+
+        for (int round = 1; round <= 4 && resultChanged; round++)
+            resultChanged = oldClusteringEngine.processClusters();
+
+        List<ISpectralCluster> cluster = oldClusteringEngine.getClusters();
 
         // make sure no empty or null cluster exist
         for (ISpectralCluster c : cluster) {
@@ -73,11 +132,11 @@ public class OriginalClusteringEngineClassTest {
 
         // print the 10 largest cluster
         Collections.sort(cluster, new ClusterSizeComparator());
-        for (int i = cluster.size() - 1; i > cluster.size() - 10; i--) {
+        for (int i = 0; i < 10; i++) {
             printCluster(cluster.get(i), Integer.toString(i));
         }
 
-        Assert.assertEquals(148, cluster.size()); // original code had 142 spectra
+       Assert.assertEquals(149, cluster.size()); // original code had 142 spectra
       // was
     //    Assert.assertEquals(122, cluster.size()); // original code had 142 spectra
 
