@@ -43,7 +43,7 @@ public class SpectraHadoopUtilities {
                 WIDE_BIN_OVERLAP);
 
 
-    public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = WIDE_MZ_BINNER;
+    public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
 
     /**
      * convert am int into an mz for easy comparison
@@ -122,7 +122,19 @@ public class SpectraHadoopUtilities {
      * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
      */
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context,String prefix, int hash) {
-        String counterName = prefix + String.format("%04d", hash).trim();
+        String counterName = prefix + String.format("%05d", hash).trim();
+        context.getCounter("Partition", counterName).increment(1);
+    }
+
+
+    /**
+     * track how balanced is partitioning
+     *
+     * @param context !null context
+     * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
+     */
+    public static void incrementPartitionCounter(Reducer<? extends Writable, Text, Text, Text>.Context context,String prefix, int hash) {
+        String counterName = prefix + String.format("%05d", hash).trim();
         context.getCounter("Partition", counterName).increment(1);
     }
 

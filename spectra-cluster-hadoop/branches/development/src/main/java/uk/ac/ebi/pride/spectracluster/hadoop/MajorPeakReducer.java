@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
+import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
@@ -45,6 +46,8 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         }
 
         IIncrementalClusteringEngine engine = getEngine();
+        if(engine == null)
+              return; // very occasionally  we get null - not sure why
 
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
@@ -117,9 +120,22 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
             onlyValue.set(string);
             context.write(onlyKey, onlyValue);
-
+            incrementBinCounters(  key,   context); // how big are the bins - used in next job
         }
     }
+
+    protected void incrementBinCounters(ChargeMZKey mzKey, Context context) {
+        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        int[] bins = binner.asBins(mzKey.getPrecursorMZ());
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < bins.length; i++) {
+            int bin = bins[i];
+            SpectraHadoopUtilities.incrementPartitionCounter(context,"Bin",bin);
+
+        }
+
+    }
+
 
     /**
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null

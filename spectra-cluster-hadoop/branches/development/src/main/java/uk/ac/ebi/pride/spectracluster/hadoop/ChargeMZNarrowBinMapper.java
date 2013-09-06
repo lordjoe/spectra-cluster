@@ -65,12 +65,20 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
     public static final int NUMBER_REDUCERS = 300;
 
     // for debugging add a partitioning counter
-    private void countHashValues(ChargeBinMZKey mzKey, Context context) {
+    @SuppressWarnings("UnusedDeclaration")
+    public void countHashValues(ChargeBinMZKey mzKey, Context context) {
+  //      incrementPartitionCounters(mzKey, context);    //the reducer handle
+     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
         int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
         counter.increment(1);
-     }
+    }
+
+
 
 
 }

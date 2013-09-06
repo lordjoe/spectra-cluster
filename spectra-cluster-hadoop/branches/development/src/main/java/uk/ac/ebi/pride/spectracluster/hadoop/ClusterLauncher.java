@@ -27,7 +27,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     // Hard code this so we can debug partitioner code
     public static final int DEFAULT_NUMBER_REDUCERS = 300;
 
-    // for development you can skip the fiirst jobs ot work on issues in the second
+    // for development you can skip the first jobs ot work on issues in the second
     public static final int START_AT_JOB = 0; // 0; // 1;
 
     // files larger than this are NEVER copied from the remote cluster
@@ -852,8 +852,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         if (START_AT_JOB <= jobNumber) {
             String job0Output = getOutputLocation(jobNumber);
             //noinspection ConstantConditions
-            if(START_AT_JOB > 0)    // hard code test input for debugging
-                   job0Output = "OutputDataTest"; // debug input files
+      //      if(START_AT_JOB > 0)    // hard code test input for debugging
+      //             job0Output = "OutputDataTest"; // debug input files
             IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
             holder.add(j1);
         }

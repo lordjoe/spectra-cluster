@@ -57,7 +57,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             for (int peakMz : match.asMajorPeakMZs()) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
 
-                SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
+           //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
 
                 final String keyStr = mzKey.toString();
                 onlyKey.set(keyStr);
