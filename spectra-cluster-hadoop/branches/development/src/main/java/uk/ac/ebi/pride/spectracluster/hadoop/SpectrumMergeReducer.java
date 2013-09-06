@@ -51,6 +51,10 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         String keyStr = key.toString();
         //    System.err.println(keyStr);
         ChargeBinMZKey mzKey = new ChargeBinMZKey(keyStr);
+        if(mzKey.getBin() < 0)  {
+            System.err.println("Bad bin " + keyStr);
+            return;
+        }
 
         // we only need to change engines for different charges
         if (mzKey.getCharge() != getCurrentCharge() ||
