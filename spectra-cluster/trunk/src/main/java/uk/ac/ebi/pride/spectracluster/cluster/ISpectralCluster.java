@@ -52,6 +52,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      * all internally spectrum
      *
      * TODO: @Steve and Johannes, what is the difference between this method and the method below?
+     * jg: As far as I understood, this function returns the N highest quality spectra. This was used by
+     *     Steve for a different clustering approach. In my implementation, both functions returned identical
+     *     results.
      */
     public List<ISpectrum> getHighestQualitySpectra();
 

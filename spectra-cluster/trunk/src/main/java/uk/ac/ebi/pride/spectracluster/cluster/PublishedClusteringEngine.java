@@ -2,28 +2,25 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import java.util.*;
 
 /**
+ * Created with IntelliJ IDEA.
  * User: jg
- * Date: 7/30/13
- * Time: 2:29 PM
-  */
-public class OriginalClusteringEngine implements IClusteringEngine {
-    private static final String algorithmName = "FrankEtAlClustering2";
-    /**
-     * Uses the original version of the similarity checker.
-     */
-    private static final SimilarityChecker spectrumSimilarityChecker = new FrankEtAlDotProduct();
-
-    @SuppressWarnings("UnusedDeclaration")
-    private static final QualityScorer qualityScorer = new SignalToNoiseChecker();
+ * Date: 9/6/13
+ * Time: 10:15 AM
+ * To change this template use File | Settings | File Templates.
+ */
+public class PublishedClusteringEngine implements IClusteringEngine {
+    private static final String algorithmName = "PRIDE Cluster v1 (re-impl.)";
+    private static final SimilarityChecker spectrumSimilarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+    private static final QualityScorer qualityScorer = Defaults.INSTANCE.getDefaultQualityScorer();
 
     private static final double SIMILARIY_THRESHOLD = 0.7;
 
@@ -32,7 +29,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
      * consensus spectrum building code. Any other implementation might change the final
      * clustering result.
      */
-    List<OriginalSpectralCluster> cluster = new ArrayList<OriginalSpectralCluster>();
+    List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
     /**
      * Holds all clusters that were not processed yet.
      */
@@ -40,43 +37,27 @@ public class OriginalClusteringEngine implements IClusteringEngine {
 
     @Override
     public List<ISpectralCluster> getClusters() {
-        return new ArrayList<ISpectralCluster>(cluster);
+        //guaranteeClean();
+
+        // TODO @Rui / Steve: I'm not quite sure how we should react to calls to this function if new cluster were added
+        //               and processCluster wasn't called yet. "Correct" clustering results currently depend on
+        //               "processClusters" to be called N often (4 at the moment). Only then, the results can be considered
+        //               clean. If we follow the approach that getClusters only returns result once this has been done
+        //               I'd believe that "processClusters" should be set protected as then the ClusterinEngine is taking
+        //               care of all required steps (in my opinion the best solution).
+
+        final ArrayList<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(clusters);
+        Collections.sort(ret);
+        return ret;
     }
 
     @Override
     public void addClusters(ISpectralCluster... cluster) {
-        //noinspection ManualArrayToCollectionCopy
-        for (ISpectralCluster c : cluster) {
-            // TODO: @jg normalize the spectra
-            clustersToAdd.add(c);
+        if (cluster != null) {
+            // TODO: @jg/steve/rui normalize the spectra or are spectra already normalized before somewhere?
+            clustersToAdd.addAll(Arrays.asList(cluster));
         }
     }
-
-    /**
-       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-       * usually is called on removed clusters
-       *
-       * @return !null Cluster
-       */
-      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
-          List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
-        SimilarityChecker sCheck = spectrumSimilarityChecker;
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum.asCluster());
-                }
-            }
-        }
-
-        return noneFittingSpectra;
-        }
-
-
 
     @Override
     public boolean processClusters() {
@@ -85,7 +66,6 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         // Step 1 - cluster
         long start = System.currentTimeMillis();
         boolean clustersAdded = processClusterToAdd();
-        //noinspection ConstantConditions
         dataChanged = dataChanged || clustersAdded;
         long durCluster1 = System.currentTimeMillis() - start;
 
@@ -102,11 +82,10 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         // Step 4 - cluster non-fitting peptides again, repeat at step 2
         clustersAdded = processClusterToAdd();
         dataChanged = dataChanged || clustersAdded;
-        //noinspection UnusedDeclaration
         long durCluster2 = System.currentTimeMillis() - start - durCluster1 - durMerge - durRemove;
 
-  //      System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",
-   //             durCluster1, durMerge, clustersMerged, durRemove, nSpectraRemoved, durCluster2);
+        System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",
+                durCluster1, durMerge, clustersMerged, durRemove, nSpectraRemoved, durCluster2);
 
         return dataChanged;
     }
@@ -119,7 +98,10 @@ public class OriginalClusteringEngine implements IClusteringEngine {
     private int removeNonFittingSpectra() {
         int spectraRemoved = 0;
 
-        for (OriginalSpectralCluster currentCluster : cluster) {
+        for (ISpectralCluster currentCluster : clusters) {
+            if (currentCluster.getClusteredSpectraCount() < 2)
+                continue;
+
             List<ISpectrum> nonFittingSpectra = new ArrayList<ISpectrum>();
 
             for (ISpectrum spectrum : currentCluster.getClusteredSpectra()) {
@@ -135,13 +117,13 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         }
 
         // remove empty clusters
-        List<OriginalSpectralCluster> tmp = new ArrayList<OriginalSpectralCluster>();
-        for (OriginalSpectralCluster c : cluster) {
+        List<ISpectralCluster> tmp = new ArrayList<ISpectralCluster>();
+        for (ISpectralCluster c : clusters) {
             if (c.getClusteredSpectraCount() > 0)
                 tmp.add(c);
         }
-        cluster.clear();
-        cluster.addAll(tmp);
+        clusters.clear();
+        clusters.addAll(tmp);
 
         return spectraRemoved;
     }
@@ -152,7 +134,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
      */
     private int mergeClusters() {
         Set<Integer> deletedClusters = new HashSet<Integer>();
-        Collections.sort(cluster);
+        Collections.sort(clusters); // TODO @jg: make sure this search is sensible
 
         boolean clusterMerged = true;
         int nMerged = 0;
@@ -160,19 +142,19 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         while (clusterMerged) {
             clusterMerged = false;
 
-            for (int i = 0; i < cluster.size(); i++) {
+            for (int i = 0; i < clusters.size(); i++) {
                 if (deletedClusters.contains(i))
                     continue;
 
-                OriginalSpectralCluster cluster1 = cluster.get(i);
+                ISpectralCluster cluster1 = clusters.get(i);
                 ISpectrum spectrum1 = cluster1.getClusteredSpectraCount() > 1 ?
                         cluster1.getConsensusSpectrum() : cluster1.getHighestQualitySpectrum();
 
-                for (int j = 0; j < cluster.size(); j++) {
+                for (int j = 0; j < clusters.size(); j++) {
                     if (deletedClusters.contains(j) || j == i)
                         continue;
 
-                    OriginalSpectralCluster cluster2 = cluster.get(j);
+                    ISpectralCluster cluster2 = clusters.get(j);
                     ISpectrum spectrum2 = cluster2.getClusteredSpectraCount() > 1 ?
                             cluster2.getConsensusSpectrum() : cluster2.getHighestQualitySpectrum();
 
@@ -189,14 +171,14 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         }
 
         // remove all deleted clusters
-        List<OriginalSpectralCluster> tmp = new ArrayList<OriginalSpectralCluster>();
-        for (int i = 0; i < cluster.size(); i++) {
+        List<ISpectralCluster> tmp = new ArrayList<ISpectralCluster>();
+        for (int i = 0; i < clusters.size(); i++) {
             if (deletedClusters.contains(i))
                 continue;
-            tmp.add(cluster.get(i));
+            tmp.add(clusters.get(i));
         }
-        cluster.clear();
-        cluster.addAll(tmp);
+        clusters.clear();
+        clusters.addAll(tmp);
 
         return nMerged;
     }
@@ -214,12 +196,13 @@ public class OriginalClusteringEngine implements IClusteringEngine {
         Collections.sort(clustersToAdd, QualityClusterComparator.INSTANCE);
 
         for (ISpectralCluster clusterToAdd : clustersToAdd) {
-            OriginalSpectralCluster mostSimilarCluster = null;
+            ISpectralCluster mostSimilarCluster = null;
             double highestSimilarity = 0;
+            // TODO: @Rui/Steve: it makes quite a difference whether we only use consensus spectra for comparison or for single spectra cluster the actual unchanged spectrum (the way it was done in the original algorithm and by Frank et al.)
             ISpectrum spectrumToAssess = clusterToAdd.getClusteredSpectraCount() > 1 ?
-                            clusterToAdd.getConsensusSpectrum() : clusterToAdd.getHighestQualitySpectrum();
+                    clusterToAdd.getConsensusSpectrum() : clusterToAdd.getClusteredSpectra().get(0);
 
-            for (OriginalSpectralCluster existingCluster : cluster) {
+            for (ISpectralCluster existingCluster : clusters) {
                 double similarity = spectrumSimilarityChecker.assessSimilarity(spectrumToAssess, existingCluster.getConsensusSpectrum());
 
                 if (similarity >= SIMILARIY_THRESHOLD && similarity > highestSimilarity) {
@@ -233,7 +216,7 @@ public class OriginalClusteringEngine implements IClusteringEngine {
                 spectraClustered = true;
             }
             else {
-                cluster.add(new OriginalSpectralCluster(clusterToAdd));
+                clusters.add(new SpectralCluster(clusterToAdd));
             }
         }
 
@@ -254,6 +237,6 @@ public class OriginalClusteringEngine implements IClusteringEngine {
 
     @Override
     public int size() {
-        return cluster.size();
+        return clusters.size();
     }
 }
