@@ -1123,14 +1123,15 @@ public class XTandemHadoopUtilities {
     }
 
 
-    public static void setInputPath(final Job pJob, String pInputFile) throws IOException {
+    public static Path setInputPath(final Job pJob, String pInputFile) throws IOException {
         if (pInputFile.startsWith("s3n://"))
             pInputFile = pInputFile.substring(pInputFile.lastIndexOf("s3n://"));
         System.err.println("inputFile " + pInputFile);
 
-        Path ath = new Path(pInputFile);
+        Path path = new Path(pInputFile);
 
-        FileInputFormat.addInputPath(pJob, ath);
+        FileInputFormat.addInputPath(pJob, path);
+        return path;
     }
 
     public static PrintWriter buildPrintWriter(TaskInputOutputContext context, HadoopTandemMain data) {
