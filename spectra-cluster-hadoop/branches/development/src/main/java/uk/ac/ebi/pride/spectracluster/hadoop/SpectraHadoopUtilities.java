@@ -144,6 +144,7 @@ public class SpectraHadoopUtilities {
      * @param context !null context
      * @param mzKey   !null key
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargePeakMZKey mzKey) {
         int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context,"Peak", hash);
@@ -194,11 +195,12 @@ public class SpectraHadoopUtilities {
         protected static final char SEPARATOR = '_';
 
         @SuppressWarnings("UnusedDeclaration")
-        public static PrintWriter buildReducerWriter(Reducer.Context ctxt, String baseName) {
+        public static PrintWriter buildReducerWriter(Reducer.Context ctxt,Path basePath, String baseName) {
             try {
-                FileSystem fs = FileSystem.get(ctxt.getConfiguration());
-                Path path = getAttempPath(ctxt, fs, baseName);
+                FileSystem fs = basePath.getFileSystem(ctxt.getConfiguration());
+                Path path = getAttempPath(ctxt, fs,basePath, baseName);
                 final FSDataOutputStream dsOut = fs.create(path);
+                System.err.println("Making attempt path " + path);
                 //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(dsOut));
                 return out;
@@ -212,7 +214,7 @@ public class SpectraHadoopUtilities {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public static Path getAttempPath(final Reducer.Context ctxt, final FileSystem pFs, String baseName) {
+        public static Path getAttempPath(final Reducer.Context ctxt, final FileSystem pFs,Path basePath, String baseName) {
             final TaskAttemptID taskAttemptID = ctxt.getTaskAttemptID();
             String str = taskAttemptID.toString();
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment,MismatchedReadAndWriteOfArray
@@ -220,16 +222,16 @@ public class SpectraHadoopUtilities {
 
 
             String fileName = baseName + parts[4] +  ".tmp";
-            Path workingDirectory = pFs.getWorkingDirectory();
-            return new Path(workingDirectory, fileName);
+             return new Path(basePath, fileName);
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public static void renameAttemptFile(Reducer.Context ctxt, String baseName, String outName) {
+        public static void renameAttemptFile(Reducer.Context ctxt,Path basePath, String baseName, String outName) {
             try {
-                FileSystem fs = FileSystem.get(ctxt.getConfiguration());
-                Path pathstartPath = getAttempPath(ctxt, fs, baseName);
-                Path outpath = new Path(fs.getWorkingDirectory(), outName);
+                FileSystem fs = basePath.getFileSystem(ctxt.getConfiguration());
+                Path pathstartPath = getAttempPath(ctxt, fs,basePath, baseName);
+                Path outpath = new Path(basePath, outName);
+                System.err.println("Making rename path " + outpath);
 
                 fs.rename(pathstartPath, outpath);
 

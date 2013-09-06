@@ -25,6 +25,7 @@ import java.io.*;
  */
 public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunner {
 
+    public static final String CONSOLIDATOR_PATH_PROPERTY = "uk.ebi.ac.consolidatedPath";
 
     public static class MZKeyMapper extends AbstractParameterizedMapper<Text> {
 
@@ -65,10 +66,15 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
         private PrintWriter outputWriter;
         private boolean currentWriterWritten;
+        private Path basePath;
 
         @Override
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
+            Configuration configuration = context.getConfiguration();
+            String pathName = configuration.get(CONSOLIDATOR_PATH_PROPERTY);
+            basePath = new Path(pathName);
+            System.err.println("Base Path Name " + pathName);
         }
 
 
@@ -90,7 +96,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 outWriter.close();
                 if (isCurrentWriterWritten()) {
                     String baseName = getFileNameString(currentKey);
-                    SpectraHadoopUtilities.renameAttemptFile(context, baseName, getFileNameString(currentKey) + ".cgf");
+                    SpectraHadoopUtilities.renameAttemptFile(context,basePath, baseName, getFileNameString(currentKey) + ".cgf");
                 }
                 setOutWriter(null);
             }
@@ -98,7 +104,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             if (key == null)
                 return;
             String baseName = getFileNameString(key);
-            PrintWriter outWriter1 = SpectraHadoopUtilities.buildReducerWriter(context, baseName);
+            PrintWriter outWriter1 = SpectraHadoopUtilities.buildReducerWriter(context,basePath, baseName);
             setOutWriter(outWriter1);
         }
 
@@ -241,8 +247,14 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
-                XTandemHadoopUtilities.setInputPath(job, otherArg);
+                Path inputPath =  XTandemHadoopUtilities.setInputPath(job, otherArg);
                 System.err.println("Input path mass finder " + otherArg);
+
+                Path parentPath = inputPath.getParent();
+                Path outPath = new Path(parentPath,"ConsolidatedOutput");
+                FileSystem fileSystem = outPath.getFileSystem(conf);
+                fileSystem.mkdirs(outPath);
+                conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
             }
 
             // you must pass the output directory as the last argument
