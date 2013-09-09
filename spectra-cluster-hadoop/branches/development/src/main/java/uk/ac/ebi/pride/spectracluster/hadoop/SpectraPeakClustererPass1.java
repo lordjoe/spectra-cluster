@@ -128,6 +128,8 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             XTandemHadoopUtilities.setRecommendedMaxReducers(job);
 
 
+
+
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
                 XTandemHadoopUtilities.setInputPath(job, otherArg);
