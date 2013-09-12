@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ChargeMZKey
@@ -17,9 +18,9 @@ public class MZKey implements Comparable<MZKey> {
     @SuppressWarnings("UnusedDeclaration")
     public MZKey(final double pPrecursorMZ) {
         precursorMZ = pPrecursorMZ;
-        asInt = (int)pPrecursorMZ;
-        asString = null;    // force string regeneration
-     }
+        asInt = (int)precursorMZ;
+         asString = null;    // force string regeneration
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public MZKey(String str) {
@@ -51,10 +52,10 @@ public class MZKey implements Comparable<MZKey> {
 
     @Override
     public boolean equals(final Object o) {
-        if(o == null)
+        if (o == null)
             return false;
         //noinspection SimplifiableIfStatement
-        if(getClass() != o.getClass())
+        if (getClass() != o.getClass())
             return false;
         return toString().equals(o.toString());
     }

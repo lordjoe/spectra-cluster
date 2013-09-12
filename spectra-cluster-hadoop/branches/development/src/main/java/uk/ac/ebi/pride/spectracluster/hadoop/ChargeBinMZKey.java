@@ -66,7 +66,8 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
             // only include charge and bin
             partitionHash = sb.toString().hashCode();
             sb.append(":");
-            sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
+            double precursorMZ1 = getPrecursorMZ();
+            sb.append(SpectraHadoopUtilities.mzToKey(precursorMZ1));
 
             asString = sb.toString();
         }
