@@ -46,6 +46,9 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
                 int bin = bins[j];
                 ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
 
+                if(bin != 149986)
+                    continue; // toto remove this is to debug one case
+
                 SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug to make sure partitioning is balanced
 
                 // check partitioning
