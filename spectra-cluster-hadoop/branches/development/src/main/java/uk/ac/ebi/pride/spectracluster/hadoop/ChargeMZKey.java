@@ -43,7 +43,8 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
             StringBuilder sb = new StringBuilder();
             sb.append(String.format("%02d", getCharge()));
             sb.append(":");
-            String str = SpectraHadoopUtilities.mzToKey(getPrecursorMZ());
+            double precursorMZ1 = getPrecursorMZ();
+            String str = SpectraHadoopUtilities.mzToKey(precursorMZ1);
             sb.append(str);
 
             asString = sb.toString();
