@@ -62,17 +62,19 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
             job.setJarByClass(SpectraClustererMerger.class);
 
-            job.setInputFormatClass( SequenceFileInputFormat.class);
+            job.setInputFormatClass(SequenceFileInputFormat.class);
 
             // sequence files are faster but harder to debug
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-            job.setMapperClass(ChargeMZNarrowBinMapper.class);
-            job.setReducerClass(SpectrumMergeReducer.class);
-            job.setPartitionerClass(ChargeBinPartitioner.class);
+            job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
+            // job.setMapperClass(ChargeMZNarrowBinMapper.class);
+            //  job.setReducerClass(SpectrumMergeReducer.class);  //  ToDo put back
+            job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
+            //  job.setPartitionerClass(ChargeBinPartitioner.class);    //  ToDo put back
 
 
-             // We always do this
+            // We always do this
             job.setMapOutputKeyClass(Text.class);
             job.setMapOutputValueClass(Text.class);
             job.setOutputKeyClass(Text.class);
@@ -105,6 +107,14 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
+           // Todo this whole section if for debugging
+            Path parentPath = outputDir.getParent();
+            Path outPath = new Path(parentPath, "ConsolidatedOutputDebug");    // todo take out debug
+            fileSystem.mkdirs(outPath);
+            conf.set(ClusterConsolidator.CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
+                  // Todo rnd whole section if for debugging
+
+
 
             boolean ans = job.waitForCompletion(true);
             int ret = ans ? 0 : 1;
@@ -118,16 +128,13 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             //       throw new IllegalStateException("problem"); // ToDo change
 
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
 
         }
