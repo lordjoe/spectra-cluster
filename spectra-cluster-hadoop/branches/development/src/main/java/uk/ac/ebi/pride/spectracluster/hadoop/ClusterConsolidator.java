@@ -67,13 +67,14 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
         private PrintWriter outputWriter;
         private boolean currentWriterWritten;
         private Path basePath;
+        private int numberWritten;
 
         @Override
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
             Configuration configuration = context.getConfiguration();
             String pathName = configuration.get(CONSOLIDATOR_PATH_PROPERTY);
-            basePath = new Path(pathName);
+                 basePath = new Path(pathName);
             System.err.println("Base Path Name " + pathName);
         }
 
@@ -106,6 +107,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             String baseName = getFileNameString(key);
             PrintWriter outWriter1 = SpectraHadoopUtilities.buildReducerWriter(context,basePath, baseName);
             setOutWriter(outWriter1);
+            numberWritten = 0;
         }
 
         @SuppressWarnings("UnusedDeclaration")
@@ -160,6 +162,8 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 String valStr = val.toString();
                 outWriter.println(valStr);
                 setCurrentWriterWritten(true);
+                if(numberWritten++ % 100 == 0)
+                    System.err.println("Wrote " + numberWritten);
             }
 
         }
@@ -251,7 +255,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
-                Path outPath = new Path(parentPath,"ConsolidatedOutput");
+                Path outPath = new Path(parentPath,"ConsolidatedOutputDebug");    // todo take out debug
                 FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());

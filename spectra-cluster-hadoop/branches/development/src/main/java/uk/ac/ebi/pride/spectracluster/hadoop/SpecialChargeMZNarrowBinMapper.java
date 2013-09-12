@@ -15,7 +15,7 @@ import java.io.*;
  * User: Steve
  * Date: 8/14/13
  */
-public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
+public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
     @Override
@@ -44,14 +44,20 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+               ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
 
-                  SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug to make sure partitioning is balanced
+                if(bin != 149986)
+                    continue; // toto remove this is to debug one case
+
+                MZKey mzkey = new MZKey(cluster.getPrecursorMz());
+
+
+                SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
 
                 // check partitioning
                 countHashValues(mzKey, context);
 
-                final String keyStr = mzKey.toString();
+                final String keyStr = mzkey.toString();
                 onlyKey.set(keyStr);
                 onlyValue.set(text);   // send on the MGF
                 context.write(onlyKey, onlyValue);
