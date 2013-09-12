@@ -60,10 +60,14 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         if (mzKey.getCharge() != getCurrentCharge() ||
                 mzKey.getBin() != getCurrentBin() ||
                 engine == null) {
-            updateEngine(context, mzKey);
+            boolean usedata =  updateEngine(context, mzKey);
+            if(!usedata)
+                return;
         }
 
         IIncrementalClusteringEngine engine = getEngine();
+
+        int numberProcessed = 0;
 
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
@@ -79,6 +83,9 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
                 }
             }
+            if(numberProcessed % 100 == 0)
+                System.err.println("processed " + numberProcessed);
+            numberProcessed++;
         }
     }
 
@@ -148,6 +155,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setMajorMZ(double majorMZ) {
         this.majorMZ = majorMZ;
     }
@@ -159,11 +167,14 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         System.err.println("Setting charge   " + currentCharge);
     }
 
-    public void setCurrentBin(int currentBin) {
+    public boolean setCurrentBin(int currentBin) {
         this.currentBin = currentBin;
         double mid = getBinner().fromBin(currentBin);
         String midStr = String.format("%10.1f",mid).trim();
         System.err.println("Handling bin " + currentBin + " " + midStr);
+     //   if((currentBin != 149986))
+     //       return false;
+        return true; // use this
     }
 
     /**
@@ -172,19 +183,21 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
      * @param context !null context
      * @param pMzKey  !null unless done
      */
-    protected void updateEngine(final Context context, final ChargeBinMZKey pMzKey) throws IOException, InterruptedException {
+    protected boolean updateEngine(final Context context, final ChargeBinMZKey pMzKey) throws IOException, InterruptedException {
         if (engine != null) {
             final List<ISpectralCluster> clusters = engine.getClusters();
             writeClusters(context, clusters);
             engine = null;
         }
+        boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
             engine = factory.getIncrementalClusteringEngine();
             majorMZ = pMzKey.getPrecursorMZ();
-            setCurrentBin(pMzKey.getBin());
+            ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
            }
+        return ret;
     }
 
 
