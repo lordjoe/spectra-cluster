@@ -67,11 +67,11 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             // sequence files are faster but harder to debug
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-            job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
-            // job.setMapperClass(ChargeMZNarrowBinMapper.class);
-            //  job.setReducerClass(SpectrumMergeReducer.class);  //  ToDo put back
-            job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
-            //  job.setPartitionerClass(ChargeBinPartitioner.class);    //  ToDo put back
+            //job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
+            job.setMapperClass(ChargeMZNarrowBinMapper.class);
+            job.setReducerClass(SpectrumMergeReducer.class);  //  ToDo put back
+            //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
+            job.setPartitionerClass(ChargeBinPartitioner.class);    //  ToDo put back
 
 
             // We always do this
@@ -107,13 +107,12 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
-           // Todo this whole section if for debugging
+            // Todo this whole section if for debugging
             Path parentPath = outputDir.getParent();
             Path outPath = new Path(parentPath, "ConsolidatedOutputDebug");    // todo take out debug
             fileSystem.mkdirs(outPath);
             conf.set(ClusterConsolidator.CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
-                  // Todo rnd whole section if for debugging
-
+            // Todo rnd whole section if for debugging
 
 
             boolean ans = job.waitForCompletion(true);
@@ -123,9 +122,6 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             else
                 throw new IllegalStateException("Job Failed");
 
-
-            //    if (numberMapped != numberReduced)
-            //       throw new IllegalStateException("problem"); // ToDo change
 
             return ret;
         } catch (IOException e) {
