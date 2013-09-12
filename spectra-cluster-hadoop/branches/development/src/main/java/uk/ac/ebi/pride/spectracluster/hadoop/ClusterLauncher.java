@@ -1375,12 +1375,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
 
         boolean isVersion1 = HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0;
-        //     HDFSAccessor.setHDFSHasSecurity(isVersion1);
-        //        if (isVersion1) {
-//            RemoteUtilities.setPort(8020); // todo make better
-//            RemoteUtilities.setHost("hadoop-master-01.ebi.ac.uk");   // todo make not hard coded
-//            RemoteUtilities.setJobTracker("hadoop-master-02.ebi.ac.uk:9000");
-//        }
 
 
 //        HadoopMajorVersion.CURRENT_VERSION = HadoopMajorVersion.Version0; // force version 0.2
