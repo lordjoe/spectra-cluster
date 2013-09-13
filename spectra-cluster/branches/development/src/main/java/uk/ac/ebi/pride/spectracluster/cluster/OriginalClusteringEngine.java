@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -73,6 +74,18 @@ public class OriginalClusteringEngine implements IClusteringEngine {
 
         return noneFittingSpectra;
         }
+
+
+    /**
+      * add code to monitor progress
+      *
+      * @param handler !null monitor
+      */
+     @Override
+     public void addProgressMonitor(IProgressHandler handler) {
+         if (true) throw new UnsupportedOperationException("Fix This");
+
+     }
 
 
 

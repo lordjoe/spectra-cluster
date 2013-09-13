@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
+
 import java.util.*;
 
 /**
@@ -70,6 +72,16 @@ public class NullClusteringEngine implements IClusteringEngine {
        }
 
 
+    /**
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override
+    public void addProgressMonitor(IProgressHandler handler) {
+        if (true) throw new UnsupportedOperationException("Fix This");
+
+    }
 
     /**
      * clusters are merged in the internal collection

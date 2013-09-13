@@ -134,6 +134,9 @@ public class SpectraHadoopUtilities {
      * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
      */
     public static void incrementPartitionCounter(Reducer<? extends Writable, Text, Text, Text>.Context context,String prefix, int hash) {
+        if(true)
+            return;   // not now
+
         String counterName = prefix + String.format("%05d", hash).trim();
         context.getCounter("Partition", counterName).increment(1);
     }
@@ -146,6 +149,8 @@ public class SpectraHadoopUtilities {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargePeakMZKey mzKey) {
+        if(true)
+             return;  // not now
         int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context,"Peak", hash);
     }
@@ -157,6 +162,8 @@ public class SpectraHadoopUtilities {
       * @param mzKey   !null key
       */
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargeBinMZKey mzKey) {
+        if(true)
+             return;  // not now
         int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context,"Bin", hash);
     }

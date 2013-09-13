@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -49,6 +50,7 @@ public class ClusteringEngine implements IClusteringEngine {
     private String name;
     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
     private final List<ISpectralCluster> clustersToAdd = new ArrayList<ISpectralCluster>();
+    private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
 
@@ -298,6 +300,17 @@ public class ClusteringEngine implements IClusteringEngine {
         }
 
         return noneFittingSpectra;
+    }
+
+    /**
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override
+    public void addProgressMonitor(IProgressHandler handler) {
+       progressHandlers.add(handler);
+
     }
 
     /**

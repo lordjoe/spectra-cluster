@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import com.lordjoe.utilities.*;
 
 import java.util.*;
 
@@ -126,6 +127,20 @@ public class BinningClusteringEngine implements IClusteringEngine {
             anythingDone |= engine.processClusters();
         }
         return anythingDone;
+    }
+
+    /**
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override
+    public void addProgressMonitor(IProgressHandler handler) {
+         // todo will this work as engines created dynamicallys
+        for (IClusteringEngine engine : engineForBin.values()) {
+              engine.addProgressMonitor(handler);
+        }
+
     }
 
     /**

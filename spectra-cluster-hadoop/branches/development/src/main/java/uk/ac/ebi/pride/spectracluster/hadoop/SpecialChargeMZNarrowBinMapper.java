@@ -46,13 +46,14 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
                 int bin = bins[j];
                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
 
-                if(bin != 149986)
-                    continue; // toto remove this is to debug one case
 
                 MZKey mzkey = new MZKey(cluster.getPrecursorMz());
 
 
                 SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
+
+              //  if(bin != 149986)
+              //         continue; // todo remove this is to debug one case
 
                 // check partitioning
                 countHashValues(mzKey, context);
@@ -78,6 +79,8 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
+        if(true)
+            return;
         int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
