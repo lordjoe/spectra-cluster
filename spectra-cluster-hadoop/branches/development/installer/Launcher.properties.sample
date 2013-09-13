@@ -88,7 +88,7 @@ maxClusterMemory=2200
 #
 # This parameter gives a task longer to repost
 # before returning  default value is 60000
-DEFINE_mapred.task.timeout=100000
+DEFINE_mapred.task.timeout=1800000
 
 
 #

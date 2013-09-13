@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
@@ -212,6 +213,10 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
             majorMZ = pMzKey.getPrecursorMZ();
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
+
+            // let the engine show hadoop some progress
+            IProgressHandler handler = SpectraHadoopUtilities.buildProgressCounter("Clustering", "progress", context);
+            engine.addProgressMonitor(handler);
         }
         return ret;
     }
