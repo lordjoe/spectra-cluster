@@ -16,7 +16,8 @@ import java.util.prefs.*;
 
 /**
  * org.systemsbiology.xtandem.hadoop.JXTandemLauncher
- * Launches a hadoop jon on the cluster
+ * Launches a hadoop job on the cluster
+ * specialized for spectral clustering
  * User: steven
  * Date: Jan 5, 2011
  * Singleton representing a JXTandem job -
@@ -28,7 +29,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final int DEFAULT_NUMBER_REDUCERS = 300;
 
     // for development you can skip the first jobs ot work on issues in the second
-    public static final int START_AT_JOB = 1; // 0; // 1;
+    public static final int START_AT_JOB = 0; // 0; // 1;
 
     // files larger than this are NEVER copied from the remote cluster
     public static final int MAX_DATA_TO_COPY = 1 * 1024 * 1024 * 1024;

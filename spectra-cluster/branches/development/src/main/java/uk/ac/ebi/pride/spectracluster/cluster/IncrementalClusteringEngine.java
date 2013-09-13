@@ -21,6 +21,8 @@ import com.lordjoe.utilities.*;
 public class IncrementalClusteringEngine implements IIncrementalClusteringEngine {
 
 
+    public static final int PROGRESS_SHOW_INTERVAL = 100;
+
     @SuppressWarnings("UnusedDeclaration")
     public static IIncrementalClusteringEngineFactory getClusteringEngineFactory() {
         return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
@@ -131,6 +133,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         List<ISpectralCluster> noneFittingSpectra = new ArrayList<ISpectralCluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
+        int compareCount = 0;
+
         if (cluster.getClusteredSpectra().size() > 1) {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
                 final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
@@ -139,6 +143,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 if (similarityScore < defaultThreshold) {
                     noneFittingSpectra.add(spectrum.asCluster());
                 }
+
+                if(compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
+                    showProgress();
             }
         }
 
@@ -152,10 +159,19 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
       */
      @Override
      public void addProgressMonitor(IProgressHandler handler) {
-         if (true) throw new UnsupportedOperationException("Fix This");
+         progressHandlers.add(handler);
 
      }
 
+    /**
+     * show some work is going on
+      */
+    protected void showProgress()
+    {
+        for (IProgressHandler pm : progressHandlers) {
+               pm.incrementProgress(1);
+        }
+    }
 
     /**
      * add some clusters
@@ -236,6 +252,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         SimilarityChecker sCheck = getSimilarityChecker();
 
         double highestSimilarityScore = 0;
+        int compareCount = 0;
 
         ISpectralCluster mostSimilarCluster = null;
         ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
@@ -249,6 +266,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 highestSimilarityScore = similarityScore;
                 mostSimilarCluster = cluster;
             }
+            if(compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
+                 showProgress();
+
         }
 
         // add to cluster
