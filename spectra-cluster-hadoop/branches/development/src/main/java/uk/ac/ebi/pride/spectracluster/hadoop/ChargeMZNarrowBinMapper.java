@@ -62,7 +62,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
 
-    public static final int NUMBER_REDUCERS = 300;
+    public static final int NUMBER_REDUCERS = 600;
 
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
@@ -72,6 +72,9 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
+        //noinspection SimplifiableIfStatement,PointlessBooleanExpression,ConstantConditions,RedundantIfStatement,ConstantIfStatement
+        if(true)
+            return; // dont do this
         int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));

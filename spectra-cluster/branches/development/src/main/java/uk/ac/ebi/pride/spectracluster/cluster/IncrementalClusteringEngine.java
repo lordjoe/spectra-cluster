@@ -55,6 +55,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     private String name;
     private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+    private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
     private final double defaultThreshold;
@@ -143,6 +144,18 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
         return noneFittingSpectra;
     }
+
+    /**
+      * add code to monitor progress
+      *
+      * @param handler !null monitor
+      */
+     @Override
+     public void addProgressMonitor(IProgressHandler handler) {
+         if (true) throw new UnsupportedOperationException("Fix This");
+
+     }
+
 
     /**
      * add some clusters

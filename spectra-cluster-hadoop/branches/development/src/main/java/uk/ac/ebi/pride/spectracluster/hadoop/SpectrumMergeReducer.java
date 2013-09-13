@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -21,6 +22,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     private IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
+    private int numberProcessed;
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -51,7 +53,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         String keyStr = key.toString();
         //    System.err.println(keyStr);
         ChargeBinMZKey mzKey = new ChargeBinMZKey(keyStr);
-        if(mzKey.getBin() < 0)  {
+        if (mzKey.getBin() < 0) {
             System.err.println("Bad bin " + keyStr);
             return;
         }
@@ -60,14 +62,13 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         if (mzKey.getCharge() != getCurrentCharge() ||
                 mzKey.getBin() != getCurrentBin() ||
                 engine == null) {
-            boolean usedata =  updateEngine(context, mzKey);
-            if(!usedata)
+            boolean usedata = updateEngine(context, mzKey);
+            if (!usedata)
                 return;
         }
 
         IIncrementalClusteringEngine engine = getEngine();
 
-        int numberProcessed = 0;
 
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
@@ -81,9 +82,17 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
                     final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
                     writeClusters(context, removedClusters);
 
+                } else {
+                    Counter counter = context.getCounter("NoReduce", "NoEngine");
+                    counter.increment(1);
+
                 }
+            } else {
+                Counter counter = context.getCounter("NoReduce", "NoCluster");
+                counter.increment(1);
+
             }
-            if(numberProcessed % 100 == 0)
+            if (numberProcessed++ % 400 == 0)
                 System.err.println("processed " + numberProcessed);
             numberProcessed++;
         }
@@ -96,6 +105,12 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
      * @param clusters !null list of clusters
      */
     protected void writeClusters(final Context context, final List<ISpectralCluster> clusters) throws IOException, InterruptedException {
+        if (clusters.isEmpty()) {
+            Counter counter = context.getCounter("Reduce", "NoWrite");
+            counter.increment(1);
+            return;
+
+        }
         for (ISpectralCluster cluster : clusters) {
             writeCluster(context, cluster);
         }
@@ -136,7 +151,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         float precursorMz = cluster.getPrecursorMz();
         int bin = binner1.asBin(precursorMz);
         // you can merge clusters outside the current bin but not write them
-        if(bin != currentBin)
+        if (bin != currentBin)
             return;
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
@@ -161,7 +176,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     }
 
     public void setCurrentCharge(int currentCharge) {
-        if(currentCharge == this.currentCharge)
+        if (currentCharge == this.currentCharge)
             return;
         this.currentCharge = currentCharge;
         System.err.println("Setting charge   " + currentCharge);
@@ -170,10 +185,10 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     public boolean setCurrentBin(int currentBin) {
         this.currentBin = currentBin;
         double mid = getBinner().fromBin(currentBin);
-        String midStr = String.format("%10.1f",mid).trim();
+        String midStr = String.format("%10.1f", mid).trim();
         System.err.println("Handling bin " + currentBin + " " + midStr);
-     //   if((currentBin != 149986))
-     //       return false;
+        //   if((currentBin != 149986))
+        //       return false;
         return true; // use this
     }
 
@@ -189,6 +204,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
             writeClusters(context, clusters);
             engine = null;
         }
+        numberProcessed = 0;
         boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
@@ -196,7 +212,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
             majorMZ = pMzKey.getPrecursorMZ();
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
-           }
+        }
         return ret;
     }
 

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -132,6 +133,19 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
         return anythingDone ;
     }
 
+    /**
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override
+    public void addProgressMonitor(IProgressHandler handler) {
+         // todo will this work as engines created dynamicallys
+        for (IClusteringEngine engine : engineForBin.values()) {
+              engine.addProgressMonitor(handler);
+        }
+
+    }
 
     /**
      * Get clustered clusters

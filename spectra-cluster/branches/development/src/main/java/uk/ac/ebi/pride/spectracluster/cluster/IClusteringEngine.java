@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
+
 import java.util.*;
 
 /**
@@ -54,5 +56,11 @@ public interface IClusteringEngine {
      * @return !null Cluster
      */
     public List<ISpectralCluster> findNoneFittingSpectra(ISpectralCluster cluster);
+
+    /**
+     * add code to monitor progress
+     * @param handler !null monitor
+     */
+    public void addProgressMonitor(IProgressHandler handler);
 
 }
