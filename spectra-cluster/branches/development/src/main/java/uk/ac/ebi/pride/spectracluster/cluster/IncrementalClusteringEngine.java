@@ -274,7 +274,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         // add to cluster
         if (mostSimilarCluster != null) {
             ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
-            mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
+            final ISpectrum[] merged = clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra);
+            mostSimilarCluster.addSpectra(merged);
         } else {
             myClusters.add(new SpectralCluster(clusterToAdd));
         }
