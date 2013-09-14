@@ -26,7 +26,7 @@ import java.util.prefs.*;
 public class ClusterLauncher implements IStreamOpener { //extends AbstractParameterHolder implements IParameterHolder {
 
     // Hard code this so we can debug partitioner code
-    public static final int DEFAULT_NUMBER_REDUCERS = 300;
+    public static final int DEFAULT_NUMBER_REDUCERS = 600;
 
     // for development you can skip the first jobs ot work on issues in the second
     public static final int START_AT_JOB = 1; // 0; // 1;
