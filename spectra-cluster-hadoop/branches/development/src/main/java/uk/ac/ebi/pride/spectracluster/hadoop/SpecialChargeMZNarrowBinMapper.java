@@ -15,6 +15,7 @@ import java.io.*;
  * User: Steve
  * Date: 8/14/13
  */
+@SuppressWarnings("UnusedDeclaration")
 public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
@@ -69,7 +70,6 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
 
 
 
-    public static final int NUMBER_REDUCERS = 300;
 
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
@@ -81,7 +81,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
     public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
         if(true)
             return;
-        int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
+        int partition = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
         counter.increment(1);
