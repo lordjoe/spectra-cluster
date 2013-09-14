@@ -31,6 +31,7 @@ public class PublishedClusteringEngineTests {
     public static final Integer[][] RELIABLE_CLUSTERS = {
             {1248200, 1252317, 1249841, 1249768, 1249747, 40528, 1250989, 90564, 1249832, 1250984, 58604, 1252580, 1256417, 1250081, 1249589, 1250448, 1253211, 1253077, 99609, 1249952, 1253232, 1252157, 1252923, 1248993, 18834},
             {1248516, 135891, 135678, 135571, 1247848},
+            {81076, 1248193, 18834, 2975, 25247},
             {1255756, 1255466, 1255888, 1255489},
             {113572, 80075, 11629},
             {81076, 1248193, 2975}
@@ -100,7 +101,7 @@ public class PublishedClusteringEngineTests {
 
             ISpectralCluster clusterToCheck = getClusterWithSpectrum(cluster, firstId.toString());
 
-            float requiredIdentical = ((float) reliableCluster.length) * 0.9F;
+            float requiredIdentical = ((float) reliableCluster.length) * 0.8F;
             int identical = 0;
 
             for (Integer id : reliableCluster) {
