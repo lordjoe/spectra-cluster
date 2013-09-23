@@ -50,7 +50,7 @@ public class ClusterUtilities {
      * @return MZ_RESOLUTION * mz as int
      */
     public static int mzToInt(double mz) {
-        return (int) (MZ_RESOLUTION * mz + 0.5);
+        return (int) ((MZ_RESOLUTION * mz) + 0.5);
     }
 
 
