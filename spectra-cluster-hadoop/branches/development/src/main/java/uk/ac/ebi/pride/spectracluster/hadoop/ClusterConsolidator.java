@@ -25,6 +25,8 @@ import java.io.*;
 public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunner {
 
     public static final int BIG_CLUSTER_SIZE = 10;
+    public static final int NUMBER_REDUCE_JOBS = 120;
+
     public static final String CONSOLIDATOR_PATH_PROPERTY = "uk.ebi.ac.consolidatedPath";
 
     public static class MZKeyMapper extends AbstractParameterizedMapper<Text> {
@@ -303,8 +305,8 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-            XTandemHadoopUtilities.setRecommendedMaxReducers(job);
-            //     job.setNumReduceTasks(1);  // Ignore we write multiple files
+           // XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            job.setNumReduceTasks(NUMBER_REDUCE_JOBS);  //  this should scale well enough
 
 
             if (otherArgs.length > 1) {

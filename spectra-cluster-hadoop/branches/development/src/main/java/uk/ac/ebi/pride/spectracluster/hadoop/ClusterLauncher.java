@@ -26,10 +26,10 @@ import java.util.prefs.*;
 public class ClusterLauncher implements IStreamOpener { //extends AbstractParameterHolder implements IParameterHolder {
 
     // Hard code this so we can debug partitioner code
-    public static final int DEFAULT_NUMBER_REDUCERS = 600;
+    public static final int DEFAULT_NUMBER_REDUCERS = 2400;
 
     // for development you can skip the first jobs ot work on issues in the second
-    public static final int START_AT_JOB = 1; // 0; // 1;
+    public static final int START_AT_JOB = 2; // 0; // 1;
 
     // files larger than this are NEVER copied from the remote cluster
     public static final int MAX_DATA_TO_COPY = 1 * 1024 * 1024 * 1024;

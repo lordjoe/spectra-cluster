@@ -21,6 +21,8 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     private IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
+    private ElapsedTimer binTime = new ElapsedTimer();
+    private ElapsedTimer jobTime = new ElapsedTimer();
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -84,7 +86,8 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
                 }
             }
             if(numberProcessed % 100 == 0)
-                System.err.println("processed " + numberProcessed);
+                binTime.showElapsed("processed " + numberProcessed,System.err);
+           //     System.err.println("processed " + numberProcessed);
             numberProcessed++;
         }
     }
@@ -171,7 +174,8 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         this.currentBin = currentBin;
         double mid = getBinner().fromBin(currentBin);
         String midStr = String.format("%10.1f",mid).trim();
-        System.err.println("Handling bin " + currentBin + " " + midStr);
+          binTime.reset();
+        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr,System.err);
      //   if((currentBin != 149986))
      //       return false;
         return true; // use this
