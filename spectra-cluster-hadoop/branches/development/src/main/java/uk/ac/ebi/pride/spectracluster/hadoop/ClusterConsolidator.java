@@ -158,6 +158,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 outWriter1.close();
                 if (isCurrentWriterWritten()) {
                     String baseName = getFileNameString(currentKey);
+                    // this is a concurrency error
                     SpectraHadoopUtilities.renameAttemptFile(context, basePath, baseName, getFileNameString(currentKey) + ".cgf");
                 }
                 setOutWriter(null);
