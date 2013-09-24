@@ -433,9 +433,15 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             out.append("\n");
 
             for (ISpectrum spec : getClusteredSpectra()) {
-                out.append("SPEC\t");
-                out.append(spec.getId());
-                out.append("\ttrue\n");
+                StringBuilder sb = new StringBuilder();
+                sb.append("SPEC\t");
+                String id1 = spec.getId();
+                while(id1.startsWith("="))
+                    id1 = id1.substring(1,id1.length()); // lots of ids start with == - is that a good thing
+                sb.append(id1);
+                sb.append("\ttrue\n");  // changed to look at output
+                String csq = sb.toString();
+                out.append(csq);
 
             }
         } catch (IOException e) {

@@ -47,6 +47,58 @@ public class ParserUtilities {
         }
     }
 
+
+    /**
+     * Read a set of clusters and process it
+     * @param inp !null reader
+     * @param listerners interested readers
+      * @return
+     */
+    public static void readAndProcessSpectralClusters(LineNumberReader inp, ClusterCreateListener... listerners) {
+        if (listerners.length == 0)
+            return; // nothing to do
+        for (ClusterCreateListener lstn : listerners) {
+            lstn.onClusterStarted();
+        }
+        ISpectralCluster cls = readSpectralCluster(inp, null);
+        while (cls != null) {
+            for (ClusterCreateListener lstn : listerners) {
+                lstn.onClusterCreate(cls);
+            }
+            cls = readSpectralCluster(inp, null);
+        }
+
+        for (ClusterCreateListener lstn : listerners) {
+            lstn.onClusterCreateFinished();
+        }
+     }
+
+    /**
+     * Read a set of apectra and process it
+     * @param inp !null reader
+     * @param listerners interested readers
+      * @return
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void readAndProcessSpectra(LineNumberReader inp, SpectrumCreateListener... listerners) {
+        if (listerners.length == 0)
+            return; // nothing to do
+        for (SpectrumCreateListener lstn : listerners) {
+            lstn.onSpectrumStarted();
+        }
+        ISpectrum cls = readMGFScan(inp, null);
+        while (cls != null) {
+            for (SpectrumCreateListener lstn : listerners) {
+                lstn.onSpectrumCreate(cls);
+            }
+            cls = readMGFScan(inp, null);
+        }
+
+        for (SpectrumCreateListener lstn : listerners) {
+            lstn.onSpectrumCreateFinished();
+        }
+     }
+
     /**
      * See ParserTests for an example
      *
@@ -80,6 +132,7 @@ public class ParserUtilities {
                 line = inp.readLine();
             while (line != null) {
                 if (line.startsWith(BEGIN_CLUSTER)) {
+                    //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
                     ret = new SpectralCluster(id);
@@ -124,7 +177,7 @@ public class ParserUtilities {
         ConsensusSpectraItems ret = new ConsensusSpectraItems();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
         IConsensusSpectrumBuilder sb = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
-        ISpectrum concensus = null;
+        ISpectrum concensus;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -137,7 +190,7 @@ public class ParserUtilities {
 
             line = inp.readLine();
             if (line != null) {
-                 concensus = readMGFScan(inp, line);
+                concensus = readMGFScan(inp, line);
                 holder.add(concensus);
             }
             while (line != null) {
@@ -155,8 +208,8 @@ public class ParserUtilities {
         }
         ret.setSpectra(holder);
         // add all spectra
-        sb.onSpectraAdd(null,holder.toArray(new ISpectrum[holder.size()]));
-        ret.setConcensus(sb.getConsensusSpectrum( ));
+        sb.onSpectraAdd(null, holder.toArray(new ISpectrum[holder.size()]));
+        ret.setConcensus(sb.getConsensusSpectrum());
         return ret; // nothing found or incloplete
     }
 
@@ -170,6 +223,7 @@ public class ParserUtilities {
     protected static String idFromClusterLine(String line) {
         line = line.replace(BEGIN_CLUSTER, "").trim();
         String[] split = line.split(" ");
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < split.length; i++) {
             String s = split[i];
             if (s.startsWith("Id=")) {
@@ -188,6 +242,7 @@ public class ParserUtilities {
     protected static int chargeFromClusterLine(String line) {
         line = line.replace(BEGIN_CLUSTER, "").trim();
         String[] split = line.split(" ");
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < split.length; i++) {
             String s = split[i];
             if (s.startsWith("Charge=")) {
@@ -240,20 +295,22 @@ public class ParserUtilities {
 
     /**
      * read an mgf files and return as a list of single spectrum clusters
-      * @param inp !null existing file
-      * @return !null array of spectra
-      */
-     public static List<ISpectralCluster> readMGFClusters(File inp) {
-         IPeptideSpectrumMatch[] scans = readMGFScans(  inp);
-         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-         for (int i = 0; i < scans.length; i++) {
-             IPeptideSpectrumMatch scan = scans[i];
-             final ISpectralCluster e = scan.asCluster();
-             holder.add(e);
-         }
+     *
+     * @param inp !null existing file
+     * @return !null array of spectra
+     */
+    public static List<ISpectralCluster> readMGFClusters(File inp) {
+        IPeptideSpectrumMatch[] scans = readMGFScans(inp);
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < scans.length; i++) {
+            IPeptideSpectrumMatch scan = scans[i];
+            final ISpectralCluster e = scan.asCluster();
+            holder.add(e);
+        }
 
-         return holder;
-     }
+        return holder;
+    }
 
 
     /**
@@ -269,9 +326,11 @@ public class ParserUtilities {
      * @param line if non null the firat line of the stricture
      * @return
      */
+    @SuppressWarnings("ConstantConditions")
     public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String annotation = null;
         try {
             if (line == null)
@@ -320,10 +379,10 @@ public class ParserUtilities {
                         titleLine = line;
                         title = buildMGFTitle(line);
                         int index = line.indexOf(",sequence=");
-                        if (index > -1 ) {
+                        if (index > -1) {
                             sequence = line.substring(index + ",sequence=".length()).trim();
-                            }
-                         line = inp.readLine();
+                        }
+                        line = inp.readLine();
                         continue;
                     }
                     if (line.startsWith("PEPMASS=")) {
@@ -349,6 +408,7 @@ public class ParserUtilities {
 
                     boolean tagIsNotHandled = false;
                     // ignored for now
+                    //noinspection ForLoopReplaceableByForEach
                     for (int i = 0; i < NOT_HANDLED_MGF_TAGS.length; i++) {
                         if (line.startsWith(NOT_HANDLED_MGF_TAGS[i])) {
                             tagIsNotHandled = true;
@@ -363,9 +423,11 @@ public class ParserUtilities {
                     throw new IllegalStateException("Cannot parse MGF line " + line);
                 }
                 if (END_IONS.equals(line)) {
+                    //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     double mz = massToChargeCalledPpMass;
                     // maybe this is what is meant - certainly scores better
                     String peptide = sequence;
+                    //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     sequence = null;
                     PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
                             title,
@@ -415,7 +477,9 @@ public class ParserUtilities {
     protected static void handleTitleLine(PeaksSpectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < items.length; i++) {
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             String item = items[i];
             // if(item.startsWith(""))
         }
@@ -451,6 +515,7 @@ public class ParserUtilities {
      *
      * @param filename !null name of an existing readible file
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static void guaranteeMGFParse(String filename) {
         try {
             guaranteeMGFParse(new FileInputStream(filename));
@@ -492,6 +557,7 @@ public class ParserUtilities {
 
     protected static String buildMGFTitle(String line) {
         String[] items = line.split(",");
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String label = line.substring("TITLE=".length());
         String spectrumId = label;
         if (items.length > 1) {
@@ -563,17 +629,21 @@ public class ParserUtilities {
     }
 
     public static void main(String[] args) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             boolean isMGF = arg.toLowerCase().endsWith(".mgf");
 
             ConsensusSpectraItems[] items = readClusters(new File(arg));
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < items.length; j++) {
+                //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                 ConsensusSpectraItems item = items[j];
 
             }
 
             ISpectralCluster[] scs = readSpectralCluster(arg);
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < scs.length; j++) {
                 ISpectralCluster sc = scs[j];
                 StringBuilder sb = new StringBuilder();

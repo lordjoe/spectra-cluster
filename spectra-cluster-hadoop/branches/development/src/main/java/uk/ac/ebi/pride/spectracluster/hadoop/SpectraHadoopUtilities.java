@@ -234,18 +234,20 @@ public class SpectraHadoopUtilities {
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment,MismatchedReadAndWriteOfArray
         String[] parts = str.split(Character.toString(SEPARATOR));
 
-
+        // part 4 is attampt number
         String fileName = baseName + parts[4] + ".tmp";
         return new Path(basePath, fileName);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+
     public static void renameAttemptFile(Reducer.Context ctxt, Path basePath, String baseName, String outName) {
         try {
             FileSystem fs = basePath.getFileSystem(ctxt.getConfiguration());
             Path pathstartPath = getAttempPath(ctxt, fs, basePath, baseName);
             Path outpath = new Path(basePath, outName);
             System.err.println("Making rename path " + outpath);
+
+
 
             fs.rename(pathstartPath, outpath);
 
@@ -265,6 +267,7 @@ public class SpectraHadoopUtilities {
      * @param pContext
      * @return
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static IProgressHandler buildProgressCounter(final String pGroup, final String pName, final TaskInputOutputContext pContext) {
         return new CounterProgressHandler(pGroup, pName, pContext);
     }
