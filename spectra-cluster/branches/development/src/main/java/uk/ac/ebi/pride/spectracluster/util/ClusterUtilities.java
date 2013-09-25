@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -16,6 +17,10 @@ import java.util.*;
  * @date 5/10/13
  */
 public class ClusterUtilities {
+
+    public static final String CLUSTERING_EXTENSION = ".clustering";
+    public static final String CGF_EXTENSION = ".cgf";
+
 //    private static final Map<String, ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>();
 //
 //    public static ISpectralCluster getById(String id) {
@@ -532,5 +537,44 @@ public class ClusterUtilities {
       }
 
 
+    /**
+     * write the header of a .clustering file
+     * @param out
+     * @param name
+     */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    public static void appendDotClusterHeader(Appendable out, String name) {
+
+        if (name.endsWith(CLUSTERING_EXTENSION))
+            name = name.substring(0, name.length() - CLUSTERING_EXTENSION.length());
+        try {
+            out.append("name=" + name);
+            out.append("\n");
+            Defaults defaults = Defaults.INSTANCE;
+            SimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
+
+            Class<? extends SimilarityChecker> scc = similarityChecker.getClass();
+            out.append("similarity_method=" + scc.getSimpleName());
+            out.append("\n");
+
+
+            double defaultSimilarityThreshold = FrankEtAlDotProduct.DEFAULT_SIMILARITY_THRESHOLD;
+            if (similarityChecker instanceof FrankEtAlDotProduct) {
+                //noinspection RedundantCast
+                defaultSimilarityThreshold = ((FrankEtAlDotProduct) similarityChecker).getDefaultThreshold();
+            }
+            out.append("threshold=" + defaultSimilarityThreshold);
+            out.append("\n");
+            out.append("fdr=0");
+            out.append("\n");
+            out.append("description=" + name);
+            out.append("\n");
+            out.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 
 }

@@ -14,20 +14,20 @@ public interface ClusterCreateListener {
      * initialize reading - if reading happens once - sayt from
      * one file all this may happen in the constructor
      */
-    public void onClusterStarted();
+    public void onClusterStarted(Object... otherData);
 
     /**
      * do something when a cluster is created or read
      *
      * @param cluster
      */
-    public void onClusterCreate(ISpectralCluster cluster);
+    public void onClusterCreate(ISpectralCluster cluster,Object... otherData);
 
     /**
      * do something when a cluster when the last cluster is read -
      * this may be after a file read is finished
      */
-    public void onClusterCreateFinished();
+    public void onClusterCreateFinished(Object... otherData);
 
 
 }
