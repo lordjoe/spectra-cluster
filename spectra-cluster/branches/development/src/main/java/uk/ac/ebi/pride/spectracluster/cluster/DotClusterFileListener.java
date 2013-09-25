@@ -1,23 +1,21 @@
-package uk.ac.ebi.pride.spectracluster.util;
+package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.util.DotClusterFileListener
+ * uk.ac.ebi.pride.spectracluster.cluster.DotClusterFileListener
  * User: Steve
  * Date: 9/23/13
  */
 public class DotClusterFileListener implements ClusterCreateListener {
 
-    public static final String CLUSTERING_EXTENSION = ".clustering";
-    public static final String CGF_EXTENSION = ".cgf";
 
 
     private final PrintWriter m_OutWriter;
     private final File m_OutFile;
+    private final IClusterAppender m_Appender =   DotClusterClusterAppender.INSTANCE;
 
     /**
      * creat with an output file
@@ -53,34 +51,11 @@ public class DotClusterFileListener implements ClusterCreateListener {
      */
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
-    public void onClusterStarted() {
+    public void onClusterStarted(Object... otherData) {
 
-        String name = m_OutFile.getName();
-        if (name.endsWith(CLUSTERING_EXTENSION))
-            name = name.substring(0, name.length() - CLUSTERING_EXTENSION.length());
-        m_OutWriter.append("name=" + name);
-        m_OutWriter.append("\n");
-        Defaults defaults = Defaults.INSTANCE;
-        SimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
-
-        Class<? extends SimilarityChecker> scc = similarityChecker.getClass();
-        m_OutWriter.append("similarity_method=" + scc.getSimpleName());
-        m_OutWriter.append("\n");
-
-
-        double defaultSimilarityThreshold = FrankEtAlDotProduct.DEFAULT_SIMILARITY_THRESHOLD;
-        if (similarityChecker instanceof FrankEtAlDotProduct) {
-            //noinspection RedundantCast
-            defaultSimilarityThreshold = ((FrankEtAlDotProduct) similarityChecker).getDefaultThreshold();
-        }
-        m_OutWriter.append("threshold=" + defaultSimilarityThreshold);
-        m_OutWriter.append("\n");
-        m_OutWriter.append("fdr=0");
-        m_OutWriter.append("\n");
-        m_OutWriter.append("description=" + name);
-        m_OutWriter.append("\n");
-        m_OutWriter.append("\n");
+        ClusterUtilities.appendDotClusterHeader(m_OutWriter, m_OutFile.getName());
     }
+
 
     /**
      * do something when a cluster is created or read
@@ -88,8 +63,8 @@ public class DotClusterFileListener implements ClusterCreateListener {
      * @param cluster
      */
     @Override
-    public void onClusterCreate(final ISpectralCluster cluster) {
-        cluster.appendClustering(m_OutWriter);
+    public void onClusterCreate(final ISpectralCluster cluster,Object... otherData) {
+        m_Appender.appendCluster(m_OutWriter, cluster);
     }
 
     /**
@@ -97,12 +72,13 @@ public class DotClusterFileListener implements ClusterCreateListener {
      * this may be after a file read is finished
      */
     @Override
-    public void onClusterCreateFinished() {
+    public void onClusterCreateFinished(Object... otherData) {
         m_OutWriter.close();
     }
 
     /**
      * create ,clustering files from CGF files
+     *
      * @param pF !null existing file or directory with cgf files
      */
     public static void creatClusteringFromCGF(final File pF) {
@@ -118,11 +94,11 @@ public class DotClusterFileListener implements ClusterCreateListener {
         }
         else {
             String name = pF.getName();
-            if (name.toLowerCase().endsWith(CGF_EXTENSION)) {
+            if (name.toLowerCase().endsWith(ClusterUtilities.CGF_EXTENSION)) {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(pF));
-                    String clusteringName = name.substring(0,name.length() -  CGF_EXTENSION.length()) + CLUSTERING_EXTENSION;
-                    File outFile = new File(pF.getParent(),clusteringName);
+                    String clusteringName = name.substring(0, name.length() - ClusterUtilities.CGF_EXTENSION.length()) + ClusterUtilities.CLUSTERING_EXTENSION;
+                    File outFile = new File(pF.getParent(), clusteringName);
                     DotClusterFileListener lstnr = new DotClusterFileListener(outFile);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstnr);
                 }
@@ -136,7 +112,20 @@ public class DotClusterFileListener implements ClusterCreateListener {
         }
     }
 
+    protected static void usage() {
+        System.out.println("usage <file1.cgf> <file2.cgf> ... or <directory holding cgf files>");
+    }
+
+    /**
+     * create .cluster files for cgf files in arge or diectroried of cgf files
+     *
+     * @param args
+     */
     public static void main(String[] args) {
+        if (args.length == 0) {
+            usage();
+            return;
+        }
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];

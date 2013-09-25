@@ -48,6 +48,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
             ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            // should be only one
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < clusters.length; i++) {
                 ISpectralCluster cluster = clusters[i];
@@ -60,191 +61,6 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
         }
 
     }
-
-    /**
-     * retucer to w
-     */
-    public static class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
-
-        private PrintWriter outWriter;
-        private PrintWriter bigOutWriter;
-        private boolean currentWriterWritten;
-        private boolean bigCurrentWriterWritten;
-        private Path basePath;
-        private int numberWritten;
-        private MZKey currentKey;
-
-        @Override
-        protected void setup(final Context context) throws IOException, InterruptedException {
-            super.setup(context);
-            Configuration configuration = context.getConfiguration();
-            String pathName = configuration.get(CONSOLIDATOR_PATH_PROPERTY);
-            basePath = new Path(pathName);
-            System.err.println("Base Path Name " + pathName);
-        }
-
-
-        @SuppressWarnings("UnusedDeclaration")
-        public MZKey getCurrentKey() {
-            return currentKey;
-        }
-
-        public void setCurrentWriterWritten(boolean currentWriterWritten) {
-            if (this.currentWriterWritten == currentWriterWritten)
-                return;
-            this.currentWriterWritten = currentWriterWritten;
-        }
-
-        public PrintWriter getWorkingWriter(final Context context) {
-            PrintWriter ret = internalGetOutWriter();
-            if (ret != null)
-                return ret;
-            String baseName = getFileNameString(getCurrentKey());
-            PrintWriter outWriter2 = SpectraHadoopUtilities.buildReducerWriter(context, basePath, baseName);
-            setOutWriter(outWriter2);
-
-            return internalGetOutWriter();
-        }
-
-        public PrintWriter internalGetOutWriter() {
-            return outWriter;
-        }
-
-        public void setOutWriter(PrintWriter ow) {
-            outWriter = ow;
-            setCurrentWriterWritten(false);
-        }
-
-        public boolean isCurrentWriterWritten() {
-            return currentWriterWritten;
-        }
-
-
-        public PrintWriter getWorkingBigWriter(final Context context) {
-            PrintWriter ret = internalGetBigOutWriter();
-            if (ret != null)
-                return ret;
-            String baseName = getBigClusterFileNameString(getCurrentKey());
-            PrintWriter outWriter2 = SpectraHadoopUtilities.buildReducerWriter(context, basePath, baseName);
-            setBigOutWriter(outWriter2);
-
-            return internalGetBigOutWriter();
-        }
-
-        public PrintWriter internalGetBigOutWriter() {
-            return bigOutWriter;
-        }
-
-        public void setBigOutWriter(final PrintWriter pBigOutWriter) {
-            bigOutWriter = pBigOutWriter;
-            setBigCurrentWriterWritten(false);
-        }
-
-
-        public boolean isBigCurrentWriterWritten() {
-            return bigCurrentWriterWritten;
-        }
-
-        public void setBigCurrentWriterWritten(final boolean pBigCurrentWriterWritten) {
-            if (bigCurrentWriterWritten == pBigCurrentWriterWritten)
-                return;
-            bigCurrentWriterWritten = pBigCurrentWriterWritten;
-        }
-
-        @SuppressWarnings("UnusedDeclaration")
-        public void setCurrentKey(MZKey key, final Context context) {
-            final PrintWriter outWriter1 = internalGetOutWriter();
-            if (outWriter1 != null) {
-                outWriter1.close();
-                if (isCurrentWriterWritten()) {
-                    String baseName = getFileNameString(currentKey);
-                    // this is a concurrency error
-                    SpectraHadoopUtilities.renameAttemptFile(context, basePath, baseName, getFileNameString(currentKey) + ".cgf");
-                }
-                setOutWriter(null);
-            }
-            final PrintWriter bigOutWriter1 = internalGetBigOutWriter();
-            if (bigOutWriter1 != null) {
-                bigOutWriter1.close();
-                if (isBigCurrentWriterWritten()) {
-                    String baseName = getBigClusterFileNameString(currentKey);
-                    SpectraHadoopUtilities.renameAttemptFile(context, basePath, baseName, getBigClusterFileNameString(currentKey) + ".cgf");
-                }
-                setBigOutWriter(null);
-            }
-            currentKey = key;
-            if (key == null)
-                return;
-
-            numberWritten = 0;
-        }
-
-
-        /**
-         * write the values to a real file -
-         * NOT useful in a cluster but very helpful in debugging
-         *
-         * @param key
-         * @param values
-         * @param context
-         * @throws IOException
-         * @throws InterruptedException
-         */
-        @Override
-        protected void reduce(final Text key, final Iterable<Text> values, final Context context) throws IOException, InterruptedException {
-
-            MZKey realkey = new MZKey(key.toString());
-            MZKey currentKey1 = getCurrentKey();
-            int currentKeyInt = 0;
-            if (currentKey1 != null)
-                currentKeyInt = currentKey1.getAsInt();
-            int keyInt = realkey.getAsInt();
-            if (currentKeyInt != keyInt) {
-                setCurrentKey(realkey, context);
-            }
-            //noinspection LoopStatementThatDoesntLoop
-            for (Text val : values) {
-                String valStr = val.toString();
-                final PrintWriter outputWriter1 = getWorkingWriter(context);    // get creating as needed
-                outputWriter1.println(valStr);
-                setCurrentWriterWritten(true);
-                if (numberWritten++ % 100 == 0)
-                    System.err.println("Wrote " + numberWritten);
-
-                // now write the big clusters
-                LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-                final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
-
-                // write the big clusters in a different file
-                final int clusteredSpectraCount = cluster.getClusteredSpectraCount();
-                if (clusteredSpectraCount >= BIG_CLUSTER_SIZE) {
-                    final PrintWriter bigOutWriter1 = getWorkingBigWriter(context);    // get creating as needed
-                    bigOutWriter1.println(valStr);
-                    setBigCurrentWriterWritten(true);
-                }
-
-            }
-
-        }
-
-
-        @Override
-        protected void cleanup(final Context context) throws IOException, InterruptedException {
-            super.cleanup(context);
-            setCurrentKey(null, context);
-        }
-
-
-    }
-
-    private static String getFileNameString(MZKey key) {
-        return "BinFile" + String.format("%04d", key.getAsInt());
-    }
-
-    private static String getBigClusterFileNameString(MZKey key) {
-        return "BigClusterFile" + String.format("%04d", key.getAsInt());
-    }
-
 
     protected static void usage() {
         System.out.println("Usage <input file or directory> <output directory>");
@@ -316,8 +132,9 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
-                Path outPath = new Path(parentPath, "ConsolidatedClusters");
-                FileSystem fileSystem = outPath.getFileSystem(conf);
+  //              Path outPath = new Path(parentPath, "ConsolidatedClusters");
+                Path outPath = new Path(parentPath, "ConsolidatedClustersTest");
+                  FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
             }
