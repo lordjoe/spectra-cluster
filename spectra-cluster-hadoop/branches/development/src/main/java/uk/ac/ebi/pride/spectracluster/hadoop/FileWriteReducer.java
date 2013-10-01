@@ -27,7 +27,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
     }
 
 
-//    private PrintWriter outWriter;
+    //    private PrintWriter outWriter;
 //    private PrintWriter bigOutWriter;
 //    private boolean currentWriterWritten;
 //    private boolean bigCurrentWriterWritten;
@@ -65,7 +65,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
      */
     protected final void clearClusterCreateListeners() {
         for (ClusterCreateListener listener : m_ClusterCreateListeners) {
-            listener.onClusterCreateFinished( );
+            listener.onClusterCreateFinished();
 
         }
         m_ClusterCreateListeners.clear();
@@ -75,23 +75,30 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         return basePath;
     }
 
-    protected void buildWritersForKey(final Context context)
-    {
+    protected void buildWritersForKey(final Context context) {
         MZKey key = getCurrentKey();
-        if(key == null)
+        if (key == null)
             return;
         Path base = getBasePath();
-        IClusterAppender appender = CGFClusterAppender.INSTANCE;
+        IClusterAppender appender;
+
         ClusterSizeFilter bigOnly = new ClusterSizeFilter(ClusterConsolidator.BIG_CLUSTER_SIZE); // only accept big custers
 
-        addClusterCreateListener(new DotClusterPathListener(base,key,context, appender,PathFromMZGenerator.CGF_INSTANCE));
-        appender = new FilteredClusterAppender(appender,bigOnly);
-        addClusterCreateListener(new DotClusterPathListener(base,key,context,appender,PathFromMZGenerator.BIG_CGF_INSTANCE));
+        // full cgf
+        appender = CGFClusterAppender.INSTANCE;
+    //    addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
 
+        // only big cgf
+        appender = new FilteredClusterAppender(appender, bigOnly);
+   //     addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
+
+        // full .cluster
         appender = DotClusterClusterAppender.INSTANCE;
-        addClusterCreateListener(new DotClusterPathListener(base,key,context,CGFClusterAppender.INSTANCE,PathFromMZGenerator.CLUSTERING_INSTANCE));
-        appender = new FilteredClusterAppender(appender,bigOnly);   // not only big ones
-        addClusterCreateListener(new DotClusterPathListener(base,key,context,appender,PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CLUSTERING_INSTANCE));
+
+        // only big .cluster
+        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+    //    addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
 
     }
 
@@ -105,7 +112,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
      * @param commanded
      */
     public void notifyClusterCreateListeners(ISpectralCluster cluster) {
-         for (ClusterCreateListener listener : m_ClusterCreateListeners) {
+        for (ClusterCreateListener listener : m_ClusterCreateListeners) {
             listener.onClusterCreate(cluster);
         }
     }
@@ -178,7 +185,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 //        bigCurrentWriterWritten = pBigCurrentWriterWritten;
 //    }
 
-     public void setCurrentKey(MZKey key, final Context context) {
+    public void setCurrentKey(MZKey key, final Context context) {
 
         // let the writeers to the dirty work
         clearClusterCreateListeners();
@@ -201,10 +208,10 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 //            }
 //            setBigOutWriter(null);
 //        }
-         currentKey = key;
+        currentKey = key;
         if (key == null)
             return;
-         buildWritersForKey(context);
+        buildWritersForKey(context);
         numberWritten = 0;
     }
 
