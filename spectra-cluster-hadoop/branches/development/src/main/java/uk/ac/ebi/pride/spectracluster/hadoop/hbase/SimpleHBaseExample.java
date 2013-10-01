@@ -14,6 +14,7 @@ import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 public class SimpleHBaseExample {
+
     public static void main(String args[]) {
         try {
             System.out.println(" 0. TRY block1 success !");
@@ -24,11 +25,12 @@ public class SimpleHBaseExample {
         System.out.println(" 1. From program:Hello from MySimpleHBase");
         System.out.println(" 2. From program:Create a HBase config");
         try {
-            Configuration config = HBaseConfiguration.create();
-            config.set("hbase.rootdir","hdfs://hadoop-master-01.ebi.ac.uk:8020/hbase");
-            config.set("hbase.cluster.distributed","true");
-            config.set("hbase.zookeeper.quorum","hadoop-slave-001.ebi.ac.uk,hadoop-slave-008.ebi.ac.uk,hadoop-slave-027.ebi.ac.uk");
-             HTable table = new HTable(config, "myLittleHBaseTable");
+               HTable table = HBaseUtilities.getTable("t1");
+
+            String s = Bytes.toString(table.getTableName());
+
+            table.close();
+
             System.out.println(" HBase config object created ");
         } catch (Exception e) {
             System.out.println("Error on HBase block" + e.getMessage());
