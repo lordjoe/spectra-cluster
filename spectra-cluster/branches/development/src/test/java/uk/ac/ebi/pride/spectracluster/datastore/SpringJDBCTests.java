@@ -18,6 +18,8 @@ public class SpringJDBCTests {
 
 
     public static final boolean SKIP_DATABASE_TESTS = true; // these tests are long and not critical
+
+
     /*
        NOTE - these  tests will work only when a MYSQL database is running on local_host and
         has a user pride-spectra password pride   has enough privileges to create and delete databases

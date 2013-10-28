@@ -5,12 +5,16 @@ package uk.ac.ebi.pride.spectracluster.hadoop.hbase;
      * java -cp `hbase classpath` TestHBase
      */
 
+import org.apache.commons.dbcp.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.*;
+import org.systemsbiology.remotecontrol.*;
 
+import javax.sql.*;
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -26,6 +30,9 @@ public class HBaseUtilities {
     public static final String DISTRIBUTED_PROP = "hbase.cluster.distributed";
     public static final String QUORRUM_PROP = "hbase.zookeeper.quorum";
 
+    public static String DEFAULT_QUORUM_PROP = "hadoop-slave-001.ebi.ac.uk,hadoop-slave-008.ebi.ac.uk,hadoop-slave-027.ebi.ac.uk";
+
+
     private static Configuration gConfig;
 
     public static synchronized Configuration getConfig() {
@@ -33,13 +40,45 @@ public class HBaseUtilities {
             Configuration config = HBaseConfiguration.create();
             config.set(ROOT_DIR_PROP, "hdfs://hadoop-master-01.ebi.ac.uk:8020/hbase");
 
+            config.set(QUORRUM_PROP, DEFAULT_QUORUM_PROP);
             config.set(DISTRIBUTED_PROP, "true");
-            config.set(QUORRUM_PROP, "hadoop-slave-001.ebi.ac.uk,hadoop-slave-008.ebi.ac.uk,hadoop-slave-027.ebi.ac.uk");
             gConfig = config;
         }
         return gConfig;
     }
 
+    public static String PHOENIX_DRIVER_CLASS = "com.salesforce.phoenix.jdbc.PhoenixDriver";
+
+    public static String PHOENIX_JDBC_STRING = "jdbc:phoenix:";
+
+
+    public static DataSource getHBaseDataSource() {
+        try {
+            Class.forName(PHOENIX_DRIVER_CLASS);
+        } catch (ClassNotFoundException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+        String user = RemoteUtilities.getUser();
+        String password = RemoteUtilities.getPassword();
+        BasicDataSource ret = new BasicDataSource();
+
+        String connString = PHOENIX_JDBC_STRING +  DEFAULT_QUORUM_PROP ;
+
+        ret.setUrl(connString);
+        ret.setDriverClassName(PHOENIX_DRIVER_CLASS);
+        ret.setUsername(user);
+        ret.setPassword(password);
+
+        try {
+            Connection connection = ret.getConnection();
+            connection.close();
+        } catch (SQLException e) {
+            throw new UnsupportedOperationException("cannot use connection " + connString + " as user " + user);
+
+        }
+        return ret;
+    }
 
 
     public static HTable getTable(String name) {
@@ -91,8 +130,8 @@ public class HBaseUtilities {
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public static void main(String[] args) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
+     public static void main(String[] args) {
+         DataSource source = getHBaseDataSource();
+         source = null;
+     }
 }

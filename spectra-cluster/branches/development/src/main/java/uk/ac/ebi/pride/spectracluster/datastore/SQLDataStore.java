@@ -73,7 +73,7 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     public void removeSpectrum(final ISpectrum removed) {
         final SimpleJdbcTemplate template = getDatabase().getTemplate();
         String query = queryForDatabase(SpectrumMapper.DELETE_SPECTRUM_STATEMENT);
-        int ndropped = template.update(query,removed.getId());
+        int ndropped = template.update(query, removed.getId());
 
 
     }
@@ -129,7 +129,6 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     }
 
 
-
     /**
      * store one spectrum in the database
      *
@@ -139,12 +138,18 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     public void storeSpectra(List<? extends ISpectrum> stored) {
         String query = queryForDatabase(SpectrumMapper.INSERT_SPECTRUM_STATEMENT);
         final WorkingClusterDatabase database1 = getDatabase();
-        JdbcTemplate templateX = database1.getOldTemplate();
-        BatchPreparedStatementSetter batch = SpringJDBCUtilities.SPECTRUM_MAPPER.buildBatchSetter(stored);
-        final int[] ints = templateX.batchUpdate(query, batch);
-        for (int i = 0; i < ints.length; i++) {
-            int anInt = ints[i];
+        if (database1.isDatabaseSupported()) {
+            JdbcTemplate templateX = database1.getOldTemplate();
+            BatchPreparedStatementSetter batch = SpringJDBCUtilities.SPECTRUM_MAPPER.buildBatchSetter(stored);
+            final int[] ints = templateX.batchUpdate(query, batch);
+            for (int i = 0; i < ints.length; i++) {
+                int anInt = ints[i];
 
+            }
+        }
+        else {
+
+            throw new UnsupportedOperationException("Fix This"); // ToDo
         }
     }
 
@@ -157,11 +162,10 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     @Override
     public Iterable<? extends ISpectrum> getByPeptide(final String peptide) {              // todo test
         String query = queryForDatabase(SpectrumMapper.SELECT_WITH_PEPTIDE);
-         final WorkingClusterDatabase database1 = getDatabase();
-         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER,peptide);
-         return ret;
-     }
-
+        final WorkingClusterDatabase database1 = getDatabase();
+        List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, peptide);
+        return ret;
+    }
 
 
     /**
@@ -173,8 +177,8 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     public Iterable<? extends ISpectrum> getSpectrumByMz(final double minMz, final double mazMz) {       // todo test
         String query = queryForDatabase(SpectrumMapper.SELECT_WITH_MZ);
         final WorkingClusterDatabase database1 = getDatabase();
-         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, minMz, mazMz);
-         return ret;
+        List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, minMz, mazMz);
+        return ret;
 
     }
 
@@ -188,9 +192,9 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     public Iterable<? extends ISpectrum> getSpectrumByMzAndCharge(final double minMz, final double mazMz, final int charge) {   // todo test
         String query = queryForDatabase(SpectrumMapper.SELECT_WITH_CHARGE_AND_MZ);
         final WorkingClusterDatabase database1 = getDatabase();
-         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, charge, minMz, mazMz);
-         return ret;
-     }
+        List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, charge, minMz, mazMz);
+        return ret;
+    }
 
 
 }
