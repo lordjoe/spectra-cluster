@@ -40,13 +40,13 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
      */
     public static final String TABLE_CREATE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS <database>.spectrums  ( \n" +
-                    "  id VARCHAR(" + MAX_ID_LENGTH + ")   NOT NULL  , \n" +
-                    "  precursor_charge int(11) NOT NULL,\n" +
-                    "  precursor_mz double NOT  NULL,\n" +
+                    "  id VARCHAR(" + MAX_ID_LENGTH + ")   NOT NULL PRIMARY KEY  , \n" +
+                    "  precursor_charge INTEGER NOT NULL,\n" +
+                    "  precursor_mz DOUBLE NOT  NULL,\n" +
                     "  peptide VARCHAR(" + MAX_PEPTIDE_LENGTH + ")   NULL,\n" +
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
-                    "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL,\n" +
-                    "  PRIMARY KEY (id)\n" +
+                    "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL\n" +
+           //         "  PRIMARY KEY (id)\n" +
                     ")"
             //        "CREATE IF NOT EXISTS INDEX idx_charge_<database> on   <database>.spectrums(precursor_charge);" +   // index charge
             //        "CREATE IF NOT EXISTS  INDEX idx_mz_<database> on   <database>.spectrums(precursor_mz); "

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
+import org.apache.commons.dbcp.*;
 import org.springframework.dao.*;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.simple.*;
@@ -57,6 +58,19 @@ public class WorkingClusterDatabase implements ITemplateHolder {
         }
     }
 
+    public boolean isDatabaseSupported()
+    {
+
+        if (dataSource instanceof BasicDataSource) {
+            if(((BasicDataSource)dataSource).getDriverClassName().equals("com.salesforce.phoenix.jdbc.PhoenixDriver"))
+               return false;    // Phoenix does not fo databases
+
+        }
+        return true;
+    }
+
+
+
     public DataSource getDataSource() {
         return dataSource;
     }
@@ -102,7 +116,10 @@ public class WorkingClusterDatabase implements ITemplateHolder {
      * make sure the tables exist
      */
     public void guaranteeDatabaseExists() {
-        SimpleJdbcTemplate template = getTemplate();
+        if(!isDatabaseSupported())
+            return;
+
+          SimpleJdbcTemplate template = getTemplate();
 
         final String dmyDB = getDatabaseName();
         String[] dbMames = SpringJDBCUtilities.queryForStrings(template, "SHOW DATABASES");
@@ -130,7 +147,8 @@ public class WorkingClusterDatabase implements ITemplateHolder {
             guaranteeTable(table);
 
         }
-        guaranteeIndices();
+        if(isDatabaseSupported())
+             guaranteeIndices();
     }
 
 
