@@ -23,6 +23,8 @@ public class SpectrumUtilities {
     public static List<IPeak> dataStringToPeaks(String dataStr)
     {
         List<IPeak> holder = new ArrayList<IPeak>();
+        if(dataStr.length() % 4 != 0)
+            throw new IllegalArgumentException("problem"); // ToDo change
           double[] data = decodeDataString(dataStr );
         for (int i = 0; i < data.length; i += 2) {
             double mz = data[i];

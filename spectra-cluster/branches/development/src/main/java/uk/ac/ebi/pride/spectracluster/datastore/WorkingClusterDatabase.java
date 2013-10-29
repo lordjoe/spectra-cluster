@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.apache.commons.dbcp.*;
 import org.springframework.dao.*;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.simple.*;
@@ -15,10 +14,27 @@ import java.util.*;
  * User: Steve
  * Date: 7/15/13
  */
-public class WorkingClusterDatabase implements ITemplateHolder {
+public class WorkingClusterDatabase implements IWorkingClusterDatabase {
+
+    public static WorkingDatabaseFactory FACTORY = new WorkingDatabaseFactory() {
+        /**
+         * return a workling database - needed so we can subclass to handle Phoenix
+         *
+         * @param databaseName - name of the database - tables will have <databasename> . prepended
+         * @param ds           !null data source - this provides the connection
+         * @return !null   IWorkingClusterDatabase
+         */
+        @Override
+        public IWorkingClusterDatabase buildWorkingDatabase(String databaseName, DataSource ds) {
+            WorkingClusterDatabase ret = new WorkingClusterDatabase(databaseName, ds);
+             return ret;
+
+        }
+    };
+
 
     public static final int MAX_IN_MEMORY_SPECTRA = 15000;
-    public static final int MAX_PEAKS_PER_SPECTRUM = 256;
+    public static final int MAX_PEAKS_PER_SPECTRUM = 512;
     public static final int MAX_PEAKS_STRING_LENGTH = MAX_PEAKS_PER_SPECTRUM * 8;
 
     public static final String[] TABLES =
@@ -45,7 +61,14 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     private final SimpleJdbcTemplate m_Template;
     private final Map<String, String> m_NameToCreateStatement = new HashMap<String, String>();
 
-    public WorkingClusterDatabase(String databaseName, final DataSource ds) {
+    /**
+     * PRIVATE - use the factory
+     *
+     * @param databaseName - name of the database - tables will have <databasename> . prepended
+     * @param ds           !null data source - this provides the connection
+     * @return !null   IWorkingClusterDatabase
+     */
+    protected WorkingClusterDatabase(String databaseName, final DataSource ds) {
         dataSource = ds;
         m_Template = new SimpleJdbcTemplate(ds);
         m_OldTemplate = new JdbcTemplate(ds);
@@ -56,33 +79,37 @@ public class WorkingClusterDatabase implements ITemplateHolder {
             m_NameToCreateStatement.put(TABLES[i], CREATE_STATEMENTS[i]);
 
         }
+        guaranteeDatabase();
+
     }
 
-    public boolean isDatabaseSupported()
-    {
-
-        if (dataSource instanceof BasicDataSource) {
-            if(((BasicDataSource)dataSource).getDriverClassName().equals("com.salesforce.phoenix.jdbc.PhoenixDriver"))
-               return false;    // Phoenix does not fo databases
-
-        }
-        return true;
+    /**
+     * true of batch operations are allowed
+     *
+     * @return
+     */
+    @Override
+    public boolean isBatchSupported() {
+           return true;
     }
 
 
-
+    @Override
     public DataSource getDataSource() {
         return dataSource;
     }
 
+    @Override
     public JdbcTemplate getOldTemplate() {
         return m_OldTemplate;
     }
 
+    @Override
     public SimpleJdbcTemplate getTemplate() {
         return m_Template;
     }
 
+    @Override
     public String getDatabaseName() {
         return databaseName;
     }
@@ -92,14 +119,16 @@ public class WorkingClusterDatabase implements ITemplateHolder {
      *
      * @param tableName name of a known table
      */
+    @Override
     public void guaranteeTable(String tableName) {
         SimpleJdbcTemplate template = getTemplate();
         try {
-            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + getDatabaseName() + "." + tableName, SpringJDBCUtilities.FIELD_MAPPER);
+            String tableFullName = getDatabaseName() + "." + tableName;
+            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + tableFullName, SpringJDBCUtilities.FIELD_MAPPER);
+
             if (fields.size() > 0)
                 return;
-        }
-        catch (DataAccessException ignored) {
+        } catch (DataAccessException ignored) {
 
         }
         guaranteeDatabaseExists();
@@ -115,11 +144,8 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     /**
      * make sure the tables exist
      */
-    public void guaranteeDatabaseExists() {
-        if(!isDatabaseSupported())
-            return;
-
-          SimpleJdbcTemplate template = getTemplate();
+    protected void guaranteeDatabaseExists() {
+        SimpleJdbcTemplate template = getTemplate();
 
         final String dmyDB = getDatabaseName();
         String[] dbMames = SpringJDBCUtilities.queryForStrings(template, "SHOW DATABASES");
@@ -139,7 +165,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     /**
      * make sure the tables exist
      */
-    public void guaranteeDatabase() {
+    protected void guaranteeDatabase() {
 
 
         for (int i = 0; i < TABLES.length; i++) {
@@ -147,8 +173,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
             guaranteeTable(table);
 
         }
-        if(isDatabaseSupported())
-             guaranteeIndices();
+        guaranteeIndices();
     }
 
 
@@ -158,7 +183,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     public static final String BUILD_INDEX_STATEMENT = "CREATE INDEX <index_name> on <full_table_name>(<column_to_index>);";
 
 
-    public void guaranteeIndices() {
+    protected void guaranteeIndices() {
         final String db1DatabaseName = getDatabaseName();
         final SimpleJdbcTemplate template = getTemplate();
         String tableName = "spectrums";
@@ -166,8 +191,8 @@ public class WorkingClusterDatabase implements ITemplateHolder {
         indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
         columnName = "precursor_mz";
         indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
-   //     columnName = "peptide";
-   //     indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
+        //     columnName = "peptide";
+        //     indexColumnIfNeeded(template, db1DatabaseName, tableName, columnName);
     }
 
     protected void indexColumnIfNeeded(final SimpleJdbcTemplate template, final String pDb1DatabaseName, final String pTableName, final String pColumnName) {
@@ -184,6 +209,7 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     /**
      * drop all data
      */
+    @Override
     public void clearDatabase() {
         SimpleJdbcTemplate template = getTemplate();
         for (int i = 0; i < TABLES.length; i++) {
@@ -196,13 +222,26 @@ public class WorkingClusterDatabase implements ITemplateHolder {
     /**
      * drop all tables
      */
+    @Override
     public void expungeDatabase() {
         SimpleJdbcTemplate template = getTemplate();
         for (int i = 0; i < TABLES.length; i++) {
             String table = TABLES[i];
-            template.update("drop table " + table);
+            template.update("drop table " + getDatabaseName() + "." + table);
 
         }
+    }
+
+    /**
+     * subclasses support different syntax on queries - this code attampts to make
+     * 'standard' queries compatible
+     * @param originalQuery
+     * @return  !null patched query
+     */
+    public String patchQueryString(String originalQuery)
+    {
+        // standard SQL works here
+        return originalQuery;
     }
 
 }

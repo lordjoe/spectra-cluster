@@ -30,6 +30,7 @@ public class HBaseUtilities {
     public static final String DISTRIBUTED_PROP = "hbase.cluster.distributed";
     public static final String QUORRUM_PROP = "hbase.zookeeper.quorum";
 
+    // this is needed
     public static String DEFAULT_QUORUM_PROP = "hadoop-slave-001.ebi.ac.uk,hadoop-slave-008.ebi.ac.uk,hadoop-slave-027.ebi.ac.uk";
 
 
@@ -52,6 +53,10 @@ public class HBaseUtilities {
     public static String PHOENIX_JDBC_STRING = "jdbc:phoenix:";
 
 
+    /**
+     *
+     * @return
+     */
     public static DataSource getHBaseDataSource() {
         try {
             Class.forName(PHOENIX_DRIVER_CLASS);

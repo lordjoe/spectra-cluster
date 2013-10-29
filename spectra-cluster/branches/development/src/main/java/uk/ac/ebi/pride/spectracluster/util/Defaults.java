@@ -39,8 +39,18 @@ public class Defaults {
 
     private ConcensusSpectrumBuilderFactory consensusFactory =  ConsensusSpectrum.FACTORY;
 
+    private WorkingDatabaseFactory databaseFactory = WorkingClusterDatabase.FACTORY;
+
     private Defaults() {
 
+    }
+
+    public WorkingDatabaseFactory getDatabaseFactory() {
+        return databaseFactory;
+    }
+
+    public void setDatabaseFactory(WorkingDatabaseFactory databaseFactory) {
+        this.databaseFactory = databaseFactory;
     }
 
     public ConcensusSpectrumBuilderFactory getConsensusFactory() {
