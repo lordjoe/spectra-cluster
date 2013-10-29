@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.prefs.*;
 
 /**
- * org.systemsbiology.xtandem.hadoop.JXTandemLauncher
+ * uk.ac.ebi.pride.spectracluster.hadoop.ClusterLauncher
  * Launches a hadoop job on the cluster
  * specialized for spectral clustering
  * User: steven
@@ -29,7 +29,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final int DEFAULT_NUMBER_REDUCERS = 2400;
 
     // for development you can skip the first jobs ot work on issues in the second
-    public static final int START_AT_JOB = 0; // 0; // 1;
+    public static final int START_AT_JOB_DEFAULT = 0; // 0; // 1;
 
     // files larger than this are NEVER copied from the remote cluster
     public static final int MAX_DATA_TO_COPY = 1 * 1024 * 1024 * 1024;
@@ -46,9 +46,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
 
     public static final int MAX_DISPLAY_LENGTH = 4 * 1000 * 1000;
-    public static final int TOTAL_STAGES = 3;
-    @SuppressWarnings("PointlessArithmeticExpression")
-    public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
+      @SuppressWarnings("PointlessArithmeticExpression")
+  //  public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
 
     private static HadoopMajorVersion g_RunningHadoopVersion = HadoopMajorVersion.CURRENT_VERSION;
 
@@ -119,11 +118,11 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     private String m_JarFile;
     private String m_OutputFileName;
     private String m_InputFiles;
-
+    private IJobBuilder m_Builder;
+    private int m_StartAtJob;
 
     private final DelegatingFileStreamOpener m_Openers = new DelegatingFileStreamOpener();
-    private int m_PassNumber;
-    private boolean m_BuildJar = true;
+     private boolean m_BuildJar = true;
     private final Map<String, String> m_PerformanceParameters = new HashMap<String, String>();
     private IFileSystem m_Accessor;
 
@@ -140,6 +139,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+        setBuilder(new ClusterLauncherJobBuilder(this));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -156,6 +156,15 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         //     if (gInstance != null)
         //        throw new IllegalStateException("Only one XTandemMain allowed");
 
+        setBuilder(new ClusterLauncherJobBuilder(this));
+    }
+
+    public IJobBuilder getBuilder() {
+        return m_Builder;
+    }
+
+    public void setBuilder(IJobBuilder builder) {
+        m_Builder = builder;
     }
 
     /**
@@ -203,6 +212,19 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         return application.getBooleanParameter(DATA_ON_PATH_PROPERTY, false);
     }
 
+    public int getNumberStages() {
+         return getBuilder().getNumberJobs();
+    }
+
+
+
+    public int getStartAtJob() {
+        return m_StartAtJob;
+    }
+
+    public void setStartAtJob(int startAtJob) {
+        m_StartAtJob = startAtJob;
+    }
 
     /**
      * return a parameter configured in  default parameters
@@ -284,33 +306,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
      */
     public String getOutputLocation(int passNumber) {
         return getOutputLocationBase() + passNumber;
-    }
-
-    /**
-     * where output directories go
-     *
-     * @return path name
-     */
-    @SuppressWarnings("UnusedDeclaration")
-    public String getOutputLocation() {
-        return getOutputLocation(getPassNumber());
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public String getLastOutputLocation() {
-        return getOutputLocation(getPassNumber() - 1);
-    }
-
-    public int getPassNumber() {
-        return m_PassNumber;
-    }
-
-    public void setPassNumber(final int pPassNumber) {
-        m_PassNumber = pPassNumber;
-    }
-
-    public void incrementPassNumber() {
-        m_PassNumber++;
     }
 
     /**
@@ -541,9 +536,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         //noinspection UnusedAssignment
         boolean ret;
 
-        List<IHadoopJob> jobs = buildJobs();
-        if (jobs.size() != NUMBER_STAGES)
-            throw new IllegalStateException("Number of jobs must equal NUMBER_STAGES");
+        List<IHadoopJob> jobs = buildJobs(getStartAtJob());
+
         for (IHadoopJob job : jobs) {
             String jobName = job.getName();
             statistics.startJob(jobName);
@@ -841,71 +835,76 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         return ret;
     }
 
-
-    protected List<IHadoopJob> buildJobs() {
-        List<IHadoopJob> holder = new ArrayList<IHadoopJob>();
-        int jobNumber = 0;
-        //noinspection ConstantConditions
-        if (START_AT_JOB <= jobNumber)
-            holder.add(buildJob(getSpectrumPath(), SpectraPeakClustererPass1.class, jobNumber));
-
-        jobNumber++;
-        if (START_AT_JOB <= jobNumber) {
-            String job0Output = getOutputLocation(jobNumber);
-            //noinspection ConstantConditions
-      //      if(START_AT_JOB > 0)    // hard code test input for debugging
-      //             job0Output = "OutputDataTest"; // debug input files
-            IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
-            holder.add(j1);
-        }
-
-        jobNumber++;
-        if (START_AT_JOB <= jobNumber)
-        {
-            String job0Output = getOutputLocation(jobNumber);
-            IHadoopJob job = buildJob(job0Output, ClusterConsolidator.class, jobNumber);
-            holder.add(job);
-        }
-        //noinspection UnusedAssignment
-        jobNumber++;
-        return holder;
+    protected List<IHadoopJob> buildJobs(int startAtJob) {
+        IJobBuilder builder = getBuilder();
+         return builder.buildJobs(startAtJob);
     }
 
-    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass, int jobNumber, String... addedArgs) {
-        boolean buildJar = isBuildJar();
-        HadoopJob.setJarRequired(buildJar);
-        String outputLocation = getOutputLocation(jobNumber + 1);
-        String spectrumFileName = new File(inputFile).getName();
-        String inputPath = getRemoteBaseDirectory() + "/" + spectrumFileName;
-        String jobDirectory = "jobs";
-        //noinspection UnusedDeclaration
-        int p = getRemoteHostPort();
-        String[] added = buildJobStrings(addedArgs);
-
-
-        //    if (p <= 0)
-        //         throw new IllegalStateException("bad remote host port " + p);
-        IHadoopJob job = HadoopJob.buildJob(
-                mainClass,
-                inputPath,     // data on hdfs
-                jobDirectory,      // jar location
-                outputLocation,
-                added
-        );
-
-        if (getJarFile() != null)
-            job.setJarFile(getJarFile());
-        // reuse the only jar file
-        // job.setJarFile(job.getJarFile());
-
-        incrementPassNumber();
-        return job;
-
-    }
+//    protected List<IHadoopJob> buildJobsOLD() {
+//        List<IHadoopJob> holder = new ArrayList<IHadoopJob>();
+//        int jobNumber = 0;
+//        //noinspection ConstantConditions
+//        int startAtJob = getStartAtJob();
+//        if (startAtJob <= jobNumber)
+//            holder.add(buildJob(getSpectrumPath(), SpectraPeakClustererPass1.class, jobNumber));
+//
+//        jobNumber++;
+//        if (startAtJob <= jobNumber) {
+//            String job0Output = getOutputLocation(jobNumber);
+//            //noinspection ConstantConditions
+//      //      if(START_AT_JOB > 0)    // hard code test input for debugging
+//      //             job0Output = "OutputDataTest"; // debug input files
+//            IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
+//            holder.add(j1);
+//        }
+//
+//        jobNumber++;
+//        if (startAtJob <= jobNumber)
+//        {
+//            String job0Output = getOutputLocation(jobNumber);
+//            IHadoopJob job = buildJob(job0Output, ClusterConsolidator.class, jobNumber);
+//            holder.add(job);
+//        }
+//        //noinspection UnusedAssignment
+//        jobNumber++;
+//        return holder;
+//    }
+//
+//    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass, int jobNumber, String... addedArgs) {
+//        boolean buildJar = isBuildJar();
+//        HadoopJob.setJarRequired(buildJar);
+//        String outputLocation = getOutputLocation(jobNumber + 1);
+//        String spectrumFileName = new File(inputFile).getName();
+//        String inputPath = getRemoteBaseDirectory() + "/" + spectrumFileName;
+//        String jobDirectory = "jobs";
+//        //noinspection UnusedDeclaration
+//        int p = getRemoteHostPort();
+//        String[] added = buildJobStrings(addedArgs);
+//
+//
+//        //    if (p <= 0)
+//        //         throw new IllegalStateException("bad remote host port " + p);
+//        IHadoopJob job = HadoopJob.buildJob(
+//                mainClass,
+//                inputPath,     // data on hdfs
+//                jobDirectory,      // jar location
+//                outputLocation,
+//                added
+//        );
+//
+//        if (getJarFile() != null)
+//            job.setJarFile(getJarFile());
+//        // reuse the only jar file
+//        // job.setJarFile(job.getJarFile());
+//
+//        incrementPassNumber();
+//        return job;
+//
+//    }
 
 
     public void expungeOutputDirectories(IFileSystem accessor) {
-        for (int i = START_AT_JOB; i < NUMBER_STAGES; i++) {
+        for (int i = getStartAtJob(); i < getNumberStages(); i++) {
             expungeLocalDirectory(accessor, i);
 
         }
@@ -1315,7 +1314,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 //            }
 
 
-            main.setPassNumber(1);
+  //          main.setPassNumber(1);
             String outFile = main.getOutputFileName();
 
 

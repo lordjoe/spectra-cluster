@@ -155,14 +155,16 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
         final String encodedPeaks = SpectrumUtilities.peaksToDataString(peaks);
 
         int len = encodedPeaks.length();
-        System.out.println("Spectrum length = " + len);
+
+       // System.out.println("Spectrum length = " + len);
         //noinspection UnusedAssignment
         values[index++] = encodedPeaks;    // peaks     6
 
         if(len > WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH)  {
             throw new UnsupportedOperationException("Fix This"); // ToDo   filter if too many peaks
         }
-         template.update(query, values);
+        values[index++] = encodedPeaks;    // peaks     6
+        template.update(query, values);
     }
 
 
