@@ -25,7 +25,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
      public static final String SELECT_SPECTRUM_STATEMENT = SELECT_ALL_SPECTRA_STATEMENT + " WHERE id = ?";
     public static final String DELETE_SPECTRUM_STATEMENT = "DELETE FROM <database>.spectrums   WHERE id = ?";
     // insert except where key exists
-    public static final String INSERT_SPECTRUM_STATEMENT = "Insert IGNORE INTO <database>.spectrums  " +
+    public static final String INSERT_SPECTRUM_STATEMENT = "INSERT IGNORE INTO <database>.spectrums  " +
             "(id,precursor_charge,precursor_mz,peptide,annotation,peaks) " +
             "VALUES  (?,?,?,?,?,? ) ";
 
@@ -45,8 +45,10 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                     "  precursor_mz DOUBLE NOT  NULL,\n" +
                     "  peptide VARCHAR(" + MAX_PEPTIDE_LENGTH + ")   NULL,\n" +
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
-                    "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL\n" +
-           //         "  PRIMARY KEY (id)\n" +
+           //         "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL\n" +
+                    "  peaks VARCHAR  NOT NULL\n" +
+               //    "  peaks VARBINARY NOT NULL\n" +
+              //         "  PRIMARY KEY (id)\n" +
                     ")"
             //        "CREATE IF NOT EXISTS INDEX idx_charge_<database> on   <database>.spectrums(precursor_charge);" +   // index charge
             //        "CREATE IF NOT EXISTS  INDEX idx_mz_<database> on   <database>.spectrums(precursor_mz); "
