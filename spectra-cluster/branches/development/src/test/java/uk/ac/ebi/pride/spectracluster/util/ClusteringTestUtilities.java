@@ -41,6 +41,18 @@ public class ClusteringTestUtilities {
      * @return
      */
     public static List<ISpectrum> readConsensusSpectralItems(String resName) {
+        File inputFile = getSpectrumFile(resName);
+
+
+        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        return Arrays.asList(mgfSpectra);
+    }
+
+    public static File getSpectrumFile() {
+        return  getSpectrumFile(SAMPLE_MGF_FILE);
+    }
+
+    public static File getSpectrumFile(String resName) {
         // load a file contains a list of clusters
         URL url;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(resName);
@@ -55,9 +67,7 @@ public class ClusteringTestUtilities {
             throw new RuntimeException(e);
 
         }
-
-        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
-        return Arrays.asList(mgfSpectra);
+        return inputFile;
     }
 
     //        // load a file contains a list of clusters
@@ -94,19 +104,7 @@ public class ClusteringTestUtilities {
      */
     public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
-        URL url;
-        url = ClusteringEngineMgfTests.class.getClassLoader().getResource(resName);
-        if (url == null) {
-            throw new IllegalStateException("no file for input found!");
-        }
-        File inputFile;
-        try {
-            inputFile = new File(url.toURI());
-        }
-        catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-
-        }
+        File inputFile = getSpectrumFile(resName);
 
         IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
         return Arrays.asList(mgfSpectra);
