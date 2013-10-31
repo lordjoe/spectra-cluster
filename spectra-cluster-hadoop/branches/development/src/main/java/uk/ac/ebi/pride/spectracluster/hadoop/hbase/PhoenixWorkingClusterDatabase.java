@@ -53,8 +53,8 @@ public class PhoenixWorkingClusterDatabase extends WorkingClusterDatabase {
       * @return query with the proper database
       */
      @Override
-     public String queryForDatabase(String query) {
-         return query.replace("<database>.", getDataBaseName() + "_");
+     public String queryForDatabase(String query,String dbName) {
+         return query.replace("<database>.", dbName + "_");
 
      }
     /**

@@ -103,7 +103,7 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
      */
     protected String queryForDatabase(String query) {
         final IWorkingClusterDatabase db = getDatabase();
-        return db.queryForDatabase(query) ;
+        return db.queryForDatabase(query,getDataBaseName()) ;
     }
 
     /**
