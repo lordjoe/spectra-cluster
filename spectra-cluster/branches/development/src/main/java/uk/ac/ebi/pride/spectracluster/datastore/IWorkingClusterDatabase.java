@@ -21,7 +21,7 @@ public interface IWorkingClusterDatabase extends ITemplateHolder {
      * @param query !null oroginal query with "<database>" as a place holder
      * @return query with the proper database
      */
-    public String queryForDatabase(String query);
+    public String queryForDatabase(String query,String dbName);
 
     public DataSource getDataSource();
 

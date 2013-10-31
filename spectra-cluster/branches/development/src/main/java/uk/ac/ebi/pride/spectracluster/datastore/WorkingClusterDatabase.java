@@ -91,8 +91,8 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
      * @return query with the proper database
      */
     @Override
-    public String queryForDatabase(String query) {
-        return query.replace("<database>", getDataBaseName());
+    public String queryForDatabase(String query,String dbName) {
+        return query.replace("<database>",dbName);
 
     }
 
