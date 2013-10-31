@@ -54,6 +54,9 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 
             Text onlyKey = getOnlyKey();
             Text onlyValue = getOnlyValue();
+
+            incrementDaltonCounters((int)precursorMZ,context);
+
             for (int peakMz : match.asMajorPeakMZs()) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
 
@@ -66,6 +69,11 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             }
 
         }
+
+        public void incrementDaltonCounters(int precursorMZ, Context context) {
+              Counter counter = context.getCounter("Binning", "MZ" + String.format("%05d", precursorMZ));
+              counter.increment(1);
+          }
 
 
     }

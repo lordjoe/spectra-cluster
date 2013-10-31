@@ -536,7 +536,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         //noinspection UnusedAssignment
         boolean ret;
 
-        List<IHadoopJob> jobs = buildJobs(getStartAtJob());
+        int startAtJob = getStartAtJob();
+        List<IHadoopJob> jobs = buildJobs(startAtJob);
 
         for (IHadoopJob job : jobs) {
             String jobName = job.getName();

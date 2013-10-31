@@ -7,10 +7,12 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
+import java.lang.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectraHadoopUtilities
@@ -26,7 +28,7 @@ public class SpectraHadoopUtilities {
     public static final double NARRROW_BIN_OVERLAP = 0.002; // 0.1;
 
 
-    @SuppressWarnings("UnusedDeclaration")
+
     private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             NARRROW_BIN_WIDTH,
@@ -37,7 +39,7 @@ public class SpectraHadoopUtilities {
     public static final double WIDE_BIN_WIDTH = 1.0;
     public static final double WIDE_BIN_OVERLAP = 0.3;
 
-    @SuppressWarnings("UnusedDeclaration")
+    @java.lang.SuppressWarnings("UnusedDeclaration")
     private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
@@ -46,6 +48,19 @@ public class SpectraHadoopUtilities {
 
 
     public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
+
+
+    public static final int STABLE_CLUSTER_SIZE = 15;
+
+    /**
+     * true if the cluster is stable
+     * @param !null cluster
+     * @return as above
+     */
+    public static boolean isClusterStable( ISpectralCluster cluster)
+    {
+       return cluster.getClusteredSpectraCount() >= STABLE_CLUSTER_SIZE;
+    }
 
     /**
      * convert am int into an mz for easy comparison
@@ -240,6 +255,7 @@ public class SpectraHadoopUtilities {
     }
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static void renameAttemptFile(Reducer.Context ctxt, Path basePath, String baseName, String outName) {
         try {
             FileSystem fs = basePath.getFileSystem(ctxt.getConfiguration());

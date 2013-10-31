@@ -21,6 +21,24 @@ public class ClusterUtilities {
     public static final String CLUSTERING_EXTENSION = ".clustering";
     public static final String CGF_EXTENSION = ".cgf";
 
+    /**
+      * find the highest quality spectrum in a list of clusters
+      * @param copied  should be non-empty array
+      * @return   !null spectrum unless copied is empty
+      */
+     public static ISpectrum getHighestQualitySpectrum(ISpectralCluster... copied) {
+         if(copied.length == 0)
+             return null;
+         ISpectrum ret = copied[0].getHighestQualitySpectrum();
+         for (int i = 1; i < copied.length; i++) {
+             if (!ret.equals(copied[i].getHighestQualitySpectrum()))
+                 throw new IllegalStateException("AlternativeSpectralClusters MUST have the same highest quality spectrum");
+         }
+
+         return ret;
+     }
+
+
 //    private static final Map<String, ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>();
 //
 //    public static ISpectralCluster getById(String id) {
