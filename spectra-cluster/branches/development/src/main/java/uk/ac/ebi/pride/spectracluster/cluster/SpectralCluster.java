@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
 
-    private final String id;
+    private String id;
     private boolean stable;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
@@ -94,9 +94,15 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
     }
 
-
+    /**
+     * if possible use the highest
+     * @return
+     */
     @Override
     public String getId() {
+        ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
+        if(highestQualitySpectrum != null)
+            return  highestQualitySpectrum.getId();
         return id;
     }
 

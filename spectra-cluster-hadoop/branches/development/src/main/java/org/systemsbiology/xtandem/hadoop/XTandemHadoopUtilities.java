@@ -101,7 +101,7 @@ public class XTandemHadoopUtilities {
                 // if protein accession is prefix then we cannot handle the case
                 if (processed_label.length() == 0) {
                     throw new IllegalArgumentException("The protein accession is the same as the decoy prefix!");
-                                }
+                }
 
                 // standard DECOY_ prefix gets added to label and return that
 
@@ -1114,11 +1114,11 @@ public class XTandemHadoopUtilities {
         safeWrite(context, "Output File", paramsFile);
         HDFSAccessor accesor = opener.getAccesor();
         // use a counter to see what we do
-        context.getCounter("outputfile",paramsFile).increment(1);
+        context.getCounter("outputfile", paramsFile).increment(1);
         Path path = new Path(paramsFile);
         OutputStream os = accesor.openFileForWrite(path);
 
-        context.getCounter("outputfile","total_files").increment(1);
+        context.getCounter("outputfile", "total_files").increment(1);
         return os;
     }
 
@@ -1396,13 +1396,50 @@ public class XTandemHadoopUtilities {
 
 
     public static String buildCounterFileName(IJobRunner runner, Configuration pConf) {
+        String fileName = runner.getClass().getSimpleName() + ".counters";
+        return buildCounterFileName(fileName, pConf);
+    }
+
+    public static String buildCounterFileName(String fileName, Configuration pConf) {
         String dir = pConf.get(PATH_KEY);
         if (dir == null)
             dir = "";
         else
             dir += "/";
-        String fileName = runner.getClass().getSimpleName() + ".counters";
         return dir + fileName;
+    }
+
+
+    public static final String BIN_COUNTER_START = "Binning:MZ";
+
+    /**
+     * return a map of mz vs count based on the results of pass1
+     *
+     * @param fileSystem !null file system
+     * @param fileName   pat to the file as a string
+     * @return
+     */
+    public static Map<Integer, Integer> readBinCounters(FileSystem fileSystem, String fileName) {
+        Path p = new Path(fileName);
+        Map ret = new HashMap<Integer, Integer>();
+        try {
+            FSDataInputStream open = fileSystem.open(p);
+            LineNumberReader rddr = new LineNumberReader(new InputStreamReader(open));
+            String line = rddr.readLine();
+            while (line != null) {
+                if (line.startsWith(BIN_COUNTER_START)) {
+                    line = line.substring(BIN_COUNTER_START.length());
+                    String[] items = line.split("=");
+                    int mz = Integer.parseInt(items[0].trim());
+                    int count = Integer.parseInt(items[1].trim());
+                    ret.put(mz, count);
+                }
+                line = rddr.readLine();
+            }
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+        return ret;
     }
 
     /**

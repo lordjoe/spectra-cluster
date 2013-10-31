@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.systemsbiology.hadoop.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -15,9 +16,11 @@ public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
     public static Class THIS_CLASS = AbstractClusterLauncherJobBuilder.class;
     protected final ClusterLauncher launcher;
     private int m_PassNumber = 1;
+    private final Class<? extends IJobRunner>[] m_JobClasses;
 
-    public AbstractClusterLauncherJobBuilder(ClusterLauncher launcher) {
+    public AbstractClusterLauncherJobBuilder(ClusterLauncher launcher, Class<? extends IJobRunner>[] classes) {
         this.launcher = launcher;
+        m_JobClasses = classes;
     }
 
     public ClusterLauncher getLauncher() {
@@ -52,13 +55,20 @@ public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
         m_PassNumber++;
     }
 
+
+    public Class<? extends IJobRunner>[] getJobClasses() {
+        return m_JobClasses;
+    }
+
     /**
      * if we start at the first job - how many jobs are there in total
      *
      * @return
      */
     @Override
-    public abstract int getNumberJobs();
+    public int getNumberJobs() {
+        return getJobClasses().length;
+    }
 
     /**
      * build the list of jobs to run
@@ -71,13 +81,65 @@ public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
         return buildJobs(0);
     }
 
-    /**
-     * build the list of jobs to run
-     * NOTE look at ClusterLauncherJobBuilder.buildJobs for a good
-     * sample - there are a few important steps there like setting the pass number which
-     * sets the output directory name - default in Output + passnumber
-     * @param  startjob job to start at (default = 0)
-     * @return  !null
-     */
-    public abstract List<IHadoopJob> buildJobs(int startjob);
+
+    public List<IHadoopJob> buildJobs(int startAtJob) {
+        List<IHadoopJob> holder = new ArrayList<IHadoopJob>();
+        int jobNumber = startAtJob;
+
+        ClusterLauncher base = getLauncher();
+        //noinspection ConstantConditions
+
+        Class<? extends IJobRunner>[] jobClasses = getJobClasses();
+
+        if (startAtJob == 0) {
+            String spectrumPath = base.getSpectrumPath();
+            Class<? extends IJobRunner> jobClass = jobClasses[0];
+            holder.add(buildJob(spectrumPath, jobClass, jobNumber));
+            startAtJob++;
+        }
+        jobNumber++;
+
+        for (int i = startAtJob; i < jobClasses.length; i++) {
+            String job0Output = base.getOutputLocation(jobNumber);
+            IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
+            holder.add(j1);
+            jobNumber++;
+
+        }
+        return holder;
+    }
+
+    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass, int jobNumber, String... addedArgs) {
+        ClusterLauncher base = getLauncher();
+        boolean buildJar = base.isBuildJar();
+        HadoopJob.setJarRequired(buildJar);
+        String outputLocation = base.getOutputLocation(jobNumber + 1);
+        String spectrumFileName = new File(inputFile).getName();
+        String inputPath = base.getRemoteBaseDirectory() + "/" + spectrumFileName;
+        String jobDirectory = "jobs";
+        //noinspection UnusedDeclaration
+        int p = base.getRemoteHostPort();
+        String[] added = base.buildJobStrings(addedArgs);
+
+
+        //    if (p <= 0)
+        //         throw new IllegalStateException("bad remote host port " + p);
+        IHadoopJob job = HadoopJob.buildJob(
+                mainClass,
+                inputPath,     // data on hdfs
+                jobDirectory,      // jar location
+                outputLocation,
+                added
+        );
+
+        if (base.getJarFile() != null)
+            job.setJarFile(base.getJarFile());
+        // reuse the only jar file
+        // job.setJarFile(job.getJarFile());
+
+        incrementPassNumber();
+        return job;
+
+    }
+
 }

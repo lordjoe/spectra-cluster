@@ -46,7 +46,17 @@ public class PhoenixWorkingClusterDatabase extends WorkingClusterDatabase {
 
     }
 
+    /**
+      * make the query for the current database
+      *   Phoenix does not support databases like MySQL
+      * @param query !null oroginal query with "<database>" as a place holder
+      * @return query with the proper database
+      */
+     @Override
+     public String queryForDatabase(String query) {
+         return query.replace("<database>.", getDataBaseName() + "_");
 
+     }
     /**
      * true of batch operations are allowed
      *

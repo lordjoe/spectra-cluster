@@ -5,6 +5,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
@@ -15,8 +16,15 @@ import java.io.*;
  * User: Steve
  * Date: 8/14/13
  */
-public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
+public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
+    public static final int WIDE_BIN_WIDTH = 16;
+    public static final int WIDE_BIN_OVERLAP = 1;
+    private static IWideBinner BINNER =    new SizedWideBinner(
+                IPeak.HIGHEST_USABLE_MZ,
+                WIDE_BIN_WIDTH,
+                IPeak.LOWEST_USABLE_MZ,
+                WIDE_BIN_OVERLAP);
 
     @Override
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
@@ -27,7 +35,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = BINNER;
 
         Text onlyKey = getOnlyKey();
         Text onlyValue = getOnlyValue();

@@ -83,6 +83,19 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
 
     }
 
+
+    /**
+     * make the query for the current database
+     *
+     * @param query !null oroginal query with "<database>" as a place holder
+     * @return query with the proper database
+     */
+    @Override
+    public String queryForDatabase(String query) {
+        return query.replace("<database>", getDataBaseName());
+
+    }
+
     /**
      * true of batch operations are allowed
      *

@@ -16,14 +16,12 @@ import java.io.*;
 
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.SpectraClustererMerger
+ * uk.ac.ebi.pride.spectracluster.hadoop.StableClusterAccumulator
  * This uses a key based in charge,peakmz,PrecursorMZ
  * inout is MGF text
  */
-public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobRunner {
+public class StableClusterAccumulator extends ConfiguredJobRunner implements IJobRunner {
 
-    @SuppressWarnings("UnusedDeclaration")
-    public static final int MAX_TEST_PROTEINS = 2000;
 
 
     protected static void usage() {
@@ -60,7 +58,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
             if (params == null)
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
-            job.setJarByClass(SpectraClustererMerger.class);
+            job.setJarByClass(StableClusterAccumulator.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 
@@ -157,6 +155,6 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             usage();
             return;
         }
-        ToolRunner.run(new SpectraClustererMerger(), args);
+        ToolRunner.run(new StableClusterAccumulator(), args);
     }
 }

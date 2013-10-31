@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
-
+import org.systemsbiology.hadoop.*;
 
 
 /**
@@ -18,6 +18,10 @@ public class MajorPeakPartitioner  extends Partitioner<Text, Text> {
     @Override
     public int getPartition(final Text pText, final Text value, final int numberReducers) {
         String key = pText.toString();
+             // send all special keys to reducer 0
+        if(AbstractParameterizedReducer.isKeySpecial(key))
+            return 0;
+
         ChargePeakMZKey realKey = new ChargePeakMZKey(key);
 
         int hash = realKey.getPartitionHash();

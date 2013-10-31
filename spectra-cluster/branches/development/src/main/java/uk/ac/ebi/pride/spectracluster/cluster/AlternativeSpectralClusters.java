@@ -27,16 +27,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return sb.toString();
     }
 
-    protected static ISpectrum getHighestQualitySpectrum(ISpectralCluster... copied) {
-        ISpectrum ret = copied[0].getHighestQualitySpectrum();
-        for (int i = 1; i < copied.length; i++) {
-            if (!ret.equals(copied[i].getHighestQualitySpectrum()))
-                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same highest quality spectrum");
-        }
-
-        return ret;
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
         //noinspection UnnecessaryLocalVariable
@@ -51,7 +41,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return ret;
     }
 
-    private final String id;
+    private  String id;
     private ISpectrum consensusSpectrum;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality

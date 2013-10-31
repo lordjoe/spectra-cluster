@@ -14,6 +14,15 @@ import javax.sql.*;
 public interface IWorkingClusterDatabase extends ITemplateHolder {
 
 
+
+    /**
+     * make the query for the current database
+     *
+     * @param query !null oroginal query with "<database>" as a place holder
+     * @return query with the proper database
+     */
+    public String queryForDatabase(String query);
+
     public DataSource getDataSource();
 
     public JdbcTemplate getOldTemplate();
