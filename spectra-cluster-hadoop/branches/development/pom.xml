@@ -150,6 +150,10 @@
 
     <repositories>
         <repository>
+            <id>apache release</id>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -164,6 +168,17 @@
         <repository>
             <id>mandubian-mvn</id>
             <url>http://mandubian-mvn.googlecode.com/svn/trunk/mandubian-mvn/repository</url>
+        </repository>
+        <repository>
+            <!-- Central Repository -->
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository> <!-- EBI repo -->
             <id>nexus-ebi-repo</id>
