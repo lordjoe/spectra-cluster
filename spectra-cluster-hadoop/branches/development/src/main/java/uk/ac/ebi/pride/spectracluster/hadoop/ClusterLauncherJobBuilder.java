@@ -15,7 +15,7 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
 
     public static final IJobBuilderFactory FACTORY = new IJobBuilderFactory() {
         @Override
-        public IJobBuilder getJobBuilder(IStreamOpener launcher) {
+        public IJobBuilder getJobBuilder(IStreamOpener launcher,Object... otherData) {
             return new  ClusterLauncherJobBuilder((ClusterLauncher)launcher);
         }
     };
