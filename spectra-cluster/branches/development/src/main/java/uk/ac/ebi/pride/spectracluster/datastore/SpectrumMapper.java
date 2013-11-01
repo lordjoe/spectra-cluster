@@ -30,9 +30,9 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
             "VALUES  (?,?,?,?,?,? ) ";
 
 
-    public static final int MAX_ANNOTATION_LENGTH = 256;
-    public static final int MAX_PEPTIDE_LENGTH = 100;
-    public static final int MAX_ID_LENGTH = 16;
+    public static final int MAX_ANNOTATION_LENGTH = 512;
+    public static final int MAX_PEPTIDE_LENGTH = 256;
+    public static final int MAX_ID_LENGTH = 128;
 
     /**
      * statement to create a spectrums table in the database <database>  every
