@@ -18,7 +18,7 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 
 /**
- * Hadoop mapper for
+ * Hadoop mapper for loading a group of mgf files into HBase using Phoenix
  *
  *
  * @author Rui Wang
