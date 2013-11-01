@@ -164,7 +164,6 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
         if(len > WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH)  {
             throw new UnsupportedOperationException("Fix This"); // ToDo   filter if too many peaks
         }
-        values[index++] = encodedPeaks;    // peaks     6
         template.update(query, values);
     }
 

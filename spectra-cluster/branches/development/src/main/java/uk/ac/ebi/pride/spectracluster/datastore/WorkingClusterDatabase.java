@@ -145,12 +145,16 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
 
         }
         guaranteeDatabaseExists();
+        doCreateTable(tableName);
+        //   SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
+    }
+
+    protected void doCreateTable(String tableName) {
         String creator = m_NameToCreateStatement.get(tableName);
         if (creator == null)
             throw new IllegalArgumentException("cannot create table " + tableName);
-        creator = creator.replace("<database>", getDatabaseName());
-        final int update = getOldTemplate().update(creator);
-        //   SpringJDBCUtilities.guaranteeTable(template, tableName, creator);
+        creator = queryForDatabase(creator, getDatabaseName());
+          final int update = getOldTemplate().update(creator);
     }
 
 
