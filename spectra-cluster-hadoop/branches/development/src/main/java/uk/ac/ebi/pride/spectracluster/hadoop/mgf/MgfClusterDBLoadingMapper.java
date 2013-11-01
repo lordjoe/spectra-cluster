@@ -32,13 +32,13 @@ public class MgfClusterDBLoadingMapper extends Mapper<Writable, Text, NullWritab
     protected void setup(Context context) throws IOException, InterruptedException {
         Configuration configuration = context.getConfiguration();
 
-        String databaseName = configuration.get("database.name");
+        String tableName = configuration.get("table_name");
 
         DataSource source = HBaseUtilities.getHBaseDataSource();
         Defaults.INSTANCE.setDefaultDataSource(source);
         Defaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
 
-        this.sqlDataStore = new SQLDataStore(databaseName, source);
+        this.sqlDataStore = new SQLDataStore(tableName, source);
     }
 
     @Override

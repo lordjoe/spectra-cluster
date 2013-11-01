@@ -19,14 +19,11 @@ import org.systemsbiology.hadoop.MGFInputFormat;
  */
 public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobRunner {
 
-    public static final String DATABASE_NAME_PROPERTY = "database.name";
     public static final String JOB_NAME = "MGF cluster db loader";
 
     @Override
     public int runJob(Configuration conf, String[] args) throws Exception {
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-
-        conf.set(DATABASE_NAME_PROPERTY, otherArgs[2]);
 
         Job job = new Job(conf, JOB_NAME);
         job.setJarByClass(getClass());
@@ -50,11 +47,6 @@ public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobR
 
     @Override
     public int run(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.err.printf("Usage: %s [input path] [output path] [database name]", getClass().getSimpleName());
-            ToolRunner.printGenericCommandUsage(System.err);
-            return -1;
-        }
 
         Configuration conf = getConf();
 
