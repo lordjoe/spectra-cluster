@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop.mgf;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -39,8 +39,8 @@ public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobR
         job.setMapperClass(MgfClusterDBLoadingMapper.class);
         job.setNumReduceTasks(0);
 
-        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(NullWritable.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
