@@ -12,8 +12,9 @@ import java.util.*;
  * @date 29/10/13
  */
 public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
-    public static AbstractClusterLauncherJobBuilder[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = AbstractClusterLauncherJobBuilder.class;
+
+
+
     protected final ClusterLauncher launcher;
     private int m_PassNumber = 1;
     private final Class<? extends IJobRunner>[] m_JobClasses;

@@ -9,6 +9,7 @@ import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -1235,12 +1236,25 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
     /**
+      * do all the work in the main but may be run as a different user
+      *
+      * @param args
+      */
+     @SuppressWarnings("ConstantConditions")
+     public static void workingMain(String[] args ) {
+         workingMain(args, Defaults.INSTANCE.getDefaultJobBuilderFactory());
+     }
+    /**
      * do all the work in the main but may be run as a different user
      *
      * @param args
      */
     @SuppressWarnings("ConstantConditions")
-    public static void workingMain(String[] args) {
+    public static void workingMain(String[] args,IJobBuilderFactory builder) {
+
+        if(builder == null )
+            builder = ClusterLauncherJobBuilder.FACTORY;
+
         ElapsedTimer total = new ElapsedTimer();
 
 
@@ -1265,7 +1279,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 return;
             }
             ClusterLauncher main = new ClusterLauncher(is, cfg);
-
+            main.setBuilder(builder.getJobBuilder(main));
 
             if (getPassedJarFile() != null) {   // start with a jar file
                 main.setJarFile(getPassedJarFile());
