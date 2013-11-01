@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.mgf;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.systemsbiology.hadoop.AbstractParameterizedMapper;
+import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.datastore.SQLDataStore;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
@@ -20,19 +20,20 @@ import java.io.StringReader;
 /**
  * Hadoop mapper for loading a group of mgf files into HBase using Phoenix
  *
- *
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterDBLoadingMapper extends Mapper<Writable, Text, NullWritable, NullWritable> {
+public class MgfClusterDBLoadingMapper extends AbstractParameterizedMapper<Writable> {
 
     private SQLDataStore sqlDataStore;
 
     @Override
-    protected void setup(Context context) throws IOException, InterruptedException {
-        Configuration configuration = context.getConfiguration();
+    protected void setup(Mapper.Context context) throws IOException, InterruptedException {
+        super.setup(context);
 
-        String tableName = configuration.get("table_name");
+        ISetableParameterHolder application = getApplication();
+
+        String tableName = application.getParameter("table_name");
 
         DataSource source = HBaseUtilities.getHBaseDataSource();
         Defaults.INSTANCE.setDefaultDataSource(source);

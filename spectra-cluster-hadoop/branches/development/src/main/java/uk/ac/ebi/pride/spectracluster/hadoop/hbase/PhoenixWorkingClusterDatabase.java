@@ -1,14 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.hbase;
 
 
-import org.apache.commons.dbcp.*;
-import uk.ac.ebi.pride.spectracluster.datastore.*;
-import org.springframework.dao.*;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.simple.*;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import uk.ac.ebi.pride.spectracluster.datastore.IWorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCUtilities;
+import uk.ac.ebi.pride.spectracluster.datastore.WorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
 
-import javax.sql.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.util.List;
 
 
 /**
@@ -57,6 +59,28 @@ public class PhoenixWorkingClusterDatabase extends WorkingClusterDatabase {
          return query.replace("<database>.", dbName + "_");
 
      }
+
+    /**
+     * crate a table if it does not exist
+     *
+     * @param tableName name of a known table
+     */
+    @Override
+    public void guaranteeTable(String tableName) {
+        SimpleJdbcTemplate template = getTemplate();
+        try {
+            String tableFullName = getDatabaseName() + "_" + tableName;
+            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + tableFullName, SpringJDBCUtilities.FIELD_MAPPER);
+
+            if (fields.size() > 0)
+                return;
+        } catch (DataAccessException ignored) {
+
+        }
+        guaranteeDatabaseExists();
+        doCreateTable(tableName);
+    }
+
     /**
      * true of batch operations are allowed
      *
