@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.datastore.*;
@@ -40,6 +41,8 @@ public class Defaults {
     private ConcensusSpectrumBuilderFactory consensusFactory =  ConsensusSpectrum.FACTORY;
 
     private WorkingDatabaseFactory databaseFactory = WorkingClusterDatabase.FACTORY;
+
+    private IJobBuilderFactory defaultJobBuilderFactory;
 
     private Defaults() {
 
@@ -144,9 +147,21 @@ public class Defaults {
         return defaultQualityScorer;
     }
 
+    /**
+     * make a constructor for jobs for Clustering engine and other Hadoop jobs
+     * @return default is null allowing you to plug in your own factory
+     */
     public IClusteringEngineFactory getDefaultClusteringEngineFactory() {
         if (defaultClusteringEngineFactory == null)
             defaultClusteringEngineFactory = ClusteringEngine.getClusteringEngineFactory();
         return defaultClusteringEngineFactory;
+    }
+
+    public IJobBuilderFactory getDefaultJobBuilderFactory() {
+         return defaultJobBuilderFactory;
+     }
+
+    public void setDefaultJobBuilderFactory(IJobBuilderFactory defaultJobBuilderFactory) {
+        this.defaultJobBuilderFactory = defaultJobBuilderFactory;
     }
 }

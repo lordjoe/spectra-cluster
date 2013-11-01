@@ -13,6 +13,12 @@ import java.util.*;
  */
 public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder {
 
+    public static final IJobBuilderFactory FACTORY = new IJobBuilderFactory() {
+        @Override
+        public IJobBuilder getJobBuilder(IStreamOpener launcher) {
+            return new  ClusterLauncherJobBuilder((ClusterLauncher)launcher);
+        }
+    };
 
     public static final Class[] JOB_CLASSES =
             {
