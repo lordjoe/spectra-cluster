@@ -52,8 +52,8 @@ public class MgfClusterDBLoadingMapper extends AbstractParameterizedMapper<Writa
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
-
-        sqlDataStore.addSpectrum(match);
+        if(match == null)
+            sqlDataStore.addSpectrum(match);
     }
 
 
