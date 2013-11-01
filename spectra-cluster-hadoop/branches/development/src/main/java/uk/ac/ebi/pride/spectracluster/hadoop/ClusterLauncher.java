@@ -119,7 +119,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     private String m_OutputFileName;
     private String m_InputFiles;
     private IJobBuilder m_Builder;
-    private int m_StartAtJob;
+    private int m_StartAtJob = START_AT_JOB_DEFAULT;
 
     private final DelegatingFileStreamOpener m_Openers = new DelegatingFileStreamOpener();
      private boolean m_BuildJar = true;
@@ -222,6 +222,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         return m_StartAtJob;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setStartAtJob(int startAtJob) {
         m_StartAtJob = startAtJob;
     }

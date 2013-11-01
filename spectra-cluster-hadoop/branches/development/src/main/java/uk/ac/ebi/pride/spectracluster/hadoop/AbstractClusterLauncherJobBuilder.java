@@ -91,13 +91,14 @@ public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
 
         Class<? extends IJobRunner>[] jobClasses = getJobClasses();
 
+        // special code if we start at job 0 where the data is not on hdfs
         if (startAtJob == 0) {
             String spectrumPath = base.getSpectrumPath();
             Class<? extends IJobRunner> jobClass = jobClasses[0];
             holder.add(buildJob(spectrumPath, jobClass, jobNumber));
             startAtJob++;
+            jobNumber++;
         }
-        jobNumber++;
 
         for (int i = startAtJob; i < jobClasses.length; i++) {
             String job0Output = base.getOutputLocation(jobNumber);
