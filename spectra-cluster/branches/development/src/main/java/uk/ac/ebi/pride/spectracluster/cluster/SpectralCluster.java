@@ -41,6 +41,12 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     }
 
+    /**
+     * use this when the cluster is not stable
+     */
+    public SpectralCluster() {
+        this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+    }
 
     public SpectralCluster(String id) {
         this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
@@ -96,13 +102,17 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
     /**
      * if possible use the highest
+     *
      * @return
      */
     @Override
     public String getId() {
-        ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
-        if(highestQualitySpectrum != null)
-            return  highestQualitySpectrum.getId();
+        // in unstable clusters use id of the highest quality spectrum
+        if (id == null) {
+            ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
+            if (highestQualitySpectrum != null)
+                return highestQualitySpectrum.getId();
+        }
         return id;
     }
 
@@ -442,8 +452,8 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");
                 String id1 = spec.getId();
-                while(id1.startsWith("="))
-                    id1 = id1.substring(1,id1.length()); // lots of ids start with == - is that a good thing
+                while (id1.startsWith("="))
+                    id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
                 sb.append(id1);
                 sb.append("\ttrue\n");  // changed to look at output
                 String csq = sb.toString();

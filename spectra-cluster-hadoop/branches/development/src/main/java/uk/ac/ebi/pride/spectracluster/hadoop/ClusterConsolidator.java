@@ -157,9 +157,12 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             boolean ans = job.waitForCompletion(true);
             int ret = ans ? 0 : 1;
-            if (ans)
-                XTandemHadoopUtilities.saveCounters(fileSystem, XTandemHadoopUtilities.buildCounterFileName(this, conf), job);
-            else
+            if (ans) {
+                String fileName = XTandemHadoopUtilities.buildCounterFileName(this, conf);
+                XTandemHadoopUtilities.saveCounters(fileSystem, fileName, job);
+
+                 XTandemHadoopUtilities.deleteTmpFiles(conf);
+            } else
                 throw new IllegalStateException("Job Failed");
 
             return ret;

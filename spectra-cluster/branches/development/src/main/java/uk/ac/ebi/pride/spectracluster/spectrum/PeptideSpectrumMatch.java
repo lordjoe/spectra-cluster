@@ -221,7 +221,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     public ISpectralCluster asCluster() {
         //   guaranteeClean();
-        SpectralCluster ret = new SpectralCluster(getId());
+        // id will be spectrum id
+        SpectralCluster ret = new SpectralCluster();
         ret.addSpectra(this);
         return ret;
     }

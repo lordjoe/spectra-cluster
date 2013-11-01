@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskID;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
@@ -1442,6 +1443,7 @@ public class XTandemHadoopUtilities {
         return ret;
     }
 
+
     /**
      * write the jobs counters  to a file called fileName in fileSystem
      *
@@ -1471,6 +1473,37 @@ public class XTandemHadoopUtilities {
         }
     }
 
+
+    /**
+     * in the file system delete all files om the directory with filename as its path
+     * which end in tmp
+     *
+     * @param conf !null
+     */
+    public static void deleteTmpFiles(Configuration conf) {
+
+        try {
+            String jobPath = conf.get(XTandemHadoopUtilities.PATH_KEY);
+            Path p = new Path(jobPath);
+            FileSystem fs = FileSystem.get(conf);
+            FileStatus[] statuses = fs.listStatus(p);
+            if (statuses == null)
+                return; // no files
+            for (int i = 0; i < statuses.length; i++) {
+                FileStatus statuse = statuses[i];
+                if (statuse.isDir())
+                    continue; // we only care about files
+                Path testPath = statuse.getPath();
+                String s = testPath.getName();
+                if (s.endsWith(".tmp")) {
+                    fs.delete(testPath, false);
+                }
+           }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 
     public static Map<String, Long> getAllJobCounters(Job job) {
         try {
