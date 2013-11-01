@@ -30,7 +30,11 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
      */
     public static class MajorPeakMapper extends AbstractParameterizedMapper<Writable> {
 
+        @Override
+        protected void setup(Context  context) throws IOException, InterruptedException {
+            super.setup(context);
 
+        }
 
         @Override
         public void map(Writable key, Text value, Context context

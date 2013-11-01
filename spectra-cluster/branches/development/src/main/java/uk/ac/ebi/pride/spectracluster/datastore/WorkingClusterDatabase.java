@@ -27,7 +27,7 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
         @Override
         public IWorkingClusterDatabase buildWorkingDatabase(String databaseName, DataSource ds) {
             WorkingClusterDatabase ret = new WorkingClusterDatabase(databaseName, ds);
-             return ret;
+            return ret;
 
         }
     };
@@ -91,8 +91,8 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
      * @return query with the proper database
      */
     @Override
-    public String queryForDatabase(String query,String dbName) {
-        return query.replace("<database>",dbName);
+    public String queryForDatabase(String query, String dbName) {
+        return query.replace("<database>", dbName);
 
     }
 
@@ -103,7 +103,7 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
      */
     @Override
     public boolean isBatchSupported() {
-           return true;
+        return true;
     }
 
 
@@ -154,7 +154,7 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
         if (creator == null)
             throw new IllegalArgumentException("cannot create table " + tableName);
         creator = queryForDatabase(creator, getDatabaseName());
-          final int update = getOldTemplate().update(creator);
+        final int update = getOldTemplate().update(creator);
     }
 
 
@@ -252,11 +252,11 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
     /**
      * subclasses support different syntax on queries - this code attampts to make
      * 'standard' queries compatible
+     *
      * @param originalQuery
-     * @return  !null patched query
+     * @return !null patched query
      */
-    public String patchQueryString(String originalQuery)
-    {
+    public String patchQueryString(String originalQuery) {
         // standard SQL works here
         return originalQuery;
     }
