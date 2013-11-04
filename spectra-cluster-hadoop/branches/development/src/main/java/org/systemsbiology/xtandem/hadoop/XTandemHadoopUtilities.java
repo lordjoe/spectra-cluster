@@ -73,6 +73,9 @@ public class XTandemHadoopUtilities {
 
     public static final String DEFAULT_DECOY_PREFIX = "DECOY_";
 
+    public static final String TSV_BIN_COUNT_HEADER = "m_z\tspectra_count";
+
+
     public static final Set<String> HADOOP_INTERNAL_COUNTER_SET = new HashSet<String>(Arrays.asList(HADOOP_INTERNAL_COUNTERS));
 
     public static boolean isCounterHadoopInternal(String name) {
@@ -1443,6 +1446,36 @@ public class XTandemHadoopUtilities {
         return ret;
     }
 
+    /**
+     * return a map of mz vs count based on the results of pass1
+     *
+     * @param fileSystem !null file system
+     * @param fileName   pat to the file as a string
+     * @return
+     */
+    public static Map<Integer, Integer> readBinCountersFromTSV(FileSystem fileSystem, String fileName) {
+        Path p = new Path(fileName);
+        Map ret = new HashMap<Integer, Integer>();
+        try {
+            FSDataInputStream open = fileSystem.open(p);
+            LineNumberReader rddr = new LineNumberReader(new InputStreamReader(open));
+            String line = rddr.readLine();
+            if (!line.equals(TSV_BIN_COUNT_HEADER))
+                throw new IllegalArgumentException("bad tsv file " + fileName);
+            line = rddr.readLine();
+            while (line != null) {
+                String[] items = line.split("\t");
+                int mz = Integer.parseInt(items[0].trim());
+                int count = Integer.parseInt(items[1].trim());
+                ret.put(mz, count);
+                line = rddr.readLine();
+            }
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+        return ret;
+    }
+
 
     /**
      * write the jobs counters  to a file called fileName in fileSystem
@@ -1498,7 +1531,7 @@ public class XTandemHadoopUtilities {
                 if (s.endsWith(".tmp")) {
                     fs.delete(testPath, false);
                 }
-           }
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
 

@@ -86,19 +86,20 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 
         // full cgf
         appender = CGFClusterAppender.INSTANCE;
-    //    addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
 
         // only big cgf
         appender = new FilteredClusterAppender(appender, bigOnly);
-   //     addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
 
         // full .cluster
         appender = DotClusterClusterAppender.INSTANCE;
+
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CLUSTERING_INSTANCE));
 
         // only big .cluster
         appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
-    //    addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
 
     }
 
