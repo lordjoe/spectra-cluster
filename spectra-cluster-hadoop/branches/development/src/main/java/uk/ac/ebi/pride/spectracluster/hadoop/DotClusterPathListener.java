@@ -40,6 +40,9 @@ public class DotClusterPathListener implements ClusterCreateListener {
             System.err.println("Making attempt path " + m_TempFile);
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             m_OutWriter = new PrintWriter(new OutputStreamWriter(dsOut));
+            // add a header
+            ClusterUtilities.appendDotClusterHeader(m_OutWriter,m_PermFile.getName());
+
         }
         catch (IOException e) {
             throw new RuntimeException(e);

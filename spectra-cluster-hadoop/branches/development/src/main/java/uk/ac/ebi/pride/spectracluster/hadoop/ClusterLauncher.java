@@ -30,7 +30,15 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final int DEFAULT_NUMBER_REDUCERS = 2400;
 
     // for development you can skip the first jobs ot work on issues in the second
-    public static final int START_AT_JOB_DEFAULT = 0; // 0; // 1;
+    private static int gDefaultStartAtJob = 0; // 0; // 1;
+
+    public static int getDefaultStartAtJob() {
+        return gDefaultStartAtJob;
+    }
+
+    public static void setDefaultStartAtJob(int gDefaultStartAtJob) {
+        ClusterLauncher.gDefaultStartAtJob = gDefaultStartAtJob;
+    }
 
     // files larger than this are NEVER copied from the remote cluster
     public static final int MAX_DATA_TO_COPY = 1 * 1024 * 1024 * 1024;
@@ -120,7 +128,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     private String m_OutputFileName;
     private String m_InputFiles;
     private IJobBuilder m_Builder;
-    private int m_StartAtJob = START_AT_JOB_DEFAULT;
+    private int m_StartAtJob = getDefaultStartAtJob();
 
     private final DelegatingFileStreamOpener m_Openers = new DelegatingFileStreamOpener();
      private boolean m_BuildJar = true;
@@ -1310,7 +1318,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 main.setBuildJar(false);
                 HadoopJob.setJarRequired(false);
                 launcher = new LocalHadoopController();
-
+                HadoopUtilities.setMaxReduceTasks(1);  // it rarely helps tp run many reducers locally
             }
             IFileSystem accessor = main.getAccessor();
             accessor.guaranteeDirectory(passedBaseDirctory);
