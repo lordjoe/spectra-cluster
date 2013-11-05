@@ -19,21 +19,6 @@ public interface IClusterDataStore {
      */
     public ISpectralCluster getById(String id);
 
-
-
-    /**
-     * store one cluster in the database
-     * @param stored
-     */
-    public void storeCluster(ISpectralCluster stored);
-
-    /**
-     * delete one cluster in the database
-     * @param stored
-     */
-    public void deleteCluster(ISpectralCluster stored);
-
-
     /**
      *
      * @param minMz  >0 <= maxMz  clusters returned have mz >= this
@@ -54,10 +39,10 @@ public interface IClusterDataStore {
 
     /**
      * return all spectra mapped tp a specific peptide
+     *
      * @param peptide !null !empty peptide
      * @return   !null iterable
      */
     public Iterable<? extends ISpectralCluster> getClustersByPeptide(String peptide);
-
 
 }

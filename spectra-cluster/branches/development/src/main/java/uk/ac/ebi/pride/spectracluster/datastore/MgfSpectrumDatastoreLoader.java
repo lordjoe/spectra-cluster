@@ -15,14 +15,14 @@ import java.util.LinkedHashSet;
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterDatabaseLoader {
+public class MgfSpectrumDatastoreLoader {
 
     public static final String MGF_FILE_EXTENSION = "mgf";
 
-    private final SQLDataStore sqlDataStore;
+    private final SpectrumDataStore spectrumDataStore;
 
-    public MgfClusterDatabaseLoader(SQLDataStore sqlDataStore) {
-        this.sqlDataStore = sqlDataStore;
+    public MgfSpectrumDatastoreLoader(SpectrumDataStore spectrumDataStore) {
+        this.spectrumDataStore = spectrumDataStore;
     }
 
     public void load(File mgfResource) throws IOException, IllegalAccessException {
@@ -72,7 +72,7 @@ public class MgfClusterDatabaseLoader {
 
         @Override
         public void onSpectrumCreate(ISpectrum spectrum) {
-            sqlDataStore.addSpectrum(spectrum);
+            spectrumDataStore.storeSpectrum(spectrum);
         }
 
         @Override

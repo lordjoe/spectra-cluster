@@ -151,11 +151,11 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
     /**
      * store one cluster in the database
      *
-     * @param stored
+     * @param clusterToStore
      */
     @Override
-    public void storeCluster(final ISpectralCluster stored) {
-        idToCluster.put(stored.getId(), stored);
+    public void storeCluster(final ISpectralCluster clusterToStore) {
+        idToCluster.put(clusterToStore.getId(), clusterToStore);
 
     }
 
