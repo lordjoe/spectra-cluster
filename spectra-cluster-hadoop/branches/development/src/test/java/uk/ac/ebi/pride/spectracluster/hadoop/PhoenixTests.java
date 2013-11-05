@@ -78,7 +78,7 @@ public class PhoenixTests {
             return;
         // run once with the right password - the machine will remember
         //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
-        SQLDataStore db = new SQLDataStore("test", getSource());
+        SpectrumDataStore db = new SpectrumDataStore("test", getSource());
         IWorkingClusterDatabase database = db.getDatabase();
         database.expungeDatabase();
     }
@@ -97,7 +97,7 @@ public class PhoenixTests {
             return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         db.clearAllData();
 
@@ -145,7 +145,7 @@ public class PhoenixTests {
             return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         // the returns list is a List<IPeptideSpectrumMatch>
         List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringDataUtilities.readISpectraFromResource());
@@ -171,7 +171,7 @@ public class PhoenixTests {
 
     }
 
-    private List<ISpectrum> getAllSpectra(final SQLDataStore pDb) {
+    private List<ISpectrum> getAllSpectra(final SpectrumDataStore pDb) {
         //noinspection UnusedAssignment
         Iterable<? extends ISpectrum> allSpectra = pDb.getAllSpectra();
         allSpectra = pDb.getAllSpectra();
@@ -190,7 +190,7 @@ public class PhoenixTests {
             return;
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
 
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         final Iterable<? extends ISpectrum> allSpectra = db.getAllSpectra();
         List originalSpectra = ClusteringDataUtilities.readISpectraFromResource();

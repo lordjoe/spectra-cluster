@@ -9,20 +9,20 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterLancherJobBuilder extends AbstractClusterLauncherJobBuilder {
+public class MgfSpectrumDatastoreLancherJobBuilder extends AbstractClusterLauncherJobBuilder {
 
     public static final IJobBuilderFactory FACTORY = new IJobBuilderFactory() {
         @Override
         public IJobBuilder getJobBuilder(IStreamOpener launcher, Object ... added) {
-            return new MgfClusterLancherJobBuilder((ClusterLauncher)launcher);
+            return new MgfSpectrumDatastoreLancherJobBuilder((ClusterLauncher)launcher);
         }
     };
 
     public static final Class[] JOB_CLASSES = {
-                    MgfClusterDBLoadingJob.class,
+                    MgfSpectrumDatastoreLoadingJob.class,
     } ;
 
-    public MgfClusterLancherJobBuilder(ClusterLauncher launcher) {
+    public MgfSpectrumDatastoreLancherJobBuilder(ClusterLauncher launcher) {
         super(launcher,JOB_CLASSES);
     }
 

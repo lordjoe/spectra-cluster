@@ -5,7 +5,7 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.systemsbiology.hadoop.AbstractParameterizedMapper;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
-import uk.ac.ebi.pride.spectracluster.datastore.SQLDataStore;
+import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -23,9 +23,9 @@ import java.io.StringReader;
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterDBLoadingMapper extends AbstractParameterizedMapper<Writable> {
+public class MgfSpectrumDatastoreLoadingMapper extends AbstractParameterizedMapper<Writable> {
 
-    private SQLDataStore sqlDataStore;
+    private SpectrumDataStore spectrumDataStore;
 
     @Override
     protected void setup(Mapper.Context context) throws IOException, InterruptedException {
@@ -39,7 +39,7 @@ public class MgfClusterDBLoadingMapper extends AbstractParameterizedMapper<Writa
         Defaults.INSTANCE.setDefaultDataSource(source);
         Defaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
 
-        this.sqlDataStore = new SQLDataStore(tableName, source);
+        this.spectrumDataStore = new SpectrumDataStore(tableName, source);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MgfClusterDBLoadingMapper extends AbstractParameterizedMapper<Writa
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
         if(match == null)
-            sqlDataStore.addSpectrum(match);
+            spectrumDataStore.storeSpectrum(match);
     }
 
 
