@@ -55,16 +55,6 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
     }
 
     /**
-     * store one spectrum in the database
-     *
-     * @param stored
-     */
-    @Override
-    public void storeSpectrum(final ISpectrum stored) {
-        idToSpectrum.put(stored.getId(), stored);
-    }
-
-    /**
      * @param minMz >0 <= maxMz  clusters returned have mz >= this
      * @param mazMz >= minMZ clusters returned have mz < this unless it == minMz
      * @return !null iterable
@@ -148,26 +138,11 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
         return holder;
     }
 
-    /**
-     * store one cluster in the database
-     *
-     * @param clusterToStore
-     */
     @Override
-    public void storeCluster(final ISpectralCluster clusterToStore) {
-        idToCluster.put(clusterToStore.getId(), clusterToStore);
-
-    }
-
-    /**
-     * delete one cluster in the database
-     *
-     * @param stored
-     */
-    @Override
-    public void deleteCluster(final ISpectralCluster stored) {
-        idToCluster.remove(stored.getId());
-
+    public void storeClusters(Collection<ISpectralCluster> clustersToStore) {
+        for (ISpectralCluster cluster : clustersToStore) {
+            storeCluster(cluster);
+        }
     }
 
 
@@ -208,7 +183,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @param added !null added
      */
     @Override
-    public void addSpectrum(final ISpectrum added) {
+    public void storeSpectrum(final ISpectrum added) {
         final String key = added.getId();
         if (idToSpectrum.containsKey(key))
             throw new IllegalStateException("cannot add an existing spectrum");
@@ -223,7 +198,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
     @Override
     public void storeSpectra(final List<? extends ISpectrum> stored) {
         for (ISpectrum added : stored) {
-            addSpectrum(added);
+            storeSpectrum(added);
         }
     }
 
@@ -233,7 +208,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @param added !null added
      */
     @Override
-    public void addCluster(final ISpectralCluster added) {
+    public void storeCluster(final ISpectralCluster added) {
         final String key = added.getId();
         if (idToCluster.containsKey(key))
             throw new IllegalStateException("cannot add an existing spectrum");

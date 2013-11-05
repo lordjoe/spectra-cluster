@@ -19,6 +19,11 @@ public class CommonSpectraClusterMatch implements IClusterMatch {
     }
 
     @Override
+    public double getQualityMeasure(Object... addedData) {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public int compareTo(IClusterMatch o) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }

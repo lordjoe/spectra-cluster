@@ -83,7 +83,7 @@ public class InMemoryDatastoreTests {
         final List<IPeptideSpectrumMatch> spectrums = ClusteringTestUtilities.readISpectraFromResource();
         // add then all
         for (IPeptideSpectrumMatch spectrum : spectrums) {
-            ds.addSpectrum(spectrum);
+            ds.storeSpectrum(spectrum);
         }
         return spectrums;
     }

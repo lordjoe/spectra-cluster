@@ -25,14 +25,12 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      */
     public float getPrecursorMz();
 
-
     /**
      * concensus spectrum Charge
      *
      * @return
      */
     public int getPrecursorCharge();
-
 
     /**
      * Get consensus spectrum
