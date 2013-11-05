@@ -6,7 +6,7 @@ import org.junit.Test;
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterDBLoadingMapperTest {
+public class MgfSpectrumDatastoreLoadingMapperTest {
 
     @Test
     public void loadSpectrum() throws Exception {

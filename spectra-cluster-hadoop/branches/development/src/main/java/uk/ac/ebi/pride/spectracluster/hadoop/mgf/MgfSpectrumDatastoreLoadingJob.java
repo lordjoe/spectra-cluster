@@ -17,7 +17,7 @@ import org.systemsbiology.hadoop.MGFInputFormat;
  * @author Rui Wang
  * @version $Id$
  */
-public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobRunner {
+public class MgfSpectrumDatastoreLoadingJob extends ConfiguredJobRunner implements IJobRunner {
 
     public static final String JOB_NAME = "MGF cluster db loader";
 
@@ -36,7 +36,7 @@ public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobR
         FileOutputFormat.setOutputPath(job, outputDir);
         HadoopUtilities.expunge(outputDir, outputDir.getFileSystem(conf));
 
-        job.setMapperClass(MgfClusterDBLoadingMapper.class);
+        job.setMapperClass(MgfSpectrumDatastoreLoadingMapper.class);
         job.setNumReduceTasks(0);
 
         job.setOutputKeyClass(Text.class);
@@ -54,7 +54,7 @@ public class MgfClusterDBLoadingJob extends ConfiguredJobRunner implements IJobR
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new MgfClusterDBLoadingJob(), args);
+        int exitCode = ToolRunner.run(new MgfSpectrumDatastoreLoadingJob(), args);
         System.exit(exitCode);
     }
 }
