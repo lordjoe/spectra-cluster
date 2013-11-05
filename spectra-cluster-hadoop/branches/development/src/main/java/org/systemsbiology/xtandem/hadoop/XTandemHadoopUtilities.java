@@ -1513,11 +1513,15 @@ public class XTandemHadoopUtilities {
      *
      * @param conf !null
      */
-    public static void deleteTmpFiles(Configuration conf) {
+    public static void deleteTmpFiles(Path p, Configuration conf) {
+
+        if (p == null) {
+            throw new IllegalArgumentException("Tmp file path cannot be null");
+        }
 
         try {
-            String jobPath = conf.get(XTandemHadoopUtilities.PATH_KEY);
-            Path p = new Path(jobPath);
+//            String jobPath = conf.get(XTandemHadoopUtilities.PATH_KEY);
+//            Path p = new Path(jobPath);
             FileSystem fs = FileSystem.get(conf);
             FileStatus[] statuses = fs.listStatus(p);
             if (statuses == null)
