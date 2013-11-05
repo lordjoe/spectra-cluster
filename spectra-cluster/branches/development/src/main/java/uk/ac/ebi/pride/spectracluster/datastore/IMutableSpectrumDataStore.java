@@ -19,10 +19,10 @@ public interface IMutableSpectrumDataStore extends ISpectrumDataStore {
     public void clearAllData();
 
     /**
-     * add a spectrum
-     * @param added  !null added
+     * store one spectrum in the database
+     * @param stored
      */
-    public void addSpectrum(ISpectrum added);
+    public void storeSpectrum(ISpectrum stored);
 
     /**
      * store one spectrum in the database

@@ -26,7 +26,7 @@ public class DatabaseReadMain {
 
     public DatabaseReadMain(String dbName) {
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
-        database = new SQLDataStore(dbName, ds);
+        database = new SpectrumDataStore(dbName, ds);
     }
 
     public long getReadTimeMillisec() {

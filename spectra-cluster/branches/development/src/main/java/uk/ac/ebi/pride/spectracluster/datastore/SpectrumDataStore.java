@@ -15,18 +15,18 @@ import java.util.*;
  * User: Steve
  * Date: 7/15/13
  */
-public class SQLDataStore implements IMutableSpectrumDataStore {
+public class SpectrumDataStore implements IMutableSpectrumDataStore {
 
     private final DataSource datasource;
     private final IWorkingClusterDatabase database;
     private final String dataBaseName;
 
     @SuppressWarnings("UnusedDeclaration")
-    public SQLDataStore(String database) {
+    public SpectrumDataStore(String database) {
         this(database, Defaults.INSTANCE.getDefaultDataSource());
     }
 
-    public SQLDataStore(String databaseStr, DataSource ds) {
+    public SpectrumDataStore(String databaseStr, DataSource ds) {
         datasource = ds;
         database = Defaults.INSTANCE.getDatabaseFactory().buildWorkingDatabase(databaseStr, ds);
         dataBaseName = databaseStr;
@@ -52,16 +52,6 @@ public class SQLDataStore implements IMutableSpectrumDataStore {
     @Override
     public void clearAllData() {
         getDatabase().clearDatabase();
-    }
-
-    /**
-     * add a spectrum
-     *
-     * @param added !null added
-     */
-    @Override
-    public void addSpectrum(final ISpectrum added) {
-        storeSpectrum(added);
     }
 
 

@@ -25,12 +25,6 @@ public interface ISpectrumDataStore {
      */
     public Iterable<? extends ISpectrum> getAllSpectra( );
 
-    /**
-     * store one spectrum in the database
-     * @param stored
-     */
-    public void storeSpectrum(ISpectrum stored);
-
 
     /**
      *

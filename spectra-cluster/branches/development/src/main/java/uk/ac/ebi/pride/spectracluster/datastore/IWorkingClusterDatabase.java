@@ -14,14 +14,13 @@ import javax.sql.*;
 public interface IWorkingClusterDatabase extends ITemplateHolder {
 
 
-
     /**
      * make the query for the current database
      *
      * @param query !null oroginal query with "<database>" as a place holder
      * @return query with the proper database
      */
-    public String queryForDatabase(String query,String dbName);
+    public String queryForDatabase(String query, String dbName);
 
     public DataSource getDataSource();
 
@@ -50,20 +49,19 @@ public interface IWorkingClusterDatabase extends ITemplateHolder {
 
     /**
      * true of batch operations are allowed
+     *
      * @return
      */
     public boolean isBatchSupported();
 
     /**
-        * subclasses support different syntax on queries - this code attampts to make
-        * 'standard' queries compatible
-        * @param originalQuery
-        * @return  !null patched query
-        */
-       public String patchQueryString(String originalQuery);
-
-
-
+     * subclasses support different syntax on queries - this code attampts to make
+     * 'standard' queries compatible
+     *
+     * @param originalQuery
+     * @return !null patched query
+     */
+    public String patchQueryString(String originalQuery);
 
 
 }

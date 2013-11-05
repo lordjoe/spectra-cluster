@@ -65,7 +65,7 @@ public class SpringJDBCTests {
              return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         db.clearAllData();
 
@@ -113,7 +113,7 @@ public class SpringJDBCTests {
              return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         // the returns list is a List<IPeptideSpectrumMatch>
         List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringTestUtilities.readISpectraFromResource());
@@ -139,7 +139,7 @@ public class SpringJDBCTests {
 
     }
 
-    private List<ISpectrum> getAllSpectra(final SQLDataStore pDb) {
+    private List<ISpectrum> getAllSpectra(final SpectrumDataStore pDb) {
         //noinspection UnusedAssignment
         Iterable<? extends ISpectrum> allSpectra = pDb.getAllSpectra();
         allSpectra = pDb.getAllSpectra();
@@ -158,7 +158,7 @@ public class SpringJDBCTests {
              return;
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
 
-        SQLDataStore db = new SQLDataStore("test", ds);
+        SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         final Iterable<? extends ISpectrum> allSpectra = db.getAllSpectra();
         List originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
