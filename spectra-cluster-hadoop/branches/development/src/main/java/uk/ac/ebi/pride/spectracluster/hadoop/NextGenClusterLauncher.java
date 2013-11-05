@@ -30,7 +30,7 @@ public  class NextGenClusterLauncher   {
         boolean isVersion1 = HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0;
 
         // change this if debugging from another job
-        ClusterLauncher.setDefaultStartAtJob(0);
+        ClusterLauncher.setDefaultStartAtJob(2);
 
         if (!isVersion1) {
             ClusterLauncher.workingMain(args, NextGenClusterLauncherJobBuilder.FACTORY);

@@ -69,7 +69,7 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
             job.setMapperClass(StableClusterMapper.class);
             job.setReducerClass(SpectrumMergeReducer.class);
             //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
-            job.setPartitionerClass(ChargeBinPartitioner.class);
+            job.setPartitionerClass(StableChargeBinKeyPartitioner.class);
 
 
             // We always do this

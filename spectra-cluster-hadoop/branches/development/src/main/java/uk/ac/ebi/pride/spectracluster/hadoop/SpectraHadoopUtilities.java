@@ -50,17 +50,6 @@ public class SpectraHadoopUtilities {
     public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
 
 
-    public static final int STABLE_CLUSTER_SIZE = 15;
-
-    /**
-     * true if the cluster is stable
-     * @param !null cluster
-     * @return as above
-     */
-    public static boolean isClusterStable( ISpectralCluster cluster)
-    {
-       return cluster.getClusteredSpectraCount() >= STABLE_CLUSTER_SIZE;
-    }
 
     /**
      * convert am int into an mz for easy comparison

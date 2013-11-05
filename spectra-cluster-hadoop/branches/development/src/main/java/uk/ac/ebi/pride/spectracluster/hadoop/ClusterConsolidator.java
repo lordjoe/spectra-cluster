@@ -41,11 +41,6 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             if (label.length() == 0 || text.length() == 0)
                 return;
 
-
-            Text onlyKey = getOnlyKey();
-            Text onlyValue = getOnlyValue();
-
-
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
             ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             // should be only one
@@ -54,9 +49,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 ISpectralCluster cluster = clusters[i];
                 MZKey mzkey = new MZKey(cluster.getPrecursorMz());
                 final String keyStr = mzkey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(keyStr, text, context);
             }
         }
 
@@ -122,7 +115,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-           // XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            // XTandemHadoopUtilities.setRecommendedMaxReducers(job);
             job.setNumReduceTasks(NUMBER_REDUCE_JOBS);  //  this should scale well enough
 
 
@@ -132,9 +125,9 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
-  //              Path outPath = new Path(parentPath, "ConsolidatedClusters");
+                //              Path outPath = new Path(parentPath, "ConsolidatedClusters");
                 Path outPath = new Path(parentPath, "ConsolidatedClustersTest");
-                  FileSystem fileSystem = outPath.getFileSystem(conf);
+                FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
             }
@@ -161,21 +154,18 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 String fileName = XTandemHadoopUtilities.buildCounterFileName(this, conf);
                 XTandemHadoopUtilities.saveCounters(fileSystem, fileName, job);
 
-                 XTandemHadoopUtilities.deleteTmpFiles(conf);
+                XTandemHadoopUtilities.deleteTmpFiles(conf);
             } else
                 throw new IllegalStateException("Job Failed");
 
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
 
         }

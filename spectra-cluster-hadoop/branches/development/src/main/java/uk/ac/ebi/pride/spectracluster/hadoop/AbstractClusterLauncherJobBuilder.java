@@ -103,7 +103,7 @@ public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
 
         for (int i = startAtJob; i < jobClasses.length; i++) {
             String job0Output = base.getOutputLocation(jobNumber);
-            IHadoopJob j1 = buildJob(job0Output, SpectraClustererMerger.class, jobNumber);
+            IHadoopJob j1 = buildJob(job0Output, jobClasses[i], jobNumber);
             holder.add(j1);
             jobNumber++;
 

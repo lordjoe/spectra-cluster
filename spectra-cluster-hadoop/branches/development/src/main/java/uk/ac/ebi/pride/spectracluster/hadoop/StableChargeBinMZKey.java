@@ -49,16 +49,17 @@ public class StableChargeBinMZKey implements Comparable<StableChargeBinMZKey> {
      */
     protected StableChargeBinMZKey(String str) {
          final String[] split = str.split(":");
-        charge = Integer.parseInt(split[0]);
-        String key1 = split[1];
-        bin = Integer.parseInt(key1);
-        String key2 = split[2];
-        group = Integer.parseInt(key2);
-
-        String prefix = split[3];
+        int index = 0;
+        String prefix = split[index++];
         // todo - check for proper
 
-        String key3 = split[4];
+        charge = Integer.parseInt(split[index++]);
+        String key1 = split[index++];
+        bin = Integer.parseInt(key1);
+        String key2 = split[index++];
+        group = Integer.parseInt(key2);
+
+         String key3 = split[index++];
         precursorMZ = SpectraHadoopUtilities.keyToMZ(key3);
         asString = null;    // force string regeneration
     }
@@ -122,11 +123,14 @@ public class StableChargeBinMZKey implements Comparable<StableChargeBinMZKey> {
             sb.append(String.format("%06d", getGroup()));
 
             // only include charge and bin
-            partitionHash = sb.toString().hashCode();
+            String part = sb.toString();
+            partitionHash = part.hashCode();
 
+            sb = new StringBuilder();
+            sb.append(getSortPrefix());
             // ok after partition sort first by prefix then by mz
             sb.append(":");
-            sb.append(getSortPrefix());
+            sb.append(part);
 
             sb.append(":");
             double precursorMZ1 = getPrecursorMZ();

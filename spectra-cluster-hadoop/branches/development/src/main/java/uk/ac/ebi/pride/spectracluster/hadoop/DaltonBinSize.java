@@ -88,7 +88,7 @@ public class DaltonBinSize {
             if (!fileSystem.exists(p))
                 return false;
 
-            Map<Integer, Integer> ret = XTandemHadoopUtilities.readBinCounters(fileSystem, fileName);
+            Map<Integer, Integer> ret = XTandemHadoopUtilities.readBinCountersFromTSV(fileSystem, fileName);
             for (Integer key : ret.keySet()) {
                 gTotalSpectra += ret.get(key);
             }
