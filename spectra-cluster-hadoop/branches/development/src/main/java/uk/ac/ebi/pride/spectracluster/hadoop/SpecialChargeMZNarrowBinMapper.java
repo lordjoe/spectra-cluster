@@ -30,9 +30,6 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
 
         IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
 
-        Text onlyKey = getOnlyKey();
-        Text onlyValue = getOnlyValue();
-
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
@@ -45,7 +42,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-               ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
 
 
                 MZKey mzkey = new MZKey(cluster.getPrecursorMz());
@@ -53,41 +50,36 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
 
                 SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
 
-              //  if(bin != 149986)
-              //         continue; // todo remove this is to debug one case
+                //  if(bin != 149986)
+                //         continue; // todo remove this is to debug one case
 
                 // check partitioning
                 countHashValues(mzKey, context);
 
                 final String keyStr = mzkey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(keyStr, text, context);
             }
         }
 
     }
 
 
-
-
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
     public void countHashValues(ChargeBinMZKey mzKey, Context context) {
-  //      incrementPartitionCounters(mzKey, context);    //the reducer handle
-     }
+        //      incrementPartitionCounters(mzKey, context);    //the reducer handle
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
-        if(true)
+        //noinspection ConstantIfStatement
+        if (true)
             return;
         int partition = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
         counter.increment(1);
     }
-
-
 
 
 }

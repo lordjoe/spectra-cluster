@@ -32,4 +32,9 @@ public class NextGenClusterLauncherJobBuilder extends AbstractClusterLauncherJob
         super(launcher,JOB_CLASSES);
     }
 
+    @Override
+    protected IHadoopJob buildJob(String inputFile, Class<? extends IJobRunner> mainClass, int jobNumber, String... addedArgs) {
+        return super.buildJob(inputFile, mainClass, jobNumber, addedArgs);
+
+    }
 }

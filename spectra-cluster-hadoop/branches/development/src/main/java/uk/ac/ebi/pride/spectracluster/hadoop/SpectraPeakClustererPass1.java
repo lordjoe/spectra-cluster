@@ -31,7 +31,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
     public static class MajorPeakMapper extends AbstractParameterizedMapper<Writable> {
 
         @Override
-        protected void setup(Context  context) throws IOException, InterruptedException {
+        protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
 
         }
@@ -49,35 +49,29 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             // ready to read test as one MGF
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
-            if(match == null )    {
+            if (match == null) {
                 System.err.println("No Match fount in text\n" + text);
                 return;
             }
             int precursorCharge = match.getPrecursorCharge();
             double precursorMZ = match.getPrecursorMz();
 
-            Text onlyKey = getOnlyKey();
-            Text onlyValue = getOnlyValue();
-
-            incrementDaltonCounters((int)precursorMZ,context);
+            incrementDaltonCounters((int) precursorMZ, context);
 
             for (int peakMz : match.asMajorPeakMZs()) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
 
-           //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
-
+                //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
                 final String keyStr = mzKey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(keyStr, text, context);
             }
 
         }
 
         public void incrementDaltonCounters(int precursorMZ, Context context) {
-              Counter counter = context.getCounter("Binning", "MZ" + String.format("%05d", precursorMZ));
-              counter.increment(1);
-          }
+            Counter counter = context.getCounter("Binning", "MZ" + String.format("%05d", precursorMZ));
+            counter.increment(1);
+        }
 
 
     }
@@ -140,8 +134,6 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             XTandemHadoopUtilities.setRecommendedMaxReducers(job);
 
 
-
-
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
                 XTandemHadoopUtilities.setInputPath(job, otherArg);
@@ -171,21 +163,14 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             else
                 throw new IllegalStateException("Job Failed");
 
-
-            //    if (numberMapped != numberReduced)
-            //       throw new IllegalStateException("problem"); // ToDo change
-
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
 
         }

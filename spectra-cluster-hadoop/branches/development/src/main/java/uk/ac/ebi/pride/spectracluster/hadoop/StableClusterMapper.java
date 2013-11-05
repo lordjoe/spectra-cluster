@@ -20,10 +20,12 @@ import java.util.*;
 public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
-
     public static final Random RND = new Random();
     public static final int WIDE_BIN_WIDTH = 16;
     public static final int WIDE_BIN_OVERLAP = 1;
+    public static final int MAX_SPECTRA_PER_GROUP = 1000;
+
+
     private static IWideBinner BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
@@ -34,29 +36,30 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
     /**
      * return all posssible keys for a bin - this may be subfragmanets
+     *
      * @param bin
      * @param context
      * @return
      */
-     public String[] getBinKeys(int bin, int charge,   final double mz, Context context) {
-         // look up
+    public String[] getBinKeys(int bin, int charge, final double mz, Context context) {
+        // look up
         String[] ret = binToAllKeys.get(bin);
         if (ret != null)
             return ret;
-        ret = buildBinKeys(bin,charge,mz,context);
+        ret = buildBinKeys(bin, charge, mz, context);
         binToAllKeys.put(bin, ret);
         return ret;
     }
 
-    private String[] buildBinKeys(int bin,   int charge,   final double mz,Context context) {
+    private String[] buildBinKeys(int bin, int charge, final double mz, Context context) {
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         List<String> holder = new ArrayList<String>();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-        int numberSpectraWithMZ = DaltonBinSize.getNumberSpectraWithMZ(bin,context.getConfiguration());
+        int numberSpectraWithMZ = DaltonBinSize.getNumberSpectraWithMZ((int) mz, context.getConfiguration());
         int ng = getNumberGroups(numberSpectraWithMZ);
         for (int i = 0; i < ng; i++) {
-            StableChargeBinMZKey key = new StableChargeBinMZKey(charge,bin,i,mz);
-            holder.add(key.toString() );
+            StableChargeBinMZKey key = new StableChargeBinMZKey(charge, bin, i, mz);
+            holder.add(key.toString());
 
         }
 
@@ -66,8 +69,9 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     }
 
 
-    protected int getNumberGroups(int totalSpectra)    {
-        return 0;
+    protected int getNumberGroups(int totalSpectra) {
+
+        return 1 + (totalSpectra / MAX_SPECTRA_PER_GROUP);
     }
 
     @Override
@@ -79,59 +83,60 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = BINNER;
-
-        Text onlyKey = getOnlyKey();
-        Text onlyValue = getOnlyValue();
-
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+
+        switch (clusters.length) {
+            case 0:
+                return;
+            case 1:
+                handleCluster(clusters[0], text, context);
+                return;
+            default:
+                throw new IllegalStateException("We got " + clusters.length +
+                        " clusters - expected only 1"); //
+        }
+    }
+
+    protected void handleCluster(ISpectralCluster cluster, String value, Context context) {
+        IWideBinner binner = BINNER;
+
         //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < clusters.length; i++) {
-            ISpectralCluster cluster = clusters[i];
-            int precursorCharge = cluster.getPrecursorCharge();
-            double precursorMZ = cluster.getPrecursorMz();
-            int[] bins = binner.asBins(precursorMZ);
-            //noinspection ForLoopReplaceableByForEach
-            for (int j = 0; j < bins.length; j++) {
-                int bin = bins[j];
-                String[] keys = getBinKeys(bin, precursorCharge,precursorMZ, context);
-                if (cluster.isStable()) {
-                 //noinspection ForLoopReplaceableByForEach
-                    for (int k = 0; k < keys.length; k++) {
-                        String akey = keys[k];
-                          onlyKey.set(akey);
-                        onlyValue.set(text);   // send on the MGF
-                        context.write(onlyKey, onlyValue);
+        int precursorCharge = cluster.getPrecursorCharge();
+        double precursorMZ = cluster.getPrecursorMz();
+        boolean stable = cluster.isStable();
+        int numberSpectra = cluster.getClusteredSpectraCount();
 
-                    }
+        int[] bins = binner.asBins(precursorMZ);
+        //noinspection ForLoopReplaceableByForEach
+        for (int j = 0; j < bins.length; j++) {
+            int bin = bins[j];
+            String[] keys = getBinKeys(bin, precursorCharge, precursorMZ, context);
+            if (cluster.isStable()) {
+                //noinspection ForLoopReplaceableByForEach
+                for (int k = 0; k < keys.length; k++) {
+                    String akey = keys[k];
+                    writeKeyValue(akey, value, context);
 
-                } else {
-                    // choose a random key for unstable clusters
-                    String akey = keys[RND.nextInt(keys.length)];
-
-                    akey = akey.replace(StableChargeBinMZKey.SORT_PREFIX,UnStableChargeBinMZKey.SORT_PREFIX);
-
-                    onlyKey.set(akey);
-                    onlyValue.set(text);   // send on the MGF
-                    context.write(onlyKey, onlyValue);
                 }
 
-                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+            } else {
+                // choose a random key for unstable clusters
+                String akey;
+                if (keys.length == 1)
+                    akey = keys[0];
+                else
+                    akey = keys[RND.nextInt(keys.length)];
 
-                SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
+                UnStableChargeBinMZKey uKey = new  UnStableChargeBinMZKey(akey);
+                akey = uKey.toString();
 
-                // check partitioning
-                countHashValues(mzKey, context);
-
-                final String keyStr = mzKey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(akey, value, context);
             }
-        }
 
+
+          }
     }
 
 

@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
-
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
@@ -44,22 +43,16 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
                 return;
 
 
-            Text onlyKey = getOnlyKey();
-            Text onlyValue = getOnlyValue();
-
-
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
             ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < clusters.length; i++) {
                 ISpectralCluster cluster = clusters[i];
-                onlyKey.set(cluster.getId());
 
                 // cluster becomes cgf
                 StringBuilder sb = new StringBuilder();
                 cluster.appendClustering(sb);
-                onlyValue.set(sb.toString());   // build cgf
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(cluster.getId(), sb.toString(), context);
             }
         }
 
@@ -71,11 +64,11 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
     public static class ClusterIdReducer extends AbstractParameterizedReducer {
 
         private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
-         private IIncrementalClusteringEngine engine;
+        private IIncrementalClusteringEngine engine;
 
 
         public IIncrementalClusteringEngine getEngine() {
-            if(engine == null)           {
+            if (engine == null) {
                 engine = factory.getIncrementalClusteringEngine();
             }
             return engine;
@@ -83,7 +76,8 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
         /**
          * this reducer get all clusters with the same id, usually the highest quality spectrum and merges them
-         *  use it when the samer cluster is sent to multiple reducers
+         * use it when the samer cluster is sent to multiple reducers
+         *
          * @param key
          * @param values
          * @param context
@@ -108,11 +102,11 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
                 final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
                 if (cluster == null) {  // todo why might this happen
-                     continue;
+                    continue;
                 }
                 List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                 for (ISpectrum spc : clusteredSpectra) {
-                   ret.addSpectra(spc);
+                    ret.addSpectra(spc);
                     numberProcessed++;
                 }
                 numberProcessed++;
@@ -120,7 +114,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             // track how many
             context.getCounter("Performance", "MergedSameCluster").increment(numberProcessed);
 
-            if(ret.getPeaksCount() > 0)
+            if (ret.getPeaksCount() > 0)
                 writeCluster(context, ret);
         }
 
@@ -157,22 +151,17 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
             float precursorMz = cluster.getPrecursorMz();
             ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
+            String keyStr = key.toString();
 
-            final Text onlyKey = getOnlyKey();
-            onlyKey.set(key.toString());
-
-            final Text onlyValue = getOnlyValue();
-            StringBuilder sb = new StringBuilder();
+              StringBuilder sb = new StringBuilder();
             cluster.append(sb);
             String string = sb.toString();
 
             if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
-                onlyValue.set(string);
-                context.write(onlyKey, onlyValue);
+                 writeKeyValue(keyStr, string,context);
 
             }
         }
-
 
 
         /**
@@ -181,7 +170,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
         @Override
         protected void cleanup(final Context context) throws IOException, InterruptedException {
             //    writeParseParameters(context);
-              super.cleanup(context);
+            super.cleanup(context);
 
         }
 
@@ -228,7 +217,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             // sequence files are faster but harder to debug
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-             job.setMapperClass(ClusterIdMapper.class);
+            job.setMapperClass(ClusterIdMapper.class);
             job.setReducerClass(ClusterIdReducer.class);
 
 
@@ -264,7 +253,6 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
-
 
 
             boolean ans = job.waitForCompletion(true);

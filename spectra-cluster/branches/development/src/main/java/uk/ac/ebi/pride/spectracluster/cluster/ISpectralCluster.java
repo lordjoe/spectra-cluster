@@ -107,12 +107,12 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      */
     public boolean isStable();
 
-    /**
-     * if true the cluster is stable and will not allow removal
-     * @param stable as
-       */
-    @SuppressWarnings("UnusedDeclaration")
-    public void setStable(boolean stable);
+//    /**
+//     * if true the cluster is stable and will not allow removal
+//     * @param stable as
+//       */
+//    @SuppressWarnings("UnusedDeclaration")
+//    public void setStable(boolean stable);
 
 
 }

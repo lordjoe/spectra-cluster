@@ -29,9 +29,6 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
         IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
 
-        Text onlyKey = getOnlyKey();
-        Text onlyValue = getOnlyValue();
-
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
@@ -46,20 +43,17 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
                 int bin = bins[j];
                 ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
 
-                  SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug to make sure partitioning is balanced
+                SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
 
                 // check partitioning
                 countHashValues(mzKey, context);
 
                 final String keyStr = mzKey.toString();
-                onlyKey.set(keyStr);
-                onlyValue.set(text);   // send on the MGF
-                context.write(onlyKey, onlyValue);
+                writeKeyValue(keyStr, text, context);
             }
         }
 
     }
-
 
 
     public static final int NUMBER_REDUCERS = 300;
@@ -67,9 +61,9 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
     public void countHashValues(ChargeBinMZKey mzKey, Context context) {
- //       incrementPartitionCounters(mzKey, context);    //the reducer handle
-  //      incrementDaltonCounters((int)mzKey.getPrecursorMZ(),context);
-     }
+        //       incrementPartitionCounters(mzKey, context);    //the reducer handle
+        //      incrementDaltonCounters((int)mzKey.getPrecursorMZ(),context);
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementDaltonCounters(int precursorMZ, Context context) {
@@ -84,8 +78,6 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
         counter.increment(1);
     }
-
-
 
 
 }

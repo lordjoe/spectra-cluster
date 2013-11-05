@@ -21,7 +21,6 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
     private IIncrementalClusteringEngine engine;
 
 
-
     public double getMajorPeak() {
         return majorPeak;
     }
@@ -36,7 +35,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
 
     @Override
     public void reduceNormal(Text key, Iterable<Text> values,
-                       Context context) throws IOException, InterruptedException {
+                             Context context) throws IOException, InterruptedException {
 
         String keyStr = key.toString();
         ChargePeakMZKey mzKey = new ChargePeakMZKey(keyStr);
@@ -46,8 +45,8 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         }
 
         IIncrementalClusteringEngine engine = getEngine();
-        if(engine == null)
-              return; // very occasionally  we get null - not sure why
+        if (engine == null)
+            return; // very occasionally  we get null - not sure why
 
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
@@ -56,7 +55,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
-            if(match == null)
+            if (match == null)
                 continue; // not sure why this happens but nothing seems like the thing to do
             final ISpectralCluster cluster = match.asCluster();
 
@@ -109,18 +108,14 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
 
     protected void writeOneCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
-        final Text onlyKey = getOnlyKey();
-        onlyKey.set(key.toString());
 
-        final Text onlyValue = getOnlyValue();
         StringBuilder sb = new StringBuilder();
         cluster.append(sb);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
-            onlyValue.set(string);
-            context.write(onlyKey, onlyValue);
-            incrementBinCounters(  key,   context); // how big are the bins - used in next job
+            writeKeyValue(key.toString(), string, context);
+            incrementBinCounters(key, context); // how big are the bins - used in next job
         }
     }
 
@@ -130,7 +125,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < bins.length; i++) {
             int bin = bins[i];
-            SpectraHadoopUtilities.incrementPartitionCounter(context,"Bin",bin);
+            SpectraHadoopUtilities.incrementPartitionCounter(context, "Bin", bin);
 
         }
 

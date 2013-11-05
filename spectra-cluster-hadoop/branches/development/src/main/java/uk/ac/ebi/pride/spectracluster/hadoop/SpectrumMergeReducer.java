@@ -54,7 +54,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         String keyStr = key.toString();
         //    System.err.println(keyStr);
         ChargeBinMZKey mzKey = new ChargeBinMZKey(keyStr);
-        if(mzKey.getBin() < 0)  {
+        if (mzKey.getBin() < 0) {
             System.err.println("Bad bin " + keyStr);
             return;
         }
@@ -63,8 +63,8 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         if (mzKey.getCharge() != getCurrentCharge() ||
                 mzKey.getBin() != getCurrentBin() ||
                 engine == null) {
-            boolean usedata =  updateEngine(context, mzKey);
-            if(!usedata)
+            boolean usedata = updateEngine(context, mzKey);
+            if (!usedata)
                 return;
         }
 
@@ -86,9 +86,9 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
                 }
             }
-            if(numberProcessed % 100 == 0)
-                binTime.showElapsed("processed " + numberProcessed,System.err);
-           //     System.err.println("processed " + numberProcessed);
+            if (numberProcessed % 100 == 0)
+                binTime.showElapsed("processed " + numberProcessed, System.err);
+            //     System.err.println("processed " + numberProcessed);
             numberProcessed++;
         }
     }
@@ -140,21 +140,16 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         float precursorMz = cluster.getPrecursorMz();
         int bin = binner1.asBin(precursorMz);
         // you can merge clusters outside the current bin but not write them
-        if(bin != currentBin)
+        if (bin != currentBin)
             return;
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
-        final Text onlyKey = getOnlyKey();
-        onlyKey.set(key.toString());
-
-        final Text onlyValue = getOnlyValue();
         StringBuilder sb = new StringBuilder();
         cluster.append(sb);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
-            onlyValue.set(string);
-            context.write(onlyKey, onlyValue);
+            writeKeyValue(key.toString(), string, context);
 
         }
     }
@@ -165,7 +160,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     }
 
     public void setCurrentCharge(int currentCharge) {
-        if(currentCharge == this.currentCharge)
+        if (currentCharge == this.currentCharge)
             return;
         this.currentCharge = currentCharge;
         System.err.println("Setting charge   " + currentCharge);
@@ -174,11 +169,11 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     public boolean setCurrentBin(int currentBin) {
         this.currentBin = currentBin;
         double mid = getBinner().fromBin(currentBin);
-        String midStr = String.format("%10.1f",mid).trim();
-          binTime.reset();
-        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr,System.err);
-     //   if((currentBin != 149986))
-     //       return false;
+        String midStr = String.format("%10.1f", mid).trim();
+        binTime.reset();
+        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr, System.err);
+        //   if((currentBin != 149986))
+        //       return false;
         return true; // use this
     }
 
@@ -201,7 +196,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
             majorMZ = pMzKey.getPrecursorMZ();
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
-           }
+        }
         return ret;
     }
 

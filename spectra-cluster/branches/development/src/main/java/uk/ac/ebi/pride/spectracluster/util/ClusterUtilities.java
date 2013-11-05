@@ -21,6 +21,27 @@ public class ClusterUtilities {
     public static final String CLUSTERING_EXTENSION = ".clustering";
     public static final String CGF_EXTENSION = ".cgf";
 
+    public static final int STABLE_CLUSTER_SIZE = 15;
+
+      /**
+       * true if the cluster is stable
+       * @param !null cluster
+       * @return as above
+       */
+      public static boolean isClusterStable( ISpectralCluster cluster)
+      {
+          int count = cluster.getClusteredSpectraCount();
+          if(count >= STABLE_CLUSTER_SIZE )
+              return true;
+          if(count < 5)
+              return false;
+          if(count < 10)
+               return false;
+          if(count < 15)
+               return false;
+           return  false;
+      }
+
     /**
       * find the highest quality spectrum in a list of clusters
       * @param copied  should be non-empty array

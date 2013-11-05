@@ -39,9 +39,10 @@ public class BinCountCombiner extends AbstractParameterizedReducer {
         for (Text val : values) {
             sum += Long.parseLong(val.toString());
         }
-        Text onlyValue = getOnlyValue();
-        onlyValue.set(Long.toString(sum));
-        context.write(key, onlyValue);
+      //  Text onlyValue = getOnlyValue();
+      //  onlyValue.set(Long.toString(sum));
+      //  context.write(key, onlyValue);
+          writeKeyValue(key.toString(),Long.toString(sum),context);
     }
 
 
