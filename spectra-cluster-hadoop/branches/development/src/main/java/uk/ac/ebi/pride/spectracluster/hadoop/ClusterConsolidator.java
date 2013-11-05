@@ -119,6 +119,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             job.setNumReduceTasks(NUMBER_REDUCE_JOBS);  //  this should scale well enough
 
 
+            Path outPath = null;
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
                 Path inputPath = XTandemHadoopUtilities.setInputPath(job, otherArg);
@@ -126,7 +127,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
                 Path parentPath = inputPath.getParent();
                 //              Path outPath = new Path(parentPath, "ConsolidatedClusters");
-                Path outPath = new Path(parentPath, "ConsolidatedClustersTest");
+                outPath = new Path(parentPath, "ConsolidatedClustersTest");
                 FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
@@ -154,7 +155,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 String fileName = XTandemHadoopUtilities.buildCounterFileName(this, conf);
                 XTandemHadoopUtilities.saveCounters(fileSystem, fileName, job);
 
-                XTandemHadoopUtilities.deleteTmpFiles(conf);
+                XTandemHadoopUtilities.deleteTmpFiles(outPath, conf);
             } else
                 throw new IllegalStateException("Job Failed");
 
