@@ -14,6 +14,8 @@ import org.systemsbiology.hadoop.*;
 public  class NextGenClusterLauncher   {
 
 
+    public static final int START_AT_JOB = 2;
+
     // Call with
     // params=tandem.params remoteHost=Glados remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample
     //
@@ -30,7 +32,7 @@ public  class NextGenClusterLauncher   {
         boolean isVersion1 = HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0;
 
         // change this if debugging from another job
-        ClusterLauncher.setDefaultStartAtJob(2);
+        ClusterLauncher.setDefaultStartAtJob(START_AT_JOB);
 
         if (!isVersion1) {
             ClusterLauncher.workingMain(args, NextGenClusterLauncherJobBuilder.FACTORY);

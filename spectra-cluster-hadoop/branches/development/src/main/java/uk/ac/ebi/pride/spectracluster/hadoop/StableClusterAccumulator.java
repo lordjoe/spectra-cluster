@@ -67,7 +67,7 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
 
             //job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
             job.setMapperClass(StableClusterMapper.class);
-            job.setReducerClass(SpectrumMergeReducer.class);
+            job.setReducerClass(StableSpectrumMergeReducer.class);
             //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
             job.setPartitionerClass(StableChargeBinKeyPartitioner.class);
 

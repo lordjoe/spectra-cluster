@@ -26,7 +26,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     public static final int MAX_SPECTRA_PER_GROUP = 1000;
 
 
-    private static IWideBinner BINNER = new SizedWideBinner(
+    public static IWideBinner BINNER = new SizedWideBinner(
             IPeak.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
             IPeak.LOWEST_USABLE_MZ,
