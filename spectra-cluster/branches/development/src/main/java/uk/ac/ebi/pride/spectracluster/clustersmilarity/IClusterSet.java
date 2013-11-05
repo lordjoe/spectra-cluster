@@ -15,6 +15,6 @@ public interface IClusterSet {
 
     public Collection<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
 
-    public Collection<ISpectralCluster> getBestMatchingClusters(ISpectrum spectrum, int maxMatches);
+    public Collection<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches);
 
 }
