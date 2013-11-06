@@ -75,7 +75,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
         //noinspection ConstantIfStatement
         if (true)
             return;
-        int partition = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        int partition = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));
         counter.increment(1);
