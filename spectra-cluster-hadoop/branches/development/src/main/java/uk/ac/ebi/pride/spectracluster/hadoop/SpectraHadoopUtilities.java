@@ -7,6 +7,7 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -125,7 +126,7 @@ public class SpectraHadoopUtilities {
      * track how balanced is partitioning
      *
      * @param context !null context
-     * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
+     * @param hash    retucer assuming  HadoopUtilities.DEFAULT_NUMBER_REDUCERS is right
      */
     public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, String prefix, int hash) {
         String counterName = prefix + String.format("%05d", hash).trim();
@@ -137,7 +138,7 @@ public class SpectraHadoopUtilities {
      * track how balanced is partitioning
      *
      * @param context !null context
-     * @param hash    retucer assuming  ClusterLauncher.DEFAULT_NUMBER_REDUCERS is right
+     * @param hash    retucer assuming  HadoopUtilities.DEFAULT_NUMBER_REDUCERS is right
      */
     public static void incrementPartitionCounter(Reducer<? extends Writable, Text, Text, Text>.Context context, String prefix, int hash) {
         //noinspection ConstantIfStatement
@@ -159,7 +160,7 @@ public class SpectraHadoopUtilities {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now
-        int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context, "Peak", hash);
     }
 
@@ -173,7 +174,7 @@ public class SpectraHadoopUtilities {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now
-        int hash = mzKey.getPartitionHash() % ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
         incrementPartitionCounter(context, "Bin", hash);
     }
 

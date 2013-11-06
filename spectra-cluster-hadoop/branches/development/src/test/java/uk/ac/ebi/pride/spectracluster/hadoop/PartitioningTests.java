@@ -4,6 +4,7 @@ import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
+import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -126,7 +127,7 @@ public class PartitioningTests {
 
 
     protected static void examinePartitions(ChargeBinMZKey[] keys) {
-        int numberReducers = ClusterLauncher.DEFAULT_NUMBER_REDUCERS;
+        int numberReducers = HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
         int[] partitions = new int[numberReducers];
         for (int i = 0; i < keys.length; i++) {
             ChargeBinMZKey key = keys[i];
