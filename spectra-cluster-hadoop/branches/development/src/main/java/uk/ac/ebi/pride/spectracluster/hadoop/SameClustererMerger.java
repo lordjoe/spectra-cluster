@@ -195,7 +195,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 //            System.err.println("Usage: wordcount <in> <out>");
 //            System.exit(2);
 //        }
-            Job job = new Job(conf, "Spectrum Peak Merger");
+            Job job = new Job(conf, "Same Cluster Merger");
             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
@@ -210,6 +210,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
             if (params == null)
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
+
             job.setJarByClass(SameClustererMerger.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);

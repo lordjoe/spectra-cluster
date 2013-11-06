@@ -126,8 +126,8 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
-                //              Path outPath = new Path(parentPath, "ConsolidatedClusters");
-                outPath = new Path(parentPath, "ConsolidatedClustersTest");
+                outPath = new Path(parentPath, "ConsolidatedClusters");
+            //    outPath = new Path(parentPath, "ConsolidatedClustersTest");
                 FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
