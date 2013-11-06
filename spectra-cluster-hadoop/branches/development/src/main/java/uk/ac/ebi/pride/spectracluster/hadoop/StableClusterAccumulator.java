@@ -43,7 +43,7 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
 //            System.err.println("Usage: wordcount <in> <out>");
 //            System.exit(2);
 //        }
-            Job job = new Job(conf, "Spectrum Peak Merger");
+            Job job = new Job(conf, "Stable Cluster Merger");
             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton

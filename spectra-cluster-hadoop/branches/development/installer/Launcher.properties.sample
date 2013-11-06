@@ -83,6 +83,12 @@ compressIntermediateFiles=true
 maxClusterMemory=2200
 
 
+#
+# tells how many machines are in the cluster -
+# this can be used to tune the number of reducers
+#
+clusterSize=40
+
 
 
 #

@@ -15,6 +15,9 @@ import java.io.*;
 import java.util.*;
 import java.util.prefs.*;
 
+// add lots of constants from this class
+import static org.systemsbiology.hadoop.HadoopUtilities.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ClusterLauncher
  * Launches a hadoop job on the cluster
@@ -26,8 +29,6 @@ import java.util.prefs.*;
  */
 public class ClusterLauncher implements IStreamOpener { //extends AbstractParameterHolder implements IParameterHolder {
 
-    // Hard code this so we can debug partitioner code
-    public static final int DEFAULT_NUMBER_REDUCERS = 2400;
 
     // for development you can skip the first jobs ot work on issues in the second
     private static int gDefaultStartAtJob = 0; // 0; // 1;
@@ -55,8 +56,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
 
     public static final int MAX_DISPLAY_LENGTH = 4 * 1000 * 1000;
-      @SuppressWarnings("PointlessArithmeticExpression")
-  //  public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    //  public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
 
     private static HadoopMajorVersion g_RunningHadoopVersion = HadoopMajorVersion.CURRENT_VERSION;
 
@@ -131,7 +132,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     private int m_StartAtJob = getDefaultStartAtJob();
 
     private final DelegatingFileStreamOpener m_Openers = new DelegatingFileStreamOpener();
-     private boolean m_BuildJar = true;
+    private boolean m_BuildJar = true;
     private final Map<String, String> m_PerformanceParameters = new HashMap<String, String>();
     private IFileSystem m_Accessor;
 
@@ -222,9 +223,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
     public int getNumberStages() {
-         return getBuilder().getNumberJobs();
+        return getBuilder().getNumberJobs();
     }
-
 
 
     public int getStartAtJob() {
@@ -848,7 +848,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     protected List<IHadoopJob> buildJobs(int startAtJob) {
         IJobBuilder builder = getBuilder();
-         return builder.buildJobs(startAtJob);
+        return builder.buildJobs(startAtJob);
     }
 
 //    protected List<IHadoopJob> buildJobsOLD() {
@@ -1017,26 +1017,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
     }
 
-    public static final String PARAMS_PROPERTY = "params";
-    public static final String REMOTE_HOST_PROPERTY = "remoteHost";
-    public static final String REMOTE_PORT_PROPERTY = "remotePort";
-    public static final String REMOTE_USER_PROPERTY = "remoteUser";
-    public static final String REMOTE_JOBTRACKER_PROPERTY = "remoteJobTracker";
-    public static final String REMOTE_ENCRYPTED_PASSWORD_PROPERTY = "encryptedRemotePassword";
-    public static final String REMOTE_PLAINTEXT_PASSWORD_PROPERTY = "plainTextRemotePassword";
-    public static final String REMOTEDIRECTORY_PROPERTY = "remoteBaseDirectory";
-    public static final String COMPRESS_INTERMEDIATE_FILES_PROPERTY = "compressIntermediateFiles";
-    public static final String MAX_SPLIT_SIZE_PROPERTY = "maxSplitSize";
-    public static final String MAX_REDUCE_TASKS_PROPERTY = "maxReduceTasks";
-    public static final String DELETE_OUTPUT_DIRECTORIES_PROPERTY = "deleteOutputDirectories";
-    public static final String MAX_CKUSTER_MEMORY_PROPERTY = "maxClusterMemory";
-    public static final String HADOOP02_HOST = "hadoop02Host";
-    public static final String HADOOP02_PORT = "hadoop02Port";
-    public static final String HADOOP02_JOBTRACKER = "hadoop02remoteJobTracker";
-    public static final String HADOOP10_HOST = "hadoop10Host";
-    public static final String HADOOP10_PORT = "hadoop10Port";
-    public static final String HADOOP10_JOBTRACKER = "hadoop10remoteJobTracker";
-
 
     protected static void handleValue(final String pProperty, String pValue) {
 
@@ -1105,8 +1085,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             XTandemHadoopUtilities.setMaxReduceTasks(value);
             return;
         }
-        if (MAX_CKUSTER_MEMORY_PROPERTY.equals(pProperty)) {
-            HadoopUtilities.setProperty(MAX_CKUSTER_MEMORY_PROPERTY, pValue);
+        if (MAX_CLUSTER_MEMORY_PROPERTY.equals(pProperty)) {
+            HadoopUtilities.setProperty(MAX_CLUSTER_MEMORY_PROPERTY, pValue);
+            return;
+        }
+        if (CLUSTER_SIZE_PROPERTY.equals(pProperty)) {
+            HadoopUtilities.setProperty(CLUSTER_SIZE_PROPERTY, pValue);
             return;
         }
         if (HADOOP02_HOST.equals(pProperty)) {
@@ -1244,23 +1228,24 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
     /**
-      * do all the work in the main but may be run as a different user
-      *
-      * @param args
-      */
-     @SuppressWarnings("ConstantConditions")
-     public static void workingMain(String[] args ) {
-         workingMain(args, Defaults.INSTANCE.getDefaultJobBuilderFactory());
-     }
+     * do all the work in the main but may be run as a different user
+     *
+     * @param args
+     */
+    @SuppressWarnings("ConstantConditions")
+    public static void workingMain(String[] args) {
+        workingMain(args, Defaults.INSTANCE.getDefaultJobBuilderFactory());
+    }
+
     /**
      * do all the work in the main but may be run as a different user
      *
      * @param args
      */
     @SuppressWarnings("ConstantConditions")
-    public static void workingMain(String[] args,IJobBuilderFactory builder) {
+    public static void workingMain(String[] args, IJobBuilderFactory builder) {
 
-        if(builder == null )
+        if (builder == null)
             builder = ClusterLauncherJobBuilder.FACTORY;
 
         ElapsedTimer total = new ElapsedTimer();
@@ -1338,7 +1323,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 //            }
 
 
-  //          main.setPassNumber(1);
+            //          main.setPassNumber(1);
             String outFile = main.getOutputFileName();
 
 

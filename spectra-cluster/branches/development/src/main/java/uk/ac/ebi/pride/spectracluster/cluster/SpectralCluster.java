@@ -255,7 +255,8 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      */
     @Override
     public boolean isRemoveSupported() {
-        return !isStable();
+       // return !isStable();
+        return true;
     }
 
     /**
