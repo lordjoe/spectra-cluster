@@ -23,6 +23,8 @@ import java.util.*;
 public class ClusteringTestUtilities {
 
     public static final String SAMPLE_MGF_FILE = "spectra_400.0_4.0.mgf";
+    public static final String SAMPLE_CLUSTERING_FILE = "Sample.clustering";
+
     public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf";
 
     /**
@@ -120,6 +122,27 @@ public class ClusteringTestUtilities {
     }
 
 
+    public static LineNumberReader getResourceClusteringReader()
+    {
+        return getResourceClusteringReader(SAMPLE_CLUSTERING_FILE);
+    }
+
+    public static LineNumberReader getResourceClusteringReader(String resName)
+    {
+        URL testFile = ClusteringTestUtilities.class.getClassLoader().getResource(resName);
+
+        assert testFile != null;
+        try {
+            File specFile = new File(testFile.toURI());
+            return new LineNumberReader(new FileReader(specFile));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     /**
      * read a resource mgf as a list of spectra
      *
@@ -148,15 +171,13 @@ public class ClusteringTestUtilities {
                 spectra.add(query);
             }
             return spectra;
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
-
-        }
-        catch (JMzReaderException e) {
+        } catch (JMzReaderException e) {
             throw new RuntimeException(e);
-
         }
+
+
     }
 
     public static List<ISpectralCluster> readSpectraClustersFromResource() {
