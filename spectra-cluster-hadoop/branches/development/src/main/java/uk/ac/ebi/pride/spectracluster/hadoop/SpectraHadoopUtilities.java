@@ -1,19 +1,24 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import org.apache.hadoop.conf.*;
-import org.apache.hadoop.fs.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.algorithms.SizedWideBinner;
+import com.lordjoe.utilities.IProgressHandler;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.io.*;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import org.systemsbiology.hadoop.HadoopUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.io.*;
-import java.lang.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectraHadoopUtilities
@@ -25,8 +30,8 @@ public class SpectraHadoopUtilities {
 
     public static final int MIMIMUM_CLUSTER_LENGTH = 5 * "BEGIN IONS\n".length();
 
-    public static final double NARRROW_BIN_WIDTH = 0.005; // 0.3;
-    public static final double NARRROW_BIN_OVERLAP = 0.002; // 0.1;
+    public static final double NARRROW_BIN_WIDTH = 0.05; //0.005; // 0.3;
+    public static final double NARRROW_BIN_OVERLAP = 0.01; //0.002; // 0.1;
 
 
 
