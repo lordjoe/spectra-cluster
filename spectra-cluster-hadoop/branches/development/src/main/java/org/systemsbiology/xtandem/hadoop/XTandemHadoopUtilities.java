@@ -465,7 +465,7 @@ public class XTandemHadoopUtilities {
         gMaxReduceTasks = pMaxReduceTasks;
     }
 
-    public static void setRecommendedMaxReducers(Job job ) {
+    public static void setRecommendedMaxReducers(Job job) {
         try {
             final Configuration conf = job.getConfiguration();
             if (XTandemHadoopUtilities.isLocal(conf))
@@ -483,7 +483,7 @@ public class XTandemHadoopUtilities {
             } else {
                 reduces = (int) Math.ceil((double) maxReduceTasks * 9.0 / 10.0);
             }
-            if(true)
+            if (true)
                 throw new UnsupportedOperationException("Fix Next 2 lines"); // ToDo
 //            if (reduces < getMaxReduceTasks())
 //                reduces = getMaxReduceTasks();

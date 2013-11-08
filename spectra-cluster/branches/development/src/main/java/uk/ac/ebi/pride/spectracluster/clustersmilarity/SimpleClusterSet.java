@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -10,7 +11,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet{
+public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet {
 
     public SimpleClusterSet(Collection<ISpectralCluster> clusters) {
         super(clusters);
@@ -19,6 +20,40 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     public SimpleClusterSet() {
         super();
     }
+
+    /**
+     * get all clusters matching the predicate
+     *
+     * @param condition
+     * @return
+     */
+    @Override
+    public List<ISpectralCluster> getMatchingClusters(TypedPredicate<ISpectralCluster> condition) {
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        for (ISpectralCluster cluster : getClusters()) {
+            if (condition.apply(cluster))
+                holder.add(cluster);
+        }
+        return holder;
+    }
+
+
+    /**
+     * visit all clusters
+     *
+     * @param visitor !null visitor(s)
+     */
+    public void visitClusters(TypedVisitor<ISpectralCluster> visitor, TypedVisitor<ISpectralCluster>... otherVisitors) {
+        for (ISpectralCluster cluster : getClusters()) {
+            visitor.visit(cluster);
+            for (int i = 0; i < otherVisitors.length; i++) {
+                otherVisitors[i].visit(cluster);
+
+            }
+        }
+
+    }
+
 
     @Override
     public void addClusters(Collection<ISpectralCluster> clusters) {
@@ -71,16 +106,16 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
             return Double.compare(match1, match2);
         }
 
-        private double matchQuality(ISpectralCluster c1,ISpectralCluster c2)  {
-            Set<String> pep1 = new HashSet<String>(c1.getPeptides() ) ;
-            Set<String> pep2 = new HashSet<String>(c2.getPeptides() ) ;
+        private double matchQuality(ISpectralCluster c1, ISpectralCluster c2) {
+            Set<String> pep1 = new HashSet<String>(c1.getPeptides());
+            Set<String> pep2 = new HashSet<String>(c2.getPeptides());
             int totalPeptides = pep1.size() + pep2.size();
-            if(totalPeptides == 0)
+            if (totalPeptides == 0)
                 return 0;
             Set<String> common = new HashSet<String>(pep1);
-            common.retainAll(pep2) ;
+            common.retainAll(pep2);
 
-            double commonCunt  = common.size();
+            double commonCunt = common.size();
             return commonCunt / totalPeptides;
 
 
