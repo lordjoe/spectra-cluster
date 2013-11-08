@@ -14,7 +14,7 @@ import org.systemsbiology.hadoop.*;
 public  class NextGenClusterLauncher   {
 
 
-    public static final int START_AT_JOB = 0;
+    public static final int START_AT_JOB = 1;
 
     // Call with
     // params=tandem.params remoteHost=Glados remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample

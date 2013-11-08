@@ -457,15 +457,15 @@ public class XTandemHadoopUtilities {
     // hard coded for our cluster
     private static int gMaxReduceTasks = 20;
 
-    public static int getMaxReduceTasks() {
+    public static int getMaxReduceTasksX() {
         return gMaxReduceTasks;
     }
 
-    public static void setMaxReduceTasks(final int pMaxReduceTasks) {
+    public static void setMaxReduceTasksX(final int pMaxReduceTasks) {
         gMaxReduceTasks = pMaxReduceTasks;
     }
 
-    public static void setRecommendedMaxReducers(Job job) {
+    public static void setRecommendedMaxReducers(Job job ) {
         try {
             final Configuration conf = job.getConfiguration();
             if (XTandemHadoopUtilities.isLocal(conf))
@@ -473,18 +473,21 @@ public class XTandemHadoopUtilities {
 // Specify the number of reduces if defined as a non-negative param.
             // Otherwise, use 9/10 of the maximum reduce tasks (as mentioned by Aalto Cloud,
             // there appears to be no non-deprecated way to do this).
+            JobClient jobClient = new JobClient(new JobConf());
+            ClusterStatus clusterStatus = jobClient.getClusterStatus();
             @SuppressWarnings("deprecation")
-            int maxReduceTasks =
-                    new JobClient(new JobConf()).getClusterStatus().getMaxReduceTasks();
+            int maxReduceTasks = clusterStatus.getMaxReduceTasks();
             int reduces = conf.getInt("reduces", -1);
             if (reduces >= 0) {
                 job.setNumReduceTasks(reduces);
             } else {
                 reduces = (int) Math.ceil((double) maxReduceTasks * 9.0 / 10.0);
             }
-            if (reduces < getMaxReduceTasks())
-                reduces = getMaxReduceTasks();
-            job.setNumReduceTasks(reduces);
+            if(true)
+                throw new UnsupportedOperationException("Fix Next 2 lines"); // ToDo
+//            if (reduces < getMaxReduceTasks())
+//                reduces = getMaxReduceTasks();
+//            job.setNumReduceTasks(reduces);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

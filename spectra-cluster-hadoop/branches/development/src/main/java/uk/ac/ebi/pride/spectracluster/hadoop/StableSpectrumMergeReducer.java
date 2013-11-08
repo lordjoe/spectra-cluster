@@ -4,9 +4,7 @@ import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.utilities.ElapsedTimer;
 import org.apache.hadoop.io.Text;
 import org.systemsbiology.hadoop.AbstractParameterizedReducer;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IStableClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.cluster.StableClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
@@ -63,7 +61,7 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
         String keyStr = key.toString();
         //    System.err.println(keyStr);
         StableChargeBinMZKey realKey;
-        if (keyStr.startsWith(StableChargeBinMZKey.SORT_PREFIX))
+        if (keyStr.contains(StableChargeBinMZKey.SORT_PREFIX))
             realKey = new StableChargeBinMZKey(keyStr);
         else {
             realKey = new UnStableChargeBinMZKey(keyStr);
@@ -89,11 +87,15 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
             final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null && stableClusteringEngine != null) {  // todo why might this happen
-                if (cluster.isStable()) {
-                    stableClusteringEngine.processStableCluster(cluster);
-                    writeCluster(context, cluster);
-                } else {
+                if (!cluster.isStable()) {
                     stableClusteringEngine.addUnstableCluster(cluster);
+                } else {
+                   stableClusteringEngine.processStableCluster(cluster);
+                    List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                    //
+                    for (ISpectrum spc : clusteredSpectra) {
+                        writeCluster(context,spc.asCluster());
+                    }
                 }
             }
             if (numberProcessed % 100 == 0)
@@ -223,45 +225,5 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
     }
 
 
-    /**
-     * remember we built the database
-     *
-     * @param context
-     * @throws java.io.IOException
-     */
-    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
-    protected void writeParseParameters(final Context context) throws IOException {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-//        Configuration cfg = context.getConfiguration();
-//        HadoopTandemMain application = getApplication();
-//        TaskAttemptID tid = context.getTaskAttemptID();
-//        //noinspection UnusedDeclaration
-//        String taskStr = tid.getTaskID().toString();
-//        String paramsFile = application.getDatabaseName() + ".params";
-//        Path dd = XTandemHadoopUtilities.getRelativePath(paramsFile);
-//
-//        FileSystem fs = FileSystem.get(cfg);
-//
-//        if (!fs.exists(dd)) {
-//            try {
-//                FastaHadoopLoader ldr = new FastaHadoopLoader(application);
-//                String x = ldr.asXMLString();
-//                FSDataOutputStream fsout = fs.create(dd);
-//                PrintWriter out = new PrintWriter(fsout);
-//                out.println(x);
-//                out.close();
-//            }
-//            catch (IOException e) {
-//                try {
-//                    fs.delete(dd, false);
-//                }
-//                catch (IOException e1) {
-//                    throw new RuntimeException(e1);
-//                }
-//                throw new RuntimeException(e);
-//            }
-//
-//        }
 
-    }
 }

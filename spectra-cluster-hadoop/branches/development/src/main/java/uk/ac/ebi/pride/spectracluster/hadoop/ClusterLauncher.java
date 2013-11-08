@@ -1080,9 +1080,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             XTandemHadoopUtilities.setMaxSplitSize(value);
             return;
         }
-        if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
+        if (CLUSTER_SIZE_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
-            XTandemHadoopUtilities.setMaxReduceTasks(value);
+            HadoopUtilities.setClusterSize(value);
             return;
         }
         if (MAX_CLUSTER_MEMORY_PROPERTY.equals(pProperty)) {
@@ -1273,6 +1273,10 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             }
             ClusterLauncher main = new ClusterLauncher(is, cfg);
             main.setBuilder(builder.getJobBuilder(main));
+
+            SpectraHadoopMain application = main.getApplication();
+            JobSizeEnum jobSize = application.getEnumParameter(HadoopUtilities.JOB_SIZE_PROPERTY, JobSizeEnum.class, JobSizeEnum.Medium);
+            HadoopUtilities.setHadoopProperty(HadoopUtilities.JOB_SIZE_PROPERTY,jobSize.toString());
 
             if (getPassedJarFile() != null) {   // start with a jar file
                 main.setJarFile(getPassedJarFile());

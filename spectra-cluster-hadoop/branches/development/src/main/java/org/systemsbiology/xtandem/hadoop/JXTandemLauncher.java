@@ -1661,7 +1661,9 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
         }
         if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
-            XTandemHadoopUtilities.setMaxReduceTasks(value);
+            if(true )
+                throw new UnsupportedOperationException("Fix This"); // ToDo
+       //     XTandemHadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
             return;
         }
         if (MAX_CKUSTER_MEMORY_PROPERTY.equals(pProperty)) {

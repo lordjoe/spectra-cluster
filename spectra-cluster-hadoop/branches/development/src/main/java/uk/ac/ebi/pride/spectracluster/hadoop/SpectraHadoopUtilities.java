@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectraHadoopUtilities
@@ -32,7 +33,6 @@ public class SpectraHadoopUtilities {
 
     public static final double NARRROW_BIN_WIDTH = 0.05; //0.005; // 0.3;
     public static final double NARRROW_BIN_OVERLAP = 0.01; //0.002; // 0.1;
-
 
 
     private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
@@ -54,7 +54,6 @@ public class SpectraHadoopUtilities {
 
 
     public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
-
 
 
     /**
@@ -81,51 +80,6 @@ public class SpectraHadoopUtilities {
         double ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
         return ret / ClusterUtilities.MZ_RESOLUTION;
     }
-
-
-//    public static PrintWriter buildPrintWriter(TaskInputOutputContext context, String paramsFile, String added) {
-////        String paramsFile = buildOutputFileName(context, data);
-////        if (added != null)
-////            paramsFile += added;
-//        OutputStream out = buildOutputStream(context, paramsFile, added);
-//        PrintWriter ret = new PrintWriter(out);
-//        return ret;
-//    }
-//
-//
-//    public static OutputStream buildOutputStream(TaskInputOutputContext context,
-//                                                 HadoopTandemMain data, String added) {
-//        final Configuration configuration = context.getConfiguration();
-//        String paramsFile = buildOutputFileName(context, data);
-//        String hpl = paramsFile.toLowerCase();
-//        if (hpl.endsWith(".hydra")) {
-//            paramsFile = paramsFile.substring(0, paramsFile.length() - ".hydra".length());
-//            hpl = paramsFile.toLowerCase();
-//        }
-//        if (hpl.endsWith(".mzxml")) {
-//            paramsFile = paramsFile.substring(0, paramsFile.length() - ".mzXML".length());
-//            hpl = paramsFile.toLowerCase();
-//        }
-//        if (hpl.endsWith(".mzml")) {
-//            paramsFile = paramsFile.substring(0, paramsFile.length() - ".mzml".length());
-//            hpl = paramsFile.toLowerCase();
-//        }
-//        if (added != null)
-//            paramsFile += added;
-//        //      if (host != null || !"null".equals(host)) {
-//        HDFSStreamOpener opener = new HDFSStreamOpener(configuration);
-//        XTandemMain.addPreLoadOpener(opener);
-//        // note we are reading from hdsf
-//        safeWrite(context, "Output File", paramsFile);
-//        HDFSAccessor accesor = opener.getAccesor();
-//        // use a counter to see what we do
-//        context.getCounter("outputfile",paramsFile).increment(1);
-//        Path path = new Path(paramsFile);
-//        OutputStream os = accesor.openFileForWrite(path);
-//
-//        context.getCounter("outputfile","total_files").increment(1);
-//        return os;
-//    }
 
     /**
      * track how balanced is partitioning
@@ -165,7 +119,7 @@ public class SpectraHadoopUtilities {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now
-        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
+        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_TEST_NUMBER_REDUCERS;
         incrementPartitionCounter(context, "Peak", hash);
     }
 
@@ -179,7 +133,7 @@ public class SpectraHadoopUtilities {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now
-        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
+        int hash = mzKey.getPartitionHash() % HadoopUtilities.DEFAULT_TEST_NUMBER_REDUCERS;
         incrementPartitionCounter(context, "Bin", hash);
     }
 
@@ -208,8 +162,7 @@ public class SpectraHadoopUtilities {
         try {
             FileSystem fs = FileSystem.get(conf);
             return new SequenceFile.Reader(fs, filePath, conf);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -229,8 +182,7 @@ public class SpectraHadoopUtilities {
             PrintWriter out = new PrintWriter(new OutputStreamWriter(dsOut));
             return out;
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -259,15 +211,121 @@ public class SpectraHadoopUtilities {
             System.err.println("Making rename path " + outpath);
 
 
-
             fs.rename(pathstartPath, outpath);
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
 
+    }
+
+    public static String keyToPermanentId(String key) {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+
+    public static String permanentIdToKey(String key) {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    /**
+     *   * given a collection of copies of the same cluster make a cluster with spectra in
+          * ANY c copy
+     * @param key
+     * @param values
+     * @param context
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static ISpectralCluster mergeTheSameCluster(String key, Iterable<Text> values,
+                                                       Reducer.Context context) throws IOException, InterruptedException {
+        String permId = keyToPermanentId(key);
+        ISpectralCluster merged = new SpectralCluster(permId);
+
+        Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
+        //noinspection LoopStatementThatDoesntLoop
+        for (Text val : values) {
+            String valStr = val.toString();
+            LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
+            final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+
+            String clusterId = cluster.getId();
+            if (!clusterId.equals(permId)) {
+                throw new IllegalStateException("Merging cl;usters but id " +
+                        clusterId + " not the same as key as id " + permId);
+            }
+            List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+            for (ISpectrum cs : clusteredSpectra) {
+                spectraById.put(cs.getId(), cs);
+            }
+        }
+
+        List<ISpectrum> toAdd = new ArrayList<ISpectrum>(spectraById.values());
+        Collections.sort(toAdd);
+        merged.addSpectra(toAdd);
+        return merged;
+    }
+
+    /**
+     * given a collection of copies of the same cluster make a cluster with spectra in
+     * common to ALL copies
+     * @param key
+     * @param values
+     * @param context
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static ISpectralCluster deMergeTheSameCluster(String key, Iterable<Text> values,
+                                                         Reducer.Context context) throws IOException, InterruptedException {
+        String permId = keyToPermanentId(key);
+        ISpectralCluster merged = new SpectralCluster(permId);
+
+        Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
+        boolean pass1 = true;
+        //noinspection LoopStatementThatDoesntLoop
+        for (Text val : values) {
+            String valStr = val.toString();
+            LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
+            final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+
+
+            String clusterId = cluster.getId();
+            if (!clusterId.equals(permId)) {
+                throw new IllegalStateException("Merging cl;usters but id " +
+                        clusterId + " not the same as key as id " + permId);
+            }
+            List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+            // first pass add all
+            if (pass1) {
+                for (ISpectrum cs : clusteredSpectra) {
+                    spectraById.put(cs.getId(), cs);
+                }
+                pass1 = false;
+            }
+            else {
+                // after that remove all spectra not in common
+                Map<String, ISpectrum> localpectraById = new HashMap<String, ISpectrum>();
+
+                for (ISpectrum cs : clusteredSpectra) {
+                    localpectraById.put(cs.getId(), cs);
+                 }
+
+                for (String s : spectraById.keySet()) {
+                     if(!localpectraById.containsKey(s))
+                         spectraById.remove(s);
+                }
+                if(spectraById.isEmpty())
+                    return merged;
+            }
+        }
+
+        List<ISpectrum> toAdd = new ArrayList<ISpectrum>(spectraById.values());
+        Collections.sort(toAdd);
+        merged.addSpectra(toAdd);
+        return merged;
     }
 
     /**

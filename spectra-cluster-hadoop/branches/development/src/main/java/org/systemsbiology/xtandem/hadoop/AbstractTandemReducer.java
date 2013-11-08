@@ -117,6 +117,9 @@ public abstract class AbstractTandemReducer extends Reducer<Text, Text, Text, Te
         m_Application.loadTaxonomy();
         m_Application.loadScoring();
 
+        JobSizeEnum jobSize = m_Application.getEnumParameter(HadoopUtilities.JOB_SIZE_PROPERTY, JobSizeEnum.class, JobSizeEnum.Medium);
+                HadoopUtilities.setHadoopProperty(HadoopUtilities.JOB_SIZE_PROPERTY,jobSize.toString());
+
     }
 
 

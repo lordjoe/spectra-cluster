@@ -12,7 +12,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
  */
 public class UnStableChargeBinMZKey extends StableChargeBinMZKey implements Comparable<StableChargeBinMZKey> {
 
-    public static final String SORT_PREFIX = "*"; // ascii decimal guaranteed to sort EARLY
+    public static final String SORT_PREFIX = "|"; // ascii decimal guaranteed to sort EARLY
 
     public UnStableChargeBinMZKey(int pCharge, int pBin, int pGroup, double pPrecursorMZ) {
         super(pCharge, pBin, pGroup, pPrecursorMZ);
