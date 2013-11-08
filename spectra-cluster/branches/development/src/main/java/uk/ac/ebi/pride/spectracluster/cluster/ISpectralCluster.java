@@ -33,6 +33,13 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public int getPrecursorCharge();
 
     /**
+     * Get a list of peptide sequences
+     *
+     * @return
+     */
+    public List<String> getPeptides();
+
+    /**
      * Get consensus spectrum
      */
     public ISpectrum getConsensusSpectrum();

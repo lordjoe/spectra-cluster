@@ -261,6 +261,7 @@ public class ClusterUtilities {
         return petides;
     }
 
+
     /**
      * return the most common peptides (first if equally commmon) or ""
      * if no peptides found
@@ -269,14 +270,23 @@ public class ClusterUtilities {
      */
     public static String mostCommonPeptides(List<ISpectrum> spectra) {
         final List<String> peptideList = getPeptideList(spectra);
-        StringBuilder sb = new StringBuilder();
         final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+        StringBuilder sb = new StringBuilder();
         for (String s : stringsByOccurance) {
             if (sb.length() > 0)
                 sb.append(",");
             sb.append(s);
         }
         return sb.toString();
+    }
+
+    public static String[] getMostCommonPeptides(ISpectralCluster cluster) {
+        final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        //noinspection UnnecessaryLocalVariable
+        final List<String> peptideList = getPeptideList(clusteredSpectra);
+        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+
+        return stringsByOccurance;
     }
 
 

@@ -20,7 +20,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
     private int precursorCharge = 0;
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
-    private String peptideSequence;
+    private final List<String> peptides = new ArrayList<String>();
 
 
     @Override
@@ -30,14 +30,6 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getPeptideSequence() {
-        return peptideSequence;
-    }
-
-    public void setPeptideSequence(String peptideSequence) {
-        this.peptideSequence = peptideSequence;
     }
 
     @Override
@@ -52,6 +44,20 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
     @Override
     public int getPrecursorCharge() {
         return precursorCharge;
+    }
+
+    @Override
+    public List<String> getPeptides() {
+        return new ArrayList<String>(peptides);
+    }
+
+    public void addPeptides(String peptides) {
+        String[] parts = peptides.split(",");
+        addPeptide(parts);
+    }
+
+    public void addPeptide(String ... peptides) {
+        this.peptides.addAll(Arrays.asList(peptides));
     }
 
     public void setPrecursorCharge(int precursorCharge) {

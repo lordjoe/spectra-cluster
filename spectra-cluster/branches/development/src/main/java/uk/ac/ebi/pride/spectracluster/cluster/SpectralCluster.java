@@ -18,7 +18,6 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     private String id;
-    private boolean stable;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
@@ -127,6 +126,13 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     @Override
     public int getPrecursorCharge() {
         return getConsensusSpectrum().getPrecursorCharge();
+    }
+
+    @Override
+    public List<String> getPeptides() {
+        String[] peptides = ClusterUtilities.getMostCommonPeptides(this);
+
+        return new ArrayList<String>(Arrays.asList(peptides));
     }
 
     @Override
