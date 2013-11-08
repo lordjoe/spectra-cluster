@@ -11,8 +11,9 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterUtilities
- *    a lits of stateless static functions for manipulating clusters, lists of clusters
- *    and performing other common chores
+ * a lits of stateless static functions for manipulating clusters, lists of clusters
+ * and performing other common chores
+ *
  * @author Steve Lewis
  * @date 5/10/13
  */
@@ -23,41 +24,67 @@ public class ClusterUtilities {
 
     public static final int STABLE_CLUSTER_SIZE = 15;
 
-      /**
-       * true if the cluster is stable
-       * @param !null cluster
-       * @return as above
-       */
-      public static boolean isClusterStable( ISpectralCluster cluster)
-      {
-          int count = cluster.getClusteredSpectraCount();
-          if(count >= STABLE_CLUSTER_SIZE )
-              return true;
-          if(count < 5)
-              return false;
-          if(count < 10)
-               return false;
-          if(count < 15)
-               return false;
-           return  false;
-      }
+    /**
+     * true if the cluster is stable
+     *
+     * @param !null cluster
+     * @return as above
+     */
+    public static boolean isClusterStable(ISpectralCluster cluster) {
+        int count = cluster.getClusteredSpectraCount();
+        if (count >= STABLE_CLUSTER_SIZE)
+            return true;
+        if (count < 5)
+            return false;
+        if (count < 10)
+            return false;
+        if (count < 15)
+            return false;
+        return false;
+    }
 
     /**
-      * find the highest quality spectrum in a list of clusters
-      * @param copied  should be non-empty array
-      * @return   !null spectrum unless copied is empty
-      */
-     public static ISpectrum getHighestQualitySpectrum(ISpectralCluster... copied) {
-         if(copied.length == 0)
-             return null;
-         ISpectrum ret = copied[0].getHighestQualitySpectrum();
-         for (int i = 1; i < copied.length; i++) {
-             if (!ret.equals(copied[i].getHighestQualitySpectrum()))
-                 throw new IllegalStateException("AlternativeSpectralClusters MUST have the same highest quality spectrum");
-         }
+     * find the highest quality spectrum in a list of clusters
+     *
+     * @param copied should be non-empty array
+     * @return !null spectrum unless copied is empty
+     */
+    public static ISpectrum getHighestQualitySpectrum(ISpectralCluster... copied) {
+        if (copied.length == 0)
+            return null;
+        ISpectrum ret = copied[0].getHighestQualitySpectrum();
+        for (int i = 1; i < copied.length; i++) {
+            ISpectrum highestQualitySpectrum = copied[i].getHighestQualitySpectrum();
+            if (!ret.equivalent(highestQualitySpectrum))
+                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same highest quality spectrum");
+        }
 
-         return ret;
-     }
+        return ret;
+    }
+
+
+    public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
+        float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
+        float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
+        if (mzValues.length != intensityValues.length)
+            throw new IllegalArgumentException("Unequal mz and intensity lists");
+        List<IPeak> holder = new ArrayList<IPeak>();
+        for (int i = 0; i < intensityValues.length; i++) {
+            holder.add(new Peak(mzValues[i], intensityValues[i]));
+        }
+        Collections.sort(holder);  // sort peaks by mz
+        return holder;
+    }
+
+    public static float[] parseCommaDelimitedFloats(String commaDelimitedFloats) {
+        String[] items = commaDelimitedFloats.trim().split(",");
+        float[] ret = new float[items.length];
+        for (int i = 0; i < items.length; i++) {
+            String item = items[i];
+            ret[i] = Float.parseFloat(item);
+        }
+        return ret;
+    }
 
 
 //    private static final Map<String, ISpectralCluster> ID_TO_CLUSTER = new ConcurrentHashMap<String, ISpectralCluster>();
@@ -76,8 +103,7 @@ public class ClusterUtilities {
     /**
      * hard code a call to this to
      */
-    public static void breakHere()
-    {
+    public static void breakHere() {
         //noinspection UnusedDeclaration
         int i = 0;
         //noinspection UnusedAssignment
@@ -100,6 +126,7 @@ public class ClusterUtilities {
 
     /**
      * purely for debugging to allow handling of one bad case to be traces
+     *
      * @param pk
      * @return
      */
@@ -107,23 +134,24 @@ public class ClusterUtilities {
     public static final float MININUM_INTERESTING_MZ = 474.09F;
     public static final float MAXINUM_INTERESTING_MZ = 475.4F;
 
-     @SuppressWarnings("UnusedDeclaration")
-     public static boolean isPeakInteresting(IPeak pk)  {
-         float mz = pk.getMz();
-         return isMZInteresting(mz);
-     }
+    @SuppressWarnings("UnusedDeclaration")
+    public static boolean isPeakInteresting(IPeak pk) {
+        float mz = pk.getMz();
+        return isMZInteresting(mz);
+    }
 
     /**
      * purely for debugging to allow handling of one bad case to be traces
+     *
      * @param pMz
      * @return
      */
     public static boolean isMZInteresting(final float pMz) {
-         //noinspection RedundantIfStatement
-        if(pMz < MININUM_INTERESTING_MZ)
+        //noinspection RedundantIfStatement
+        if (pMz < MININUM_INTERESTING_MZ)
             return false;
         //noinspection RedundantIfStatement
-        if(pMz > MAXINUM_INTERESTING_MZ)
+        if (pMz > MAXINUM_INTERESTING_MZ)
             return false;
 
         return true; // break here
@@ -132,13 +160,14 @@ public class ClusterUtilities {
     /**
      * operations that merge peaks in lists had better preserve the total count
      * useful in testing and debuggine
+     *
      * @param lst !null list of peaks
-     * @return   total count from all peaks
+     * @return total count from all peaks
      */
-    public static int getTotalCount(List<IPeak> lst)    {
+    public static int getTotalCount(List<IPeak> lst) {
         int total = 0;
         for (IPeak pk : lst) {
-              total += pk.getCount();
+            total += pk.getCount();
         }
         return total;
     }
@@ -146,50 +175,50 @@ public class ClusterUtilities {
 
     /**
      * get all peaks from the cluster
+     *
      * @param cluster !null cluster
      * @return !null list of peaks
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeak>  getAllPeaks(ISpectralCluster cluster)
-    {
-         List<IPeak> holder = new ArrayList<IPeak>();
-         for(ISpectrum spec : cluster.getClusteredSpectra() ) {
-             final List<IPeak> peaks = spec.getPeaks();
-             holder.addAll(peaks) ;
-         }
-          return holder;
+    public static List<IPeak> getAllPeaks(ISpectralCluster cluster) {
+        List<IPeak> holder = new ArrayList<IPeak>();
+        for (ISpectrum spec : cluster.getClusteredSpectra()) {
+            final List<IPeak> peaks = spec.getPeaks();
+            holder.addAll(peaks);
+        }
+        return holder;
     }
 
 
-
     /**
-     *  take out all clusters consisting of a single spectrum and return them as a list
-     *  - engines will do this as a step in reclustering
+     * take out all clusters consisting of a single spectrum and return them as a list
+     * - engines will do this as a step in reclustering
+     *
      * @param clusters !null   a list of clusters - this WILL be modified
      * @return !null list of clusters containing a single spectrum
      */
-     public static List<ISpectralCluster> removeSingleSpectrumClusters(List<ISpectralCluster> clusters) {
-         return removeSingleSpectrumClustersSizedLessThan( clusters,1);
-     }
+    public static List<ISpectralCluster> removeSingleSpectrumClusters(List<ISpectralCluster> clusters) {
+        return removeSingleSpectrumClustersSizedLessThan(clusters, 1);
+    }
 
     /**
-     *  take out all clusters sized les shtne size and return them as a list of single spectrum clusters
-     *  - engines will do this as a step in reclustering
-     * @param pClusters  !null   a list of clusters - this WILL be modified
-     * @param size - clusters sized less than or equal to this will be removed and returned as single spectrum clusters
+     * take out all clusters sized les shtne size and return them as a list of single spectrum clusters
+     * - engines will do this as a step in reclustering
+     *
+     * @param pClusters !null   a list of clusters - this WILL be modified
+     * @param size      - clusters sized less than or equal to this will be removed and returned as single spectrum clusters
      * @return !null list of clusters containing a single spectrum
      */
     public static List<ISpectralCluster> removeSingleSpectrumClustersSizedLessThan(final List<ISpectralCluster> pClusters, final int size) {
         List<ISpectralCluster> retained = new ArrayList<ISpectralCluster>();
         List<ISpectralCluster> asSingleSpectra = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster cluster : pClusters) {
-            if(cluster.getClusteredSpectraCount() <= size)   {
+            if (cluster.getClusteredSpectraCount() <= size) {
                 final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                 for (ISpectrum spectrum : clusteredSpectra) {
                     asSingleSpectra.add(spectrum.asCluster()); // di not retain but return as one spectrum clusters
                 }
-            }
-            else {
+            } else {
                 retained.add(cluster); // large enough keep it
             }
         }
@@ -214,7 +243,7 @@ public class ClusterUtilities {
                     continue;
                 String[] items = peptide.split(";");
                 petides.addAll(Arrays.asList(items));
-             }
+            }
 
         }
         return petides;
@@ -222,12 +251,13 @@ public class ClusterUtilities {
 
     /**
      * return a comma delimited set of most common peptides
+     *
      * @return as above
      */
     public static String mostCommonPeptides(ISpectralCluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
-        String petides =  mostCommonPeptides(clusteredSpectra) ;
+        String petides = mostCommonPeptides(clusteredSpectra);
         return petides;
     }
 
@@ -242,9 +272,9 @@ public class ClusterUtilities {
         StringBuilder sb = new StringBuilder();
         final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
         for (String s : stringsByOccurance) {
-            if(sb.length() > 0)
+            if (sb.length() > 0)
                 sb.append(",");
-            sb.append(s) ;
+            sb.append(s);
         }
         return sb.toString();
     }
@@ -286,7 +316,7 @@ public class ClusterUtilities {
      */
     public static double minClusterMZ(List<ISpectralCluster> clusters) {
         double ret = Double.MAX_VALUE;
-         for (ISpectralCluster cluster : clusters) {
+        for (ISpectralCluster cluster : clusters) {
             ret = Math.min(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -300,7 +330,7 @@ public class ClusterUtilities {
      */
     public static double maxClusterMZ(List<ISpectralCluster> clusters) {
         double ret = 0;
-          for (ISpectralCluster cluster : clusters) {
+        for (ISpectralCluster cluster : clusters) {
             ret = Math.max(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -419,9 +449,9 @@ public class ClusterUtilities {
     public static String buildMZString(final ISpectrum spec) {
         StringBuilder sb = new StringBuilder();
         for (IPeak pk : spec.getPeaks()) {
-           if(sb.length() > 0)
-               sb.append(",");
-            sb.append(String.format("%10.3f",pk.getMz()).trim());
+            if (sb.length() > 0)
+                sb.append(",");
+            sb.append(String.format("%10.3f", pk.getMz()).trim());
         }
         return sb.toString();
 
@@ -436,9 +466,9 @@ public class ClusterUtilities {
     public static String buildIntensityString(final ISpectrum spec) {
         StringBuilder sb = new StringBuilder();
         for (IPeak pk : spec.getPeaks()) {
-           if(sb.length() > 0)
-               sb.append(",");
-            sb.append(String.format("%10.5f",pk.getIntensity()).trim());
+            if (sb.length() > 0)
+                sb.append(",");
+            sb.append(String.format("%10.5f", pk.getIntensity()).trim());
         }
         return sb.toString();
 
@@ -447,102 +477,102 @@ public class ClusterUtilities {
 
     /**
      * merge clusters among themselves returning a list of surviving clusters which will replace mergable
-     * @param mergable  !null list of clusters
+     *
+     * @param mergable          !null list of clusters
      * @param similarityChecker !null simil;atity checker
-     * @param maxMZDIfference  max difference to consider merging
+     * @param maxMZDIfference   max difference to consider merging
      * @return !null list of new clusters
      */
-     public static  List<ISpectralCluster> mergeClusters(List<ISpectralCluster> mergable,SimilarityChecker similarityChecker,double maxMZDIfference) {
-         List<ISpectralCluster> retained = new ArrayList<ISpectralCluster>();
-         // clusters need to be compared with all clusters below them
-         for (ISpectralCluster cluster : mergable) {
-             double currentMZ = cluster.getPrecursorMz();
-             double minimimMergableMZ = currentMZ - maxMZDIfference;
-             ISpectralCluster mergeWith = null;
-             if(retained.isEmpty())  {   // start with the first cluster
-                 retained.add(cluster);
-                 continue;
-             }
+    public static List<ISpectralCluster> mergeClusters(List<ISpectralCluster> mergable, SimilarityChecker similarityChecker, double maxMZDIfference) {
+        List<ISpectralCluster> retained = new ArrayList<ISpectralCluster>();
+        // clusters need to be compared with all clusters below them
+        for (ISpectralCluster cluster : mergable) {
+            double currentMZ = cluster.getPrecursorMz();
+            double minimimMergableMZ = currentMZ - maxMZDIfference;
+            ISpectralCluster mergeWith = null;
+            if (retained.isEmpty()) {   // start with the first cluster
+                retained.add(cluster);
+                continue;
+            }
 
-             // start at the top mz cluster
-             for (int index = retained.size() - 1; index >= 0; index--) {
-                 ISpectralCluster test = retained.get(index);
-                 if (test.getPrecursorMz() < minimimMergableMZ)
-                     break; // no more to consider
-                 final ISpectrum cs1 = test.getConsensusSpectrum();
-                 double similarity =  similarityChecker.assessSimilarity(cs1, cluster.getConsensusSpectrum());
-                if(similarity >= similarityChecker.getDefaultThreshold())   {
+            // start at the top mz cluster
+            for (int index = retained.size() - 1; index >= 0; index--) {
+                ISpectralCluster test = retained.get(index);
+                if (test.getPrecursorMz() < minimimMergableMZ)
+                    break; // no more to consider
+                final ISpectrum cs1 = test.getConsensusSpectrum();
+                double similarity = similarityChecker.assessSimilarity(cs1, cluster.getConsensusSpectrum());
+                if (similarity >= similarityChecker.getDefaultThreshold()) {
                     mergeWith = test;
                     break; // found who to merge with
                 }
 
-             }
-             if(mergeWith == null) {
-                 retained.add(cluster); // nothing to merge with so keep the cluster
-             }
-             else {  // merge with a close enough cluster
-                 mergeWith.addSpectra(cluster.getClusteredSpectra());
-             }
-         }
-         // make sure the retained are still in mz order
-         Collections.sort(retained);
-         return retained;
-     }
+            }
+            if (mergeWith == null) {
+                retained.add(cluster); // nothing to merge with so keep the cluster
+            } else {  // merge with a close enough cluster
+                mergeWith.addSpectra(cluster.getClusteredSpectra());
+            }
+        }
+        // make sure the retained are still in mz order
+        Collections.sort(retained);
+        return retained;
+    }
 
 
     /**
      * take a collection of clusters - presumably with clustered and another group - maybe
      * single spectrun clusters - that fact is not important but the groups sould be distinct
      * merge where possible and return the list of not merged spectra
-     * @param mergable !null list of clusters - the clusters will change but not change in number
-     * @param singles  !null list of single spectra
-     * @param similarityChecker  !null similarity
-     * @param maxMZDIfference  ! maxMZ difference to look at for merging
-     * @return   !null list of non-merged clusters from singles
+     *
+     * @param mergable          !null list of clusters - the clusters will change but not change in number
+     * @param singles           !null list of single spectra
+     * @param similarityChecker !null similarity
+     * @param maxMZDIfference   ! maxMZ difference to look at for merging
+     * @return !null list of non-merged clusters from singles
      */
-     public static  List<ISpectralCluster> mergeClustersWithSingleSpectra(List<ISpectralCluster> mergable,List<ISpectralCluster> singles,SimilarityChecker similarityChecker,double maxMZDIfference) {
-         List<ISpectralCluster> retainedSingleSpectra = new ArrayList<ISpectralCluster>();
-         int startIndex = 0;
-         // clusters need to be compared with all clusters below them
-         for (ISpectralCluster cluster : singles) {
-             double currentMZ = cluster.getPrecursorMz();
-             double minimimMergableMZ = currentMZ - maxMZDIfference;
-             ISpectralCluster mergeWith = null;
-             // start at the top mz cluster
-             for (int index = startIndex; index > mergable.size(); index++) {
-                 ISpectralCluster test = mergable.get(index);
-                 if(index == startIndex)  {
-                     if (test.getPrecursorMz() < minimimMergableMZ)   {
-                         startIndex++;
-                         continue; // try again
-                     }
-                 }
-                double distance =  similarityChecker.assessSimilarity(test.getConsensusSpectrum(),cluster.getConsensusSpectrum());
-                if(distance <= similarityChecker.getDefaultThreshold())   {
+    public static List<ISpectralCluster> mergeClustersWithSingleSpectra(List<ISpectralCluster> mergable, List<ISpectralCluster> singles, SimilarityChecker similarityChecker, double maxMZDIfference) {
+        List<ISpectralCluster> retainedSingleSpectra = new ArrayList<ISpectralCluster>();
+        int startIndex = 0;
+        // clusters need to be compared with all clusters below them
+        for (ISpectralCluster cluster : singles) {
+            double currentMZ = cluster.getPrecursorMz();
+            double minimimMergableMZ = currentMZ - maxMZDIfference;
+            ISpectralCluster mergeWith = null;
+            // start at the top mz cluster
+            for (int index = startIndex; index > mergable.size(); index++) {
+                ISpectralCluster test = mergable.get(index);
+                if (index == startIndex) {
+                    if (test.getPrecursorMz() < minimimMergableMZ) {
+                        startIndex++;
+                        continue; // try again
+                    }
+                }
+                double distance = similarityChecker.assessSimilarity(test.getConsensusSpectrum(), cluster.getConsensusSpectrum());
+                if (distance <= similarityChecker.getDefaultThreshold()) {
                     mergeWith = test;
                     break; // found who to merge with
                 }
 
-             }
-             if(mergeWith == null) {
-                 retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
-             }
-             else {  // merge with a close enough cluster
-                 // note this may disturb the order of the cluster list but should not stop
-                 // the algorithm from working
-                 mergeWith.addSpectra(cluster.getClusteredSpectra());
-             }
-         }
+            }
+            if (mergeWith == null) {
+                retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
+            } else {  // merge with a close enough cluster
+                // note this may disturb the order of the cluster list but should not stop
+                // the algorithm from working
+                mergeWith.addSpectra(cluster.getClusteredSpectra());
+            }
+        }
 
 
-          // make sure the mergable are still in mz order
-         Collections.sort(mergable);
+        // make sure the mergable are still in mz order
+        Collections.sort(mergable);
 
 
-          // make sure the retainedSingleSpectra are still in mz order
-         Collections.sort(retainedSingleSpectra);
-         return retainedSingleSpectra;
-     }
+        // make sure the retainedSingleSpectra are still in mz order
+        Collections.sort(retainedSingleSpectra);
+        return retainedSingleSpectra;
+    }
 
 
     /**
@@ -557,27 +587,28 @@ public class ClusterUtilities {
      * @return
      */
     public static double round(double f) {
-         return  round(f,MZ_PRECISSION);
+        return round(f, MZ_PRECISSION);
     }
 
     /**
-       * Round to certain number of decimals
-       *
-       * @param f
-       * @param decimalPlace
-       * @return
-       */
-      public static double round(double f, int decimalPlace) {
-  //        BigDecimal bd = new BigDecimal(Float.toString(d));
-  //        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-  //        return bd.floatValue();
-          int i = (int) ((f * decimalPlace) + 0.5);
-          return  i / (double) decimalPlace;
-      }
+     * Round to certain number of decimals
+     *
+     * @param f
+     * @param decimalPlace
+     * @return
+     */
+    public static double round(double f, int decimalPlace) {
+        //        BigDecimal bd = new BigDecimal(Float.toString(d));
+        //        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        //        return bd.floatValue();
+        int i = (int) ((f * decimalPlace) + 0.5);
+        return i / (double) decimalPlace;
+    }
 
 
     /**
      * write the header of a .clustering file
+     *
      * @param out
      * @param name
      */
@@ -609,8 +640,7 @@ public class ClusterUtilities {
             out.append("description=" + name);
             out.append("\n");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

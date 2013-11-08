@@ -317,7 +317,7 @@ public class JXTandemMassHandler extends ConfiguredJobRunner implements IJobRunn
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-            XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            HadoopUtilities.setRecommendedMaxReducers(job,HadoopUtilities.getJobSize());
 
 
             if (otherArgs.length > 1) {

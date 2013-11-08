@@ -40,7 +40,6 @@ public class XTandemUtilities {
 
 
 
-
     public static final String EMAIL_ADDRESS_PROPERTY = "org.systemsbiology.xtandem.sender";
     //# password to send emmail
     public static final String EMAIL_PASSWORD_PROPERTY = "org.systemsbiology.xtandem.encryptedEmailPassword";

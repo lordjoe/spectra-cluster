@@ -127,7 +127,7 @@ public class PartitioningTests {
 
 
     protected static void examinePartitions(ChargeBinMZKey[] keys) {
-        int numberReducers = HadoopUtilities.DEFAULT_NUMBER_REDUCERS;
+        int numberReducers = HadoopUtilities.DEFAULT_TEST_NUMBER_REDUCERS;
         int[] partitions = new int[numberReducers];
         for (int i = 0; i < keys.length; i++) {
             ChargeBinMZKey key = keys[i];

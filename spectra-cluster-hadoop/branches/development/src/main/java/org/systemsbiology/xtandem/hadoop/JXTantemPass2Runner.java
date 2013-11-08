@@ -88,7 +88,7 @@ public class JXTantemPass2Runner extends ConfiguredJobRunner implements IJobRunn
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
 
-            XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            XTandemHadoopUtilities.setRecommendedMaxReducers(job );
 
 
             XTandemHadoopUtilities.setInputArguments(otherArgs, job);

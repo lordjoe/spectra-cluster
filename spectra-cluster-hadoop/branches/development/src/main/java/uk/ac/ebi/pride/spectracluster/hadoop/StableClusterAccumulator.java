@@ -81,7 +81,7 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-            XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            HadoopUtilities.setRecommendedMaxReducers(job,HadoopUtilities.getJobSize());
 
 
             if (otherArgs.length > 1) {

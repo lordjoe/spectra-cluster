@@ -49,6 +49,8 @@ public class JohannesClusterDbExporter {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
+
+
     public JohannesClusterDbExporter(DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }

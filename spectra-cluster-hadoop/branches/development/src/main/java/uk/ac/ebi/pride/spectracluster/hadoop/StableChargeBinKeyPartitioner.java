@@ -22,7 +22,7 @@ public class StableChargeBinKeyPartitioner extends Partitioner<Text, Text> {
         if(AbstractParameterizedReducer.isKeySpecial(key))
             return 0;
         StableChargeBinMZKey realKey;
-        if(key.startsWith(StableChargeBinMZKey.SORT_PREFIX))
+        if(key.contains(StableChargeBinMZKey.SORT_PREFIX))
             realKey = new StableChargeBinMZKey(key);
         else {
             realKey = new UnStableChargeBinMZKey(key);

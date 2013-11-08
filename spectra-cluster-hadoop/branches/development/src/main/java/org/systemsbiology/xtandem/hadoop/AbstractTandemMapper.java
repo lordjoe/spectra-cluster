@@ -102,6 +102,9 @@ public abstract class AbstractTandemMapper<T> extends Mapper<T, Text, Text, Text
               }
           }
 
+        JobSizeEnum jobSize = m_Application.getEnumParameter(HadoopUtilities.JOB_SIZE_PROPERTY, JobSizeEnum.class, JobSizeEnum.Medium);
+             HadoopUtilities.setHadoopProperty(HadoopUtilities.JOB_SIZE_PROPERTY,jobSize.toString());
+
         System.err.println("Default path is " + defaultPath);
     }
 
