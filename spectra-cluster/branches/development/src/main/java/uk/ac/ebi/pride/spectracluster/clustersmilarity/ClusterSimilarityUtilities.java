@@ -72,7 +72,11 @@ public class ClusterSimilarityUtilities {
     public static void main(String[] args) {
         IClusterSet originalClusterSet = buildFromFile(new File(args[0]), null);
 
+        int numberClusters = originalClusterSet.getClusterCount();
+
         IClusterSet clusterSet = buildFromFile(new File(args[1]), null);
+
+        int numberClusters2 = clusterSet.getClusterCount();
 
         originalClusterSet.getClusters();
     }
