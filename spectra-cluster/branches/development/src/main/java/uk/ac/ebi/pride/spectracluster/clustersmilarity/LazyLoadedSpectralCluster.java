@@ -75,7 +75,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
 
     @Override
     public ISpectrum getHighestQualitySpectrum() {
-        throw new UnsupportedOperationException("This method is not supported");
+        return null;
     }
 
     @Override
