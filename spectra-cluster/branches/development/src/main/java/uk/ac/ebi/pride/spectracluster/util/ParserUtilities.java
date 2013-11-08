@@ -295,9 +295,10 @@ public class ParserUtilities {
                 cluster.addSpectra(spectrum);
             } else if (clusterLine.startsWith(AVERAGE_PRECURSOR_INTENSITY)) {
                 // do nothing here
-            }
-            else {
-                throw new IllegalArgumentException("cannot process line "  + clusterLine);
+            } else {
+                if (clusterLine.length() > 0) {
+                    throw new IllegalArgumentException("cannot process line " + clusterLine);
+                }
             }
         }
 

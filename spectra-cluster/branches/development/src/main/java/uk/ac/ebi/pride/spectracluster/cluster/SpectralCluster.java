@@ -115,6 +115,14 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         return id;
     }
 
+    public void setId(String id) {
+        if (this.id != null) {
+            throw new IllegalStateException("Cluster id should only be set once");
+        }
+
+        this.id = id;
+    }
+
     @Override
     public float getPrecursorMz() {
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();

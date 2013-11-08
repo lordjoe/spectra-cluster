@@ -1,8 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.util.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities
@@ -10,6 +17,28 @@ import java.util.*;
  * Date: 6/27/13
  */
 public class ClusterSimilarityUtilities {
+
+    public static IClusterSet buildFromFile(File file, ISpectrumRetriever spectrumRetriever) {
+        SimpleClusterSet simpleClusterSet = new SimpleClusterSet();
+
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File file1 : files) {
+                IClusterSet clusterSet = buildFromFile(file1, spectrumRetriever);
+                simpleClusterSet.addClusters(clusterSet.getClusters());
+            }
+        } else if (file.getName().endsWith(".clustering")){
+            try {
+                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+                ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
+                simpleClusterSet.addClusters(Arrays.asList(clusters));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return simpleClusterSet;
+    }
 
     /**
      * return all clusters with more than one spectrum
@@ -38,5 +67,14 @@ public class ClusterSimilarityUtilities {
          }
          return holder;
      }
+
+
+    public static void main(String[] args) {
+        IClusterSet originalClusterSet = buildFromFile(new File(args[0]), null);
+
+        IClusterSet clusterSet = buildFromFile(new File(args[1]), null);
+
+        originalClusterSet.getClusters();
+    }
 
 }

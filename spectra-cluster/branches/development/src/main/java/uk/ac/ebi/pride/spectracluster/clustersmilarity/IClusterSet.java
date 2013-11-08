@@ -11,7 +11,11 @@ import java.util.Collection;
  */
 public interface IClusterSet {
 
+    public int getClusterCount();
+
     public Collection<ISpectralCluster> getClusters();
+
+    public void addClusters(Collection<ISpectralCluster> clusters);
 
     public Collection<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
 
