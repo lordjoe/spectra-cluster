@@ -287,7 +287,8 @@ public class ParserUtilities {
                 consensusIntensityLine = clusterLine.replace(CONSENSUS_INTENSITY, "");
             } else if (clusterLine.startsWith(PEPTIDE_SEQUENCE)) {
                 String peptideSequence = clusterLine.replace(PEPTIDE_SEQUENCE, "");
-                cluster.setPeptideSequence(peptideSequence);
+                peptideSequence = peptideSequence.replace("[", "").replace("]", "");
+                cluster.addPeptides(peptideSequence);
             } else if (clusterLine.startsWith(SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
                 LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
