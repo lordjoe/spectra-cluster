@@ -13,12 +13,11 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.StableClusterMapper
- * Handle stable semistable and unstable clusters differently
- *
+ * Handle stable and unstable clusters differently
  * User: Steve
  * Date: 8/14/13
  */
-public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
+public class StableClusterMapperOld extends AbstractParameterizedMapper<Text> {
 
 
     public static final Random RND = new Random();

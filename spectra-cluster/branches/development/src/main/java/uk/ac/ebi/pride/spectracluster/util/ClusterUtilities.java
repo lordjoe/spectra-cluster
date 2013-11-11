@@ -22,7 +22,20 @@ public class ClusterUtilities {
     public static final String CLUSTERING_EXTENSION = ".clustering";
     public static final String CGF_EXTENSION = ".cgf";
 
-    public static final int STABLE_CLUSTER_SIZE = 15;
+    public static final int STABLE_CLUSTER_SIZE = 20;
+    public static final int SEMI_STABLE_CLUSTER_SIZE = 10;
+    public static final String STABLE_CLUSTER_PREFIX = "SC";
+    public static final String SEMI_STABLE_CLUSTER_PREFIX = "SSC";
+
+    public static String getStableClusterId()
+    {
+        return  STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
+    }
+
+    public static String getSemiStableClusterId()
+    {
+        return  STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
+    }
 
     /**
      * true if the cluster is stable
@@ -39,6 +52,21 @@ public class ClusterUtilities {
         if (count < 10)
             return false;
         if (count < 15)
+            return false;
+        return false;
+    }
+
+    /**
+     * true if the cluster is stable
+     *
+     * @param !null cluster
+     * @return as above
+     */
+    public static boolean isClusterSemiStable(ISpectralCluster cluster) {
+        int count = cluster.getClusteredSpectraCount();
+        if (count >= SEMI_STABLE_CLUSTER_SIZE)
+            return true;
+        if (count < 5)
             return false;
         return false;
     }

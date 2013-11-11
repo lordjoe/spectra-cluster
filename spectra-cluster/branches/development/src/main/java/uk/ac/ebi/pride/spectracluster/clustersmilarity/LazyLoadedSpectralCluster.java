@@ -200,6 +200,18 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
         return ClusterUtilities.isClusterStable(this);
     }
 
+
+    /**
+     * if true the cluster is semi stable and will not allow removal
+     *
+     * @return
+     */
+    @Override
+    public boolean isSemiStable() {
+        return ClusterUtilities.isClusterSemiStable(this);
+     }
+
+
     @Override
     public int compareTo(ISpectralCluster o) {
         if (o == this)
