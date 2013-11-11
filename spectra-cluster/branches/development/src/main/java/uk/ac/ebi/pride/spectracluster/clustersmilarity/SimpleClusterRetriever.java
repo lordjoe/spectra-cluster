@@ -45,7 +45,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
             return;
         }
 
-        String id = generateClusterId();
+        String id = cluster.toString();
         if (cluster instanceof LazyLoadedSpectralCluster) {
             ((LazyLoadedSpectralCluster) cluster).setId(id);
             return;

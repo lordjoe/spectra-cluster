@@ -78,7 +78,19 @@ public class ClusterSimilarityUtilities {
 
         int numberClusters2 = clusterSet.getClusterCount();
 
-        originalClusterSet.getClusters();
+        ClusterStatistics originalClusterStatistics = new ClusterStatistics();
+
+        originalClusterSet.visitClusters(originalClusterStatistics);
+
+        System.out.println("Original");
+        System.out.println(originalClusterStatistics.generateReport());
+
+        ClusterStatistics clusterStatistics = new ClusterStatistics();
+
+        System.out.println("New");
+        clusterSet.visitClusters(clusterStatistics);
+
+        System.out.println(clusterStatistics.generateReport());
     }
 
 }
