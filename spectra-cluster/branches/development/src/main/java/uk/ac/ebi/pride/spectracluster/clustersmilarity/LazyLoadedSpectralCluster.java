@@ -299,6 +299,22 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (ISpectrum spectrum : clusteredSpectra) {
+            sb.append(spectrum.getId()).append(",");
+        }
+
+        return "LazyLoadedSpectralCluster{" +
+                ", precursorMz=" + precursorMz +
+                ", precursorCharge=" + precursorCharge +
+                ", peptides=" + peptides +
+                ", clusteredSpectra=" + sb.toString() +
+                '}';
+    }
+
+    @Override
     public int[] asMajorPeakMZs() {
         return getConsensusSpectrum().asMajorPeakMZs();
     }
