@@ -51,6 +51,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static final String CLUSTER_VERSION = "1.0.0";
 
     public static final String INPUT_PATH_PROPERTY = "input_path";
+    public static final String START_AT_JOB_PROPERTY = "start-at-job";
     public static final String DATA_ON_PATH_PROPERTY = "data_on_cluster";
     public static final String DO_NOT_COPY_FILES_PROPERTY = "org.systemsbiology.xtandem.DoNotCopyFilesToLocalMachine";
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
@@ -372,6 +373,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             String val = properties.getProperty(key);
             m_Application.setParameter(key, val);
         }
+        setDefaultStartAtJob(m_Application.getIntParameter(START_AT_JOB_PROPERTY, 0));
+
 
     }
 
@@ -1276,7 +1279,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
             SpectraHadoopMain application = main.getApplication();
             JobSizeEnum jobSize = application.getEnumParameter(HadoopUtilities.JOB_SIZE_PROPERTY, JobSizeEnum.class, JobSizeEnum.Medium);
-            HadoopUtilities.setHadoopProperty(HadoopUtilities.JOB_SIZE_PROPERTY,jobSize.toString());
+            HadoopUtilities.setHadoopProperty(HadoopUtilities.JOB_SIZE_PROPERTY, jobSize.toString());
 
             if (getPassedJarFile() != null) {   // start with a jar file
                 main.setJarFile(getPassedJarFile());

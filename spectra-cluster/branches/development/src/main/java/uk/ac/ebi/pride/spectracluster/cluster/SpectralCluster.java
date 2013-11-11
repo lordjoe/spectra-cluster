@@ -282,6 +282,15 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         return ClusterUtilities.isClusterStable(this);
     }
 
+    /**
+     * if true the cluster is semi stable and will not allow removal
+     *
+     * @return
+     */
+    @Override
+    public boolean isSemiStable() {
+        return ClusterUtilities.isClusterSemiStable(this);
+     }
 
     @Override
     public void removeSpectra(ISpectrum... removed) {

@@ -17,11 +17,10 @@ import java.io.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.StableClusterAccumulator
- * this will break unstable clusters into spectra and merge with
- * stable and semistable clusters
+ * This uses a key based in charge,peakmz,PrecursorMZ
  * inout is MGF text
  */
-public class StableClusterAccumulator extends ConfiguredJobRunner implements IJobRunner {
+public class StableClusterAccumulatorOld extends ConfiguredJobRunner implements IJobRunner {
 
 
 
@@ -59,7 +58,7 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
             String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
             if (params == null)
                 conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
-            job.setJarByClass(StableClusterAccumulator.class);
+            job.setJarByClass(StableClusterAccumulatorOld.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 
@@ -67,8 +66,8 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
             //job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
-            job.setMapperClass(StableClusterMapper.class);
-            job.setReducerClass(StableSpectrumMergeReducer.class);
+            job.setMapperClass(StableClusterMapperOld.class);
+            job.setReducerClass(StableSpectrumMergeReducerOld.class);
             //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
             job.setPartitionerClass(StableChargeBinKeyPartitioner.class);
 
@@ -156,6 +155,6 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
             usage();
             return;
         }
-        ToolRunner.run(new StableClusterAccumulator(), args);
+        ToolRunner.run(new StableClusterAccumulatorOld(), args);
     }
 }

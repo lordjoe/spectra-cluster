@@ -302,6 +302,16 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     /**
      * if true the cluster is stable and will not allow removal
      *
+     * @return
+     */
+    @Override
+    public boolean isSemiStable() {
+          return true;
+    }
+
+    /**
+     * if true the cluster is stable and will not allow removal
+     *
      * @param stable as
      */
     public void setStable(boolean stable) {

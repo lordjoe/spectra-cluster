@@ -1468,9 +1468,15 @@ public class XTandemHadoopUtilities {
             line = rddr.readLine();
             while (line != null) {
                 String[] items = line.split("\t");
-                int mz = Integer.parseInt(items[0].trim());
-                int count = Integer.parseInt(items[1].trim());
-                ret.put(mz, count);
+                if(items.length < 2)
+                    continue;
+                try {
+                    int mz = Integer.parseInt(items[0].trim());
+                    int count = Integer.parseInt(items[1].trim());
+                    ret.put(mz, count);
+                } catch (NumberFormatException e) {
+                    // ignore - we can live without this
+                }
                 line = rddr.readLine();
             }
         } catch (IOException e) {

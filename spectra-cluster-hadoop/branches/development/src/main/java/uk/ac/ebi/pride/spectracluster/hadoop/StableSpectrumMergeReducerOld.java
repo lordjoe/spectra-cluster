@@ -1,28 +1,25 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import com.lordjoe.utilities.ElapsedTimer;
-import org.apache.hadoop.io.Text;
-import org.systemsbiology.hadoop.AbstractParameterizedReducer;
+import com.lordjoe.algorithms.*;
+import com.lordjoe.utilities.*;
+import org.apache.hadoop.io.*;
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Merge spectra with unstable clusters
  */
-public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
+public class StableSpectrumMergeReducerOld extends AbstractParameterizedReducer {
 
     private double majorMZ;
     private int currentCharge;
     private int currentBin;
-    private IWideBinner binner = StableClusterMapper.BINNER;
+    private IWideBinner binner = StableClusterMapperOld.BINNER;
     private IStableClusteringEngine clusteringEngine;
     private ElapsedTimer binTime = new ElapsedTimer();
     private ElapsedTimer jobTime = new ElapsedTimer();
