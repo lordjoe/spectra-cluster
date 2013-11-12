@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.google.common.collect.MinMaxPriorityQueue;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.util.*;
 
@@ -13,12 +14,12 @@ import java.util.*;
 public class ClusterDistanceSet {
 
     public static final int MAX_PRESERVED_MATCHES = 3;
-    private final Map<ISpectralCluster, PriorityQueue<ClusterDistanceItem>> bestMatches =
-            new HashMap<ISpectralCluster, PriorityQueue<ClusterDistanceItem>>();
+    private final Map<ISpectralCluster, MinMaxPriorityQueue<ClusterDistanceItem>> bestMatches =
+            new HashMap<ISpectralCluster, MinMaxPriorityQueue<ClusterDistanceItem>>();
 
 
     public List<ClusterDistanceItem> getBestMatches(ISpectralCluster cluster) {
-        PriorityQueue<ClusterDistanceItem> items = bestMatches.get(cluster);
+        MinMaxPriorityQueue<ClusterDistanceItem> items = bestMatches.get(cluster);
         if (items == null)
             return Collections.EMPTY_LIST;
         else
@@ -27,7 +28,7 @@ public class ClusterDistanceSet {
 
     public void addDistance(ClusterDistanceItem added) {
         ISpectralCluster baseCluster = added.getBaseCluster();
-        PriorityQueue<ClusterDistanceItem> items = bestMatches.get(baseCluster);
+        MinMaxPriorityQueue<ClusterDistanceItem> items = bestMatches.get(baseCluster);
         if (items == null) {
             items = buildQueue();
             bestMatches.put(baseCluster, items);
@@ -36,8 +37,8 @@ public class ClusterDistanceSet {
 
     }
 
-    protected PriorityQueue<ClusterDistanceItem> buildQueue() {
-          PriorityQueue<ClusterDistanceItem> queue = new PriorityQueue<ClusterDistanceItem>(MAX_PRESERVED_MATCHES);
+    protected MinMaxPriorityQueue<ClusterDistanceItem> buildQueue() {
+          MinMaxPriorityQueue<ClusterDistanceItem> queue = MinMaxPriorityQueue.maximumSize(MAX_PRESERVED_MATCHES).create();
         return queue;
 
     }

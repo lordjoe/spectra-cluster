@@ -39,14 +39,16 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
     }
 
     private void addSpectrumByPeptide(IPeptideSpectrumMatch spectrum) {
-        String peptide = spectrum.getPeptide();
-        List<IPeptideSpectrumMatch> spectrumMatches = spectraByPeptide.get(peptide);
-        if (spectrumMatches == null) {
-            spectrumMatches = new ArrayList<IPeptideSpectrumMatch>();
-            spectraByPeptide.put(peptide, spectrumMatches);
-        }
+        String[] peptides = spectrum.getPeptide().split(";");
+        for (String peptide : peptides) {
+            List<IPeptideSpectrumMatch> spectrumMatches = spectraByPeptide.get(peptide);
+            if (spectrumMatches == null) {
+                spectrumMatches = new ArrayList<IPeptideSpectrumMatch>();
+                spectraByPeptide.put(peptide, spectrumMatches);
+            }
 
-        spectrumMatches.add(spectrum);
+            spectrumMatches.add(spectrum);
+        }
     }
 
     @Override

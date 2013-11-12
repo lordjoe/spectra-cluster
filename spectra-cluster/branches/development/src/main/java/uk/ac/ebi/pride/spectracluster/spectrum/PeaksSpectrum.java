@@ -211,7 +211,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
      * @throws IOException
      */
     protected void appendTitle(final Appendable out) throws IOException {
-        out.append("TITLE=" + getId());
+        out.append("TITLE=id=" + getId());
     }
 
 

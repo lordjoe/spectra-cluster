@@ -17,6 +17,7 @@ import java.util.*;
 public class TestClusteringEngineMain {
 
     private long readTimeMillisec;
+
     public TestClusteringEngineMain() {
     }
 
@@ -30,10 +31,11 @@ public class TestClusteringEngineMain {
 
     /**
      * do the work of clustering one MGF file
-     * @param inputFile  !null existing readable mgf file
+     *
+     * @param inputFile !null existing readable mgf file
      */
     protected void processFile(final File inputFile) {
-        if(!inputFile.getName().toLowerCase().endsWith(".mgf"))
+        if (!inputFile.getName().toLowerCase().endsWith(".mgf"))
             return; // not an mgf
 
         long start = System.currentTimeMillis();
@@ -42,9 +44,9 @@ public class TestClusteringEngineMain {
         /**
          * Add your favorite clustering engine here
          */
-     //    PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
-       IClusteringEngine engine = new PrideClusteringEngine();
-         long end = System.currentTimeMillis();
+        //    PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
+        IClusteringEngine engine = new PrideClusteringEngine();
+        long end = System.currentTimeMillis();
         final long readTIme = end - start;
         addReadTimeMillisec(readTIme);
         double seconds = (readTIme / 1000);
@@ -71,7 +73,7 @@ public class TestClusteringEngineMain {
         final List<ISpectralCluster> clusters1 = engine.getClusters();
 
 
-        saveClusters(clusters1,inputFile);
+        saveClusters(clusters1, inputFile);
 
 
         end = System.currentTimeMillis();
@@ -82,39 +84,40 @@ public class TestClusteringEngineMain {
 
     /**
      * write clusters to a file in the default directory with the extension .cgf
-     * @param pClusters1  !null list of clusters
-     * @param pInputFile  !null input file
+     *
+     * @param pClusters1 !null list of clusters
+     * @param pInputFile !null input file
      */
     protected void saveClusters(final List<ISpectralCluster> pClusters1, final File pInputFile) {
 
-        if(pClusters1.size() == 0)
+        if (pClusters1.size() == 0)
             return;
-        String outName = pInputFile.getName().replace(".mgf","") + ".cgf";
-        PrintWriter out =  null;
+        String outName = pInputFile.getName().replace(".mgf", "") + ".cgf";
+        PrintWriter out = null;
         try {
-              out = new PrintWriter(new FileWriter(outName)) ;
+            System.out.println(new File(outName).getCanonicalPath());
+            out = new PrintWriter(new FileWriter(outName));
             for (ISpectralCluster iSpectralCluster : pClusters1) {
                 iSpectralCluster.append(out);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        finally {
-            if(out != null)
+        } finally {
+            if (out != null)
                 out.close();
         }
     }
 
     /**
      * process every file in a directory containing mgf files
-     * @param pF     !null existing directory
+     *
+     * @param pF !null existing directory
      */
     protected void processDirectory(final File pF) {
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
-        double min ;
+        double min;
         final File[] files = pF.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
@@ -159,10 +162,10 @@ public class TestClusteringEngineMain {
             int seconds = (int) ((end - start) / 1000);
             min = seconds / 60;
         }
-        double readMin = mainClusterer.getReadTimeMillisec()  / (60 * 1000 );
+        double readMin = mainClusterer.getReadTimeMillisec() / (60 * 1000);
         System.out.println("read in " + String.format("%10.2f", readMin) + " min");
         System.out.println("Processed in " + String.format("%10.2f", min - readMin) + " min");
-        System.out.println("Total " + String.format("%10.2f", min  ) + " min");
+        System.out.println("Total " + String.format("%10.2f", min) + " min");
     }
 
 

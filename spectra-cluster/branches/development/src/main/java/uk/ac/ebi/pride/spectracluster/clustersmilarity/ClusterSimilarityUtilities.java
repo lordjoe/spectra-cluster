@@ -123,41 +123,38 @@ public class ClusterSimilarityUtilities {
         return holder;
     }
 
-
-    private static void readToMGF(String arg) {
-        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
-        buildFromMgfFile(new File(arg), spectrumRetriever);
-        System.out.println(spectrumRetriever.getSpectra().size());
+    public static void loadSpectrumTSVFile(String[] args) {
+        SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
+        buildFromTSVFile(new File(args[0]), simpleSpectrumRetriever);
+        System.out.println(simpleSpectrumRetriever.getSpectra().size());
     }
 
-
     public static void main(String[] args) {
-        repoortStatistics(args);
+//        IClusterSet originalClusterSet = buildFromClusteringFile(new File(args[0]), null);
+//
+//        int numberClusters = originalClusterSet.getClusterCount();
+//
+//        IClusterSet clusterSet = buildFromClusteringFile(new File(args[1]), null);
+//
+//        int numberClusters2 = clusterSet.getClusterCount();
+//
+//        ClusterStatistics originalClusterStatistics = new ClusterStatistics();
+//
+//        originalClusterSet.visitClusters(originalClusterStatistics);
+//
+//        System.out.println("Original");
+//        System.out.println(originalClusterStatistics.generateReport());
+//
+//        ClusterStatistics clusterStatistics = new ClusterStatistics();
+//
+//        System.out.println("New");
+//        clusterSet.visitClusters(clusterStatistics);
+//
+//        System.out.println(clusterStatistics.generateReport());
 
-     }
-
-    private static void repoortStatistics(String[] args) {
-        IClusterSet originalClusterSet = buildFromClusteringFile(new File(args[0]), null);
-
-        int numberClusters = originalClusterSet.getClusterCount();
-
-        IClusterSet clusterSet = buildFromClusteringFile(new File(args[1]), null);
-
-        int numberClusters2 = clusterSet.getClusterCount();
-
-        ClusterStatistics originalClusterStatistics = new ClusterStatistics();
-
-        originalClusterSet.visitClusters(originalClusterStatistics);
-
-        System.out.println("Original");
-        System.out.println(originalClusterStatistics.generateReport());
-
-        ClusterStatistics clusterStatistics = new ClusterStatistics();
-
-        System.out.println("New");
-        clusterSet.visitClusters(clusterStatistics);
-
-        System.out.println(clusterStatistics.generateReport());
+        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
+        buildFromMgfFile(new File(args[0]), spectrumRetriever);
+        System.out.println(spectrumRetriever.getSpectra().size());
     }
 
 }
