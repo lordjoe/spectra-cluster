@@ -23,6 +23,10 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     }
 
 
+    public void addStatisticeMethod(IClusterStatistics added)   {
+        clusterStatisticses.add(added);
+    }
+
     @Override
     public void visit(@Nonnull ISpectralCluster pT) {
         for (IClusterStatistics visitor : clusterStatisticses) {

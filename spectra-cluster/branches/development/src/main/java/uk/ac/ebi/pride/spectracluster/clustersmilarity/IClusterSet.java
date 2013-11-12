@@ -15,7 +15,7 @@ public interface IClusterSet {
 
     public int getClusterCount();
 
-    public Collection<ISpectralCluster> getClusters();
+    public List<ISpectralCluster> getClusters();
 
     /**
      * visit all clusters
@@ -32,7 +32,7 @@ public interface IClusterSet {
 
     public void addClusters(Collection<ISpectralCluster> clusters);
 
-    public Collection<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
+    public List<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
 
     public Collection<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches);
 
