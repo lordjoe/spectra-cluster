@@ -157,7 +157,7 @@ public class Adapters {
 
         ClusteringSpectrum ret = new ClusteringSpectrum(
                 id,
-                precursorCharge,
+                precursorMZ,
                 precursorIntensity,
                 (int) precursorCharge,
                 newPeaks);
