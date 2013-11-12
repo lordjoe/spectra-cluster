@@ -11,11 +11,11 @@ import javax.annotation.*;
  * @date 12/11/13
  */
 public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet> {
-    private final ClusterDistance distanceMeasure;
+    private final IClusterDistance distanceMeasure;
     private final IClusterSet otherCluster;
     private final ClusterDistanceSet distances = new ClusterDistanceSet();
 
-    public ClusterSimilarity(ClusterDistance distanceMeasure, IClusterSet otherCluster) {
+    public ClusterSimilarity(IClusterDistance distanceMeasure, IClusterSet otherCluster) {
         this.distanceMeasure = distanceMeasure;
         this.otherCluster = otherCluster;
     }
@@ -24,7 +24,7 @@ public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet>
         return otherCluster;
     }
 
-    public ClusterDistance getDistanceMeasure() {
+    public IClusterDistance getDistanceMeasure() {
         return distanceMeasure;
     }
 
@@ -56,7 +56,7 @@ public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet>
     @Override
     public void visit(@Nonnull ISpectralCluster current) {
         IClusterSet other = getOtherCluster();
-        ClusterDistance dm = getDistanceMeasure();
+        IClusterDistance dm = getDistanceMeasure();
         for (ISpectralCluster otherCluster : other.getClusters()) {
             double distance = dm.distance(current, otherCluster);
         }

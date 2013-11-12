@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class SimilarityTests {
 
-     private ClusterDistance distanceMeasure = new ConcensusSpectrumDistance();
+     private IClusterDistance distanceMeasure = new ConcensusSpectrumDistance();
 
 
     /**

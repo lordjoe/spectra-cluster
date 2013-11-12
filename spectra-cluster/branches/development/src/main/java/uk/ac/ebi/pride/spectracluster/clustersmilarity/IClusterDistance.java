@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * User: Steve
  * Date: 6/17/13
  */
-public interface ClusterDistance extends IAlgorithm {
+public interface IClusterDistance extends IAlgorithm {
     /**
      * measure the distance between two clusters - a value of 0 says the clusters are the same or equivalent.
      * a cluster will always have a distance of 0 with itself
