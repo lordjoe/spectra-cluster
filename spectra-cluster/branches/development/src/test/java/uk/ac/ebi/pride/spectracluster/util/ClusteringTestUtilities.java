@@ -26,6 +26,7 @@ public class ClusteringTestUtilities {
     public static final String SAMPLE_CLUSTERING_FILE = "Sample.clustering";
 
     public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf";
+    public static final String SAMPLE_SECOND_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/ClusterBin0400.cgf";
 
     /**
      * read a resource mgf as a list of spectra

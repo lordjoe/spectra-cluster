@@ -41,12 +41,23 @@ public class ClusterDistanceTests {
     @Test
     public void testSort() throws Exception {
         List<ISpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ISpectralCluster> clusters2 =
+                ClusteringTestUtilities.readSpectraClustersFromResource(ClusteringTestUtilities.SAMPLE_SECOND_CGF_FILE);
+
         ISpectralCluster me = chooseCluster(clusters,null);
-        List<ClusterDistanceItem> distances =  buildDistances( me,clusters  , 6) ;
+        List<ClusterDistanceItem> distances =  buildDistances( me,clusters2  , 6) ;
         Collections.sort(distances);
         for (int i = 1; i < distances.size(); i++) {
               Assert.assertTrue(distances.get(i - 1).getDistance() < distances.get(i ).getDistance());
 
+        }
+
+        SimpleClusterSet sc1 = new SimpleClusterSet(clusters);
+        SimpleClusterSet sc2 = new SimpleClusterSet(clusters2);
+
+        List<ISpectralCluster> bestMatchingClusters = sc2.getBestMatchingClusters(me, 3);
+        for (ISpectralCluster bestMatchingCluster : bestMatchingClusters) {
+            System.out.println(bestMatchingCluster);
         }
 
     }
