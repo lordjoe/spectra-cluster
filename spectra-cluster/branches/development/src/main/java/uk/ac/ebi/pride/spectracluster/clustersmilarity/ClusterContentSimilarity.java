@@ -12,9 +12,9 @@ import java.util.*;
  */
 public class ClusterContentSimilarity {
 
-    private final ClusterDistance distanceMeasure;
+    private final IClusterDistance distanceMeasure;
 
-    public ClusterContentSimilarity( ClusterDistance dist) {
+    public ClusterContentSimilarity( IClusterDistance dist) {
         distanceMeasure = dist;
     }
 
@@ -22,7 +22,7 @@ public class ClusterContentSimilarity {
         this(ClusterContentDistance.INSTANCE);
     }
 
-    public ClusterDistance getDistanceMeasure() {
+    public IClusterDistance getDistanceMeasure() {
         return distanceMeasure;
     }
 
@@ -32,7 +32,7 @@ public class ClusterContentSimilarity {
      * @return matched clusters from set 1
      */
     public List<ISpectralCluster> identicalClusters(List<ISpectralCluster> s1, List<ISpectralCluster> s2) {
-        ClusterDistance dm = getDistanceMeasure();
+        IClusterDistance dm = getDistanceMeasure();
 
          Collections.sort(s1,QualityClusterComparator.INSTANCE); // sort by hishest quality
 

@@ -10,7 +10,7 @@ import java.util.*;
  * User: Steve
  * Date: 6/17/13
  */
-public class ConcensusSpectrumDistance implements ClusterDistance {
+public class ConcensusSpectrumDistance implements IClusterDistance {
 
     public static final int NUMBER_COMPARED_PEAKS = 32;
     public static final double MZ_EQUIVALENT_RANGE = 0.3;

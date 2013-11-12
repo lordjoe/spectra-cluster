@@ -10,7 +10,7 @@ import java.util.*;
  * User: Steve
  * Date: 6/17/13
  */
-public class ClusterContentDistance implements ClusterDistance {
+public class ClusterContentDistance implements IClusterDistance {
 
     public static final ClusterContentDistance INSTANCE = new ClusterContentDistance();
 

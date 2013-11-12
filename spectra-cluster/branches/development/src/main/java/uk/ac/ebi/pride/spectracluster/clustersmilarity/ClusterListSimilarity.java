@@ -13,13 +13,13 @@ import java.util.*;
 public class ClusterListSimilarity {
     public static final double MZ_EQUIVALENT_RANGE = 0.3;  // try comparing if this close
 
-    private final ClusterDistance distanceMeasure;
+    private final IClusterDistance distanceMeasure;
 
-    public ClusterListSimilarity(final ClusterDistance pDistanceMeasure) {
+    public ClusterListSimilarity(final IClusterDistance pDistanceMeasure) {
         distanceMeasure = pDistanceMeasure;
     }
 
-    public ClusterDistance getDistanceMeasure() {
+    public IClusterDistance getDistanceMeasure() {
         return distanceMeasure;
     }
 
@@ -29,7 +29,7 @@ public class ClusterListSimilarity {
      * @return matched clusters from set 1
      */
     public List<ISpectralCluster> identicalClusters(List<ISpectralCluster> s1, List<ISpectralCluster> s2) {
-        ClusterDistance dm = getDistanceMeasure();
+        IClusterDistance dm = getDistanceMeasure();
         List<ISpectralCluster> identical = new ArrayList<ISpectralCluster>();
         List<ISpectralCluster> matched1 = new ArrayList<ISpectralCluster>();
         List<ISpectralCluster> matched2 = new ArrayList<ISpectralCluster>();
