@@ -71,6 +71,13 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public void append(Appendable out);
 
 
+
+    /**
+     * return a set of all ids
+     * @return
+     */
+    public Set<String> getSpectralIds();
+
     /**
      * write out the data as a .cgf fragment
      *

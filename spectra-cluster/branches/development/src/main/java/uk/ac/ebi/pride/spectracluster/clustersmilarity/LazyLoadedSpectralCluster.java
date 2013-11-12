@@ -84,6 +84,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
     private final List<String> peptides = new ArrayList<String>();
+    private final Set<String> spectraIds = new HashSet<String>();
 
 
     protected void  guaranteeCachedRead()
@@ -112,6 +113,22 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     public float getPrecursorMz() {
         guaranteeCachedRead();
         return precursorMz;
+    }
+
+    /**
+     * return a set of all ids
+     *
+     * @return
+     */
+    @Override
+    public Set<String> getSpectralIds() {
+        if(this.spectraIds.isEmpty())    {
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            for (ISpectrum iSpectrum : clusteredSpectra1) {
+               spectraIds.add(iSpectrum.getId());
+            }
+        }
+         return Collections.unmodifiableSet(spectraIds);
     }
 
     public void setPrecursorMz(float precursorMz) {

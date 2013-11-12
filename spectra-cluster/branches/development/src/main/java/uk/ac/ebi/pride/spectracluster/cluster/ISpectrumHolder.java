@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
+import java.util.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder
  *  generalize the concept holding spectra - ISpectralCluster can do
