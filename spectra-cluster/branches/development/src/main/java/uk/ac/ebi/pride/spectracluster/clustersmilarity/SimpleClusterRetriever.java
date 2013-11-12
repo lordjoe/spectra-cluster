@@ -73,7 +73,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
     }
 
     @Override
-    public Collection<ISpectralCluster> retrieve(double minMz, double maxMz) {
+    public List<ISpectralCluster> retrieve(double minMz, double maxMz) {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster cluster : clusterById.values()) {
             double mz = cluster.getPrecursorMz();

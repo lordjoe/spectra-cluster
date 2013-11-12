@@ -63,7 +63,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     }
 
     @Override
-    public Collection<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum) {
+    public List<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum) {
         String id = spectrum.getId();
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster test : getClusters()) {
