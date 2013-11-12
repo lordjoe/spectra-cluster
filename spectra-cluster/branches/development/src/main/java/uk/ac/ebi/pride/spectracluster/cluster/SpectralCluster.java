@@ -505,6 +505,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
                 "charge= " + getPrecursorCharge() + "," +
                         "mz= " + String.format("%10.3f", precursorMZ).trim() + "," +
                         "count= " + clusteredSpectra.size() +
+                        "peptide= " + ClusterUtilities.mostCommonPeptides(this) +
                         ", spectrum = ";
         for (ISpectrum s : clusteredSpectra)
             text += s.getId() + ",";

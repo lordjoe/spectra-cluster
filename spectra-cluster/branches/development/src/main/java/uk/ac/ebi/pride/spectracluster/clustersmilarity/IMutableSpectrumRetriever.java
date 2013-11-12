@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
  * @author Rui Wang
  * @version $Id$
  */
-public interface ISpectrumRetriever {
+public interface IMutableSpectrumRetriever extends ISpectrumRetriever {
 
-    public IPeptideSpectrumMatch retrieve(String spectrumId);
+    public void addSpectrum(IPeptideSpectrumMatch... spectra);
 }
