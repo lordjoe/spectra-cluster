@@ -80,9 +80,13 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     }
 
     @Override
-    public Collection<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches) {
+    public List<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches) {
         ClusterQualityComparator clusterQualityComparator = new ClusterQualityComparator(cluster);
 
+        return getBestMatchesWithQuality(maxMatches, clusterQualityComparator);
+    }
+
+    private List<ISpectralCluster> getBestMatchesWithQuality(int maxMatches, ClusterQualityComparator clusterQualityComparator) {
         List<ISpectralCluster> clusters = getClusters();
         Collections.sort(clusters, clusterQualityComparator);
 
