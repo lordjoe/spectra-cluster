@@ -153,12 +153,12 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
             String keyStr = key.toString();
 
-              StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             cluster.append(sb);
             String string = sb.toString();
 
             if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
-                 writeKeyValue(keyStr, string,context);
+                writeKeyValue(keyStr, string, context);
 
             }
         }
@@ -207,11 +207,11 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
 
-            String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
-            if (params == null)
-                conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
+            Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
 
             job.setJarByClass(SameClustererMerger.class);
+
+
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 

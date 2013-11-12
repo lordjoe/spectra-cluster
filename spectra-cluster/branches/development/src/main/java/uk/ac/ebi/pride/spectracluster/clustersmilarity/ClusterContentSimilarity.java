@@ -14,8 +14,12 @@ public class ClusterContentSimilarity {
 
     private final ClusterDistance distanceMeasure;
 
+    public ClusterContentSimilarity( ClusterDistance dist) {
+        distanceMeasure = dist;
+    }
+
     public ClusterContentSimilarity( ) {
-        distanceMeasure = ClusterContentDistance.INSTANCE ;
+        this(ClusterContentDistance.INSTANCE);
     }
 
     public ClusterDistance getDistanceMeasure() {

@@ -15,6 +15,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
+import java.util.*;
 
 
 /**
@@ -87,9 +88,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
 
-            String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
-            if (params == null)
-                conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
+            Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
             job.setJarByClass(ClusterConsolidator.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
@@ -127,7 +126,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
                 Path parentPath = inputPath.getParent();
                 outPath = new Path(parentPath, "ConsolidatedClusters");
-            //    outPath = new Path(parentPath, "ConsolidatedClustersTest");
+                //    outPath = new Path(parentPath, "ConsolidatedClustersTest");
                 FileSystem fileSystem = outPath.getFileSystem(conf);
                 fileSystem.mkdirs(outPath);
                 conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());

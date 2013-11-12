@@ -13,6 +13,7 @@ import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
+import java.util.*;
 
 
 /**
@@ -56,10 +57,8 @@ public class StableClusterAccumulator extends ConfiguredJobRunner implements IJo
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
 
-            String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
-            if (params == null)
-                conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
-            job.setJarByClass(StableClusterAccumulator.class);
+            Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
+               job.setJarByClass(StableClusterAccumulator.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 
