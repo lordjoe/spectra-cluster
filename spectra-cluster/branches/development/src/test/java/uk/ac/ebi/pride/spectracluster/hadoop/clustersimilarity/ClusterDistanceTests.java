@@ -44,7 +44,7 @@ public class ClusterDistanceTests {
         ISpectralCluster me = chooseCluster(clusters,null);
         List<ClusterDistanceItem> distances =  buildDistances( me,clusters  , 6) ;
         Collections.sort(distances);
-        for (int i = 1; i < distances.size; i++) {
+        for (int i = 1; i < distances.size(); i++) {
               Assert.assertTrue(distances.get(i - 1).getDistance() < distances.get(i ).getDistance());
 
         }
