@@ -59,6 +59,16 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         return spectra.get(0);
     }
 
+    /**
+     * return a set of all ids
+     *
+     * @return
+     */
+    @Override
+    public Set<String> getSpectralIds() {
+        if (true) throw new UnsupportedOperationException("Fix This");
+        return null;
+    }
 
     @Override
     public List<ISpectrum> getHighestQualitySpectra() {

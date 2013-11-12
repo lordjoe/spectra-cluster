@@ -23,6 +23,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
+    private final Set<String> spectraIds = new HashSet<String>();
 
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
@@ -58,6 +59,24 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
     }
+
+
+    /**
+     * return a set of all ids
+     *
+     * @return
+     */
+    @Override
+    public Set<String> getSpectralIds() {
+        if(this.spectraIds.isEmpty())    {
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            for (ISpectrum iSpectrum : clusteredSpectra1) {
+               spectraIds.add(iSpectrum.getId());
+            }
+        }
+         return Collections.unmodifiableSet(spectraIds);
+    }
+
 
 
     /**

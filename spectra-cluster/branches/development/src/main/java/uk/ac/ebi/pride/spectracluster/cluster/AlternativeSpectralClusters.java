@@ -129,6 +129,16 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         // do nothing but keep code more compatable with SpectraCluster
     }
 
+    /**
+     * return a set of all ids
+     *
+     * @return
+     */
+    @Override
+    public Set<String> getSpectralIds() {
+        if (true) throw new UnsupportedOperationException("Fix This");
+        return null;
+    }
 
     /**
      * all internally spectrum

@@ -112,6 +112,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
     }
 
 
+
     @Override
     public void addSpectra(ISpectrum... merged) {
         if (merged.length < 1)
