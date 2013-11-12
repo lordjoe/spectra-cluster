@@ -278,10 +278,10 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     @Override
     protected void appendTitle(final Appendable out) throws IOException {
-        String csq = "TITLE=" + getId();
-        final String peptide1 = getPeptide();
-        if (peptide1 != null && peptide1.length() > 0)
-            csq = "TITLE==id=" + getId() + ",sequence=" + peptide1;
+        String csq = "TITLE=id=" + getId();
+        final String peptide = getPeptide();
+        if (peptide != null && peptide.length() > 0)
+            csq = "TITLE=id=" + getId() + ",sequence=" + peptide;
         out.append(csq);
     }
 

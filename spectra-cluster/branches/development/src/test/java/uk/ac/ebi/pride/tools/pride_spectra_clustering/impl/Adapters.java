@@ -56,7 +56,7 @@ public class Adapters {
         final double precursorMZ = inp.getPrecursorMZ();
         final String id = inp.getId();
         final ParamGroup additional = inp.getAdditional();
-        String peptide = null; // todo do better
+        String peptide = inp.getPeptide();
         final List<Peak> peaklist = inp.getPeaklist();
         List<IPeak> newPeaks = new ArrayList<IPeak>();
         for (Peak peak : peaklist) {
