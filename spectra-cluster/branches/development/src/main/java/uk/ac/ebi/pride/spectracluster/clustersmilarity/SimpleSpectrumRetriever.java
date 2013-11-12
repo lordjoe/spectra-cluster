@@ -22,7 +22,7 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
 
     public SimpleSpectrumRetriever(Collection<IPeptideSpectrumMatch> spectra) {
         for (IPeptideSpectrumMatch spectrum : spectra) {
-            addSpectrum(spectrum);
+            addSpectra(spectrum);
         }
     }
 
@@ -31,7 +31,7 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
     }
 
     @Override
-    public void addSpectrum(IPeptideSpectrumMatch... spectra) {
+    public void addSpectra(IPeptideSpectrumMatch... spectra) {
         for (IPeptideSpectrumMatch spectrum : spectra) {
             spectraById.put(spectrum.getId(), spectrum);
             addSpectrumByPeptide(spectrum);
