@@ -7,21 +7,97 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectralCluster implements ISpectralCluster{
+public class LazyLoadedSpectralCluster implements ISpectralCluster {
+
+    protected static class DataFromDatabase {
+        private final String id;
+        private final float precursorMz;
+        private final int precursorCharge;
+        private final String peptide;
+
+        public DataFromDatabase(String id, float precursorMz, int precursorCharge, String peptide) {
+            this.id = id;
+            this.precursorMz = precursorMz;
+            this.precursorCharge = precursorCharge;
+            this.peptide = peptide;
+        }
+
+        public DataFromDatabase(String line) {
+            String[] items = line.split("\t");
+            int index = 0;
+            this.id = items[index++];
+            this.precursorMz = Float.parseFloat(items[index++]);
+            this.precursorCharge = Integer.parseInt(items[index++]);
+            this.peptide = items[index++];
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public float getPrecursorMz() {
+            return precursorMz;
+        }
+
+        public String getPeptide() {
+            return peptide;
+        }
+
+        public int getPrecursorCharge() {
+            return precursorCharge;
+        }
+    }
+
+    private static Map<String,DataFromDatabase> cachedData = new HashMap<String, DataFromDatabase>();
+    public static void guaranteeCachedData() {
+        if(cachedData.isEmpty())
+            fillCachedData();
+    }
+
+    protected static void fillCachedData()
+    {
+        try {
+            String cachedDataFile = null;
+            LineNumberReader rdr = new LineNumberReader(new FileReader(cachedDataFile));
+            String line = rdr.readLine();
+            while(line != null)     {
+                DataFromDatabase dbx = new DataFromDatabase(line)   ;
+                cachedData.put(dbx.getId(), dbx);
+                line = rdr.readLine();
+            }
+            rdr.close();
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
     private String id;
-    private float precursorMz;
-    private int precursorCharge = 0;
+    private Float precursorMz;
+    private Integer precursorCharge = 0;
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
     private final List<String> peptides = new ArrayList<String>();
 
+
+    protected void  guaranteeCachedRead()
+    {
+         if(precursorMz == null)      {
+             guaranteeCachedData();
+             DataFromDatabase dbf = cachedData.get(getId());
+             if(dbf != null)       {
+                 setPrecursorCharge(dbf.getPrecursorCharge());
+                 setPrecursorMz(dbf.getPrecursorMz());
+                 addPeptide(dbf.getPeptide());
+             }
+         }
+    }
 
     @Override
     public String getId() {
@@ -34,6 +110,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
 
     @Override
     public float getPrecursorMz() {
+        guaranteeCachedRead();
         return precursorMz;
     }
 
@@ -43,11 +120,13 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
 
     @Override
     public int getPrecursorCharge() {
+        guaranteeCachedRead();
         return precursorCharge;
     }
 
     @Override
     public List<String> getPeptides() {
+        guaranteeCachedRead();
         return new ArrayList<String>(peptides);
     }
 
@@ -56,7 +135,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
         addPeptide(parts);
     }
 
-    public void addPeptide(String ... peptides) {
+    public void addPeptide(String... peptides) {
         this.peptides.addAll(Arrays.asList(peptides));
     }
 
@@ -209,7 +288,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster{
     @Override
     public boolean isSemiStable() {
         return ClusterUtilities.isClusterSemiStable(this);
-     }
+    }
 
 
     @Override

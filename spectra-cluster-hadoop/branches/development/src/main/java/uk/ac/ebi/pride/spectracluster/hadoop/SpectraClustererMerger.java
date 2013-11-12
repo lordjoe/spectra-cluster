@@ -13,6 +13,7 @@ import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
+import java.util.*;
 
 
 /**
@@ -56,10 +57,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             // sincs reducers are writing to hdfs we do NOT want speculative execution
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
-
-            String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
-            if (params == null)
-                conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
+            Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
             job.setJarByClass(SpectraClustererMerger.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
@@ -83,7 +81,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-            HadoopUtilities.setRecommendedMaxReducers(job,HadoopUtilities.getJobSize());
+            HadoopUtilities.setRecommendedMaxReducers(job, HadoopUtilities.getJobSize());
 
 
             if (otherArgs.length > 1) {

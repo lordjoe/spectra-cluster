@@ -4,14 +4,13 @@ import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.IProgressHandler;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.HadoopUtilities;
+import org.systemsbiology.xtandem.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -32,8 +31,8 @@ public class SpectraHadoopUtilities {
 
     public static final int MIMIMUM_CLUSTER_LENGTH = 5 * "BEGIN IONS\n".length();
 
-    public static final double NARRROW_BIN_WIDTH = 0.05; //0.005; // 0.3;
-    public static final double NARRROW_BIN_OVERLAP = 0.01; //0.002; // 0.1;
+    public static final double NARRROW_BIN_WIDTH = 0.15; //0.005; // 0.3;
+    public static final double NARRROW_BIN_OVERLAP = 0.03; //0.002; // 0.1;
 
 
     private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
@@ -81,6 +80,39 @@ public class SpectraHadoopUtilities {
         double ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
         return ret / ClusterUtilities.MZ_RESOLUTION;
     }
+
+    public static Properties readParams(Path params, Configuration conf) {
+        try {
+            FileSystem fs = FileSystem.get(conf);
+            if (fs instanceof LocalFileSystem) {
+                Path parent = new Path(System.getProperty("user.dir"));
+                params = new Path(parent, params.getName());
+            }
+            FSDataInputStream open = fs.open(params);
+            Properties prop = new Properties();
+            prop.load(open);
+            return prop;
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    public static Properties readParamsProperties(Configuration conf, String altName) {
+        Properties paramProps = new Properties();
+        String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
+        params = params.replace("\\", "/");
+        if (params == null) {
+            conf.set(XTandemHadoopUtilities.PARAMS_KEY, altName);
+        } else {
+            paramProps = SpectraHadoopUtilities.readParams(new Path(params), conf);
+            String property = paramProps.getProperty(HadoopUtilities.JOB_SIZE_PROPERTY);
+            HadoopUtilities.setProperty(HadoopUtilities.JOB_SIZE_PROPERTY, property);
+
+        }
+
+        return paramProps;
+    }
+
 
     /**
      * track how balanced is partitioning
@@ -222,17 +254,18 @@ public class SpectraHadoopUtilities {
     }
 
     public static String keyToPermanentId(String key) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        return "SP-" + key;
     }
 
 
     public static String permanentIdToKey(String key) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        return key.substring("SP-".length());
     }
 
     /**
-     *   * given a collection of copies of the same cluster make a cluster with spectra in
-          * ANY c copy
+     * * given a collection of copies of the same cluster make a cluster with spectra in
+     * ANY c copy
+     *
      * @param key
      * @param values
      * @param context
@@ -240,6 +273,7 @@ public class SpectraHadoopUtilities {
      * @throws IOException
      * @throws InterruptedException
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static ISpectralCluster mergeTheSameCluster(String key, Iterable<Text> values,
                                                        Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
@@ -272,6 +306,7 @@ public class SpectraHadoopUtilities {
     /**
      * given a collection of copies of the same cluster make a cluster with spectra in
      * common to ALL copies
+     *
      * @param key
      * @param values
      * @param context
@@ -279,6 +314,7 @@ public class SpectraHadoopUtilities {
      * @throws IOException
      * @throws InterruptedException
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static ISpectralCluster deMergeTheSameCluster(String key, Iterable<Text> values,
                                                          Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
@@ -305,20 +341,19 @@ public class SpectraHadoopUtilities {
                     spectraById.put(cs.getId(), cs);
                 }
                 pass1 = false;
-            }
-            else {
+            } else {
                 // after that remove all spectra not in common
                 Map<String, ISpectrum> localpectraById = new HashMap<String, ISpectrum>();
 
                 for (ISpectrum cs : clusteredSpectra) {
                     localpectraById.put(cs.getId(), cs);
-                 }
+                }
 
                 for (String s : spectraById.keySet()) {
-                     if(!localpectraById.containsKey(s))
-                         spectraById.remove(s);
+                    if (!localpectraById.containsKey(s))
+                        spectraById.remove(s);
                 }
-                if(spectraById.isEmpty())
+                if (spectraById.isEmpty())
                     return merged;
             }
         }

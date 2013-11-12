@@ -1,10 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.INormalizedSpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -13,11 +10,10 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectrum implements ISpectrum
-{
+public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     private final String id;
     private final ISpectrumRetriever retriever;
-    private ISpectrum internalSpectrum;
+    private IPeptideSpectrumMatch internalSpectrum;
 
     public LazyLoadedSpectrum(String id, ISpectrumRetriever retriever) {
         this.id = id;
@@ -83,19 +79,38 @@ public class LazyLoadedSpectrum implements ISpectrum
         return getInternalSpectrum().getQualityScore();
     }
 
+    /**
+     * return scored peptide - maybe null
+     */
+    @Override
+    public String getPeptide() {
+        return getInternalSpectrum().getPeptide();
+    }
+
+    /**
+     * return text in the id not peptide or id
+     */
+    @Override
+    public String getAnnotation() {
+        return getInternalSpectrum().getAnnotation();
+    }
+
     @Override
     public int[] asMajorPeakMZs() {
         return getInternalSpectrum().asMajorPeakMZs();
     }
 
-    protected ISpectrum getInternalSpectrum() {
-        if(internalSpectrum == null)
-            internalSpectrum = getRetriever().retrieve(getId());
+    protected IPeptideSpectrumMatch getInternalSpectrum() {
+        if (internalSpectrum == null) {
+            ISpectrumRetriever retriever1 = getRetriever();
+            internalSpectrum = (IPeptideSpectrumMatch) retriever1.retrieve(getId());
+        }
         return internalSpectrum;
     }
 
-    protected void setInternalSpectrum(ISpectrum internalSpectrum) {
-        this.internalSpectrum = internalSpectrum;
+    @SuppressWarnings("UnusedDeclaration")
+    protected void setInternalSpectrum(IPeptideSpectrumMatch internalSpectrumx) {
+        internalSpectrum = internalSpectrumx;
     }
 
     @Override

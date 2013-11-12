@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
+import java.util.*;
 
 
 /**
@@ -107,9 +108,8 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
 
-            String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
-            if (params == null)
-                conf.set(XTandemHadoopUtilities.PARAMS_KEY, otherArgs[0]);
+            Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
+
             job.setJarByClass(SpectraPeakClustererPass1.class);
 
             job.setInputFormatClass(MGFInputFormat.class);
@@ -131,7 +131,8 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-             HadoopUtilities.setRecommendedMaxReducers(job,HadoopUtilities.getJobSize());
+            JobSizeEnum jobSize = HadoopUtilities.getJobSize();
+            HadoopUtilities.setRecommendedMaxReducers(job, jobSize);
 
 
             if (otherArgs.length > 1) {
