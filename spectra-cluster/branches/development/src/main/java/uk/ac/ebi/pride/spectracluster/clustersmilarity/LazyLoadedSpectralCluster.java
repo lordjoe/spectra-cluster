@@ -288,6 +288,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public void addSpectra(List<ISpectrum> added) {
+        spectraIds.clear();
         clusteredSpectra.addAll(added);
     }
 
@@ -427,6 +428,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public void addSpectra(ISpectrum... merged) {
+        spectraIds.clear();
         Collections.addAll(clusteredSpectra, merged);
     }
 

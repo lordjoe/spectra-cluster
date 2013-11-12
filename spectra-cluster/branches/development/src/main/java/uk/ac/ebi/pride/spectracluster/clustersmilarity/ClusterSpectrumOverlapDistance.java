@@ -30,10 +30,10 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
         Set<String> c2SpectralIds = c2.getSpectralIds();
 
         Sets.SetView<String> intersection = Sets.intersection(c1SpectralIds, c2SpectralIds);
-        int size = intersection.size();
+        double size = intersection.size();
         HashSet<String> c1Andc2 = new HashSet<String>(c1SpectralIds);
         c1Andc2.addAll(c2SpectralIds);
 
-        return 1 - size / c1Andc2.size();
+        return 1 - (size / c1Andc2.size());
     }
 }
