@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -14,28 +16,33 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
 
     public static final int NUMBER_COMPARED_PEAKS = 32;
     public static final double MZ_EQUIVALENT_RANGE = 0.3;
-    public static final String VERSION = "1.0";
 
+    public static final String VERSION = "0.1";
+
+    public static final ConcensusSpectrumDistance INSTANCE = new ConcensusSpectrumDistance();
+
+    private ConcensusSpectrumDistance() {
+    }
 
     /**
-       * return a name which should not change
-       *
-       * @return !null name
-       */
-      @Override
-      public String getName() {
-          return getClass().getSimpleName();
-      }
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
-      /**
-       * return a version number - this may be updated over time
-       *
-       * @return !null version
-       */
-      @Override
-      public String getCurrentVersion() {
-          return VERSION;
-      }
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return VERSION;
+    }
 
 
     /**
@@ -74,34 +81,31 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
                 int shouldBe1 = (TotakPeaks - 2) - 2 * e;
 
                 // debigging code only important when they should be the same
-                if(ret != shouldBe1)
+                if (ret != shouldBe1)
                     shouldBe1 = (TotakPeaks - 2) - 2 * e; // break here
                 int shouldBe2 = (TotakPeaks - 2) - 2 * t;
-                if(ret != shouldBe2)
-                      shouldBe2 = (TotakPeaks - 2) - 2 * t; // break here
-             }
+                if (ret != shouldBe2)
+                    shouldBe2 = (TotakPeaks - 2) - 2 * t; // break here
+            }
             if (mass_difference == 0) {     // choose the last to increment
                 if (lastIsT) {
                     e++;
                     lastIsT = false;
-                }
-                else {
+                } else {
                     t++;
                     lastIsT = true;
                 }
-            }
-            else {
+            } else {
                 if (mass_difference < 0) {
                     e++;
                     lastIsT = false;
-                }
-                else {
+                } else {
                     t++;
                     lastIsT = true;
                 }
             }
         }
-        return (double)ret / (double)TotakPeaks; // hould be 0..1
+        return (double) ret / (double) TotakPeaks; // hould be 0..1
 
     }
 }
