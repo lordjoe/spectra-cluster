@@ -19,7 +19,7 @@ public class ClusterSpectrumOverlapDistanceTest {
     public void setUp() throws Exception {
         c1 = new LazyLoadedSpectralCluster();
         c2 = new LazyLoadedSpectralCluster();
-        clusterSpectrumOverlapDistance = new ClusterSpectrumOverlapDistance();
+        clusterSpectrumOverlapDistance = ClusterSpectrumOverlapDistance.INSTANCE;
     }
 
     @Test
