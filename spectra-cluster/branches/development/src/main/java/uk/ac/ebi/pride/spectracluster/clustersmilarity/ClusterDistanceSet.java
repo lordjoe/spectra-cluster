@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.google.common.collect.MinMaxPriorityQueue;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -14,21 +14,22 @@ import java.util.*;
 public class ClusterDistanceSet {
 
     public static final int MAX_PRESERVED_MATCHES = 3;
-    private final Map<ISpectralCluster, MinMaxPriorityQueue<ClusterDistanceItem>> bestMatches =
-            new HashMap<ISpectralCluster, MinMaxPriorityQueue<ClusterDistanceItem>>();
+    private final Map<ISpectralCluster, LimitedList<ClusterDistanceItem>> bestMatches =
+            new HashMap<ISpectralCluster, LimitedList<ClusterDistanceItem>>();
 
 
     public List<ClusterDistanceItem> getBestMatches(ISpectralCluster cluster) {
-        MinMaxPriorityQueue<ClusterDistanceItem> items = bestMatches.get(cluster);
+        LimitedList<ClusterDistanceItem> items = bestMatches.get(cluster);
         if (items == null)
-            return Collections.EMPTY_LIST;
+            //noinspection unchecked
+            return (List<ClusterDistanceItem>)Collections.EMPTY_LIST;
         else
-            return new ArrayList<ClusterDistanceItem>(items);
+            return items.toList();
     }
 
     public void addDistance(ClusterDistanceItem added) {
         ISpectralCluster baseCluster = added.getBaseCluster();
-        MinMaxPriorityQueue<ClusterDistanceItem> items = bestMatches.get(baseCluster);
+        LimitedList<ClusterDistanceItem> items = bestMatches.get(baseCluster);
         if (items == null) {
             items = buildQueue();
             bestMatches.put(baseCluster, items);
@@ -37,8 +38,9 @@ public class ClusterDistanceSet {
 
     }
 
-    protected MinMaxPriorityQueue<ClusterDistanceItem> buildQueue() {
-          MinMaxPriorityQueue<ClusterDistanceItem> queue = MinMaxPriorityQueue.maximumSize(MAX_PRESERVED_MATCHES).create();
+    protected LimitedList<ClusterDistanceItem> buildQueue() {
+        //noinspection UnnecessaryLocalVariable
+        LimitedList<ClusterDistanceItem> queue = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_PRESERVED_MATCHES);
         return queue;
 
     }

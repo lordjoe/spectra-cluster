@@ -101,7 +101,7 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
                 }
             }
         }
-        return ret / TotakPeaks; // hould be 0..1
+        return (double)ret / (double)TotakPeaks; // hould be 0..1
 
     }
 }
