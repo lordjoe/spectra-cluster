@@ -186,6 +186,10 @@ public class ClusteringTestUtilities {
     }
 
 
+    public static List<ISpectralCluster> readSecondSpectraClustersFromResource() {
+        return readSpectraClustersFromResource(SAMPLE_SECOND_CGF_FILE);
+    }
+
     public static List<ISpectralCluster> readSpectraClustersFromResource(String resName) {
         List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(resName);
         int index = 1000;

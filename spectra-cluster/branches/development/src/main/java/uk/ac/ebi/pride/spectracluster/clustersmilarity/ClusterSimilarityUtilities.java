@@ -130,28 +130,6 @@ public class ClusterSimilarityUtilities {
     }
 
     public static void main(String[] args) {
-//        IClusterSet originalClusterSet = buildFromClusteringFile(new File(args[0]), null);
-//
-//        int numberClusters = originalClusterSet.getClusterCount();
-//
-//        IClusterSet clusterSet = buildFromClusteringFile(new File(args[1]), null);
-//
-//        int numberClusters2 = clusterSet.getClusterCount();
-//
-//        ClusterStatistics originalClusterStatistics = new ClusterStatistics();
-//
-//        originalClusterSet.visitClusters(originalClusterStatistics);
-//
-//        System.out.println("Original");
-//        System.out.println(originalClusterStatistics.generateReport());
-//
-//        ClusterStatistics clusterStatistics = new ClusterStatistics();
-//
-//        System.out.println("New");
-//        clusterSet.visitClusters(clusterStatistics);
-//
-//        System.out.println(clusterStatistics.generateReport());
-
         SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
         buildFromMgfFile(new File(args[0]), spectrumRetriever);
         System.out.println(spectrumRetriever.getSpectra().size());
