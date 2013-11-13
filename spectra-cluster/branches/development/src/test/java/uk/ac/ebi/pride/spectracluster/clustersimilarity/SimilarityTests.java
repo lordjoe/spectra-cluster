@@ -16,10 +16,10 @@ public class SimilarityTests {
 
     public static final Random RND = new Random();
 
-    private IClusterDistance distanceMeasure = new ConcensusSpectrumDistance();
-    private IClusterDistance distanceMeasure2 = new ClusterSpectrumOverlapDistance();
-    private IClusterDistance distanceMeasure3 = new ConcensusSpectrumDistance();
-    private IClusterDistance distanceMeasure4 = new ConsensusSimilarityDistance();
+    private IClusterDistance distanceMeasure  = ConcensusSpectrumDistance.INSTANCE;
+    private IClusterDistance distanceMeasure2 = ClusterSpectrumOverlapDistance.INSTANCE;
+    private IClusterDistance distanceMeasure3 = ClusterContentDistance.INSTANCE;
+    private IClusterDistance distanceMeasure4 = ConsensusSimilarityDistance.INSTANCE;
 
     private IClusterDistance[] measures = {
             distanceMeasure, distanceMeasure2, distanceMeasure3, distanceMeasure4

@@ -14,9 +14,12 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 public class ConsensusSimilarityDistance implements IClusterDistance {
 
      public static final String VERSION = "0.1";
+    public static final ConsensusSimilarityDistance INSTANCE = new ConsensusSimilarityDistance();
 
     private final SimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
+    private ConsensusSimilarityDistance() {
+    }
 
     public double distance(ISpectralCluster c1, ISpectralCluster c2) {
         ISpectrum sp1 = c1.getConsensusSpectrum();

@@ -14,6 +14,9 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
 
     public static final String VERSION = "1.0";
 
+      public static final ClusterSpectrumOverlapDistance INSTANCE = new ClusterSpectrumOverlapDistance();
+
+
     @Override
     public String getName() {
         return getClass().getName();
