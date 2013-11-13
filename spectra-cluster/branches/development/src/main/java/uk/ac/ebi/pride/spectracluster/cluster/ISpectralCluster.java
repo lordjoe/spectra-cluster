@@ -2,7 +2,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -13,6 +15,21 @@ import java.util.*;
  * @date 10/05/13
  */
 public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
+
+    public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
+        @Override
+        public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
+            return pT.isStable();
+        }
+    };
+
+    public static final TypedPredicate<ISpectralCluster> SEMI_STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
+        @Override
+        public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
+            return pT.isSemiStable();
+        }
+    };
+
     /**
      * Get cluster id
      */
@@ -71,9 +88,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public void append(Appendable out);
 
 
-
     /**
      * return a set of all ids
+     *
      * @return
      */
     public Set<String> getSpectralIds();
@@ -115,12 +132,14 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
 
     /**
      * if true the cluster is stable and will not allow removal
+     *
      * @return
      */
     public boolean isStable();
 
     /**
      * if true the cluster is stable and will not allow removal
+     *
      * @return
      */
     public boolean isSemiStable();
