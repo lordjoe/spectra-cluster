@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -14,6 +15,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     private final String id;
     private final ISpectrumRetriever retriever;
     private IPeptideSpectrumMatch internalSpectrum;
+    private Double selfDotProduct;
 
     public LazyLoadedSpectrum(String id, ISpectrumRetriever retriever) {
         this.id = id;
@@ -37,6 +39,20 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public int getPrecursorCharge() {
         return getInternalSpectrum().getPrecursorCharge();
+    }
+
+
+    /**
+     * an optimization for computing distance based on dot product
+     *
+     * @return number > 0
+     */
+    @Override
+    public double getSelfDotProduct() {
+        if (selfDotProduct == null) {
+            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this,this);
+        }
+        return selfDotProduct;
     }
 
     @Override

@@ -57,6 +57,10 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksH
       */
      public boolean containsMajorPeak(int mz);
 
-
+    /**
+     * an optimization for computing distance based on dot product
+     * @return number > 0
+     */
+    public double getSelfDotProduct();
 
 }

@@ -188,12 +188,14 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
     protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
         int numberComparedPeaks = NUMBER_COMPARED_PEAKS;
+        float precursorMz = spectrum1.getPrecursorMz();
+        float precursor2 = spectrum2.getPrecursorMz();
         switch (version) {
             case NAT_METH_2011:
-                numberComparedPeaks = calculateK2011(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz());
+                numberComparedPeaks = calculateK2011(precursorMz, precursor2);
                 break;
             case JPR_2008:
-                numberComparedPeaks = calculateK2008(spectrum1.getPrecursorMz(), spectrum2.getPrecursorMz(), spectrum1.getPrecursorCharge(), spectrum2.getPrecursorCharge());
+                numberComparedPeaks = calculateK2008(precursorMz, precursor2, spectrum1.getPrecursorCharge(), spectrum2.getPrecursorCharge());
                 break;
         }
         return numberComparedPeaks;
