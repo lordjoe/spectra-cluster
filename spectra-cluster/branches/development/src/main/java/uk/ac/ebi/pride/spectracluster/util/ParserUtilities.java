@@ -225,6 +225,67 @@ public class ParserUtilities {
 
 
     /**
+     * read a header - should leave the reader in a form where the
+     * rest of the fine can be read
+     * @param inp
+     * @return
+     */
+    public static ClusteringHeader readClusterHeader(LineNumberReader inp) {
+        int MAX_LOOKAHEAD = 100000;
+        try {
+            String name = null;
+            String similarity_method = null;
+            String threshold = null;
+            String fdr = null;
+            String description = null;
+            inp.mark(MAX_LOOKAHEAD);
+            String line = inp.readLine();
+            while (line != null) {
+                if (line.startsWith("name")) {
+                    name = line.replace("name=", "");
+                    inp.mark(MAX_LOOKAHEAD);
+                    line = inp.readLine();
+                    continue;
+                }
+                if (line.startsWith("similarity_method")) {
+                    similarity_method = line.replace("similarity_method=", "");
+                    inp.mark(MAX_LOOKAHEAD);
+                    line = inp.readLine();
+                    continue;
+                }
+                if (line.startsWith("fdr")) {
+                    fdr = line.replace("fdr=", "");
+                    inp.mark(MAX_LOOKAHEAD);
+                    line = inp.readLine();
+                    continue;
+                }
+                if (line.startsWith("threshold")) {
+                    threshold = line.replace("threshold=", "");
+                    inp.mark(MAX_LOOKAHEAD);
+                    line = inp.readLine();
+                    continue;
+                }
+                if (line.startsWith("description")) {
+                    description = line.replace("description=", "");
+                    inp.mark(MAX_LOOKAHEAD);
+                    line = inp.readLine();
+                    continue;
+                }
+                inp.reset(); // not anything we want do go to the previous mark
+                break; // I guess we are done
+            }
+
+            ClusteringHeader ret = new ClusteringHeader(
+                    name,   similarity_method,   threshold,   fdr,   description
+            );
+            inp.reset();
+            return ret;
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
+    /**
      * Read clustering file into a set of clusters
      *
      * @param inp

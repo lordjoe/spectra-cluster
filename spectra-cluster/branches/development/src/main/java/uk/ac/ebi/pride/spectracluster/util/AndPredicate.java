@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import javax.annotation.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.AndPredicate
@@ -11,24 +12,28 @@ import javax.annotation.*;
 @SuppressWarnings("UnusedDeclaration")
 public class AndPredicate<T> implements TypedPredicate<T> {
 
-    private final TypedPredicate<T>[] m_Clauses;
+    private final Set<TypedPredicate<T>> m_Clauses = new HashSet<TypedPredicate<T>>();
 
     public AndPredicate(final TypedPredicate<T>... pClauses) {
-        m_Clauses = pClauses;
+        addPredicates(pClauses);
     }
 
-    /**
+    public void addPredicates(TypedPredicate<T> ... pClauses)   {
+        m_Clauses.addAll(Arrays.asList(pClauses));
+
+    }
+      /**
      * @param pT
      * @param otherdata - implementation specific and usually blank
      * @return what the implementation does
      */
     @Override
     public boolean apply(@Nonnull final T pT, final Object... otherdata) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < m_Clauses.length; i++) {
-            if(!m_Clauses[i].apply(pT,  otherdata))
+         for (TypedPredicate clause : m_Clauses ) {
+             //noinspection unchecked
+             if(!clause.apply(pT,  otherdata))
                 return false;
           }
-        return true;
+          return true;
     }
 }

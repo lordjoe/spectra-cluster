@@ -1,10 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.google.common.base.*;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -12,6 +13,12 @@ import java.util.*;
  * @version $Id$
  */
 public interface IClusterSet {
+
+    /**
+     * return header imformation
+     * @return
+     */
+    public @Nullable ClusteringHeader getHeader();
 
     public int getClusterCount();
 

@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -14,6 +14,7 @@ import java.util.*;
  */
 public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet {
 
+    private ClusteringHeader header;
     private PeptideUseId usage = new PeptideUseId();
     public SimpleClusterSet(Collection<ISpectralCluster> clusters) {
         super(clusters);
@@ -21,6 +22,21 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
     public SimpleClusterSet() {
         super();
+    }
+
+    /**
+     * return header imformation
+     *
+     * @return
+     */
+    @Nullable
+    @Override
+    public ClusteringHeader getHeader() {
+          return header;
+    }
+
+    public void setHeader(ClusteringHeader header) {
+        this.header = header;
     }
 
     /**

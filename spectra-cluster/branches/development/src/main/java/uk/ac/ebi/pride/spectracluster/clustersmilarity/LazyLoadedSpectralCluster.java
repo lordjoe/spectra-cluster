@@ -192,7 +192,9 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public List<ISpectrum> getClusteredSpectra() {
-        return new ArrayList<ISpectrum>(clusteredSpectra);
+        ArrayList<ISpectrum> iSpectrums = new ArrayList<ISpectrum>(clusteredSpectra);
+        Collections.sort(iSpectrums,ISpectrum.ID_COMAPRATOR); // sort by id
+        return iSpectrums;
     }
 
     @Override

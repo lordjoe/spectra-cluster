@@ -1,14 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -19,7 +16,7 @@ import java.util.*;
 public class ClusterSimilarityUtilities {
 
 
-    public static Set<String>   allSpectralIds(ISpectralCluster c1,ISpectralCluster c2)    {
+    public static Set<String> allSpectralIds(ISpectralCluster c1, ISpectralCluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
         Set<String> c2SpectralIds = c2.getSpectralIds();
 
@@ -28,7 +25,7 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static Set<String>   commonSpectralIds(ISpectralCluster c1,ISpectralCluster c2)    {
+    public static Set<String> commonSpectralIds(ISpectralCluster c1, ISpectralCluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
         Set<String> c2SpectralIds = c2.getSpectralIds();
 
@@ -37,7 +34,7 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static Set<String>   commonPeptides(ISpectralCluster c1,ISpectralCluster c2)    {
+    public static Set<String> commonPeptides(ISpectralCluster c1, ISpectralCluster c2) {
         List<String> c1SpectralIds = c1.getPeptides();
         List<String> c2SpectralIds = c2.getPeptides();
 
@@ -46,7 +43,7 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static Set<String>   allPeptides(ISpectralCluster c1,ISpectralCluster c2)    {
+    public static Set<String> allPeptides(ISpectralCluster c1, ISpectralCluster c2) {
         List<String> c1SpectralIds = c1.getPeptides();
         List<String> c2SpectralIds = c2.getPeptides();
 
@@ -55,14 +52,14 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static String idsToString(Collection<String> strings)     {
+    public static String idsToString(Collection<String> strings) {
         List<String> sorted = new ArrayList<String>(strings);
         Collections.sort(sorted);
         StringBuilder sb = new StringBuilder();
         for (String string : sorted) {
-              if(sb.length() > 0)
-                  sb.append(",");
-            sb.append(string) ;
+            if (sb.length() > 0)
+                sb.append(",");
+            sb.append(string);
         }
 
         return sb.toString();
@@ -74,13 +71,25 @@ public class ClusterSimilarityUtilities {
 
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null)
+                return null;
             for (File file1 : files) {
                 IClusterSet clusterSet = buildFromClusteringFile(file1, spectrumRetriever);
+                if (simpleClusterSet.getHeader() == null)
+                    simpleClusterSet.setHeader(clusterSet.getHeader());
+
                 simpleClusterSet.addClusters(clusterSet.getClusters());
             }
         } else if (file.getName().endsWith(".clustering")) {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+
+                ClusteringHeader header = simpleClusterSet.getHeader();
+                if (header == null) {
+                    header = ParserUtilities.readClusterHeader(lineNumberReader);
+                    simpleClusterSet.setHeader(header);
+                }
+
                 ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
                 simpleClusterSet.addClusters(Arrays.asList(clusters));
             } catch (IOException e) {
@@ -94,6 +103,8 @@ public class ClusterSimilarityUtilities {
     public static void buildFromMgfFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null)
+                return;
             for (File file1 : files) {
                 buildFromMgfFile(file1, spectrumRetriever);
             }
@@ -113,6 +124,8 @@ public class ClusterSimilarityUtilities {
     public static void buildFromTSVFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null)
+                return;
             for (File file1 : files) {
                 buildFromTSVFile(file1, spectrumRetriever);
             }
@@ -120,7 +133,7 @@ public class ClusterSimilarityUtilities {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
                 String line;
-                while((line = lineNumberReader.readLine()) != null) {
+                while ((line = lineNumberReader.readLine()) != null) {
                     IPeptideSpectrumMatch peptideSpectrumMatch = constructPeptideSpectrumMatch(line);
                     spectrumRetriever.addSpectra(peptideSpectrumMatch);
                 }
@@ -131,6 +144,53 @@ public class ClusterSimilarityUtilities {
         }
     }
 
+    /**
+     * write the stable clusters into a file
+     *
+     * @param clusters clusters to select
+     * @param outFile  output file - will be overwritten
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void saveStableClusters(IClusterSet clusters, File outFile) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(outFile));
+            //noinspection unchecked
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, ISpectralCluster.STABLE_PREDICATE);
+            //noinspection unchecked
+            clusters.visitClusters(visitor);
+            writer.close();
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+    }
+
+    /**
+     * write the stable clusters into a file
+     *
+     * @param clusters clusters to select
+     * @param outFile  output file - will be overwritten
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public static void saveSemiStableClusters(IClusterSet clusters, File outFile) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(outFile));
+            ClusteringHeader header = clusters.getHeader();
+            if (header != null) {
+                header.appendHeader(writer);
+                writer.append("\n");
+            }
+            //noinspection unchecked
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, ISpectralCluster.SEMI_STABLE_PREDICATE);
+            //noinspection unchecked
+            clusters.visitClusters(visitor);
+            writer.close();
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+    }
+
     private static IPeptideSpectrumMatch constructPeptideSpectrumMatch(String line) {
         String[] parts = line.split("\t");
         String spectrumId = parts[0];
@@ -138,6 +198,7 @@ public class ClusterSimilarityUtilities {
         float precursorMz = Float.parseFloat(parts[2]);
         String peptide = parts[3];
 
+        //noinspection unchecked
         return new PeptideSpectrumMatch(spectrumId, peptide, precursorCharge, precursorMz, Collections.EMPTY_LIST);
     }
 
@@ -147,6 +208,7 @@ public class ClusterSimilarityUtilities {
      * @param clusters !null list of clusters
      * @return !null list of clusters
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static List<ISpectralCluster> nonSingleClusters(List<ISpectralCluster> clusters) {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster cluster : clusters) {
@@ -162,6 +224,7 @@ public class ClusterSimilarityUtilities {
      * @param clusters !null list of clusters
      * @return !null list of clusters
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static List<ISpectralCluster> singleClusters(List<ISpectralCluster> clusters) {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster cluster : clusters) {
@@ -171,6 +234,7 @@ public class ClusterSimilarityUtilities {
         return holder;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static void loadSpectrumTSVFile(String[] args) {
         SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
         buildFromTSVFile(new File(args[0]), simpleSpectrumRetriever);
