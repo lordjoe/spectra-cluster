@@ -86,6 +86,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private final List<String> peptides = new ArrayList<String>();
     private final Set<String> spectraIds = new HashSet<String>();
 
+    public LazyLoadedSpectralCluster() {
+    }
 
     protected void  guaranteeCachedRead()
     {
@@ -145,6 +147,15 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     public List<String> getPeptides() {
         guaranteeCachedRead();
         return new ArrayList<String>(peptides);
+    }
+
+    @Override
+    public String getMostCommonPeptide() {
+        List<String> peptideStrings = getPeptides();
+        if (!peptideStrings.isEmpty()) {
+            return peptideStrings.get(0);
+        }
+        return null;
     }
 
     public void addPeptides(String peptides) {

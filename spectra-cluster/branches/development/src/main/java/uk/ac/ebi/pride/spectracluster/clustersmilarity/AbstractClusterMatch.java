@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.AbstractClusterMatch
  *    base class for Cluster matches concrete subclasses need to supply
- *      getQualityMeasure fpr comparison
+ *      getDistance fpr comparison
  * @author Steve Lewis
  * @date 05/11/13
  */
@@ -27,7 +27,6 @@ public abstract class AbstractClusterMatch implements IClusterMatch {
         return target;
     }
 
-
     /**
      * return some measure of the quality - base comparator use3s thia to
      * sort
@@ -36,15 +35,14 @@ public abstract class AbstractClusterMatch implements IClusterMatch {
      * @return
      */
     @Override
-    public abstract double getQualityMeasure(Object... addedData);
-
+    public abstract double getDistance();
 
     @Override
     public int compareTo(IClusterMatch o) {
         if(o == this)
             return 0;
-         double mine = getQualityMeasure();
-        double his  = o.getQualityMeasure();
+         double mine = getDistance();
+        double his  = o.getDistance();
         if(mine != his)
             return mine > his ? -1 : 1; // sort decreasing match
         // just be consistent

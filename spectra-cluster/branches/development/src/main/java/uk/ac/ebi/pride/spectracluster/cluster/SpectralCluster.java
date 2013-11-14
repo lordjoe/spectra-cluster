@@ -163,6 +163,15 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     }
 
     @Override
+    public String getMostCommonPeptide() {
+        List<String> peptideStrings = getPeptides();
+        if (!peptideStrings.isEmpty()) {
+            return peptideStrings.get(0);
+        }
+        return null;
+    }
+
+    @Override
     public List<IPeak> getPeaks() {
         return getConsensusSpectrum().getPeaks();
     }

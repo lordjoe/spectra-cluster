@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities
@@ -20,6 +17,57 @@ import java.util.List;
  * Date: 6/27/13
  */
 public class ClusterSimilarityUtilities {
+
+
+    public static Set<String>   allSpectralIds(ISpectralCluster c1,ISpectralCluster c2)    {
+        Set<String> c1SpectralIds = c1.getSpectralIds();
+        Set<String> c2SpectralIds = c2.getSpectralIds();
+
+        Set<String> all = new HashSet<String>(c1SpectralIds);
+        all.addAll(c2SpectralIds);
+        return all;
+    }
+
+    public static Set<String>   commonSpectralIds(ISpectralCluster c1,ISpectralCluster c2)    {
+        Set<String> c1SpectralIds = c1.getSpectralIds();
+        Set<String> c2SpectralIds = c2.getSpectralIds();
+
+        Set<String> all = new HashSet<String>(c1SpectralIds);
+        all.retainAll(c2SpectralIds);
+        return all;
+    }
+
+    public static Set<String>   commonPeptides(ISpectralCluster c1,ISpectralCluster c2)    {
+        List<String> c1SpectralIds = c1.getPeptides();
+        List<String> c2SpectralIds = c2.getPeptides();
+
+        Set<String> all = new HashSet<String>(c1SpectralIds);
+        all.retainAll(c2SpectralIds);
+        return all;
+    }
+
+    public static Set<String>   allPeptides(ISpectralCluster c1,ISpectralCluster c2)    {
+        List<String> c1SpectralIds = c1.getPeptides();
+        List<String> c2SpectralIds = c2.getPeptides();
+
+        Set<String> all = new HashSet<String>(c1SpectralIds);
+        all.addAll(c2SpectralIds);
+        return all;
+    }
+
+    public static String idsToString(Collection<String> strings)     {
+        List<String> sorted = new ArrayList<String>(strings);
+        Collections.sort(sorted);
+        StringBuilder sb = new StringBuilder();
+        for (String string : sorted) {
+              if(sb.length() > 0)
+                  sb.append(",");
+            sb.append(string) ;
+        }
+
+        return sb.toString();
+    }
+
 
     public static IClusterSet buildFromClusteringFile(File file, ISpectrumRetriever spectrumRetriever) {
         SimpleClusterSet simpleClusterSet = new SimpleClusterSet();

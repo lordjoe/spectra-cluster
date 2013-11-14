@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -13,6 +14,7 @@ import java.util.*;
  */
 public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet {
 
+    private PeptideUseId usage = new PeptideUseId();
     public SimpleClusterSet(Collection<ISpectralCluster> clusters) {
         super(clusters);
     }
@@ -58,8 +60,28 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     @Override
     public void addClusters(Collection<ISpectralCluster> clusters) {
         for (ISpectralCluster cluster : clusters) {
+            guaranteeClusterId(cluster);
             addCluster(cluster);
         }
+    }
+
+    protected void buildAndSetIdForClusterWithoutId(ISpectralCluster cluster) {
+        List<String> peptides = cluster.getPeptides();
+        String id ;
+        if(peptides.isEmpty())
+            id = cluster.toString();
+        else
+            id = usage.getPeptideId(peptides.get(0));
+
+        if (cluster instanceof LazyLoadedSpectralCluster) {
+            ((LazyLoadedSpectralCluster) cluster).setId(id);
+            return;
+        }
+        if (cluster instanceof SpectralCluster) {
+            ((SpectralCluster) cluster).setId(id);
+            return;
+        }
+        throw new IllegalStateException("cannot guarantee non-null id");
     }
 
     @Override

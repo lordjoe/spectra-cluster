@@ -21,7 +21,8 @@ public class MostSimilarClusterSetTest {
         SimpleClusterSet clusterSet1 = new SimpleClusterSet(spectralClusters);
         SimpleClusterSet clusterSet2 = new SimpleClusterSet(secondClusters);
 
-        MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(clusterSet1, clusterSet2, ConcensusSpectrumDistance.INSTANCE);
+        MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(clusterSet1, ConcensusSpectrumDistance.INSTANCE);
+        mostSimilarClusterSet.addOtherSet(clusterSet2);
 
         MostSimilarClusters mostSimilarClusters = mostSimilarClusterSet.getMostSimilarClusters(spectralClusters.get(0));
 

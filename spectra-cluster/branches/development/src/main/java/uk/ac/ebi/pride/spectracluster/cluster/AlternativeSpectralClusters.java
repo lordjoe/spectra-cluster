@@ -180,6 +180,11 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
     @Override
+    public String getMostCommonPeptide() {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    @Override
     public List<IPeak> getPeaks() {
         guaranteeClean();
         return getConsensusSpectrum().getPeaks();

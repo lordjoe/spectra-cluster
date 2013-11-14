@@ -45,6 +45,11 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     }
 
     @Override
+    public String getMostCommonPeptide() {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    @Override
     public ISpectrum getConsensusSpectrum() {
         return consensusSpectrum.getConsensusSpectrum();
     }

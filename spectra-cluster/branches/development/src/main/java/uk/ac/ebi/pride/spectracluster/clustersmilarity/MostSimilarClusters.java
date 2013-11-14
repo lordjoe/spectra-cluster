@@ -31,7 +31,7 @@ public class MostSimilarClusters {
     }
 
     public ISpectralCluster getBestMatchingCluster() {
-        return getBestMatch().getOtherCluster();
+        return getBestMatch().getTarget();
     }
 
     public ClusterDistanceItem getBestMatch() {

@@ -50,4 +50,17 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
     public String getCurrentVersion() {
          return VERSION;
     }
+
+    /**
+     * if distance is further than the return value we consider the distance is
+     * not worth considering
+     *
+     * @return
+     */
+    @Override
+    public double getMinimalMatchDistance() {
+        return DEFUALT_MINIMAL_DISTANCE;
+    }
+
+
 }
