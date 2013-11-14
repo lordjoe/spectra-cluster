@@ -40,12 +40,17 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         clusterById.put(cluater.getId(), cluater);
     }
 
-    public static  void guaranteeClusterId(ISpectralCluster cluster) {
+    public void guaranteeClusterId(ISpectralCluster cluster) {
         if (cluster.getId() != null) {
             return;
         }
 
+        buildAndSetIdForClusterWithoutId(cluster);
+    }
+
+    protected void buildAndSetIdForClusterWithoutId(ISpectralCluster cluster) {
         String id = cluster.toString();
+
         if (cluster instanceof LazyLoadedSpectralCluster) {
             ((LazyLoadedSpectralCluster) cluster).setId(id);
             return;

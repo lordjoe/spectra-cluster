@@ -57,6 +57,12 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public List<String> getPeptides();
 
     /**
+     * Get the single most common peptide sequence
+     * @return
+     */
+    public String getMostCommonPeptide();
+
+    /**
      * Get consensus spectrum
      */
     public ISpectrum getConsensusSpectrum();

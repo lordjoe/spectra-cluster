@@ -28,7 +28,7 @@ public class ClusterDistanceSet {
     }
 
     public void addDistance(ClusterDistanceItem added) {
-        ISpectralCluster baseCluster = added.getBaseCluster();
+        ISpectralCluster baseCluster = added.getSource();
         LimitedList<ClusterDistanceItem> items = bestMatches.get(baseCluster);
         if (items == null) {
             items = buildQueue();

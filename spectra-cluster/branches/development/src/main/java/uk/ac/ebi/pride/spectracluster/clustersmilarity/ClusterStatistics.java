@@ -23,7 +23,7 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     }
 
 
-    public void addStatisticeMethod(IClusterStatistics added)   {
+    public void addStatisticMethod(IClusterStatistics added)   {
         clusterStatisticses.add(added);
     }
 

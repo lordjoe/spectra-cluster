@@ -41,7 +41,7 @@ public class CommonSpectrumClusterMatch extends AbstractClusterMatch {
      * @return
      */
     @Override
-    public double getQualityMeasure(Object... addedData) {
+    public double getDistance() {
          return fractionInCommon();
     }
 

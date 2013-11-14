@@ -23,9 +23,8 @@ public interface IClusterMatch extends Comparable<IClusterMatch>{
     /**
      * return some measure of the quality - base comparator use3s thia to
      * sort
-     * @param addedData - usually ignored but allows some implementations to bess other data
      * @return
      */
-    public double getQualityMeasure(Object... addedData);
+    public double getDistance();
 
 }

@@ -82,4 +82,9 @@ public class ClusterContentDistance implements IClusterDistance {
         return ret;
 
     }
+
+    @Override
+    public double getMinimalMatchDistance() {
+        return DEFUALT_MINIMAL_DISTANCE;
+    }
 }

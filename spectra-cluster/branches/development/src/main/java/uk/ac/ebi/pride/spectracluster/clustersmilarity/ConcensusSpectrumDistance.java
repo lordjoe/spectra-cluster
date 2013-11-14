@@ -1,11 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ConcensusSpectrumDistance
@@ -107,5 +106,10 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
         }
         return (double) ret / (double) TotakPeaks; // hould be 0..1
 
+    }
+
+    @Override
+    public double getMinimalMatchDistance() {
+        return DEFUALT_MINIMAL_DISTANCE;
     }
 }
