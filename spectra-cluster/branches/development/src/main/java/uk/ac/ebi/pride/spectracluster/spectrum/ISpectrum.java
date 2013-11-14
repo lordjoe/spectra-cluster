@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 
 import java.math.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
@@ -14,6 +15,15 @@ import java.math.*;
  */
 public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksHolder {
 
+    /**
+     * sort spectra by ID
+     */
+    public static final Comparator<ISpectrum>   ID_COMAPRATOR = new Comparator<ISpectrum>() {
+          @Override
+        public int compare(ISpectrum o1, ISpectrum o2) {
+           return o1.getId().compareTo(o2.getId());
+        }
+    };
     /**
      * make a cluster contaiming a single spectrum - this
      *

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import javax.annotation.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.OrPredicate
@@ -11,10 +12,15 @@ import javax.annotation.*;
 @SuppressWarnings("UnusedDeclaration")
 public class OrPredicate<T> implements TypedPredicate<T> {
 
-    private final TypedPredicate<T>[] m_Clauses;
+    private final Set<TypedPredicate<T>> m_Clauses = new HashSet<TypedPredicate<T>>();
 
     public OrPredicate(final TypedPredicate<T>... pClauses) {
-        m_Clauses = pClauses;
+        addPredicates(pClauses);
+    }
+
+    public void addPredicates(TypedPredicate<T> ... pClauses)   {
+        m_Clauses.addAll(Arrays.asList(pClauses));
+
     }
 
     /**
@@ -24,9 +30,9 @@ public class OrPredicate<T> implements TypedPredicate<T> {
      */
     @Override
     public boolean apply(@Nonnull final T pT, final Object... otherdata) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < m_Clauses.length; i++) {
-            if(m_Clauses[i].apply(pT,  otherdata))
+           for (TypedPredicate clause : m_Clauses ) {
+           //noinspection unchecked
+            if(clause.apply(pT,  otherdata))
                 return true;
           }
         return false;

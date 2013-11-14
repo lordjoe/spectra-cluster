@@ -108,6 +108,8 @@ public class MostSimilarClusterSet {
         }
     }
 
+
+
     /**
      * This is an example on how to use it
      *
@@ -118,18 +120,25 @@ public class MostSimilarClusterSet {
 
         ElapsedTimer timer = new ElapsedTimer();
 
-        ClusterSimilarityUtilities.buildFromTSVFile(new File(args[0]), simpleSpectrumRetriever);
+        File tsvFile = new File(args[0]);
+        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, simpleSpectrumRetriever);
         timer.showElapsed("Read TSV");
         timer.reset(); // back to 0
 
 
-        IClusterSet originalClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(new File(args[1]), simpleSpectrumRetriever);
+        File ooriginalFile = new File(args[1]);
+        IClusterSet originalClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(ooriginalFile, simpleSpectrumRetriever);
         timer.showElapsed("Read Original Set");
         timer.reset(); // back to 0
+        if(ooriginalFile.isDirectory())
+             ClusterSimilarityUtilities.saveSemiStableClusters(originalClusterSet,new File("SemiStableOriginal.clustering"));
 
-        IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(new File(args[2]), simpleSpectrumRetriever);
+        File newFile = new File(args[2]);
+        IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(newFile, simpleSpectrumRetriever);
         timer.showElapsed("Read new set");
         timer.reset(); // back to 0
+        if(newFile.isDirectory())
+              ClusterSimilarityUtilities.saveSemiStableClusters(newClusterSet, new File("StableNew.clustering"));
 
         List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
         newClusterSet = new SimpleClusterSet(stableClusters);
