@@ -11,6 +11,6 @@ public interface IClusteringEngineFactory {
      * make a copy of the clustering engine
      * @return
      */
-    public IClusteringEngine getClusteringEngine();
+    public IClusteringEngine getClusteringEngine(Object... other);
 
 }

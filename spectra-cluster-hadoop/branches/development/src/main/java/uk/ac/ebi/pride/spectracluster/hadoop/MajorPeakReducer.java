@@ -146,7 +146,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         }
         // if not at end make a new engine
         if (pMzKey != null) {
-            engine = factory.getIncrementalClusteringEngine();
+            engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW);
             majorPeak = pMzKey.getPeakMZ();
             currentCharge = pMzKey.getCharge();
         }

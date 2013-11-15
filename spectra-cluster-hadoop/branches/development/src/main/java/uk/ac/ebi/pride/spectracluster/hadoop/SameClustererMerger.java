@@ -69,7 +69,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
         public IIncrementalClusteringEngine getEngine() {
             if (engine == null) {
-                engine = factory.getIncrementalClusteringEngine();
+                engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_SPECTRUM_MERGE_WINDOW);
             }
             return engine;
         }

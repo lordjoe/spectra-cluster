@@ -49,8 +49,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
          * @return
          */
         @Override
-        public IIncrementalClusteringEngine getIncrementalClusteringEngine() {
-            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator);
+        public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize) {
+            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator,windowSize);
         }
     }
 
@@ -64,10 +64,10 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(SimilarityChecker sck,
-                                          Comparator<ISpectralCluster> scm) {
+                                          Comparator<ISpectralCluster> scm,double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
-        defaultThreshold = Defaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW;
+        defaultThreshold = windowSize;
 
     }
 
