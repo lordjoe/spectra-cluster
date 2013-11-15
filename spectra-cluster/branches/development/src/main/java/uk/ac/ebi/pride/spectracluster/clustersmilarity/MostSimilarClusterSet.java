@@ -57,6 +57,10 @@ public class MostSimilarClusterSet {
         return baseSet;
     }
 
+    public IClusterDistance getClusterDistance() {
+        return clusterDistance;
+    }
+
     public MostSimilarClusters getMostSimilarClusters(ISpectralCluster cluster) {
         return clusterToSimilarity.get(cluster);
     }
