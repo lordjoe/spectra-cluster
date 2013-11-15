@@ -81,11 +81,19 @@ public class ClusterSimilarityChart {
 
         List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
         newClusterSet = new SimpleClusterSet(stableClusters);
+        System.out.println("=======New ste duplicates =======================================");
         newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
+
+
+        System.out.println("==============================================================");
+
 
         List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.SEMI_STABLE_PREDICATE);
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
+
+        System.out.println("==========original set duplicates ==========================");
         originalClusterSet = SimpleClusterSet.removeDuplicates(originalClusterSet);
+        System.out.println("==============================================================");
 
         MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(newClusterSet, ClusterSpectrumOverlapDistance.INSTANCE);
         mostSimilarClusterSet.addOtherSet(originalClusterSet);

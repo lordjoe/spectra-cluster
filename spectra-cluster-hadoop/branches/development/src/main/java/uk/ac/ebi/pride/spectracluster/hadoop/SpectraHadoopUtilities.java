@@ -31,31 +31,6 @@ public class SpectraHadoopUtilities {
 
     public static final int MIMIMUM_CLUSTER_LENGTH = 5 * "BEGIN IONS\n".length();
 
-    public static final double NARRROW_BIN_WIDTH = 0.15; //0.005; // 0.3;
-    public static final double NARRROW_BIN_OVERLAP = 0.03; //0.002; // 0.1;
-
-
-    private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
-            IPeak.HIGHEST_USABLE_MZ,
-            NARRROW_BIN_WIDTH,
-            IPeak.LOWEST_USABLE_MZ,
-            NARRROW_BIN_OVERLAP);
-
-
-    public static final double WIDE_BIN_WIDTH = 1.0;
-    public static final double WIDE_BIN_OVERLAP = 0.3;
-
-    @java.lang.SuppressWarnings("UnusedDeclaration")
-    private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
-            IPeak.HIGHEST_USABLE_MZ,
-            WIDE_BIN_WIDTH,
-            IPeak.LOWEST_USABLE_MZ,
-            WIDE_BIN_OVERLAP);
-
-
-    public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
-
-
     /**
      * convert am int into an mz for easy comparison
      *

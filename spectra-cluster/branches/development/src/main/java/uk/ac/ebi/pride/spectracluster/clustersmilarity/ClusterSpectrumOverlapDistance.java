@@ -39,7 +39,12 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
         HashSet<String> c1Andc2 = new HashSet<String>(c1SpectralIds);
         c1Andc2.addAll(c2SpectralIds);
 
-        return 1 - (size / c1Andc2.size());
+
+        int together = c1Andc2.size();
+        together = Math.min(c1SpectralIds.size(),c2SpectralIds.size());
+        if(together == 0)
+            return 1;
+        return 1 - (size / together);
     }
 
     @Override

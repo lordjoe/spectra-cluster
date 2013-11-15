@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import com.lordjoe.algorithms.*;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -66,7 +67,7 @@ public class KeyTests {
         if(!chargePeakKey1.equals(chargePeakKey2))
           Assert.assertEquals(chargePeakKey1,chargePeakKey2);
 
-        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
 
         List<String> holder = new ArrayList<String>();
         List<ChargePeakMZKey> keyholder = new ArrayList<ChargePeakMZKey>();

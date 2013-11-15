@@ -100,7 +100,10 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public String getPeptide() {
-        return getInternalSpectrum().getPeptide();
+        IPeptideSpectrumMatch internalSpectrum1 = getInternalSpectrum();
+        if(internalSpectrum1 == null)
+            return null;
+        return internalSpectrum1.getPeptide();
     }
 
     /**

@@ -120,7 +120,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
     }
 
     protected void incrementBinCounters(ChargeMZKey mzKey, Context context) {
-        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
         int[] bins = binner.asBins(mzKey.getPrecursorMZ());
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < bins.length; i++) {
