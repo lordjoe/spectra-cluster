@@ -90,6 +90,32 @@ public class OriginalSpectralCluster implements ISpectralCluster {
         return consensusSpectrum.getSpectraCount();
     }
 
+
+    /**
+     * make a one line report
+     * @param out
+     */
+    @Override
+    public void appendData(Appendable out) {
+        try {
+            out.append(getId());
+            out.append("\t");
+
+            String mz = String.format("%f8.2", getPrecursorMz());
+            out.append(mz);
+            out.append("\t");
+
+            out.append(Integer.toString(getPrecursorCharge()));
+            out.append("\t");
+
+
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+
+    }
+
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void append(Appendable out) {

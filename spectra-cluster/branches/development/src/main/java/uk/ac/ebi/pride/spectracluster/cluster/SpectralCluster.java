@@ -62,6 +62,31 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
 
     /**
+     * make a one line report
+     * @param out
+     */
+    @Override
+    public void appendData(Appendable out) {
+        try {
+            out.append(getId());
+            out.append("\t");
+
+            String mz = String.format("%f8.2", getPrecursorMz());
+            out.append(mz);
+            out.append("\t");
+
+            out.append(Integer.toString(getPrecursorCharge()));
+            out.append("\t");
+
+
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+
+    }
+
+    /**
      * return a set of all ids
      *
      * @return

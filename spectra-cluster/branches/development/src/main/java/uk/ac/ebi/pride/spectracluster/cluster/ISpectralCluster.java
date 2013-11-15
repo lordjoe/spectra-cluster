@@ -91,6 +91,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public int getClusteredSpectraCount();
 
 
+    public void appendData(Appendable out);
+
+
     public void append(Appendable out);
 
 

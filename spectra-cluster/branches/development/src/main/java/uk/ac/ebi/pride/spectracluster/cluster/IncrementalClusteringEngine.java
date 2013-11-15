@@ -67,7 +67,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                                           Comparator<ISpectralCluster> scm) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
-        defaultThreshold = similarityChecker.getDefaultThreshold();
+        defaultThreshold = Defaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW;
 
     }
 
