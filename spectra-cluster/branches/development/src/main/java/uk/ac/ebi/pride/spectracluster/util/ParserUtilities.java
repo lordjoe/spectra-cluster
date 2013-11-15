@@ -363,7 +363,14 @@ public class ParserUtilities {
             }
         }
 
+        if(consensusIntensityLine == null)
+            return null;
+        if(consensusIntensityLine == null)
+            return null;
+
         List<IPeak> peaks = buildPeaks(consensusMzLine, consensusIntensityLine);
+        if(peaks == null)
+            return null;
         PeptideSpectrumMatch consensusSpectrum = new PeptideSpectrumMatch(null, null, 0, cluster.getPrecursorMz(), peaks);
         cluster.setConsensusSpectrum(consensusSpectrum);
 
@@ -371,16 +378,20 @@ public class ParserUtilities {
     }
 
     protected static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
-        float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
-        float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
-        if (mzValues.length != intensityValues.length)
-            throw new IllegalArgumentException("Unequal mz and intensity lists");
-        List<IPeak> holder = new ArrayList<IPeak>();
-        for (int i = 0; i < intensityValues.length; i++) {
-            holder.add(new Peak(mzValues[i], intensityValues[i]));
+        try {
+            float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
+            float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
+            if (mzValues.length != intensityValues.length)
+                throw new IllegalArgumentException("Unequal mz and intensity lists");
+            List<IPeak> holder = new ArrayList<IPeak>();
+            for (int i = 0; i < intensityValues.length; i++) {
+                holder.add(new Peak(mzValues[i], intensityValues[i]));
+            }
+            Collections.sort(holder);  // sort peaks by mz
+            return holder;
+        } catch (RuntimeException e) {
+           return null;
         }
-        Collections.sort(holder);  // sort peaks by mz
-        return holder;
     }
 
     protected static float[] parseCommaDelimitedFloats(String commaDelimitedFloats) {

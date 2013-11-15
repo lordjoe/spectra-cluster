@@ -41,7 +41,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return ret;
     }
 
-    private  String id;
+    private String id;
     private ISpectrum consensusSpectrum;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
@@ -321,7 +321,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      */
     @Override
     public boolean isSemiStable() {
-          return true;
+        return true;
     }
 
     /**
@@ -448,6 +448,30 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
 
     }
 
+    /**
+     * make a one line report
+     * @param out
+     */
+    @Override
+    public void appendData(Appendable out) {
+        try {
+            out.append(getId());
+            out.append("\t");
+
+            String mz = String.format("%f8.2", getPrecursorMz());
+            out.append(mz);
+            out.append("\t");
+
+            out.append(Integer.toString(getPrecursorCharge()));
+            out.append("\t");
+
+
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+
+    }
 
     /**
      * write out the data as a .clustering file

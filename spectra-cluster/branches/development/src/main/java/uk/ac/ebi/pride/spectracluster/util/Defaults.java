@@ -19,8 +19,12 @@ import javax.sql.*;
  */
 public class Defaults {
 
+    // put all program constants here
+
     public static final int DEFAULT_NUMBER_RECLUSTERING_PASSES = 2;
 
+
+    public static final double DEFAULT_MAJOR_PEAK_MZ_WINDOW = 2.0; // major peak sliding window is this
 
     public static final Defaults INSTANCE = new Defaults();
 

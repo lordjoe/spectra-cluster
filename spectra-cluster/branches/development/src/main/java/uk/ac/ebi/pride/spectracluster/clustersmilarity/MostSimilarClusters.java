@@ -4,8 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.LimitedList;
 import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -18,6 +17,7 @@ public class MostSimilarClusters {
     private final ISpectralCluster baseCluster;
     private final LimitedList<ClusterDistanceItem> mostSimilarClusters;
     private final IClusterDistance clusterDistance;
+
 
 
     public MostSimilarClusters(ISpectralCluster baseCluster, IClusterDistance clusterDistance) {
@@ -42,6 +42,21 @@ public class MostSimilarClusters {
         return mostSimilarClusters.toList();
     }
 
+    public List<ClusterDistanceItem> getOtherMatches() {
+        List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
+        clusterDistanceItems.remove(getBestMatch());
+        Collections.sort(clusterDistanceItems);
+        return clusterDistanceItems;
+    }
+    public  ClusterDistanceItem  getNextBestMatches() {
+          List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
+        if(clusterDistanceItems.size() < 2)
+            return null;
+          clusterDistanceItems.remove(getBestMatch());
+          Collections.sort(clusterDistanceItems);
+          return clusterDistanceItems.get(0);
+      }
+
     public void addCluster(ISpectralCluster cluster) {
         double distance = clusterDistance.distance(baseCluster, cluster);
         mostSimilarClusters.add(new ClusterDistanceItem(baseCluster, cluster, distance));
@@ -49,6 +64,8 @@ public class MostSimilarClusters {
 
     public void addClusters(Iterable<ISpectralCluster> clusters) {
         for (ISpectralCluster cluster : clusters) {
+            if(baseCluster == cluster)
+                continue; // do not compare a cluster to itself
             addCluster(cluster);
         }
     }

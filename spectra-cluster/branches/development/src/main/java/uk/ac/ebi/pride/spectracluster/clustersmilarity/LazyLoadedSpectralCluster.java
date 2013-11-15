@@ -202,6 +202,32 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         return clusteredSpectra.size();
     }
 
+
+    /**
+     * make a one line report
+     * @param out
+     */
+    @Override
+    public void appendData(Appendable out) {
+        try {
+            out.append(getId());
+            out.append("\t");
+
+            String mz = String.format("%f8.2", getPrecursorMz());
+            out.append(mz);
+            out.append("\t");
+
+            out.append(Integer.toString(getPrecursorCharge()));
+            out.append("\t");
+
+
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+
+    }
+
     /**
      * write out the data as a CGF file
      *

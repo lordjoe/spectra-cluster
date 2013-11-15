@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -14,8 +15,95 @@ import java.util.*;
  */
 public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet {
 
+
+    /**
+     * merge similar clusters
+     *
+     * @param inp
+     * @return
+     */
+    public static IClusterSet removeDuplicates(IClusterSet inp) {
+
+        int total = 0;
+        int mergable = 0;
+        int samePeptideNonMergable = 0;
+
+        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        List<ISpectralCluster> clusters = inp.getClusters();
+        // NOTE this is a hack sine the ids are the most common peptide
+        Collections.sort(clusters, new Comparator<ISpectralCluster>() {
+            @Override
+            public int compare(ISpectralCluster o1, ISpectralCluster o2) {
+                String id1 = o1.getId();
+                String id2 = o2.getId();
+                return id1.compareTo(id2);
+            }
+        });
+        String currentPeptide = "";
+        ISpectralCluster lastCluster = null;
+        List<ISpectralCluster> toMerge = new ArrayList<ISpectralCluster>();
+
+        for (ISpectralCluster cluster : clusters) {
+            total++;
+            String id = cluster.getId();
+            String mostCommonPeptide = cluster.getMostCommonPeptide();
+            if ("HGHLGFLPR".equals(mostCommonPeptide))
+                mostCommonPeptide = cluster.getMostCommonPeptide(); // break here
+            // should only happen once
+            if (lastCluster == null) {
+                lastCluster = cluster;
+                toMerge.clear();
+                toMerge.add(cluster);
+                currentPeptide = mostCommonPeptide;
+            } else {
+                if (!currentPeptide.equals(mostCommonPeptide)) {
+                    if (toMerge.size() > 1) {
+                        StringBuilder sb = new StringBuilder();
+                        lastCluster.appendData(sb);
+                        sb.append("\n");
+                        for (ISpectralCluster sc : toMerge) {
+                            if (sc != lastCluster) {
+                                sc.appendData(sb);
+                                sb.append("\n");
+                                lastCluster.addSpectra(sc.getClusteredSpectra());
+                            }
+                        }
+                        sb.append("\n");
+                        System.out.println(sb.toString());
+                    }
+                    holder.add(lastCluster);
+                    lastCluster = cluster;
+                    toMerge.clear();
+                    toMerge.add(cluster);
+                    currentPeptide = mostCommonPeptide;
+
+                } else {
+                    // these may be the same
+                    double sim = similarityChecker.assessSimilarity(lastCluster.getConsensusSpectrum(), cluster.getConsensusSpectrum());
+                    if (sim > similarityChecker.getDefaultThreshold()) {
+                        mergable++;
+                        toMerge.add(cluster);
+                        //   lastCluster.addSpectra(cluster.getClusteredSpectra());
+                    } else {
+                        holder.add(lastCluster);
+                        samePeptideNonMergable++;
+                    }
+                }
+            }
+
+        }
+
+        System.out.println("Start Total " + total);
+        System.out.println("Mergable " + mergable);
+        System.out.println("Not Mergable " + samePeptideNonMergable);
+        System.out.println("New Total " + holder.size());
+        return new SimpleClusterSet(holder);
+    }
+
     private ClusteringHeader header;
     private PeptideUseId usage = new PeptideUseId();
+
     public SimpleClusterSet(Collection<ISpectralCluster> clusters) {
         super(clusters);
     }
@@ -32,7 +120,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     @Nullable
     @Override
     public ClusteringHeader getHeader() {
-          return header;
+        return header;
     }
 
     public void setHeader(ClusteringHeader header) {
@@ -83,8 +171,8 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
     protected void buildAndSetIdForClusterWithoutId(ISpectralCluster cluster) {
         List<String> peptides = cluster.getPeptides();
-        String id ;
-        if(peptides.isEmpty())
+        String id;
+        if (peptides.isEmpty())
             id = cluster.toString();
         else
             id = usage.getPeptideId(peptides.get(0));
