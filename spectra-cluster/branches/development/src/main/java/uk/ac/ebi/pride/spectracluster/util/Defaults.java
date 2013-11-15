@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
+import com.lordjoe.algorithms.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
@@ -7,6 +8,7 @@ import uk.ac.ebi.pride.spectracluster.datastore.*;
 import uk.ac.ebi.pride.spectracluster.normalizer.*;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.sql.*;
  import java.util.*;
@@ -27,6 +29,34 @@ public class Defaults {
     public static final double DEFAULT_MAJOR_PEAK_MZ_WINDOW = 2.0; // major peak sliding window is this
 
     public static final double DEFAULT_SPECTRUM_MERGE_WINDOW = 0.5;
+
+    /**
+     * binning sizes
+     */
+    public static final double NARRROW_BIN_WIDTH = 0.15; //0.005; // 0.3;
+    public static final double NARRROW_BIN_OVERLAP = 0.03; //0.002; // 0.1;
+    public static final double WIDE_BIN_WIDTH = 1.0;
+    public static final double WIDE_BIN_OVERLAP = 0.3;
+
+
+    private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
+            IPeak.HIGHEST_USABLE_MZ,
+            NARRROW_BIN_WIDTH,
+            IPeak.LOWEST_USABLE_MZ,
+            NARRROW_BIN_OVERLAP);
+
+
+    @java.lang.SuppressWarnings("UnusedDeclaration")
+    private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
+            IPeak.HIGHEST_USABLE_MZ,
+            WIDE_BIN_WIDTH,
+            IPeak.LOWEST_USABLE_MZ,
+            WIDE_BIN_OVERLAP);
+
+
+    public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
+
+
 
     public static final Defaults INSTANCE = new Defaults();
 

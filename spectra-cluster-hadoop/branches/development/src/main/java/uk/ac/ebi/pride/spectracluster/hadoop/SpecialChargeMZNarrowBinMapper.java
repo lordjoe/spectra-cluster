@@ -28,7 +28,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));

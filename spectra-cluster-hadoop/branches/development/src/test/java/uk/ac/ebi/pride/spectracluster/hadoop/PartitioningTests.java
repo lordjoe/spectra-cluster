@@ -5,6 +5,7 @@ import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -102,7 +103,7 @@ public class PartitioningTests {
 
 
     protected static void partitionKeys(String[] args) {
-        IWideBinner binner = SpectraHadoopUtilities.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
         File f = new File(args[0]);
         if (!f.exists() || !f.isFile())
             throw new IllegalArgumentException("File does not exits " + args[0]);

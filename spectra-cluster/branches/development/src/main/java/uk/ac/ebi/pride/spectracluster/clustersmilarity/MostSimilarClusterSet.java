@@ -238,8 +238,8 @@ public class MostSimilarClusterSet {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-        compareSameCluster(args);
-        //     compareDifferentClusters(args);
+       // compareSameCluster(args);
+         compareDifferentClusters(args);
 
     }
 
