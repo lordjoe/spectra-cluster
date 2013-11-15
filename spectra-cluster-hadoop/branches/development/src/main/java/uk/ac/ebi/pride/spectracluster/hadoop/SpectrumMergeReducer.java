@@ -192,7 +192,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
-            engine = factory.getIncrementalClusteringEngine();
+            engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_SPECTRUM_MERGE_WINDOW);
             majorMZ = pMzKey.getPrecursorMZ();
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());

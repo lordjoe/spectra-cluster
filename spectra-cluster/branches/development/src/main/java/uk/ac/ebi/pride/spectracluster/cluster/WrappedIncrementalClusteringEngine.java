@@ -37,8 +37,9 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
          * @return
          */
         @Override
-        public IClusteringEngine getClusteringEngine() {
-            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine());
+        public IClusteringEngine getClusteringEngine(Object... otherdata) {
+            double windowSize = (Double) otherdata[0];
+            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine( windowSize));
         }
     }
 

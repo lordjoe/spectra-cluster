@@ -20,7 +20,7 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     private String name;
 
 
-    public BinnedClusteringEngine(final IWideBinner pBinner, final int pMainBin) {
+    public BinnedClusteringEngine(final IWideBinner pBinner, final int pMainBin ) {
         binner = pBinner;
         mainBin = pMainBin;
         engine = Defaults.INSTANCE.getDefaultClusteringEngine();   // need a new engine every time

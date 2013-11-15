@@ -40,7 +40,7 @@ public class ClusteringEngine implements IClusteringEngine {
          * @return
          */
         @Override
-        public IClusteringEngine getClusteringEngine() {
+        public IClusteringEngine getClusteringEngine(Object... otherdata) {
             return new ClusteringEngine(similarityChecker, spectrumComparator);
         }
     }

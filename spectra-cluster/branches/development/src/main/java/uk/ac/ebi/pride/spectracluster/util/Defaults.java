@@ -26,6 +26,8 @@ public class Defaults {
 
     public static final double DEFAULT_MAJOR_PEAK_MZ_WINDOW = 2.0; // major peak sliding window is this
 
+    public static final double DEFAULT_SPECTRUM_MERGE_WINDOW = 0.5;
+
     public static final Defaults INSTANCE = new Defaults();
 
     private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;

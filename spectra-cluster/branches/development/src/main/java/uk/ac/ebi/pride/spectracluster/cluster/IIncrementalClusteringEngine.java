@@ -18,7 +18,7 @@ public interface IIncrementalClusteringEngine extends IClusteringEngine {
          * build a new version
          * @return
          */
-           public IIncrementalClusteringEngine getIncrementalClusteringEngine();
+           public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize);
     }
 
     /**
