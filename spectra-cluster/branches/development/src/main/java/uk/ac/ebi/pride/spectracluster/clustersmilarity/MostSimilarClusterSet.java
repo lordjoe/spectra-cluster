@@ -160,6 +160,12 @@ public class MostSimilarClusterSet {
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
+        System.out.println("=======New ste duplicates =======================================");
+        newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
+
+
+        System.out.println("==============================================================");
+
         List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
         newClusterSet = new SimpleClusterSet(stableClusters);
 
@@ -203,11 +209,23 @@ public class MostSimilarClusterSet {
         System.out.println("Number SemiStable Clusters " + originalClusterSet.getClusterCount());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
+        System.out.println("=======Original Set duplicates =======================================");
         originalClusterSet = SimpleClusterSet.removeDuplicates(originalClusterSet);
-        System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
+
+
+          System.out.println("==============================================================");
+
+         System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
 
         List<ISpectralCluster> stableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
         IClusterSet newClusterSet = new SimpleClusterSet(stableClusters);
+
+        System.out.println("=======New Set duplicates =======================================");
+        newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
+
+
+          System.out.println("==============================================================");
+
         System.out.println("Number Stable Clusters " + newClusterSet.getClusterCount());
 
         MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(newClusterSet, ConcensusSpectrumDistance.INSTANCE);
