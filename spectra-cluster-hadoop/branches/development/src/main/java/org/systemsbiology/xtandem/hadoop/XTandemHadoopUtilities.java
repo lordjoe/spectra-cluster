@@ -24,6 +24,7 @@ import org.systemsbiology.xtandem.reporting.*;
 import org.systemsbiology.xtandem.sax.*;
 import org.systemsbiology.xtandem.scoring.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -120,6 +121,26 @@ public class XTandemHadoopUtilities {
         // the label does not contain a decoy prefix and gets ignored
 
         return null;
+    }
+
+
+    /**
+     * add a define top a list of arguments
+     * @param key    key
+     * @param value  value
+     * @param args  old argument set
+     * @return  new argument set
+     */
+    public static @Nonnull String[] addDefine(@Nonnull String key,@Nonnull String value,@Nonnull String[] args)
+    {
+        String[] ret = new String[args.length + 2];
+        ret[0]  = "-D";
+        ret[1] = key + "=" + value;
+        for (int i = 0; i < args.length; i++) {
+             ret[i + 2] = args[i];
+
+        }
+        return ret;
     }
 
 

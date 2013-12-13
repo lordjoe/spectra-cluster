@@ -5,6 +5,7 @@ import com.lordjoe.utilities.*;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -48,6 +49,14 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     }
 
     @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        boolean offsetBins = context.getConfiguration().getBoolean("offsetBins", false);
+        if(offsetBins)
+            binner = (IWideBinner)binner.offSetHalf();
+    }
+
+    @Override
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {
 
@@ -71,6 +80,8 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         IIncrementalClusteringEngine engine = getEngine();
 
         int numberProcessed = 0;
+        int numberNoremove = 0;
+        int numberRemove = 0;
 
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
@@ -81,8 +92,20 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
             if (cluster != null) {  // todo why might this happen
                 if (engine != null) {     // todo why might this happen
+                    // look in great detail at a few cases
+                    if(isInterestingCluster(cluster)) {
+                        List<ISpectralCluster> clusters = engine.getClusters();
+                        ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
+                    }
+
+
                     final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
-                    writeClusters(context, removedClusters);
+                    if(!removedClusters.isEmpty()) {
+                        writeClusters(context, removedClusters);
+                        numberRemove++;
+                    }
+                    else
+                        numberNoremove++;
 
                 }
             }
@@ -91,6 +114,30 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
             //     System.err.println("processed " + numberProcessed);
             numberProcessed++;
         }
+    }
+
+    private static String[] DUPLICATE_IDS = {
+            "VYYFQGGNNELGTAVGK", //   606.51,606.54
+            "YEEQTTNHPVAIVGAR",   //    595.7100228.2
+            "WAGNANELNAAYAADGYAR",  // 666.67797
+            "AKQPVKDGPLSTNVEAK"
+
+    };
+
+    private static Set<String> INTERESTING_IDS = new HashSet<String>(Arrays.asList(DUPLICATE_IDS));
+
+
+    protected static boolean isInterestingCluster(ISpectralCluster test)
+    {
+        List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
+        for (ISpectrum spc : clusteredSpectra) {
+            if(spc instanceof IPeptideSpectrumMatch)  {
+                String peptide = ((IPeptideSpectrumMatch)spc).getPeptide();
+                if(peptide != null && INTERESTING_IDS.contains(peptide))
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -135,6 +182,9 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     protected void writeOneCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
+
+        if(isInterestingCluster(cluster))
+            System.out.println(cluster.toString());
 
         IWideBinner binner1 = getBinner();
         float precursorMz = cluster.getPrecursorMz();

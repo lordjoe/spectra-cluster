@@ -8,7 +8,6 @@ import org.apache.hadoop.fs.*;
 import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
-import org.systemsbiology.remotecontrol.LocalFileSystem;
 import org.systemsbiology.xml.*;
 import org.systemsbiology.xtandem.*;
 import org.systemsbiology.xtandem.peptide.*;
@@ -1949,7 +1948,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
                 main.setRemoteBaseDirectory(passedBaseDirctory);
 
             } else {
-                IFileSystem access = new LocalFileSystem(new File(main.getRemoteBaseDirectory()));
+                IFileSystem access = new LocalMachineFileSystem(new File(main.getRemoteBaseDirectory()));
                 main.setAccessor(access);
                 main.setBuildJar(false);
                 HadoopJob.setJarRequired(false);

@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
-
-import com.lordjoe.utilities.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.IncrementalClusteringEngine
@@ -50,7 +50,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
          */
         @Override
         public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize) {
-            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator,windowSize);
+            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator, windowSize);
         }
     }
 
@@ -64,7 +64,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(SimilarityChecker sck,
-                                          Comparator<ISpectralCluster> scm,double windowSize) {
+                                          Comparator<ISpectralCluster> scm, double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         defaultThreshold = windowSize;
@@ -144,7 +144,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                     noneFittingSpectra.add(spectrum.asCluster());
                 }
 
-                if(compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
+                if (compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
                     showProgress();
             }
         }
@@ -153,23 +153,22 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     /**
-      * add code to monitor progress
-      *
-      * @param handler !null monitor
-      */
-     @Override
-     public void addProgressMonitor(IProgressHandler handler) {
-         progressHandlers.add(handler);
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override
+    public void addProgressMonitor(IProgressHandler handler) {
+        progressHandlers.add(handler);
 
-     }
+    }
 
     /**
      * show some work is going on
-      */
-    protected void showProgress()
-    {
+     */
+    protected void showProgress() {
         for (IProgressHandler pm : progressHandlers) {
-               pm.incrementProgress(1);
+            pm.incrementProgress(1);
         }
     }
 
@@ -226,15 +225,18 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     protected List<ISpectralCluster> findClustersTooLow(double precursorMz) {
         double oldMZ = getCurrentMZ();
-        double lowestMZ = precursorMz - getDefaultThreshold();
+        double defaultThreshold1 = getDefaultThreshold();
+        double lowestMZ = precursorMz - defaultThreshold1;
         List<ISpectralCluster> clustersToremove = new ArrayList<ISpectralCluster>();
         List<ISpectralCluster> myClusters = internalGetClusters();
         for (ISpectralCluster test : myClusters) {
-            if (lowestMZ > test.getPrecursorMz()) {
+            float testPrecursorMz = test.getPrecursorMz();
+            if (lowestMZ > testPrecursorMz) {
                 clustersToremove.add(test);
             }
         }
-        internalGetClusters().removeAll(clustersToremove);
+        if (!clustersToremove.isEmpty())
+            internalGetClusters().removeAll(clustersToremove);   // might break hear
 
 
         setCurrentMZ(precursorMz);
@@ -250,7 +252,17 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     protected void addToClusters(final ISpectralCluster clusterToAdd) {
         List<ISpectralCluster> myClusters = internalGetClusters();
         SimilarityChecker sCheck = getSimilarityChecker();
+        List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
+        Set<String> ids = clusterToAdd.getSpectralIds();
+        int numberIds = ids.size();
 
+        ISpectrum qc = clusterToAdd.getHighestQualitySpectrum();
+        String mostCommonPeptide = "";
+        if (qc instanceof IPeptideSpectrumMatch)
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+            mostCommonPeptide = ((IPeptideSpectrumMatch) qc).getPeptide();
+
+        ISpectralCluster bestMatch = null;
         double highestSimilarityScore = 0;
         int compareCount = 0;
 
@@ -262,24 +274,55 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
             double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
-            if (similarityScore >= sCheck.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
+            if (similarityScore > highestSimilarityScore) {
                 highestSimilarityScore = similarityScore;
-                mostSimilarCluster = cluster;
+                bestMatch = cluster; //    track good but not great
+                if (similarityScore >= sCheck.getDefaultThreshold()) {
+                    mostSimilarCluster = bestMatch;
+                }
+
             }
-            if(compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
-                 showProgress();
+            if (compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
+                showProgress();
 
         }
+
 
         // add to cluster
         if (mostSimilarCluster != null) {
-            ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
-            final ISpectrum[] merged = clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra);
+            ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
+            final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
             mostSimilarCluster.addSpectra(merged);
-        } else {
-            myClusters.add(new SpectralCluster(clusterToAdd));
+            numberGoodMerge++;
+        }
+        else {
+            if (bestMatch != null && highestSimilarityScore > 0.2) {
+                Set<String> best = bestMatch.getSpectralIds();
+                Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, bestMatch);
+                int numberOverlap = spectraOverlap.size();
+                int minClusterSize = Math.min(best.size(),ids.size()) ;
+                if(numberOverlap > 0)
+                    numberOverlap++;
+
+                if (numberOverlap >= minClusterSize / 2) {
+                    ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
+                    final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
+                    mostSimilarCluster.addSpectra(merged);
+                    numberLessGoodMerge++;
+                }
+                else {
+                    myClusters.add(new SpectralCluster(clusterToAdd));
+                    numberNotMerge++;
+                }
+            }
         }
     }
+
+    private static int numberOverlap = 0;
+    private static int numberNotMerge = 0;
+    private static int numberGoodMerge = 0;
+    private static int numberLessGoodMerge = 0;
+
 
     /**
      * clusters are merged in the internal collection

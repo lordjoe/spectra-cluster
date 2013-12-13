@@ -54,7 +54,7 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public List<String> getPeptides();
+    public  @Nonnull List<String> getPeptides();
 
     /**
      * Get the single most common peptide sequence
@@ -78,12 +78,14 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     /**
      * all internally spectrum
      */
-    public List<ISpectrum> getHighestQualitySpectra();
+    public  @Nonnull List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
-    public List<ISpectrum> getClusteredSpectra();
+    public  @Nonnull List<ISpectrum> getClusteredSpectra();
+
+
 
     /**
      * count of internal spectrum
@@ -102,7 +104,7 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public Set<String> getSpectralIds();
+    public @Nonnull  Set<String> getSpectralIds();
 
     /**
      * write out the data as a .cgf fragment

@@ -9,7 +9,7 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.hadoop.HadoopUtilities;
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
@@ -81,6 +81,8 @@ public class SpectraHadoopUtilities {
         } else {
             paramProps = SpectraHadoopUtilities.readParams(new Path(params), conf);
             String property = paramProps.getProperty(HadoopUtilities.JOB_SIZE_PROPERTY);
+            if(property == null)
+                property = JobSizeEnum.Medium.toString();
             HadoopUtilities.setProperty(HadoopUtilities.JOB_SIZE_PROPERTY, property);
 
         }

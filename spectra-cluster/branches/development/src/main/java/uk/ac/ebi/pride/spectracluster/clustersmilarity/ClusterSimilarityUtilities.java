@@ -1,10 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -247,4 +248,163 @@ public class ClusterSimilarityUtilities {
         System.out.println(spectrumRetriever.getSpectra().size());
     }
 
-}
+
+
+    /**
+     *   return common spectra ids
+     * @param c1 cluster 1
+     * @param c2  cluster2
+     * @return set of common ids
+     */
+     public static @Nonnull Set<String> getSpectraOverlap(@Nonnull final ISpectralCluster c1,@Nonnull final ISpectralCluster c2) {
+         Set<String> ret = new HashSet<String>(c1.getSpectralIds());
+         ret.retainAll(c2.getSpectralIds());
+         return ret;
+     }
+    /**
+       *   return common spectra ids
+       * @param c1 cluster 1
+       * @param c2  cluster2
+       * @return set of common ids
+       */
+       public static @Nonnull Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds,@Nonnull final ISpectralCluster c2) {
+           Set<String> ret = new HashSet<String>(firstIds);
+           ret.retainAll(c2.getSpectralIds());
+           return ret;
+       }
+
+    /**
+     * why were these not clustered
+     * @param cps
+     */
+    public static void testNotClustered(  final List<ISpectralCluster> cps) {
+        int compareCount = 0;
+        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
+
+        for (int i = 0; i < cps.size() - 1; i++) {
+            ISpectralCluster cluster = cps.get(i);
+            Set<String> ids = cluster.getSpectralIds( );
+            ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+            for (int j = i + 1; j < cps.size(); j++) {
+                ISpectralCluster c2 = cps.get(j);
+
+                Set<String> overlap  = ClusterSimilarityUtilities.getSpectraOverlap(cluster, c2);
+                boolean majorOverlap = hasMajorOverlap(cluster, c2);
+                if(majorOverlap)
+                    overlap  = ClusterSimilarityUtilities.getSpectraOverlap(cluster, c2); // break here
+                Set<String> ids2 = c2.getSpectralIds( );
+                ISpectrum consensusSpectrum1 = c2.getConsensusSpectrum();
+                double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
+                boolean pass1 = similarityScore >= sCheck.getDefaultThreshold();
+                 // look at all spectra
+                for( ISpectrum sc : c2.getClusteredSpectra()) {
+                    double similarityScore1 = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
+                    boolean pass2 = similarityScore >= sCheck.getDefaultThreshold();
+                    if(ids.contains(sc.getId()))
+                        pass2 = similarityScore >= sCheck.getDefaultThreshold();
+                }
+
+             }
+
+        }
+
+//         ISpectralCluster mostSimilarCluster = null;
+//         ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+//         // find the cluster with the highest similarity score
+//         for (ISpectralCluster cluster : myClusters) {
+//
+//             String mostCommonPeptide = cluster.getMostCommonPeptide();
+//
+//             ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+//
+//             double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
+//
+//             if(mcpIn.equals(mostCommonPeptide))  {
+//                 similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1); // break here
+//             }
+//
+//             if (similarityScore >= sCheck.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
+//                 highestSimilarityScore = similarityScore;
+//                 mostSimilarCluster = cluster;
+//             }
+//
+//         }
+
+    }
+
+    /**
+     * look at cluster addition code for testing
+     * @param clusterToAdd
+     * @param myClusters
+     */
+     public static void testAddToClusters(final ISpectralCluster clusterToAdd,List<ISpectralCluster> myClusters) {
+         String mcpIn = clusterToAdd.getMostCommonPeptide();
+         Map<String, List<ISpectralCluster>> clusterPeptides = mapByMostCommonPeptide(myClusters);
+
+          for (String mostCommonPeptide : clusterPeptides.keySet()) {
+             List<ISpectralCluster> cps = clusterPeptides.get(mostCommonPeptide);
+             if(cps.size() > 1)
+                 testNotClustered(cps);
+         }
+
+         examineIndividualSpectra(clusterToAdd, myClusters, mcpIn);
+
+      }
+
+    public static void examineIndividualSpectra(final ISpectralCluster clusterToAdd, final List<ISpectralCluster> myClusters, final String pMcpIn) {
+        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
+
+        double highestSimilarityScore = 0;
+        int compareCount = 0;
+
+        ISpectralCluster mostSimilarCluster = null;
+        ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+        // find the cluster with the highest similarity score
+        for (ISpectralCluster cluster : myClusters) {
+
+            String mostCommonPeptide = cluster.getMostCommonPeptide();
+
+            ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+
+            double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
+
+            if(pMcpIn.equals(mostCommonPeptide))  {
+                similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1); // break here
+            }
+
+            if (similarityScore >= sCheck.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
+                highestSimilarityScore = similarityScore;
+                mostSimilarCluster = cluster;
+            }
+
+        }
+    }
+
+    public static Map<String, List<ISpectralCluster>> mapByMostCommonPeptide(final List<ISpectralCluster> myClusters) {
+        Map<String,List<ISpectralCluster>> clusterPeptides = new HashMap<String, List<ISpectralCluster>>();
+        for (ISpectralCluster cluster : myClusters) {
+            String mostCommonPeptide = cluster.getMostCommonPeptide();
+            List<ISpectralCluster> cps = clusterPeptides.get(mostCommonPeptide);
+            if(cps == null)  {
+                cps = new ArrayList<ISpectralCluster>();
+                clusterPeptides.put(mostCommonPeptide, cps);
+            }
+            cps.add(cluster);
+        }
+        return clusterPeptides;
+    }
+
+    /**
+      *   return common spectra ids
+      * @param c1 cluster 1
+      * @param c2  cluster2
+      * @return true if over half of the spectra in the lower cluster overlap
+      */
+     public static boolean hasMajorOverlap(@Nonnull final ISpectralCluster c1,@Nonnull final ISpectralCluster c2)  {
+         int size1 = c1.getClusteredSpectraCount();
+         int size2 = c2.getClusteredSpectraCount();
+         Set<String> spectraOverlap = getSpectraOverlap(c1, c2);
+         int testSize = Math.min(size1, size2) / 2;
+         return  spectraOverlap.size() > testSize;
+     }
+ }
