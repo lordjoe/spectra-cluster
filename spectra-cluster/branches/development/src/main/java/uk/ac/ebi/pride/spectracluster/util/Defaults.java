@@ -33,8 +33,9 @@ public class Defaults {
     /**
      * binning sizes
      */
-    public static final double NARRROW_BIN_WIDTH = 0.15; //0.005; // 0.3;
-    public static final double NARRROW_BIN_OVERLAP = 0.03; //0.002; // 0.1;
+    public static final double NARRROW_BIN_WIDTH = 0.6; // 0.15; //0.005; // 0.3;
+    public static final double NARRROW_BIN_OVERLAP = 0.15; // 0.03; //0.002; // 0.1;
+
     public static final double WIDE_BIN_WIDTH = 1.0;
     public static final double WIDE_BIN_OVERLAP = 0.3;
 

@@ -23,8 +23,9 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
     public static final Class[] JOB_CLASSES =
             {
                     SpectraPeakClustererPass1.class,
+                    SpectraClustererMergerOffset.class,
                     SpectraClustererMerger.class,
-                    ClusterConsolidator.class
+                     ClusterConsolidator.class
             } ;
 
 

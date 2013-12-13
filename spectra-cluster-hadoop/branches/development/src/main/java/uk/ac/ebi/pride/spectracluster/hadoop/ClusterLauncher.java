@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.systemsbiology.common.*;
@@ -15,8 +14,9 @@ import java.io.*;
 import java.util.*;
 import java.util.prefs.*;
 
-// add lots of constants from this class
 import static org.systemsbiology.hadoop.HadoopUtilities.*;
+
+// add lots of constants from this class
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ClusterLauncher
@@ -31,7 +31,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     // for development you can skip the first jobs ot work on issues in the second
-    private static int gDefaultStartAtJob = 0; // 0; // 1;
+    private static int gDefaultStartAtJob = 1; // 0; // 1;
 
     public static int getDefaultStartAtJob() {
         return gDefaultStartAtJob;
@@ -1078,6 +1078,15 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             gPassedBaseDirctory = baseDir;
             return;
         }
+        if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
+               int value = Integer.parseInt(pValue);
+              XTandemHadoopUtilities.setMaxReduceTasksX(value);  // todo fix
+               if(false )
+                   throw new UnsupportedOperationException("Fix This"); // ToDo
+     //            XTandemHadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
+               return;
+           }
+
         if (MAX_SPLIT_SIZE_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
             XTandemHadoopUtilities.setMaxSplitSize(value);
@@ -1305,7 +1314,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 main.setRemoteBaseDirectory(passedBaseDirctory);
 
             } else {
-                IFileSystem access = new LocalFileSystem(new File(main.getRemoteBaseDirectory()));
+                IFileSystem access = new LocalMachineFileSystem(new File(main.getRemoteBaseDirectory()));
                 main.setAccessor(access);
                 main.setBuildJar(false);
                 HadoopJob.setJarRequired(false);

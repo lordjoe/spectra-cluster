@@ -17,11 +17,11 @@ import java.util.*;
 
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.SpectraClustererMerger
+ * uk.ac.ebi.pride.spectracluster.hadoop.SpectraClustererMergerOffset
  * This uses a key based in charge,peakmz,PrecursorMZ
  * inout is MGF text
  */
-public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobRunner {
+public class SpectraClustererMergerOffset extends ConfiguredJobRunner implements IJobRunner {
 
 
 
@@ -30,10 +30,13 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
     }
 
 
-    public int runJob(Configuration conf, final String[] args) throws Exception {
+    public int runJob(Configuration conf,   String[] args) throws Exception {
         try {
             if (args.length < 2)
                 throw new IllegalStateException("needs a file name and an output directory");
+
+            args = XTandemHadoopUtilities.addDefine("offsetBins","true",args);
+
             String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
             // GenericOptionsParser stops after the first non-argument
@@ -56,7 +59,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
             Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
-            job.setJarByClass(SpectraClustererMerger.class);
+            job.setJarByClass(SpectraClustererMergerOffset.class);
 
             job.setInputFormatClass(SequenceFileInputFormat.class);
 
@@ -153,6 +156,6 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             usage();
             return;
         }
-        ToolRunner.run(new SpectraClustererMerger(), args);
+        ToolRunner.run(new SpectraClustererMergerOffset(), args);
     }
 }

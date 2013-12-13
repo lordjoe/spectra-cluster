@@ -29,6 +29,10 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
         IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
 
+        boolean offsetBins = context.getConfiguration().getBoolean("offsetBins", false);
+        if (offsetBins)
+            binner = (IWideBinner) binner.offSetHalf();
+
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
         ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);

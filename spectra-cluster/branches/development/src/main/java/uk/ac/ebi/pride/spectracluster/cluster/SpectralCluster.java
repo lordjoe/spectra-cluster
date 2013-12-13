@@ -304,13 +304,16 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     @Override
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
-
-            for (ISpectrum spectrumToMerge : merged) {
+            boolean spectrumAdded = false;
+             for (ISpectrum spectrumToMerge : merged) {
+                 spectraIds.add(spectrumToMerge.getId());
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
+                    spectrumAdded = true;
                     clusteredSpectra.add(spectrumToMerge);
                 }
             }
-            notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
+            if(spectrumAdded)
+                notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
         }
     }
 
@@ -352,6 +355,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
 
         if (removed != null && removed.length > 0) {
             for (ISpectrum spectrumToMerge : removed) {
+                spectraIds.add(spectrumToMerge.getId());
                 clusteredSpectra.remove(spectrumToMerge);
             }
 
@@ -605,6 +609,8 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
 
     }
+
+
 
 
 }

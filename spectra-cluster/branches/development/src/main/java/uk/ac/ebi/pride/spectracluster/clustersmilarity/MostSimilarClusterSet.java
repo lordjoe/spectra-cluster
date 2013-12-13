@@ -197,9 +197,9 @@ public class MostSimilarClusterSet {
         timer.showElapsed("Read TSV");
         timer.reset(); // back to 0
 
-        File ooriginalFile = new File(args[1]);
+        File originalFile = new File(args[1]);
 
-        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, ooriginalFile, "SemiStableNew.clustering");
+        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile, "SemiStableNew.clustering");
         timer.showElapsed("Read   set");
         timer.reset(); // back to 0
 
@@ -213,7 +213,7 @@ public class MostSimilarClusterSet {
         originalClusterSet = SimpleClusterSet.removeDuplicates(originalClusterSet);
 
 
-          System.out.println("==============================================================");
+        System.out.println("==============================================================");
 
          System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
 
@@ -256,8 +256,8 @@ public class MostSimilarClusterSet {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-       // compareSameCluster(args);
-         compareDifferentClusters(args);
+        compareSameCluster(args);
+      //   compareDifferentClusters(args);
 
     }
 

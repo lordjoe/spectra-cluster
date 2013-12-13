@@ -20,6 +20,7 @@ public class NextGenClusterLauncherJobBuilder extends AbstractClusterLauncherJob
     public static final Class[] JOB_CLASSES =
             {
                     SpectraPeakClustererPass1.class,
+                    SpectraClustererMergerOffset.class,
                     SpectraClustererMerger.class,
                     StableClusterAccumulator.class, // now add to stable clusters
                     SpectraClustererMerger.class,
