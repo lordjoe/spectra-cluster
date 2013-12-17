@@ -251,10 +251,13 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     protected void addToClusters(final ISpectralCluster clusterToAdd) {
         List<ISpectralCluster> myClusters = internalGetClusters();
+        if (myClusters.isEmpty()) {   // no checks just add
+            myClusters.add(new SpectralCluster(clusterToAdd));
+            numberNotMerge++;
+            return;
+        }
         SimilarityChecker sCheck = getSimilarityChecker();
         List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
-        Set<String> ids = clusterToAdd.getSpectralIds();
-        int numberIds = ids.size();
 
         ISpectrum qc = clusterToAdd.getHighestQualitySpectrum();
         String mostCommonPeptide = "";
@@ -288,40 +291,89 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
 
-        // add to cluster
+         // add to cluster
         if (mostSimilarCluster != null) {
             ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
             final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
             mostSimilarCluster.addSpectra(merged);
             numberGoodMerge++;
+            return;
         }
-        else {
-            if (bestMatch != null && highestSimilarityScore > 0.2) {
-                Set<String> best = bestMatch.getSpectralIds();
-                Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, bestMatch);
-                int numberOverlap = spectraOverlap.size();
-                int minClusterSize = Math.min(best.size(),ids.size()) ;
-                if(numberOverlap > 0)
-                    numberOverlap++;
 
-                if (numberOverlap >= minClusterSize / 2) {
-                    ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
-                    final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
-                    mostSimilarCluster.addSpectra(merged);
-                    numberLessGoodMerge++;
-                }
-                else {
-                    myClusters.add(new SpectralCluster(clusterToAdd));
-                    numberNotMerge++;
-                }
-            }
+        // maybe a lot of overlap here
+        if (bestMatch != null && highestSimilarityScore > 0.2) {
+            if (handlePotentialOverlap(clusterToAdd, bestMatch))
+                return;
         }
+        myClusters.add(new SpectralCluster(clusterToAdd));
+        numberNotMerge++;
     }
 
-    private static int numberOverlap = 0;
-    private static int numberNotMerge = 0;
-    private static int numberGoodMerge = 0;
-    private static int numberLessGoodMerge = 0;
+    /**
+     * if there are overlapping spectra among the current cluster and the best match
+     * then  firure out what is best
+     *
+     * @param cluster1
+     * @param cluster2
+     * @return
+     */
+    protected boolean handlePotentialOverlap(final ISpectralCluster cluster1, final ISpectralCluster cluster2) {
+        Set<String> ids = cluster1.getSpectralIds();
+         int numberIds = ids.size();
+        Set<String> best = cluster2.getSpectralIds();
+        Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, cluster2);
+        int numberOverlap = spectraOverlap.size();
+        if (numberOverlap == 0)
+            return false; // no overlap
+        int minClusterSize = Math.min(best.size(), ids.size());
+
+        if (numberOverlap >= minClusterSize / 2) {  // enough overlap then merge
+            List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
+            ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
+            final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
+            cluster2.addSpectra(merged);
+            numberLessGoodMerge++;
+            return true;
+        }
+        return assignOverlapsToBestCluster(cluster1, cluster2,spectraOverlap );
+
+
+    }
+
+    /**
+     * this assigns
+     * @param cluster1
+     * @param cluster2
+       * @return
+     */
+    protected boolean assignOverlapsToBestCluster(final ISpectralCluster cluster1, final ISpectralCluster cluster2 , Set<String> spectraOverlap) {
+        List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
+        // I am not sure here but I think we let duplicates move to the best cluster
+        SimilarityChecker sCheck = getSimilarityChecker();
+        ISpectrum cs1  = cluster1.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+        ISpectrum cs2  = cluster2.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+        for (ISpectrum spc : clusteredSpectra1) {
+            if(!spectraOverlap.contains(spc.getId()))
+                continue; // not an overlapping spectrum
+            // choose the better cluster
+            double ss1 = sCheck.assessSimilarity(cs1, spc);
+            double ss2 = sCheck.assessSimilarity(cs2, spc);
+            if(ss1 > ss2)
+                cluster1.removeSpectra(spc);
+            else
+                cluster2.removeSpectra(spc);
+            numberReAsssigned++;
+       }
+
+        return false;
+    }
+
+
+    public static int numberOverlap = 0;
+    public static int numberNotMerge = 0;
+    public static int numberGoodMerge = 0;
+    public static int numberLessGoodMerge = 0;
+    public static int numberReAsssigned = 0;
 
 
     /**
