@@ -259,6 +259,25 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         //    writeParseParameters(context);
         updateEngine(context, null); // write any left over clusters
         super.cleanup(context);
+        int value;
+
+        value = IncrementalClusteringEngine.numberOverlap;
+        System.err.println("numberOverlap " + value);
+
+        value = IncrementalClusteringEngine.numberNotMerge;
+        System.err.println("numberNotMerge " + value);
+
+        value = IncrementalClusteringEngine.numberLessGoodMerge;
+        System.err.println("numberLessGoodMerge " + value);
+
+        value = IncrementalClusteringEngine.numberGoodMerge;
+        System.err.println("numberGoodMerge " + value);
+
+        value = IncrementalClusteringEngine.numberGoodMerge;
+        System.err.println("numberGoodMerge " + value);
+
+        value = IncrementalClusteringEngine.numberReAsssigned;
+        System.err.println("numberReAsssigned " + value);
 
     }
 
