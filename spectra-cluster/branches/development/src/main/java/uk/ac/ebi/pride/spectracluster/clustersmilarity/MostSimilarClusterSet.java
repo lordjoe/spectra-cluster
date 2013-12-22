@@ -161,7 +161,7 @@ public class MostSimilarClusterSet {
         timer.reset(); // back to 0
 
         System.out.println("=======New ste duplicates =======================================");
-        newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
+      //  newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
 
 
         System.out.println("==============================================================");
@@ -256,8 +256,8 @@ public class MostSimilarClusterSet {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-        compareSameCluster(args);
-      //   compareDifferentClusters(args);
+      //  compareSameCluster(args);
+          compareDifferentClusters(args);
 
     }
 

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.util.TypedVisitor;
+import com.lordjoe.utilities.TypedVisitor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

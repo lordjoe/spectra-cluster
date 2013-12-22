@@ -161,4 +161,25 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     public boolean containsMajorPeak(int mz) {
         return getInternalSpectrum().containsMajorPeak(mz);
     }
+
+    /**
+     * write as MGF
+     *
+     * @param out
+     */
+    @Override
+    public void appendMSF(final Appendable out) {
+        throw new UnsupportedOperationException("Fix This");
+    }
+
+    /**
+     * write as MGF
+     *
+     * @param out
+     */
+    @Override
+    public void appendSPText(final Appendable out) {
+        throw new UnsupportedOperationException("Fix This");
+
+    }
 }
