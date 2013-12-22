@@ -301,15 +301,17 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
         // maybe a lot of overlap here
-        if (bestMatch != null && highestSimilarityScore > 0.2) {
-            if (handlePotentialOverlap(clusterToAdd, bestMatch))
+        if (bestMatch != null  ) {
+            if (handlePotentialOverlap(clusterToAdd, bestMatch,highestSimilarityScore))
                 return;
         }
         myClusters.add(new SpectralCluster(clusterToAdd));
         numberNotMerge++;
     }
 
-    /**
+    public static final double MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP = 0.2;
+    public static final double BONUS_PER_OVERLAP = 0.05;
+       /**
      * if there are overlapping spectra among the current cluster and the best match
      * then  firure out what is best
      *
@@ -317,7 +319,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
-    protected boolean handlePotentialOverlap(final ISpectralCluster cluster1, final ISpectralCluster cluster2) {
+    protected boolean handlePotentialOverlap(final ISpectralCluster cluster1, final ISpectralCluster cluster2,double highestSimilarityScore) {
+        if(highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
+            return false;     // we did nothing
         Set<String> ids = cluster1.getSpectralIds();
          int numberIds = ids.size();
         Set<String> best = cluster2.getSpectralIds();
@@ -327,17 +331,32 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return false; // no overlap
         int minClusterSize = Math.min(best.size(), ids.size());
 
+        // of a lot of overlap then force a merge
         if (numberOverlap >= minClusterSize / 2) {  // enough overlap then merge
-            List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
-            ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
-            final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
-            cluster2.addSpectra(merged);
-            numberLessGoodMerge++;
+            mergeIntoCluster(cluster1, cluster2);
             return true;
         }
+        // allow a bonus for overlap
+        SimilarityChecker sCheck = getSimilarityChecker();
+        if(highestSimilarityScore + BONUS_PER_OVERLAP > sCheck.getDefaultThreshold()) {
+            mergeIntoCluster(cluster1, cluster2);
+            return true;
+
+        }
+
+
+        // force overlappping spectra into the best cluster
         return assignOverlapsToBestCluster(cluster1, cluster2,spectraOverlap );
 
 
+    }
+
+    protected void mergeIntoCluster(final ISpectralCluster mergeFrom, final ISpectralCluster mergeInto) {
+        List<ISpectrum> clusteredSpectra1 = mergeFrom.getClusteredSpectra();
+        ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
+        final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
+        mergeInto.addSpectra(merged);
+        numberLessGoodMerge++;
     }
 
     /**

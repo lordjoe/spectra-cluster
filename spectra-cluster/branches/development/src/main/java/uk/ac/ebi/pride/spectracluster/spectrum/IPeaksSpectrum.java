@@ -36,6 +36,18 @@ public interface IPeaksSpectrum extends  Equivalent<ISpectrum>,IPeaksHolder, Com
     public void appendMGF(Appendable out);
 
     /**
+     * write as MGF
+     * @param out
+     */
+    public void appendMSF(Appendable out);
+
+    /**
+     * write as MGF
+     * @param out
+     */
+    public void appendSPText(Appendable out);
+
+    /**
      * return the sum of all intensities
      */
     public double getTotalIntensity();

@@ -188,13 +188,94 @@ public class PeaksSpectrum implements IPeaksSpectrum {
                 out.append("+");
             out.append("\n");
 
+            appendPeaks(out);
+
+              out.append("END IONS");
+            out.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    /**
+     * write as MSF
+     *
+     * @param out
+     */
+    @Override
+    public void appendMSF(final Appendable out) {
+        try {
+            appendMSFStart(out);
+            appendMSFComment(out);
+            appendMSFPeaks(out);
+            out.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    protected void appendMSFComment(final Appendable pOut) {
+        throw new UnsupportedOperationException("overtide This");
+    }
+
+    protected void appendMSFPeaks(final Appendable out) {
+        try {
+            out.append("Num peaks: " + internalGetPeaks().size() + "\n");
+            appendPeaks(out);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    protected void appendSPTextPeaks(final Appendable out) {
+        try {
+            out.append("NumPeaks: " + internalGetPeaks().size() + "\n");
+            appendPeaks(out);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    protected void appendPeaks(final Appendable out) {
+        try {
             for (IPeak peak : internalGetPeaks()) {
-                String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
-                        String.format("%10.3f", peak.getIntensity()).trim();
-                out.append(line);
-                out.append("\n");
-            }
-            out.append("END IONS");
+                   String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
+                           String.format("%10.3f", peak.getIntensity()).trim();
+                   out.append(line);
+                   out.append("\n");
+               }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    protected void appendMSFStart(final Appendable out) {
+          throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    /**
+     * write as SPText
+     *
+     * @param out
+     */
+    @Override
+    public void appendSPText(final Appendable out) {
+        try {
+            appendMSFStart(out);
+            appendMSFComment(out);
+            appendSPTextPeaks(out);
             out.append("\n");
         }
         catch (IOException e) {
@@ -247,7 +328,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
     /**
      * like equals but weaker - says other is equivalent to this
      *
-     * @param o poiibly null other object
+     * @param o possbly null other object
      * @return true if other is "similar enough to this"
      */
     public boolean equivalent(ISpectrum o) {
@@ -281,7 +362,7 @@ public class PeaksSpectrum implements IPeaksSpectrum {
                 return false;
         }
 
-        return true;
+      return true;
     }
 
     @Override

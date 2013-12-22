@@ -11,7 +11,7 @@ import java.util.*;
  * PeptideSepctrumMatch represents a peptide and a spectrum match
  * <p/>  This class is effectively immutable - some measures are computed lazily but
  * it cannot be manipulated from the outside
-  *
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -20,6 +20,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     private final String peptide;
     private final String annotation;
+    private final Map<String, String> properties = new HashMap<String, String>();
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
     private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
@@ -27,6 +28,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     private BigInteger majorBits;
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
     private Double selfDotProduct;
+
     /**
      * simple copy constructor
      *
@@ -41,7 +43,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         else {
             peptide = null;
             annotation = null;
-         }
+        }
     }
 
     /**
@@ -53,22 +55,23 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         super(spectrum, inpeaks);
         if (spectrum instanceof IPeptideSpectrumMatch) {
-             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-             annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-         }
-         else {
-             peptide = null;
-             annotation = null;
-          }
-         makeAdvancedCalculations();
+            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
+        }
+        else {
+            peptide = null;
+            annotation = null;
+        }
+        makeAdvancedCalculations();
     }
+
 
     public PeptideSpectrumMatch(String id,
                                 String peptide,
                                 int precursorCharge,
                                 float precursorMz,
                                 List<IPeak> peaks) {
-        this(id,peptide, precursorCharge, precursorMz, peaks,null);
+        this(id, peptide, precursorCharge, precursorMz, peaks, null);
 
     }
 
@@ -86,6 +89,20 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         makeAdvancedCalculations();
 
     }
+
+    public String getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public void setProperty(String name, String value) {
+        properties.put(name, value);
+    }
+
+
+    public Map<String, String> getProperties() {
+        return new HashMap<String, String>(properties);
+    }
+
 
     /**
      * an optimization to return a Biginteger representing bits at the mz values where the
@@ -119,6 +136,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
      * @return
      */
     @Override
@@ -139,19 +157,19 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         Arrays.sort(peaks);
         int[] ret = new int[peaks.length];
         for (int i = 0; i < ret.length; i++) {
-             ret[i] = peaks[i];
+            ret[i] = peaks[i];
 
         }
         return ret;
     }
 
     protected void guaranteeMajorPeaks() {
-        if(majorPeakMZ.isEmpty()) {
-             IPeaksSpectrum peaks = asMajorPeaks();
-            for(IPeak peak : peaks.getPeaks())  {
-                majorPeakMZ.add(  (int)peak.getMz());
+        if (majorPeakMZ.isEmpty()) {
+            IPeaksSpectrum peaks = asMajorPeaks();
+            for (IPeak peak : peaks.getPeaks()) {
+                majorPeakMZ.add((int) peak.getMz());
             }
-          }
+        }
     }
 
     /**
@@ -213,7 +231,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     @Override
     public double getSelfDotProduct() {
         if (selfDotProduct == null) {
-            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this,this);
+            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this, this);
         }
         return selfDotProduct;
     }
@@ -299,4 +317,102 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
 
+    @Override
+    protected void appendMSFStart(final Appendable out) {
+        String peptide = getPeptide();
+        try {
+            out.append(ParserUtilities.NAME_START + " " + peptide + "/" + getPrecursorCharge());
+            out.append("\n");
+            String id = getId();
+            if (id != null) {
+                out.append(ParserUtilities.LIBID_START + " " + getId());
+                out.append("\n");
+
+            }
+            //        out.append(ParserUtilities.MW_START + String.format("%10.3f", getPrecursorMz() * getPrecursorCharge()).trim());
+            //        out.append("\n");
+            out.append(ParserUtilities.PRECURSORMZ_START + " " + String.format("%10.3f", getPrecursorMz()).trim());
+            out.append("\n");
+
+            String prop = getProperty("Status");
+            if (prop != null) {
+                out.append(ParserUtilities.STATUS_START + prop);
+                out.append("\n");
+            }
+            prop = getProperty("molecularWeight");
+            if (prop != null) {
+                out.append(ParserUtilities.MW_START + prop);
+                out.append("\n");
+            }
+            prop = getProperty("FullName");
+            if (prop != null) {
+                out.append(ParserUtilities.FULL_NAME_START + prop);
+                out.append("\n");
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    @Override
+    protected void appendMSFComment(final Appendable pOut) {
+        List<String> strings = new ArrayList<String>(properties.keySet());
+        Collections.sort(strings);
+        boolean first = true;
+        try {
+            pOut.append(ParserUtilities.COMMENT_START + " ");
+            for (String string : strings) {
+                if (!first) {
+                    pOut.append(" ");
+                    first = false;
+                }
+                else {
+                    first = false;
+                }
+                pOut.append(string);
+                pOut.append("=");
+                String value = properties.get(string);
+                if(value.contains(" "))    {
+                    value = "\"" + value + "\"";
+                }
+                pOut.append(value);
+            }
+            pOut.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    /**
+     * like equals but weaker - says other is equivalent to this
+     *
+     * @param o possibly null other object
+     * @return true if other is "similar enough to this"
+     */
+    @Override
+    public boolean equivalent(final ISpectrum o) {
+        if (!super.equivalent(o))
+            return false;
+        if (o instanceof PeptideSpectrumMatch) {
+            PeptideSpectrumMatch realO = (PeptideSpectrumMatch) o;
+
+            if (!getPeptide().equals(realO.getPeptide()))
+                return false;
+
+
+            for (String key : properties.keySet()) {
+                String me = getProperty(key);
+                String them = realO.getProperty(key);
+                if (!me.equals(them))
+                    return false;
+            }
+
+        }
+
+        return true;
+    }
 }

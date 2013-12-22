@@ -27,7 +27,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
     public static final double DEFAULT_MZ_RANGE = 0.5;
 
-    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.7;
+    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
 
     public static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
 
