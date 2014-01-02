@@ -1,17 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.hbase;
 
 
-import java.io.IOException;
-import java.util.*;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.*;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.MasterNotRunningException;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 public class SimpleHBaseExample {
 
@@ -27,6 +18,7 @@ public class SimpleHBaseExample {
         try {
                HTable table = HBaseUtilities.getTable("t1");
 
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             String s = Bytes.toString(table.getTableName());
 
             table.close();
