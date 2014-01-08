@@ -31,7 +31,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     // for development you can skip the first jobs ot work on issues in the second
-    private static int gDefaultStartAtJob = 1; // 0; // 1;
+    private static int gDefaultStartAtJob = 0; // 0; // 1;
 
     public static int getDefaultStartAtJob() {
         return gDefaultStartAtJob;
@@ -50,13 +50,24 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     public static final String CLUSTER_VERSION = "1.0.0";
 
-    public static final String INPUT_PATH_PROPERTY = "input_path";
-    public static final String START_AT_JOB_PROPERTY = "start-at-job";
+     public static final String INPUT_PATH_PROPERTY = "input_path";
+     public static final String START_AT_JOB_PROPERTY = "start-at-job";
     public static final String DATA_ON_PATH_PROPERTY = "data_on_cluster";
     public static final String DO_NOT_COPY_FILES_PROPERTY = "org.systemsbiology.xtandem.DoNotCopyFilesToLocalMachine";
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
 
     public static final int MAX_DISPLAY_LENGTH = 4 * 1000 * 1000;
+
+    private static boolean directoryInputHandled;
+
+    public static boolean isDirectoryInputHandled() {
+        return directoryInputHandled;
+    }
+
+    public static void setDirectoryInputHandled(boolean directoryInputHandled) {
+        ClusterLauncher.directoryInputHandled = directoryInputHandled;
+    }
+
     @SuppressWarnings("PointlessArithmeticExpression")
     //  public static final int NUMBER_STAGES = TOTAL_STAGES - START_AT_JOB;
 
@@ -217,8 +228,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         m_InputFiles = inputFiles;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public boolean isDataOnCluster() {
+     public boolean isDataOnCluster() {
         SpectraHadoopMain application = getApplication();
         return application.getBooleanParameter(DATA_ON_PATH_PROPERTY, false);
     }
@@ -382,6 +392,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public String getSpectrumPath() {
         return getTandemParameter(INPUT_PATH_PROPERTY);
     }
+
+
 
 
     public String getRemoteBaseDirectory() {
@@ -583,8 +595,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     protected void buildInputFilesString(final String inputFileName) {
         File input = new File(inputFileName);
-        if (input.exists()) {
-            if (input.isFile()) {
+        if (input.exists() ) {
+            if (input.isFile() || isDirectoryInputHandled()) {
                 setInputFiles(input.getName());
                 return;
             }
@@ -645,6 +657,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         File spectrumFile = new File(spectrumPath);
         // maybe we need to copy to the remote system or maybe it iw already there
         if (spectrumFile.exists()) {
+            if(isDataOnCluster())
+                return; // already there
             if (spectrumFile.isDirectory()) {
                 File[] files = spectrumFile.listFiles();
                 if (files == null)
@@ -653,7 +667,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 //noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < files.length; i++) {
                     File file = files[i];
-                    guaranteeRemoteFilePath(file, pRbase + "/" + spectrumFile.getName());
+                       guaranteeRemoteFilePath(file, pRbase + "/" + spectrumFile.getName());
                 }
             } else {
                 guaranteeRemoteFilePath(spectrumFile, pRbase);
@@ -692,7 +706,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         String remotepath = pRemotePath + "/" + XMLUtilities.asLocalFile(pFile1.getAbsolutePath());
         // if it is small then always make a copy
-        if (length < SMALL_FILE_LENGTH) {
+        if (length < SMALL_FILE_LENGTH && length > 0) {
             accessor.deleteFile(remotepath);
             XMLUtilities.outputLine("Writing to remote " + pFile1 + " " + pFile1.length() / 1000 + "kb");
             accessor.guaranteeFile(remotepath, pFile1);

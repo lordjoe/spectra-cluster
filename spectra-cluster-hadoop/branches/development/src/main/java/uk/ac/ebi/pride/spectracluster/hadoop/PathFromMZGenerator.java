@@ -9,7 +9,7 @@ import javax.annotation.*;
 import java.io.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.CGFPathFromMZGenerator
+ * uk.ac.ebi.pride.spectracluster.hadoop.PathFromMZGenerator
  * User: Steve
  * Date: 9/25/13
  */
@@ -18,6 +18,8 @@ public class PathFromMZGenerator implements PathFromObjectGenerator<MZKey> {
     public static final PathFromMZGenerator BIG_CGF_INSTANCE = new PathFromMZGenerator("BigClusterBin", "cgf");
     public static final PathFromMZGenerator CLUSTERING_INSTANCE = new PathFromMZGenerator("ClusteringBin", "clustering");
     public static final PathFromMZGenerator BIG_CLUSTERING_INSTANCE = new PathFromMZGenerator("BigClusteringBin", "clustering");
+    public static final PathFromMZGenerator SPTEXT_CLUSTERING_INSTANCE = new PathFromMZGenerator("SPLib", "sptxt");
+    public static final PathFromMZGenerator MSP_CLUSTERING_INSTANCE = new PathFromMZGenerator("SPLib", "msp");
 
     private final String extension;
     private final String baseName;

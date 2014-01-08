@@ -23,7 +23,7 @@ public class MajorPeakPartitioner  extends Partitioner<Text, Text> {
             return 0;
 
         ChargePeakMZKey realKey = new ChargePeakMZKey(key);
-
+        // the partition hash uses only the first two elements charge and peak
         int hash = realKey.getPartitionHash();
         return hash % numberReducers;
      }
