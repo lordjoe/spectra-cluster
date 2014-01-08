@@ -40,6 +40,7 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         String keyStr = key.toString();
         ChargePeakMZKey mzKey = new ChargePeakMZKey(keyStr);
 
+        // if we are in a different bin - different charge or peak
         if (mzKey.getCharge() != getCurrentCharge() || mzKey.getPeakMZ() != getMajorPeak()) {
             updateEngine(context, mzKey);
         }

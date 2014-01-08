@@ -75,6 +75,11 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         return basePath;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    public int getNumberWritten() {
+        return numberWritten;
+    }
+
     protected void buildWritersForKey(final Context context) {
         MZKey key = getCurrentKey();
         if (key == null)
@@ -100,6 +105,16 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         // only big .cluster
         appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
+
+             // full .cluster
+        appender = SPTextClusterAppender.INSTANCE;
+        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.SPTEXT_CLUSTERING_INSTANCE));
+
+        // only big .cluster
+        appender = MSFClusterAppender.INSTANCE;
+        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.MSP_CLUSTERING_INSTANCE));
 
     }
 

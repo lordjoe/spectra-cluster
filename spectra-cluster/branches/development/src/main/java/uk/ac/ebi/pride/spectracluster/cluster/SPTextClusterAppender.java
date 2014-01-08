@@ -6,10 +6,10 @@ package uk.ac.ebi.pride.spectracluster.cluster;
  * Date: 9/25/13
  */
 
-public class CGFClusterAppender implements IClusterAppender {
+public class SPTextClusterAppender implements IClusterAppender {
 
-    public static final CGFClusterAppender INSTANCE = new CGFClusterAppender();
-    private CGFClusterAppender() {
+    public static final SPTextClusterAppender INSTANCE = new SPTextClusterAppender();
+    private SPTextClusterAppender() {
     }
 
     /**
@@ -20,7 +20,7 @@ public class CGFClusterAppender implements IClusterAppender {
      */
     @Override
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.append(out);
+        data.getConsensusSpectrum().appendSPText(out);
         return true;
     }
 

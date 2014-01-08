@@ -616,7 +616,7 @@ public class JXTandemLauncher implements IStreamOpener { //extends AbstractParam
         int ret = 0;
         for (int i = 0; i < files.length; i++) {
             File file1 = files[i];
-            if (file1.isFile()) {
+            if (file1.isFile() ) {
                 String path = remotepath + "/" + file1.getName();
                 XMLUtilities.outputLine("Writing to remote " + file1 + " " + file1.length() / 1000 + "kb");
                 accessor.writeToFileSystem(path, file1);

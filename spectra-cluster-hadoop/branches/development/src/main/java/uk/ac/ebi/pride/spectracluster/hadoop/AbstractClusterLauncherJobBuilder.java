@@ -11,7 +11,7 @@ import java.util.*;
  * @author Steve Lewis
  * @date 29/10/13
  */
-public abstract class AbstractClusterLauncherJobBuilder implements IJobBuilder {
+public  class AbstractClusterLauncherJobBuilder implements IJobBuilder {
 
 
 
