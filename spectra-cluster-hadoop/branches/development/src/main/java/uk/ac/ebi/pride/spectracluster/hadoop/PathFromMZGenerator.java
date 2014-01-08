@@ -19,7 +19,7 @@ public class PathFromMZGenerator implements PathFromObjectGenerator<MZKey> {
     public static final PathFromMZGenerator CLUSTERING_INSTANCE = new PathFromMZGenerator("ClusteringBin", "clustering");
     public static final PathFromMZGenerator BIG_CLUSTERING_INSTANCE = new PathFromMZGenerator("BigClusteringBin", "clustering");
     public static final PathFromMZGenerator SPTEXT_CLUSTERING_INSTANCE = new PathFromMZGenerator("SPLib", "sptxt");
-    public static final PathFromMZGenerator MSP_CLUSTERING_INSTANCE = new PathFromMZGenerator("SPLib", "msp");
+    public static final PathFromMZGenerator MSP_CLUSTERING_INSTANCE = new PathFromMZGenerator("MSPLib", "msp");
 
     private final String extension;
     private final String baseName;
