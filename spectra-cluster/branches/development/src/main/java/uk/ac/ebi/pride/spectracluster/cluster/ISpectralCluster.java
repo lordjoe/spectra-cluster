@@ -63,6 +63,14 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public String getMostCommonPeptide();
 
     /**
+     * get peptides with statistics
+     * @return list ordered bu purity
+     */
+    public @Nonnull List<ClusterPeptideFraction> getPeptidePurity();
+
+
+
+    /**
      * Get consensus spectrum
      */
     public ISpectrum getConsensusSpectrum();

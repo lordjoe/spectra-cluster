@@ -22,4 +22,10 @@ public interface IPeptideSpectrumMatch extends ISpectrum {
       */
      public String getAnnotation();
 
+    /**
+     * write basic data as TSV
+     * @param out
+     */
+    public void appendTSV(Appendable out);
+
 }
