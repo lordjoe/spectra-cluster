@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -48,6 +49,17 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     public String getMostCommonPeptide() {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
+
+    /**
+     * get peptides with statistics
+     *
+     * @return list ordered bu purity
+     */
+    @Nonnull
+    @Override
+    public List<ClusterPeptideFraction> getPeptidePurity() {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+     }
 
     @Override
     public ISpectrum getConsensusSpectrum() {

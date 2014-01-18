@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -24,6 +25,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     private final SpectralQualityHolder qualityHolder;
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private final Set<String> spectraIds = new HashSet<String>();
+    private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
 
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
@@ -195,6 +197,35 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         }
         return null;
     }
+
+
+
+
+    /**
+     * get peptides with statistics
+     * @return list ordered bu purity
+     */
+    public @Nonnull
+    List<ClusterPeptideFraction> getPeptidePurity() {
+        buildPeptidePurities();
+       return byPurity;
+
+    }
+
+
+    private void buildPeptidePurities() {
+        if(byPurity.size() > 0)
+            return;
+        byPurity.clear();
+        double numberSpectra = getClusteredSpectraCount();
+        CountedString[] items = CountedString.getCountedStrings(getPeptides());
+        for (int i = 0; i < items.length; i++) {
+            CountedString item = items[i];
+            byPurity.add(new ClusterPeptideFraction(item.getValue(),item.getCount() / numberSpectra));
+        }
+     }
+
+
 
     @Override
     public List<IPeak> getPeaks() {

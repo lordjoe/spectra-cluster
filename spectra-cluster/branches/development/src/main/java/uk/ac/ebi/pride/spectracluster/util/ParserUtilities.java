@@ -346,6 +346,11 @@ public class ParserUtilities {
         String consensusMzLine = null;
         String consensusIntensityLine = null;
         for (String clusterLine : clusterLines) {
+            if(clusterLine.length() == 0)
+                break;
+            if (clusterLine.startsWith("name=")) {
+                break; // start of a new file
+            }
             if (clusterLine.startsWith(AVERAGE_PRECURSOR_MZ)) {
                 float precursorMz = Float.parseFloat(clusterLine.replace(AVERAGE_PRECURSOR_MZ, ""));
                 cluster.setPrecursorMz(precursorMz);

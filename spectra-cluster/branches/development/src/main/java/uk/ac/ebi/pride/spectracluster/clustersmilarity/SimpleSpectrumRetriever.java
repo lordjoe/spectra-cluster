@@ -66,4 +66,10 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
 
         return holder;
     }
+
+
+    public int getSpectraCount()
+    {
+        return spectraById.size();
+    }
 }

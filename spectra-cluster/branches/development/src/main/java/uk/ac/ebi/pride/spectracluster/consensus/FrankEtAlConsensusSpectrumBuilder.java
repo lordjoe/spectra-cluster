@@ -323,7 +323,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
 //        int currentCount = 0;
 //        for (int i = 0; i < consensusSpectrum.size(); i++) {
 //            IPeak testPeak = consensusSpectrum.get(i);
-//            final int count = testPeak.getCount();
+//            final int count = testPeak.getValue();
 //            if (currentCount == 0) {
 //                currentCount = count;
 //                sumMz = testPeak.getMz() * count;

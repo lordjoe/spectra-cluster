@@ -388,6 +388,31 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
     /**
+     * write basic data as TSV
+     *
+     * @param out
+     */
+    @Override
+    public void appendTSV(final Appendable out) {
+        try {
+            out.append(getId());
+            out.append("\t");
+            out.append(Integer.toString(getPrecursorCharge()));
+            out.append("\t");
+            String mzString = String.format("%10.2f",getPrecursorMz()).trim();
+            out.append(mzString);
+            out.append("\t");
+            out.append(getPeptide());
+            out.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+      }
+
+    /**
      * like equals but weaker - says other is equivalent to this
      *
      * @param o possibly null other object

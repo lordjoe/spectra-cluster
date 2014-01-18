@@ -1,12 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.utilities.ElapsedTimer;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import com.lordjoe.utilities.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -133,12 +131,14 @@ public class MostSimilarClusterSet {
                 appendable.append("Number Medium " + numberMedium + "\n");
                 appendable.append("Number Bad " + numberBad + "\n");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     protected static void compareDifferentClusters(String[] args) throws IOException {
+
 
         SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
 
@@ -149,19 +149,29 @@ public class MostSimilarClusterSet {
         timer.showElapsed("Read TSV");
         timer.reset(); // back to 0
 
-        File ooriginalFile = new File(args[1]);
+        File originalFile = new File(args[1]);
 
-        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, ooriginalFile, "SemiStableOriginal.clustering");
+        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile, "SemiStableOriginal.clustering");
         timer.showElapsed("Read Original set");
         timer.reset(); // back to 0
+
+        ClusterStatistics stat = new  ClusterStatistics(simpleSpectrumRetriever,originalClusterSet,new FractionInClustersOfSizeStatistics(simpleSpectrumRetriever)) ;
+        stat.gatherData();
+        String report = stat.generateReport();
+        System.out.println(report);
 
         File newFile = new File(args[2]);
         IClusterSet newClusterSet = readClusterSet(simpleSpectrumRetriever, newFile, "StableNew.clustering");
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
+         stat = new  ClusterStatistics(simpleSpectrumRetriever,newClusterSet,new FractionInClustersOfSizeStatistics(simpleSpectrumRetriever)) ;
+         stat.gatherData();
+          report = stat.generateReport();
+         System.out.println(report);
+
         System.out.println("=======New ste duplicates =======================================");
-      //  newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
+        //  newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
 
 
         System.out.println("==============================================================");
@@ -186,20 +196,53 @@ public class MostSimilarClusterSet {
     }
 
 
+    public static final double[] REPORT_FRACTIONS = {1.0, 0.98, 0.9, 0.8, 0.0};
+
+
+    /**
+     * report number clusters with 100,98,95,80 pct one peptide
+     * @param clusters
+     * @param out
+     */
+    public static void makePurityReport(List<ISpectralCluster> clusters, Appendable out) {
+        List<ClusterPeptidePurity> purities = ClusterPeptidePurity.getPurities(clusters);
+        double total = purities.size();
+        int nextIndex = 0;
+        int count = 0;
+        try {
+            out.append("size " + purities.size() + "\n");
+            for (ClusterPeptidePurity purity : purities) {
+                double fractionMostCommon = purity.getFractionMostCommon();
+                if (fractionMostCommon < REPORT_FRACTIONS[nextIndex]) {
+                    double pct = count * 100.0 / total;
+                    out.append(String.format("%4.2f", REPORT_FRACTIONS[nextIndex]).trim() + " " + String.format("%6.1f", pct).trim() + "\n");
+                    nextIndex++;
+                }
+                count++;
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+
     protected static void compareSameCluster(String[] args) throws IOException {
 
-        SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
+        SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
 
         ElapsedTimer timer = new ElapsedTimer();
 
         File tsvFile = new File(args[0]);
-        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, simpleSpectrumRetriever);
+        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, spectra);
         timer.showElapsed("Read TSV");
         timer.reset(); // back to 0
 
         File originalFile = new File(args[1]);
 
-        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile, "SemiStableNew.clustering");
+        IClusterSet originalClusterSet = readClusterSet(spectra, originalFile, "SemiStableNew.clustering");
         timer.showElapsed("Read   set");
         timer.reset(); // back to 0
 
@@ -212,19 +255,27 @@ public class MostSimilarClusterSet {
         System.out.println("=======Original Set duplicates =======================================");
         originalClusterSet = SimpleClusterSet.removeDuplicates(originalClusterSet);
 
+        System.out.println("=======Semi Stable =======================================");
+        makePurityReport(semiStableClusters, System.out);
+
 
         System.out.println("==============================================================");
 
-         System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
+        System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
 
         List<ISpectralCluster> stableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
         IClusterSet newClusterSet = new SimpleClusterSet(stableClusters);
+
+
+        System.out.println("=======  Stable =======================================");
+        makePurityReport(stableClusters, System.out);
+
 
         System.out.println("=======New Set duplicates =======================================");
         newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
 
 
-          System.out.println("==============================================================");
+        System.out.println("==============================================================");
 
         System.out.println("Number Stable Clusters " + newClusterSet.getClusterCount());
 
@@ -242,7 +293,7 @@ public class MostSimilarClusterSet {
     }
 
 
-    private static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile, String saveName) {
+    public static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile, String saveName) {
         IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(newFile, simpleSpectrumRetriever);
         if (newFile.isDirectory())
             ClusterSimilarityUtilities.saveSemiStableClusters(newClusterSet, new File(saveName));
@@ -250,6 +301,31 @@ public class MostSimilarClusterSet {
     }
 
 
+    public static void mergeClustersing(File directory,Appendable out)
+    {
+        File[] files = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                String name = pathname.getName();
+                if(!name.endsWith(".clustering"))
+                    return false;
+                if(name.startsWith("Big"))
+                    return false;
+                return true;
+            }
+        });
+        for (File file : files) {
+            FileUtilities.appendToAppendable(file,out);
+        }
+    }
+
+
+    public static void mergeClustering(final String[] args) throws IOException {
+        File directory = new File(args[0]);
+        PrintWriter out = new PrintWriter(new FileWriter(args[1])) ;
+        mergeClustersing( directory,out) ;
+        out.close();
+    }
     /**
      * This is an example on how to use it
      *
@@ -257,9 +333,11 @@ public class MostSimilarClusterSet {
      */
     public static void main(String[] args) throws IOException {
       //  compareSameCluster(args);
-          compareDifferentClusters(args);
+      //  mergeClustering(args);
+         compareDifferentClusters(args);
 
     }
+
 
 
 }

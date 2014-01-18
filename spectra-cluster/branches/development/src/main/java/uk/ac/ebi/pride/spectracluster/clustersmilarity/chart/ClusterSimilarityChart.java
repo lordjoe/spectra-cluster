@@ -53,6 +53,20 @@ public class ClusterSimilarityChart {
     }
 
 
+    public static void makeDecoyChart(ClusterComparisonMain cc)
+    {
+        ClusterSimilarityChart clusterSimilarityChart = null; // new ClusterSimilarityChart(mostSimilarClusterSet);
+        JPanel charts = clusterSimilarityChart.generateChart();
+
+
+          JFrame frame = new JFrame("Cluster similarity charts");
+          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          frame.getContentPane().add(charts, BorderLayout.CENTER);
+          frame.pack();
+          frame.setVisible(true);
+
+    }
+
     /**
      * This is an example on how to use it
      *
@@ -68,9 +82,9 @@ public class ClusterSimilarityChart {
         timer.showElapsed("Read TSV");
         timer.reset(); // back to 0
 
-        File ooriginalFile = new File(args[1]);
+        File originalFile = new File(args[1]);
 
-        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, ooriginalFile, "SemiStableOriginal.clustering");
+        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile, "SemiStableOriginal.clustering");
         timer.showElapsed("Read Original set");
         timer.reset(); // back to 0
 

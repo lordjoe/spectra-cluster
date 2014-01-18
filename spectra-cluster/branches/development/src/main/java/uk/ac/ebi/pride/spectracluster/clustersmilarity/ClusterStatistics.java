@@ -13,15 +13,39 @@ import java.util.List;
  */
 public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     private final List<IClusterStatistics> clusterStatisticses = new ArrayList<IClusterStatistics>();
+    private final IClusterSet clusters;
+    private final ISpectrumRetriever spectra;
 
-    public ClusterStatistics() {
+
+    public ClusterStatistics( ISpectrumRetriever spectra,IClusterSet clusters,IClusterStatistics... other) {
+        this.clusters = clusters;
+        this.spectra = spectra;
+
         clusterStatisticses.add(new NumberOfClusters());
         clusterStatisticses.add(new NumberOfStableClusters());
         clusterStatisticses.add(new NumberOfSemiStableClusters());
         clusterStatisticses.add(new PeptideToClustersStatistics());
         clusterStatisticses.add(new SpectrumToClustersStatistics());
+
+        for (IClusterStatistics o : other) {
+            addStatisticMethod(o);
+          }
+     }
+
+    public void gatherData() {
+        List<ISpectralCluster> clusters1 = clusters.getClusters();
+        for (ISpectralCluster sc     : clusters1) {
+            visit(sc) ;
+        }
     }
 
+    public IClusterSet getClusters() {
+        return clusters;
+    }
+
+    public ISpectrumRetriever getSpectra() {
+        return spectra;
+    }
 
     public void addStatisticMethod(IClusterStatistics added)   {
         clusterStatisticses.add(added);

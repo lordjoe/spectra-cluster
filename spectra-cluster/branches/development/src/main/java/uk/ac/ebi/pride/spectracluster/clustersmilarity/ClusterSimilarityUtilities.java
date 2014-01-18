@@ -16,6 +16,8 @@ import java.util.*;
  */
 public class ClusterSimilarityUtilities {
 
+    public static final Random RND = new Random();
+
 
     public static Set<String> allSpectralIds(ISpectralCluster c1, ISpectralCluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
@@ -122,6 +124,36 @@ public class ClusterSimilarityUtilities {
         }
     }
 
+
+    /**
+     * build a retriever saving only essentials
+     * @param file
+     * @param spectrumRetriever
+     */
+    public static void buildLazyLoadedFromMgfFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files == null)
+                return;
+            for (File file1 : files) {
+                buildLazyLoadedFromMgfFile(file1, spectrumRetriever);
+            }
+        } else if (file.getName().endsWith(".mgf")) {
+            try {
+                System.out.println(file.getName());
+                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+                IPeptideSpectrumMatch[] spectra = ParserUtilities.readMGFScans(lineNumberReader);
+                for (IPeptideSpectrumMatch pm : spectra) {
+                    SimplifiedSpectrum ll = new SimplifiedSpectrum(pm) ;
+                    spectrumRetriever.addSpectra(ll);
+                }
+                lineNumberReader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public static void buildFromTSVFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -132,12 +164,14 @@ public class ClusterSimilarityUtilities {
             }
         } else if (file.getName().endsWith(".tsv")) {
             try {
+
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
                 String line;
                 while ((line = lineNumberReader.readLine()) != null) {
                     IPeptideSpectrumMatch peptideSpectrumMatch = constructPeptideSpectrumMatch(line);
                     spectrumRetriever.addSpectra(peptideSpectrumMatch);
-                }
+                 }
+
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -242,11 +276,6 @@ public class ClusterSimilarityUtilities {
         System.out.println(simpleSpectrumRetriever.getSpectra().size());
     }
 
-    public static void main(String[] args) {
-        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
-        buildFromMgfFile(new File(args[0]), spectrumRetriever);
-        System.out.println(spectrumRetriever.getSpectra().size());
-    }
 
 
 
@@ -407,4 +436,55 @@ public class ClusterSimilarityUtilities {
          int testSize = Math.min(size1, size2) / 2;
          return  spectraOverlap.size() > testSize;
      }
- }
+
+    /**
+     * compare two spectral retrievers for equality
+     * @param r1
+     * @param r2
+     * @return  true if the same
+     */
+    public static boolean compareSpectralRetrievers(@Nonnull SimpleSpectrumRetriever r1,@Nonnull SimpleSpectrumRetriever r2) {
+        List<IPeptideSpectrumMatch> spectra = r1.getSpectra();
+        for (IPeptideSpectrumMatch ps : spectra) {
+            IPeptideSpectrumMatch p2 = r2.retrieve(ps.getId());
+            if(p2 == null)
+                return false;
+            if(p2.getPrecursorCharge() != ps.getPrecursorCharge())
+                return false;
+            if(Math.abs(p2.getPrecursorMz()-  ps.getPrecursorMz()) > 0.1)
+                return false;
+            if(! p2.getPeptide().equals(ps.getPeptide()) )
+                return false;
+
+        }
+        return true;
+    }
+
+
+    public static void buildTSV(final String pArg) throws IOException {
+        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
+        buildLazyLoadedFromMgfFile(new File(pArg), spectrumRetriever);
+
+        File outTSV = new File("FromMGF.tsv");
+        PrintWriter out = new PrintWriter(new FileWriter(outTSV));
+
+        List<IPeptideSpectrumMatch> spectra = spectrumRetriever.getSpectra();
+        for (IPeptideSpectrumMatch pm : spectra) {
+           pm.appendTSV(out);
+        }
+
+//        SimpleSpectrumRetriever r2 = new SimpleSpectrumRetriever();
+//        buildFromTSVFile(new File(args[1]), r2);
+//
+//        boolean same = compareSpectralRetrievers(spectrumRetriever,r2) ;
+
+        System.out.println(spectrumRetriever.getSpectra().size());
+    }
+
+
+    public static void main(String[] args) throws Exception {
+ //       buildTSV(args[0]);
+     }
+
+
+}

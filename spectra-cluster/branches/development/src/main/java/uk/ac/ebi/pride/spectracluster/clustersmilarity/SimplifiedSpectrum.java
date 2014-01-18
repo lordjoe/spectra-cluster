@@ -1,31 +1,31 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.math.BigInteger;
-import java.util.List;
+import java.math.*;
+import java.util.*;
 
 /**
+ * A simple spectrum used when creating TSV files - this allows many spectra to be in memory without
+ * growing it alot
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
+public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     private final String id;
-    private final ISpectrumRetriever retriever;
-    private IPeptideSpectrumMatch internalSpectrum;
-    private Double selfDotProduct;
+    private final String peptide;
+    private final int precursorCharge;
+    private final float precursorMz;
 
-    public LazyLoadedSpectrum(String id, ISpectrumRetriever retriever) {
-        this.id = id;
-        this.retriever = retriever;
-    }
+    public SimplifiedSpectrum(IPeptideSpectrumMatch copy) {
+        id = copy.getId();
+        peptide = copy.getPeptide();
+        precursorCharge = copy.getPrecursorCharge();
+        precursorMz = copy.getPrecursorMz();
+     }
 
-    public ISpectrumRetriever getRetriever() {
-        return retriever;
-    }
 
     @Override
     public String getId() {
@@ -34,14 +34,19 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public float getPrecursorMz() {
-        return getInternalSpectrum().getPrecursorMz();
+        return precursorMz;
     }
 
     @Override
     public int getPrecursorCharge() {
-        return getInternalSpectrum().getPrecursorCharge();
+        return precursorCharge;
     }
 
+
+    @Override
+    public void appendMGF(Appendable out) {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
 
     /**
      * an optimization for computing distance based on dot product
@@ -50,61 +55,50 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public double getSelfDotProduct() {
-        if (selfDotProduct == null) {
-            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this,this);
-        }
-        return selfDotProduct;
-    }
-
-    @Override
-    public void appendMGF(Appendable out) {
-        getInternalSpectrum().appendMGF(out);
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
     public double getTotalIntensity() {
-        return getInternalSpectrum().getTotalIntensity();
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
     public double getSumSquareIntensity() {
-        return getInternalSpectrum().getSumSquareIntensity();
-    }
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+     }
 
     @Override
     public boolean equivalent(ISpectrum other) {
-        return getInternalSpectrum().equivalent(other);
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
     public List<IPeak> getPeaks() {
-        return getInternalSpectrum().getPeaks();
-    }
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+     }
 
     @Override
     public int getPeaksCount() {
-        return getInternalSpectrum().getPeaksCount();
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
     public int compareTo(ISpectrum o) {
-        return getInternalSpectrum().compareTo(o);
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     @Override
     public double getQualityScore() {
-        return getInternalSpectrum().getQualityScore();
-    }
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+      }
 
     /**
      * return scored peptide - maybe null
      */
     @Override
     public String getPeptide() {
-        IPeptideSpectrumMatch internalSpectrum1 = getInternalSpectrum();
-        if(internalSpectrum1 == null)
-            return null;
-        return internalSpectrum1.getPeptide();
+          return peptide;
     }
 
     /**
@@ -112,55 +106,44 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public String getAnnotation() {
-        return getInternalSpectrum().getAnnotation();
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public int[] asMajorPeakMZs() {
-        return getInternalSpectrum().asMajorPeakMZs();
+        throw new UnsupportedOperationException("Fix This");
     }
 
-    protected IPeptideSpectrumMatch getInternalSpectrum() {
-        if (internalSpectrum == null) {
-            ISpectrumRetriever retriever1 = getRetriever();
-            internalSpectrum = (IPeptideSpectrumMatch) retriever1.retrieve(getId());
-        }
-        return internalSpectrum;
-    }
 
-    @SuppressWarnings("UnusedDeclaration")
-    protected void setInternalSpectrum(IPeptideSpectrumMatch internalSpectrumx) {
-        internalSpectrum = internalSpectrumx;
-    }
 
     @Override
     public ISpectralCluster asCluster() {
-        return getInternalSpectrum().asCluster();
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
-        return getInternalSpectrum().getHighestNPeaks(numberRequested);
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public INormalizedSpectrum asNormalizedTo(double totalIntensity) {
-        return getInternalSpectrum().asNormalizedTo(totalIntensity);
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public BigInteger asMajorPeakBits() {
-        return getInternalSpectrum().asMajorPeakBits();
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public IPeaksSpectrum asMajorPeaks() {
-        return getInternalSpectrum().asMajorPeaks();
+        throw new UnsupportedOperationException("Fix This");
     }
 
     @Override
     public boolean containsMajorPeak(int mz) {
-        return getInternalSpectrum().containsMajorPeak(mz);
+        throw new UnsupportedOperationException("Fix This");
     }
 
     /**
@@ -182,8 +165,6 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     public void appendSPText(final Appendable out) {
         throw new UnsupportedOperationException("Fix This");
 
-
-
     }
 
     /**
@@ -198,7 +179,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
             out.append("\t");
             out.append(Integer.toString(getPrecursorCharge()));
             out.append("\t");
-            String mzString = String.format("%10.2f",getPrecursorMz()).trim();
+            String mzString = String.format("%10.2f", getPrecursorMz()).trim();
             out.append(mzString);
             out.append("\t");
             out.append(getPeptide());
@@ -209,7 +190,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
         }
 
-      }
+    }
 
 
 }

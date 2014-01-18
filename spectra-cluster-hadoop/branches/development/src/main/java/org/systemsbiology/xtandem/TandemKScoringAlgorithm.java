@@ -951,9 +951,9 @@ public class TandemKScoringAlgorithm extends TandemScoringAlgorithm {
 //                    " id=" + measured.getId() +
 //                    " sequence=" + theory.getPeptide().getSequence() +
 //                    " charge=" + charge +
-//                    " Y_Count=" + counter.getCount(IonType.Y) +
+//                    " Y_Count=" + counter.getValue(IonType.Y) +
 //                    " Y_Score=" + XTandemUtilities.formatDouble(counter.getScore(IonType.Y), 3) +
-//                    " B_Count=" + counter.getCount(IonType.B) +
+//                    " B_Count=" + counter.getValue(IonType.B) +
 //                    " B_Score=" + XTandemUtilities.formatDouble(counter.getScore(IonType.B), 3)
 //            );
 //        return (product);

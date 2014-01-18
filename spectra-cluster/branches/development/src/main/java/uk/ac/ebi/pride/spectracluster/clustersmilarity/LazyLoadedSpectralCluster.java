@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -55,25 +55,26 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         }
     }
 
-    private static Map<String,DataFromDatabase> cachedData = new HashMap<String, DataFromDatabase>();
+    private static Map<String, DataFromDatabase> cachedData = new HashMap<String, DataFromDatabase>();
+
     public static void guaranteeCachedData() {
-        if(cachedData.isEmpty())
+        if (cachedData.isEmpty())
             fillCachedData();
     }
 
-    protected static void fillCachedData()
-    {
+    protected static void fillCachedData() {
         try {
             String cachedDataFile = null;
             LineNumberReader rdr = new LineNumberReader(new FileReader(cachedDataFile));
             String line = rdr.readLine();
-            while(line != null)     {
-                DataFromDatabase dbx = new DataFromDatabase(line)   ;
+            while (line != null) {
+                DataFromDatabase dbx = new DataFromDatabase(line);
                 cachedData.put(dbx.getId(), dbx);
                 line = rdr.readLine();
             }
             rdr.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -84,23 +85,33 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
     private final List<String> peptides = new ArrayList<String>();
+    private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
 
     public LazyLoadedSpectralCluster() {
     }
 
-    protected void  guaranteeCachedRead()
-    {
-         if(precursorMz == null)      {
-             guaranteeCachedData();
-             DataFromDatabase dbf = cachedData.get(getId());
-             if(dbf != null)       {
-                 setPrecursorCharge(dbf.getPrecursorCharge());
-                 setPrecursorMz(dbf.getPrecursorMz());
-                 addPeptide(dbf.getPeptide());
-             }
-         }
+    protected void guaranteeCachedRead() {
+        if (precursorMz == null) {
+            guaranteeCachedData();
+            DataFromDatabase dbf = cachedData.get(getId());
+            if (dbf != null) {
+                setPrecursorCharge(dbf.getPrecursorCharge());
+                setPrecursorMz(dbf.getPrecursorMz());
+                addPeptide(dbf.getPeptide());
+            }
+            buildPeptidePurities();
+        }
     }
+
+    private void buildPeptidePurities() {
+        double numberSpectra = getClusteredSpectraCount();
+        CountedString[] items = CountedString.getCountedStrings(peptides);
+        for (int i = 0; i < items.length; i++) {
+            CountedString item = items[i];
+            byPurity.add(new ClusterPeptideFraction(item.getValue(),item.getCount() / numberSpectra));
+        }
+     }
 
     @Override
     public String getId() {
@@ -124,13 +135,13 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
      */
     @Override
     public Set<String> getSpectralIds() {
-        if(this.spectraIds.isEmpty())    {
+        if (this.spectraIds.isEmpty()) {
             List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
             for (ISpectrum iSpectrum : clusteredSpectra1) {
-               spectraIds.add(iSpectrum.getId());
+                spectraIds.add(iSpectrum.getId());
             }
         }
-         return Collections.unmodifiableSet(spectraIds);
+        return Collections.unmodifiableSet(spectraIds);
     }
 
     public void setPrecursorMz(float precursorMz) {
@@ -157,6 +168,20 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         }
         return null;
     }
+
+
+    /**
+     * get peptides with statistics
+     * @return list ordered bu purity
+     */
+    public @Nonnull
+    List<ClusterPeptideFraction> getPeptidePurity() {
+       if(byPurity.size() == 0)
+           buildPeptidePurities() ;
+       return byPurity;
+
+    }
+
 
     public void addPeptides(String peptides) {
         String[] parts = peptides.split(",");
@@ -193,7 +218,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     @Override
     public List<ISpectrum> getClusteredSpectra() {
         ArrayList<ISpectrum> iSpectrums = new ArrayList<ISpectrum>(clusteredSpectra);
-        Collections.sort(iSpectrums,ISpectrum.ID_COMAPRATOR); // sort by id
+        Collections.sort(iSpectrums, ISpectrum.ID_COMAPRATOR); // sort by id
         return iSpectrums;
     }
 
@@ -205,6 +230,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     /**
      * make a one line report
+     *
      * @param out
      */
     @Override
@@ -221,7 +247,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             out.append("\t");
 
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
@@ -253,7 +280,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -298,7 +326,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 out.append(csq);
 
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -418,7 +447,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                     return false;
             }
             return true; // just one spectrum so check peaks
-        } else {
+        }
+        else {
             if (spc1.size() != spc2.size())
                 return false;
 
