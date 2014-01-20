@@ -39,7 +39,17 @@
             <organization>European Bioinformatics Institute</organization>
             <organizationUrl>http://ebi.ac.uk/pride</organizationUrl>
         </developer>
-    </developers>
+         <developer>
+            <id>acsordas</id>
+            <email>acsordas@ebi.ac.uk</email>
+            <name>Attila Csordas</name>
+            <organization>European Bioinformatics Institute</organization>
+            <organizationUrl>http://www.ebi.ac.uk/</organizationUrl>
+            <roles>
+                <role>Bioinformatician</role>
+            </roles>
+        </developer>
+   </developers>
 
     <organization>
         <name>European Bioinformatics Institute</name>
