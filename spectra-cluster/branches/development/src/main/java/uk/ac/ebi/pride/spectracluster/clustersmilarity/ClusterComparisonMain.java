@@ -35,6 +35,10 @@ public class ClusterComparisonMain {
         }
     }
 
+    public int getNumberSpectra() {
+        return spectra.getSpectraCount();
+    }
+
     protected void handleProperties() {
         String tsvFileName = getProperty("SpectraFile");
         File tsvFile = new File(tsvFileName);
@@ -71,9 +75,11 @@ public class ClusterComparisonMain {
     public class AccumulateDecoyVisitor implements TypedVisitor<ISpectralCluster> {
 
         private final List<ClusterPeptideFraction> data;
+        private final int minimumClusterSize;
 
-        public AccumulateDecoyVisitor(final List<ClusterPeptideFraction> pData) {
+        public AccumulateDecoyVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
             data = pData;
+            minimumClusterSize = pminimumClusterSize;
         }
 
         /**
@@ -81,6 +87,8 @@ public class ClusterComparisonMain {
          */
         @Override
         public void visit(@Nonnull final ISpectralCluster cluster) {
+            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
+                return;
             for (ClusterPeptideFraction pp : cluster.getPeptidePurity()) {
                 if (isDecoy(pp.getPeptide())) {
                     data.add(pp);
@@ -91,14 +99,16 @@ public class ClusterComparisonMain {
     }
 
     /**
-      * collect all targets as  ClusterPeptideFraction
-      */
+     * collect all targets as  ClusterPeptideFraction
+     */
     public class AccumulateTargetVisitor implements TypedVisitor<ISpectralCluster> {
 
         private final List<ClusterPeptideFraction> data;
+        private final int minimumClusterSize;
 
-        public AccumulateTargetVisitor(final List<ClusterPeptideFraction> pData) {
+        public AccumulateTargetVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
             data = pData;
+            minimumClusterSize = pminimumClusterSize;
         }
 
         /**
@@ -106,6 +116,8 @@ public class ClusterComparisonMain {
          */
         @Override
         public void visit(@Nonnull final ISpectralCluster cluster) {
+            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
+                return;
             for (ClusterPeptideFraction pp : cluster.getPeptidePurity()) {
                 if (!isDecoy(pp.getPeptide())) {
                     data.add(pp);
@@ -115,22 +127,18 @@ public class ClusterComparisonMain {
         }
     }
 
-    public List<ClusterPeptideFraction> getCumulativeDecoyData() {
+    public List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new AccumulateDecoyVisitor(decoys);
-         for (IClusterSet cs : getClusterings()) {
-            cs.visitClusters(tv );
-        }
+        TypedVisitor<ISpectralCluster> tv = new AccumulateDecoyVisitor(decoys, minimumSize);
+        cs.visitClusters(tv);
         Collections.sort(decoys);
         return decoys;
     }
 
-    public List<ClusterPeptideFraction> getCumulativeTargetData() {
-         List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv2 = new AccumulateTargetVisitor(targets);
-        for (IClusterSet cs : getClusterings()) {
-            cs.visitClusters(  tv2);
-        }
+    public List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs, int minimumSize) {
+        List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
+        TypedVisitor<ISpectralCluster> tv2 = new AccumulateTargetVisitor(targets, minimumSize);
+        cs.visitClusters(tv2);
         Collections.sort(targets);
 
         return targets;
@@ -155,7 +163,6 @@ public class ClusterComparisonMain {
     }
 
     public void generateReports() {
-        ClusterDecoyChart.makeDecoyChart(this);
         for (IClusterSet cs : clusterings) {
             generateReport(cs);
         }
@@ -179,8 +186,12 @@ public class ClusterComparisonMain {
         System.out.println("Usage propertiesFile <ClusteringFile or Directory> ...");
     }
 
-    public static void showChart(final String pArg, final IClusterSet pCs) {
+    public static void showChart(  final IClusterSet pCs) {
+        INSTANCE.generateReport(  pCs);
+
+        ClusterDecoyChart.makeDecoyChart(INSTANCE,pCs, pCs.getName());
     }
+
 
 
     public static void main(String[] args) {
@@ -193,9 +204,10 @@ public class ClusterComparisonMain {
         for (int i = 1; i < args.length; i++) {
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, "SemiStableNew.clustering");
+            IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
+            cs.setName(arg);
             INSTANCE.addClustering(cs);
-            showChart(arg, cs);
+            showChart( cs);
         }
 
 

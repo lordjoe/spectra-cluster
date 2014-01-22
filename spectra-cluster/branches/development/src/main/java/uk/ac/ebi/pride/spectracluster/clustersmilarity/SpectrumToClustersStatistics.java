@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -10,6 +12,11 @@ import javax.annotation.Nonnull;
  */
 public class SpectrumToClustersStatistics implements IClusterStatistics<SpectrumToClusters>{
     private final SpectrumToClusters spectrumToClusters = new SpectrumToClusters();
+    private final ISpectrumRetriever totalSpectra ;
+
+    public SpectrumToClustersStatistics(final ISpectrumRetriever pTotalSpectra) {
+        totalSpectra = pTotalSpectra;
+    }
 
     @Override
     public SpectrumToClusters getStatistics() {
@@ -19,6 +26,11 @@ public class SpectrumToClustersStatistics implements IClusterStatistics<Spectrum
     @Override
     public String generateDefaultReport() {
         StringBuilder sb = new StringBuilder();
+
+        List<ISpectrum> usedSpectra = spectrumToClusters.getUsedSpectra(totalSpectra);
+        List<ISpectrum> unusedSpectra = spectrumToClusters.getUnusedSpectra(totalSpectra);
+        sb.append("Number Unsed Spectra ").append(unusedSpectra.size()).append("\n");
+        sb.append("Number Used Spectra ").append(usedSpectra.size()).append("\n");
 
 //        sb.append("Number Empty Clusters ").append(spectrumToClusters.getNumberOfEmptyCluster()).append("\n");
         sb.append("Number Duplicated Spectra ").append(spectrumToClusters.getNumberOfDuplicatedSpectra()).append("\n");

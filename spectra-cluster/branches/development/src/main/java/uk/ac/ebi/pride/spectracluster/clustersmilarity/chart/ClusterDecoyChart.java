@@ -29,20 +29,27 @@ public class ClusterDecoyChart {
         return mostSimilarClusterSet;
     }
 
-    public JPanel generateChart() {
-        ClusterComparisonMain set = getSet();
-        List<IClusterSet> clusterings = set.getClusterings();
+    public JPanel generateChart(IClusterSet cs) {
+        JPanel ret = new JPanel();
+        ret.setLayout(new GridLayout(0, 2));
 
-        final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (IClusterSet clustering : clusterings) {
-            if(clustering.getClusterCount() >= 16)
-                addDecoyAndTargetData(clustering, dataset);
+        ClusterComparisonMain set = getSet();
+
+
+        for (int minimumSize = 4; minimumSize < 62; minimumSize *= 2) {
+            final XYSeriesCollection dataset = new XYSeriesCollection();
+            addDecoyAndTargetData(dataset,cs, minimumSize);
+
+            final JFreeChart chart = createChart(dataset, minimumSize,set.getNumberSpectra());
+
+            final ChartPanel chartPanel = new ChartPanel(chart);
+            ret.add(chartPanel);
+
         }
 
-        final JFreeChart chart = createChart(dataset);
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-        return chartPanel;
+
+        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        return ret;
 
         //        IClusterDistance distance = mostSimilarClusterSet.getClusterDistance();
 //        XYSeries xySeries = new XYSeries(distance.getClass().getSimpleName());
@@ -72,28 +79,31 @@ public class ClusterDecoyChart {
         double cutPoint = cummulativePurityPoints[cutindex++];
         for (ClusterPeptideFraction decoy : values) {
 
-            if (decoy.getPurity() > cutPoint) {
+            double purity = decoy.getPurity();
+            while (purity > cutPoint) {
                 series1.add(cutPoint, index);
                 cutPoint = cummulativePurityPoints[cutindex++];
-                while (decoy.getPurity() > cutPoint) {
-                    cutPoint = cummulativePurityPoints[cutindex++];
-                }
-
             }
             index++;
         }
-        series1.add(cutPoint, index);
-        return series1;
+        while(cutindex < cummulativePurityPoints.length)  {
+            series1.add(cutPoint, index);
+            cutindex++;
+            if(cutindex >= cummulativePurityPoints.length)
+                break;
+            cutPoint = cummulativePurityPoints[cutindex];
+        }
+         return series1;
     }
 
 
-    protected void addDecoyAndTargetData(final IClusterSet pClustering, final XYSeriesCollection dataset) {
+    protected void addDecoyAndTargetData(final XYSeriesCollection dataset,IClusterSet cs, int minimumClusterSize) {
         ClusterComparisonMain cm = getSet();
-        List<ClusterPeptideFraction> decoys = cm.getCumulativeDecoyData();
+        List<ClusterPeptideFraction> decoys = cm.getCumulativeDecoyData(cs,minimumClusterSize);
         XYSeries series = buildCummulativeSeries("Decoys", decoys);
         dataset.addSeries(series);
 
-        List<ClusterPeptideFraction> targets = cm.getCumulativeTargetData();
+        List<ClusterPeptideFraction> targets = cm.getCumulativeTargetData(cs,minimumClusterSize);
         series = buildCummulativeSeries("Targets", targets);
         dataset.addSeries(series);
 
@@ -105,11 +115,11 @@ public class ClusterDecoyChart {
      * @param dataset the data for the chart.
      * @return a chart.
      */
-    private JFreeChart createChart(final XYDataset dataset) {
+    private JFreeChart createChart(final XYDataset dataset, int minSize,int numberSPectra) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Cummulative Target and Decoy",      // chart title
+                "Target and Decoy " + minSize,      // chart title
                 "Cummulative Fraction",                      // x axis label
                 "Number",                      // y axis label
                 dataset,                  // data
@@ -140,6 +150,7 @@ public class ClusterDecoyChart {
         // change the auto tick unit selection to integer units only...
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    //    rangeAxis.setRange(0,numberSPectra);
         // OPTIONAL CUSTOMISATION COMPLETED.
 
         return chart;
@@ -154,17 +165,22 @@ public class ClusterDecoyChart {
     }
 
 
-    public static void makeDecoyChart(ClusterComparisonMain cc) {
+    public static void makeDecoyChart(ClusterComparisonMain cc,  final IClusterSet pCs,String name) {
         ClusterDecoyChart clusterSimilarityChart = new ClusterDecoyChart(cc);
-        JPanel charts = clusterSimilarityChart.generateChart();
+        JPanel charts = clusterSimilarityChart.generateChart(pCs);
 
 
-        JFrame frame = new JFrame("Cluster similarity charts");
+        JFrame frame = new JFrame(name);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(charts, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
 
+    }
+
+    public static void usage() {
+        System.out.println("Usage <tsv defining spectra> <decoy list> <clustering file or directory>");
+        System.out.println("For example> <tsv defining spectra> <decoy list> <clustering file or directory>");
     }
 
     /**
@@ -173,6 +189,10 @@ public class ClusterDecoyChart {
      * @param args
      */
     public static void main(String[] args) throws IOException {
+        if (args.length < 3) {
+            usage();
+            return;
+        }
         SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
 
         ElapsedTimer timer = new ElapsedTimer();
@@ -217,7 +237,7 @@ public class ClusterDecoyChart {
 
         ClusterDecoyChart clusterSimilarityChart = null; // new ClusterDecoyChart(mostSimilarClusterSet);
 
-        JPanel charts = clusterSimilarityChart.generateChart();
+        JPanel charts = clusterSimilarityChart.generateChart(null);    // todo fix
 
         timer.showElapsed("Create chart");
         timer.reset(); // back to 0

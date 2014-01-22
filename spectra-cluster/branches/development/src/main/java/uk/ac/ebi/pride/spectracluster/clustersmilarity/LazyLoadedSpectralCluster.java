@@ -85,7 +85,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
     private final List<String> peptides = new ArrayList<String>();
-    private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
+     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
 
     public LazyLoadedSpectralCluster() {
@@ -104,13 +104,50 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         }
     }
 
+
+    private static int Bad_SpectraCount = 0;
     private void buildPeptidePurities() {
+         final List<String> spectral_peptides = new ArrayList<String>();
+        for (ISpectrum iSpectrum : clusteredSpectra) {
+            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
+            String peptide = sc1.getPeptide();
+            if(peptide != null)
+                spectral_peptides.add(peptide);
+        }
         double numberSpectra = getClusteredSpectraCount();
-        CountedString[] items = CountedString.getCountedStrings(peptides);
+
+        // debug bad case
+        if(spectral_peptides.size() == 0)   {
+            for (ISpectrum iSpectrum : clusteredSpectra) {
+                IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
+                String peptide = sc1.getPeptide();
+                if(peptide != null)
+                    spectral_peptides.add(peptide);
+            }
+            int n = Bad_SpectraCount++;
+            Bad_SpectraCount = n; // so we can look
+            if(true)
+                return;
+            throw new UnsupportedOperationException("Fix This"); // ToDo
+        }
+        // end bad case
+
+         CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
+        Map<String,Double>   peptideToFraction = new HashMap<String, Double>()  ;
         for (int i = 0; i < items.length; i++) {
             CountedString item = items[i];
-            byPurity.add(new ClusterPeptideFraction(item.getValue(),item.getCount() / numberSpectra));
+            peptideToFraction.put(item.getValue(),item.getCount() / numberSpectra);
         }
+        for (ISpectrum iSpectrum : clusteredSpectra) {
+            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
+            String peptide = sc1.getPeptide();
+            if(peptide != null) {
+                spectral_peptides.add(peptide);
+                byPurity.add(new ClusterPeptideFraction(peptide,peptideToFraction.get(peptide)));
+            }
+        }
+
+
      }
 
     @Override
@@ -391,17 +428,17 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
 
-        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
-        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
-        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
-            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
-                //noinspection UnusedAssignment
-                highestQualitySpectrum1 = getHighestQualitySpectrum();
-                throw new IllegalStateException("problem"); // ToDo change
-            }
-
-            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
-        }
+//        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
+//        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
+//        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
+//            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
+//                //noinspection UnusedAssignment
+//                highestQualitySpectrum1 = getHighestQualitySpectrum();
+//                throw new IllegalStateException("problem"); // ToDo change
+//            }
+//
+//            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
+//        }
 
         int hash1 = hashCode();
         int hash2 = o.hashCode();

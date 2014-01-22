@@ -15,6 +15,7 @@ import java.util.*;
 public class SimpleClusterRetriever implements IClusterRetriever {
 
     private final Map<String, ISpectralCluster> clusterById = new HashMap<String, ISpectralCluster>();
+    private final List<ISpectralCluster> sortedClusters = new ArrayList<ISpectralCluster>();
 
     public SimpleClusterRetriever(Collection<ISpectralCluster> cluaters) {
         for (ISpectralCluster cluater : cluaters) {
@@ -30,14 +31,18 @@ public class SimpleClusterRetriever implements IClusterRetriever {
      * Get sorted clusters
      */
     public List<ISpectralCluster> getClusters() {
-        ArrayList<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>(clusterById.values());
-        Collections.sort(clusters);
-        return clusters;
+        if (sortedClusters.isEmpty()) {
+            ArrayList<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>(clusterById.values());
+            sortedClusters.addAll(clusters);
+            Collections.sort(sortedClusters);
+        }
+        return sortedClusters;
     }
 
     public void addCluster(ISpectralCluster cluater) {
         guaranteeClusterId(cluater);
         clusterById.put(cluater.getId(), cluater);
+        sortedClusters.clear();
     }
 
     public void guaranteeClusterId(ISpectralCluster cluster) {
@@ -63,16 +68,17 @@ public class SimpleClusterRetriever implements IClusterRetriever {
     }
 
     private static int clusterIdCounter = 1000;
+
     public static String generateClusterId() {
 
         return "GenId" + clusterIdCounter++;
     }
 
-    public SimpleClusterRetriever( ISpectralCluster... cluaters) {
-         this(Arrays.asList(cluaters));
-     }
+    public SimpleClusterRetriever(ISpectralCluster... cluaters) {
+        this(Arrays.asList(cluaters));
+    }
 
-     @Override
+    @Override
     public ISpectralCluster retrieve(String clusterId) {
         return clusterById.get(clusterId);
     }

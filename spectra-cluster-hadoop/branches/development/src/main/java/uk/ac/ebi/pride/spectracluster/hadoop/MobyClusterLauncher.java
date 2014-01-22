@@ -29,7 +29,9 @@ public class MobyClusterLauncher {
         }
 
         boolean isVersion1 = HadoopMajorVersion.CURRENT_VERSION != HadoopMajorVersion.Version0;
-        HadoopDeployer.setOnlyClassesInJar(true); // no outside jars
+        if(true)
+            throw new UnsupportedOperationException("Why does the next line not compile"); // ToDo
+ //       HadoopDeployer.setOnlyClassesInJar(true); // no outside jars
         ClusterLauncher.setDirectoryInputHandled(true);  // pass directory not file list
 
         // change this if debugging from another job

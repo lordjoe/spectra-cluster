@@ -102,6 +102,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
         return new SimpleClusterSet(holder);
     }
 
+    private String name;
     private ClusteringHeader header;
     private PeptideUseId usage = new PeptideUseId();
 
@@ -111,6 +112,16 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
     public SimpleClusterSet() {
         super();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(final String pName) {
+        name = pName;
     }
 
     /**
