@@ -295,8 +295,8 @@ public class MostSimilarClusterSet {
 
     public static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile, String saveName) {
         IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(newFile, simpleSpectrumRetriever);
-        if (newFile.isDirectory())
-            ClusterSimilarityUtilities.saveSemiStableClusters(newClusterSet, new File(saveName));
+  //      if (newFile.isDirectory())
+   //         ClusterSimilarityUtilities.saveSemiStableClusters(newClusterSet, new File(saveName));
         return newClusterSet;
     }
 

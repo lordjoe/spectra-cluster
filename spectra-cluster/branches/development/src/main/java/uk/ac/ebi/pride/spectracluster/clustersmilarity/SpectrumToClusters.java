@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,31 @@ public class SpectrumToClusters {
 
     public int getUniqueSpectra() {
         return clustersWithSpectra.keySet().size();
+    }
+
+    public List<ISpectrum> getUnusedSpectra(ISpectrumRetriever spc)
+    {
+        List<IPeptideSpectrumMatch> all = spc.retrieveAll();
+        List<ISpectrum> ret = new ArrayList<ISpectrum>() ;
+        for (IPeptideSpectrumMatch spec : all) {
+             if(!clustersWithSpectra.containsKey(spec.getId()))
+                 ret.add(spec);
+        }
+
+        return ret;
+    }
+
+
+    public List<ISpectrum> getUsedSpectra(ISpectrumRetriever spc)
+    {
+        List<IPeptideSpectrumMatch> all = spc.retrieveAll();
+        List<ISpectrum> ret = new ArrayList<ISpectrum>() ;
+        for (IPeptideSpectrumMatch spec : all) {
+             if(clustersWithSpectra.containsKey(spec.getId()))
+                 ret.add(spec);
+        }
+
+        return ret;
     }
 
     public int getNumberOfEmptyCluster() {

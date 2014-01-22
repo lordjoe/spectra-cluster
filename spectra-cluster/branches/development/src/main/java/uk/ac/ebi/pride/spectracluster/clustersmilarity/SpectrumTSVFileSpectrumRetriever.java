@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -55,6 +56,11 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
 
     @Override
     public IPeptideSpectrumMatch retrieve(String spectrumId) {
+        throw new UnsupportedOperationException("Not supported");
+    }
+
+    @Override
+    public List<IPeptideSpectrumMatch> retrieveAll() {
         throw new UnsupportedOperationException("Not supported");
     }
 

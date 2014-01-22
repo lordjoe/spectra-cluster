@@ -25,7 +25,7 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
         clusterStatisticses.add(new NumberOfStableClusters());
         clusterStatisticses.add(new NumberOfSemiStableClusters());
         clusterStatisticses.add(new PeptideToClustersStatistics());
-        clusterStatisticses.add(new SpectrumToClustersStatistics());
+        clusterStatisticses.add(new SpectrumToClustersStatistics(spectra));
 
         for (IClusterStatistics o : other) {
             addStatisticMethod(o);
@@ -62,6 +62,7 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     public String generateReport() {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("Report on clusters " + clusters.getName() + "\n");
         for (IClusterStatistics clusterStatisticse : clusterStatisticses) {
             sb.append(clusterStatisticse.generateDefaultReport());
             sb.append("\n");

@@ -14,6 +14,10 @@ import java.util.*;
  */
 public interface IClusterSet {
 
+    public String getName();
+
+    public void setName(String name);
+
     /**
      * return header imformation
      * @return

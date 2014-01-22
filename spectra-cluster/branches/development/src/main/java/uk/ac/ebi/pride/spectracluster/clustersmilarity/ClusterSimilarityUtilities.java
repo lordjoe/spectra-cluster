@@ -461,11 +461,12 @@ public class ClusterSimilarityUtilities {
     }
 
 
-    public static void buildTSV(final String pArg) throws IOException {
+    public static void buildTSV(final String pArg,String outFile) throws IOException {
         SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
-        buildLazyLoadedFromMgfFile(new File(pArg), spectrumRetriever);
+        File mgfs = new File(pArg);
+        buildLazyLoadedFromMgfFile(mgfs, spectrumRetriever);
 
-        File outTSV = new File("FromMGF.tsv");
+        File outTSV = new File(outFile);
         PrintWriter out = new PrintWriter(new FileWriter(outTSV));
 
         List<IPeptideSpectrumMatch> spectra = spectrumRetriever.getSpectra();
@@ -481,9 +482,17 @@ public class ClusterSimilarityUtilities {
         System.out.println(spectrumRetriever.getSpectra().size());
     }
 
+    public static void usage() {
+        System.out.println("Usage propertiesFile <MfgFile or Directory> <outputFile>");
+    }
+
 
     public static void main(String[] args) throws Exception {
- //       buildTSV(args[0]);
+        if (args.length < 2) {
+             usage();
+             return;
+         }
+        buildTSV(args[0],args[1]);
      }
 
 
