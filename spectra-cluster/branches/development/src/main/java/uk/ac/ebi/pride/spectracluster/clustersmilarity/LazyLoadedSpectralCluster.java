@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -85,7 +84,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private ISpectrum consensusSpectrum;
     private final Set<ISpectrum> clusteredSpectra = new LinkedHashSet<ISpectrum>();
     private final List<String> peptides = new ArrayList<String>();
-     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
+    private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
 
     public LazyLoadedSpectralCluster() {
@@ -100,55 +99,81 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 setPrecursorMz(dbf.getPrecursorMz());
                 addPeptide(dbf.getPeptide());
             }
-            buildPeptidePurities();
+            //           buildPeptidePurities(dd);
         }
     }
 
 
     private static int Bad_SpectraCount = 0;
-    private void buildPeptidePurities() {
-         final List<String> spectral_peptides = new ArrayList<String>();
+    private static int MultipleSpectraCount = 0;
+    private static int AllSpectraCount = 0;
+
+    protected void buildPeptidePurities(IDecoyDiscriminator dd) {
+        final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String peptide = sc1.getPeptide();
-            if(peptide != null)
-                spectral_peptides.add(peptide);
+            if (peptide != null) {
+                String[] peptides = peptide.split(";");
+                for (String s : peptides) {
+                    spectral_peptides.add(s);
+                 }
+             }
         }
         double numberSpectra = getClusteredSpectraCount();
 
         // debug bad case
-        if(spectral_peptides.size() == 0)   {
+        if (spectral_peptides.size() == 0) {
             for (ISpectrum iSpectrum : clusteredSpectra) {
                 IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
                 String peptide = sc1.getPeptide();
-                if(peptide != null)
+                if (peptide != null)
                     spectral_peptides.add(peptide);
             }
             int n = Bad_SpectraCount++;
             Bad_SpectraCount = n; // so we can look
-            if(true)
+            if (true)
                 return;
             throw new UnsupportedOperationException("Fix This"); // ToDo
         }
         // end bad case
 
-         CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
-        Map<String,Double>   peptideToFraction = new HashMap<String, Double>()  ;
+        CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
+        Map<String, Double> peptideToFraction = new HashMap<String, Double>();
+        double total_items = 0;
         for (int i = 0; i < items.length; i++) {
             CountedString item = items[i];
-            peptideToFraction.put(item.getValue(),item.getCount() / numberSpectra);
+            total_items += item.getCount() ;
         }
-        for (ISpectrum iSpectrum : clusteredSpectra) {
+        for (int i = 0; i < items.length; i++) {
+             CountedString item = items[i];
+            int count = item.getCount();
+            peptideToFraction.put(item.getValue(), count / total_items);
+         }
+         for (ISpectrum iSpectrum : clusteredSpectra) {
+            AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            String peptide = sc1.getPeptide();
-            if(peptide != null) {
-                spectral_peptides.add(peptide);
-                byPurity.add(new ClusterPeptideFraction(peptide,peptideToFraction.get(peptide)));
+            String value = sc1.getPeptide();
+            String[] peptides = value.split(";");
+            boolean decoy = false;
+            for (int j = 0; j < peptides.length; j++) {
+                String peptide = peptides[j];
+                decoy |= dd.isDecoy(peptide);
             }
+            if(peptides.length > 1)
+                MultipleSpectraCount++;
+
+            String peptide = peptides[0];
+            spectral_peptides.add(peptide);
+            Double purity = peptideToFraction.get(peptide);
+            if(purity == null)
+                throw new UnsupportedOperationException("Fix This"); // ToDo
+            byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
         }
+    }
 
 
-     }
+
 
     @Override
     public String getId() {
@@ -209,13 +234,15 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     /**
      * get peptides with statistics
+     *
      * @return list ordered bu purity
      */
-    public @Nonnull
-    List<ClusterPeptideFraction> getPeptidePurity() {
-       if(byPurity.size() == 0)
-           buildPeptidePurities() ;
-       return byPurity;
+    public
+    @Nonnull
+    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
+        if (byPurity.size() == 0)
+            buildPeptidePurities(dd);
+        return byPurity;
 
     }
 

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -185,16 +186,18 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
+
     /**
      * get peptides with statistics
+     *
+     * @param dd
      * @return list ordered bu purity
      */
-    public @Nonnull
-    List<ClusterPeptideFraction> getPeptidePurity() {
+    @Nonnull
+    @Override
+    public List<ClusterPeptideFraction> getPeptidePurity(final IDecoyDiscriminator dd) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-
     }
-
 
     @Override
     public List<IPeak> getPeaks() {

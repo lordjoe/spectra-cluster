@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
 /**
- * uk.ac.ebi.pride.spectracluster.IScoredSpectrum
+ * uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch
  *
  * @author Steve Lewis
  * @date 15/05/13
