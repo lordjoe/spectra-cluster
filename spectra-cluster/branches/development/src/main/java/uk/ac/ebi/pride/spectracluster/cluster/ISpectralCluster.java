@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -66,7 +67,7 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      * get peptides with statistics
      * @return list ordered bu purity
      */
-    public @Nonnull List<ClusterPeptideFraction> getPeptidePurity();
+    public @Nonnull List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
 
 
 

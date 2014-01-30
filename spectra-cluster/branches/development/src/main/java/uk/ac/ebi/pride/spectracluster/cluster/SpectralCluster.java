@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -206,14 +207,14 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
      * @return list ordered bu purity
      */
     public @Nonnull
-    List<ClusterPeptideFraction> getPeptidePurity() {
-        buildPeptidePurities();
+    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
+        buildPeptidePurities(dd);
        return byPurity;
 
     }
 
 
-    private void buildPeptidePurities() {
+    protected void buildPeptidePurities(IDecoyDiscriminator dd) {
         if(byPurity.size() > 0)
             return;
         byPurity.clear();
@@ -221,7 +222,16 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
         CountedString[] items = CountedString.getCountedStrings(getPeptides());
         for (int i = 0; i < items.length; i++) {
             CountedString item = items[i];
-            byPurity.add(new ClusterPeptideFraction(item.getValue(),item.getCount() / numberSpectra));
+            String value = item.getValue();
+            String[] peptides = value.split(";");
+            boolean decoy = false;
+            for (int j = 0; j < peptides.length; j++) {
+                String peptide = peptides[j];
+                decoy |= dd.isDecoy(peptide);
+            }
+
+            ClusterPeptideFraction e = new ClusterPeptideFraction(peptides[0], item.getCount() / numberSpectra,decoy);
+            byPurity.add(e);
         }
      }
 

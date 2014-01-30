@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -57,7 +58,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
      */
     @Nonnull
     @Override
-    public List<ClusterPeptideFraction> getPeptidePurity() {
+    public List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
      }
 

@@ -4,7 +4,6 @@ import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
 
-import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -13,11 +12,12 @@ import java.util.*;
  * User: Steve
  * Date: 1/17/14
  */
-public class ClusterComparisonMain {
+public class ClusterComparisonMain implements IDecoyDiscriminator {
     public static final ClusterComparisonMain INSTANCE = new ClusterComparisonMain();
 
     private final Properties properties = new Properties();
     private final Set<String> decoys = new HashSet<String>();
+    private final Set<String> used_decoys = new HashSet<String>();
     private final List<IClusterSet> clusterings = new ArrayList<IClusterSet>();
     private final SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
 
@@ -65,79 +65,64 @@ public class ClusterComparisonMain {
         return properties.getProperty(key);
     }
 
+
+     @Override
     public boolean isDecoy(String peptideSequence) {
-        return decoys.contains(peptideSequence);
+        boolean contains = decoys.contains(peptideSequence);
+        if (contains) {
+            used_decoys.add(peptideSequence);
+        }
+        return contains;
     }
 
-    /**
-     * collect all decoys as  ClusterPeptideFraction
-     */
-    public class AccumulateDecoyVisitor implements TypedVisitor<ISpectralCluster> {
-
-        private final List<ClusterPeptideFraction> data;
-        private final int minimumClusterSize;
-
-        public AccumulateDecoyVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
-            data = pData;
-            minimumClusterSize = pminimumClusterSize;
-        }
-
-        /**
-         * @param pISpectralCluster interface implemented by the visitor pattern
-         */
-        @Override
-        public void visit(@Nonnull final ISpectralCluster cluster) {
-            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
-                return;
-            for (ClusterPeptideFraction pp : cluster.getPeptidePurity()) {
-                if (isDecoy(pp.getPeptide())) {
-                    data.add(pp);
-                }
-            }
-
-        }
+    @SuppressWarnings("UnusedDeclaration")
+    public Set<String> getDecoys() {
+        //noinspection UnnecessaryLocalVariable
+        HashSet<String> ret = new HashSet<String>(decoys);
+        return ret;
     }
 
-    /**
-     * collect all targets as  ClusterPeptideFraction
-     */
-    public class AccumulateTargetVisitor implements TypedVisitor<ISpectralCluster> {
-
-        private final List<ClusterPeptideFraction> data;
-        private final int minimumClusterSize;
-
-        public AccumulateTargetVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
-            data = pData;
-            minimumClusterSize = pminimumClusterSize;
-        }
-
-        /**
-         * @param pISpectralCluster interface implemented by the visitor pattern
-         */
-        @Override
-        public void visit(@Nonnull final ISpectralCluster cluster) {
-            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
-                return;
-            for (ClusterPeptideFraction pp : cluster.getPeptidePurity()) {
-                if (!isDecoy(pp.getPeptide())) {
-                    data.add(pp);
-                }
-            }
-
-        }
+    public void clearDecoyUse() {
+        used_decoys.clear();
     }
 
-    public List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs, int minimumSize) {
+    public Set<String> getUnusedDecoys() {
+        HashSet<String> ret = new HashSet<String>(decoys);
+        ret.removeAll(used_decoys);
+        return ret;
+    }
+
+    public Set<String> getUsedDecoys() {
+        return new HashSet<String>(used_decoys);
+    }
+
+
+
+
+    public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs,IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new AccumulateDecoyVisitor(decoys, minimumSize);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize,discriminator);
+        //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
         return decoys;
     }
 
-    public List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs, int minimumSize) {
+
+
+    public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs,IDecoyDiscriminator discriminator, int minimumSize) {
+        List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize,discriminator);
+        //noinspection unchecked
+        cs.visitClusters(tv);
+        Collections.sort(decoys);
+        return decoys;
+    }
+
+    public static List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs,IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv2 = new AccumulateTargetVisitor(targets, minimumSize);
+        TypedVisitor<ISpectralCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize,discriminator);
+        //noinspection unchecked
         cs.visitClusters(tv2);
         Collections.sort(targets);
 
@@ -174,9 +159,13 @@ public class ClusterComparisonMain {
         ClusterStatistics stat = new ClusterStatistics(spectra1, cs, new FractionInClustersOfSizeStatistics(spectra1));
         stat.gatherData();
         String report = stat.generateReport();
+        Set<String> usedDecoys = getUsedDecoys();
+        Set<String> unusedDecoys = getUnusedDecoys();
+        System.out.println("Used decoys " + usedDecoys.size() + " Unused Decoys " + unusedDecoys.size());
         System.out.println(report);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public List<ClusterPeptidePurity> getCummulativeDecoy(IClusterSet cs) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
 
@@ -186,12 +175,17 @@ public class ClusterComparisonMain {
         System.out.println("Usage propertiesFile <ClusteringFile or Directory> ...");
     }
 
-    public static void showChart(  final IClusterSet pCs) {
-        INSTANCE.generateReport(  pCs);
+    public static void showChart(final IClusterSet pCs) {
+        INSTANCE.generateReport(pCs);
 
-        ClusterDecoyChart.makeDecoyChart(INSTANCE,pCs, pCs.getName());
+        ClusterDecoyChart.makeDecoyChart(INSTANCE, pCs, pCs.getName());
     }
 
+    public void showFDRCharts( ) {
+
+        ClusterDecoyChart.makeFDRChart("FDR",this );
+        ClusterDecoyChart.makeCummulativeTotalChart("Total PSMS",this );
+    }
 
 
     public static void main(String[] args) {
@@ -202,17 +196,19 @@ public class ClusterComparisonMain {
         INSTANCE.handlePropertiesFile(args[0]);
         SimpleSpectrumRetriever spectra1 = INSTANCE.getSpectra();
         for (int i = 1; i < args.length; i++) {
+            INSTANCE.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
             cs.setName(arg);
             INSTANCE.addClustering(cs);
-            showChart( cs);
+           // showChart(cs);
         }
 
 
-        INSTANCE.generateReports();
-    }
+        INSTANCE.showFDRCharts();
+          INSTANCE.generateReports();
+      }
 
 
 }
