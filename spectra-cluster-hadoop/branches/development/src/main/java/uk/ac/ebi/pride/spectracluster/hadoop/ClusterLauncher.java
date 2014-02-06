@@ -131,12 +131,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         return ret;
     }
+    public static final String USER_DIR = System.getProperty("user.dir").replace("\\", "/");
+
 
     private SpectraHadoopMain m_Application;
 
     private final JXTandemStatistics m_Statistics = new JXTandemStatistics();
     private String m_RemoteBaseDirectory;
-    private String m_LocalBaseDirectory = System.getProperty("user.dir").replace("\\", "/");
+    private String m_LocalBaseDirectory = USER_DIR;
     private String m_JarFile;
     private String m_OutputFileName;
     private String m_InputFiles;
@@ -389,9 +391,18 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     }
 
+    protected String refinePath(String originalPath)   {
+        if(!USER_DIR.equals(getRemoteBaseDirectory()) )
+            return  getRemoteBaseDirectory() + "/" +  originalPath;
+        else
+            return originalPath;
+    }
 
     public String getSpectrumPath() {
-        return getTandemParameter(INPUT_PATH_PROPERTY);
+        String tandemParameter = getTandemParameter(INPUT_PATH_PROPERTY);
+        tandemParameter = refinePath(tandemParameter);
+
+        return tandemParameter;
     }
 
 
@@ -656,6 +667,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         // guaranteeRemoteCopy(accessor, m_TaxonomyName);
         XMLUtilities.outputLine("Writing Spectral Data");
         String spectrumPath = getSpectrumPath();
+
         File spectrumFile = new File(spectrumPath);
         // maybe we need to copy to the remote system or maybe it iw already there
         if (spectrumFile.exists()) {
@@ -1001,7 +1013,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 if (!paramsFile.canRead())
                      throw new IllegalStateException("params file " + gParamsFile + " CANNOT BE READ - in the command line you must say params=<paramsFile> and that file MUST exist");
                 if(paramsFile.getParentFile() != null)
-                    gPassedBaseDirctory = paramsFile.getParentFile().getAbsolutePath().replace("\\","/");
+                    gPassedBaseDirctory = paramsFile.getParentFile().getPath().replace("\\", "/");
 
                 InputStream is = new FileInputStream(paramsFile);
 
@@ -1097,15 +1109,22 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
         if (REMOTEDIRECTORY_PROPERTY.equals(pProperty)) {
             String baseDir = pValue;
+            String defaultDir = pValue;
             gTaskIsLocal = false;
             if (pValue.startsWith("File://")) {
                 gTaskIsLocal = true;
                 baseDir = pValue.replace("File://", "");
             }
             if (pValue.endsWith("<LOCAL_DIRECTORY>")) {
-                String local = new File(System.getProperty("user.dir")).getName();
+                defaultDir = defaultDir.replace("/<LOCAL_DIRECTORY>","");
+                 String localName = new File(System.getProperty("user.dir")).getName();
+                if( !USER_DIR.equals(getPassedBaseDirctory()) )
+                    localName = getPassedBaseDirctory();
+                String local = localName;
                 baseDir = baseDir.replace("<LOCAL_DIRECTORY>", local);
             }
+            String oldBaseDir = RemoteUtilities.getDefaultPath();
+              RemoteUtilities.setDefaultPath(defaultDir);
 
             gPassedBaseDirctory = baseDir;
             return;
@@ -1428,6 +1447,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     // params=tandem.params remoteHost=Glados remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample
     //
     public static void main(final String[] args) throws Exception {
+        // reset globals
+        SpectraHadoopMain.resetInstance();
+
         if (args.length == 0) {
             usage();
             return;

@@ -31,6 +31,9 @@ public  class NextGenClusterLauncher   {
 
         // change this if debugging from another job
 
+        // start at the third job
+      //  ClusterLauncher.setDefaultStartAtJob(3);
+
         if (!isVersion1) {
             ClusterLauncher.workingMain(args, NextGenClusterLauncherJobBuilder.FACTORY);
           } else {

@@ -34,4 +34,17 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
         super(launcher,JOB_CLASSES);
     }
 
+    /**
+     * if we start at the first job - how many jobs are there in total
+     *
+     * @return
+     */
+    @Override
+    public int getNumberJobs() {
+        // patch for development
+        if(true)
+            return 4;
+        return super.getNumberJobs();
+
+    }
 }
