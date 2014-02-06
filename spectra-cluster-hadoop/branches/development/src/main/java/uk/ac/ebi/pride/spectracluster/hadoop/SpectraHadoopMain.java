@@ -27,6 +27,10 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         return gInstance;
     }
 
+    public static void  resetInstance() {
+        gInstance = null;
+    }
+
     /**
      * guarantee this is a singleton
      *

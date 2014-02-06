@@ -30,7 +30,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     @Override
     public void addUnstableCluster(ISpectralCluster unstableCluster) {
         if (stableClusterProcessed) {
-            throw new IllegalStateException("Adding unstable cluster after processing stable clusters");
+            // let this slide
+           // throw new IllegalStateException("Adding unstable cluster after processing stable clusters");
         }
 
         unstableClusters.add(unstableCluster);
