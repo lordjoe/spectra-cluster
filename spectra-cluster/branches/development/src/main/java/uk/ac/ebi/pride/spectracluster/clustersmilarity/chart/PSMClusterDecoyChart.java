@@ -219,7 +219,8 @@ public class PSMClusterDecoyChart {
 
 
           series1.add(0, 0.0);
-        double cutPoint = CummulativeFDR.cummulativePurityPoints[cutindex++];
+        double[] fractionalPurityPoints = CummulativeFDR.fractionalPurityPoints;
+        double cutPoint = fractionalPurityPoints[cutindex++];
         for (ClusterPeptideFraction pp : values) {
             boolean use = !pp.isDecoy();
             if (type == ClusterDataType.Decoy)
@@ -232,11 +233,11 @@ public class PSMClusterDecoyChart {
             if (purity > cutPoint) {
                 while (purity > cutPoint) {
                     series1.add(cutPoint, number_cummulative / number_values);
-                    if (cutindex >= CummulativeFDR.cummulativePurityPoints.length) {
+                    if (cutindex >= fractionalPurityPoints.length) {
                         series1.add(1.0,  number_cummulative / number_values);
                         return series1;
                     }
-                    cutPoint = CummulativeFDR.cummulativePurityPoints[cutindex++];
+                    cutPoint = fractionalPurityPoints[cutindex++];
                 }
                 number_cummulative = 0;
             }
