@@ -50,8 +50,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     public static final String CLUSTER_VERSION = "1.0.0";
 
-     public static final String INPUT_PATH_PROPERTY = "input_path";
-     public static final String START_AT_JOB_PROPERTY = "start-at-job";
+    public static final String INPUT_PATH_PROPERTY = "input_path";
+    public static final String START_AT_JOB_PROPERTY = "start-at-job";
     public static final String DATA_ON_PATH_PROPERTY = "data_on_cluster";
     public static final String DO_NOT_COPY_FILES_PROPERTY = "org.systemsbiology.xtandem.DoNotCopyFilesToLocalMachine";
     public static final String INPUT_FILES_PROPERTY = "org.systemsbiology.xtandem.InputFiles";
@@ -158,7 +158,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         initOpeners();
         try {
             handleInputs(new FileInputStream(pTaskFile), new Configuration());
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
         setBuilder(new ClusterLauncherJobBuilder(this));
@@ -228,7 +229,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         m_InputFiles = inputFiles;
     }
 
-     public boolean isDataOnCluster() {
+    public boolean isDataOnCluster() {
         SpectraHadoopMain application = getApplication();
         return application.getBooleanParameter(DATA_ON_PATH_PROPERTY, false);
     }
@@ -394,8 +395,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
 
-
-
     public String getRemoteBaseDirectory() {
         if (m_RemoteBaseDirectory != null)
             return m_RemoteBaseDirectory;
@@ -496,7 +495,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             System.out.println(s);
             return null;
             // throw new IllegalArgumentException(s);
-        } else
+        }
+        else
             XMLUtilities.outputLine("Copying file " + hdfsPath + " to " + localFile);
         File out = new File(localFile);
         acc.copyFromFileSystem(hdfsPath, out);
@@ -519,7 +519,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 XMLUtilities.outputLine("Writing to remote " + file1 + " " + file1.length() / 1000 + "kb");
                 accessor.writeToFileSystem(path, file1);
                 ret++;
-            } else {
+            }
+            else {
                 ret += guaranteeRemoteDirectory(remotepath, file);
             }
         }
@@ -585,6 +586,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         property = null;
 
+        //noinspection ConstantConditions
         if ("true".equalsIgnoreCase(property))
             deleteRemoteIntermediateDirectories();
 
@@ -595,7 +597,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     protected void buildInputFilesString(final String inputFileName) {
         File input = new File(inputFileName);
-        if (input.exists() ) {
+        if (input.exists()) {
             if (input.isFile() || isDirectoryInputHandled()) {
                 setInputFiles(input.getName());
                 return;
@@ -657,7 +659,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         File spectrumFile = new File(spectrumPath);
         // maybe we need to copy to the remote system or maybe it iw already there
         if (spectrumFile.exists()) {
-            if(isDataOnCluster())
+            if (isDataOnCluster())
                 return; // already there
             if (spectrumFile.isDirectory()) {
                 File[] files = spectrumFile.listFiles();
@@ -667,12 +669,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 //noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < files.length; i++) {
                     File file = files[i];
-                       guaranteeRemoteFilePath(file, pRbase + "/" + spectrumFile.getName());
+                    guaranteeRemoteFilePath(file, pRbase + "/" + spectrumFile.getName());
                 }
-            } else {
+            }
+            else {
                 guaranteeRemoteFilePath(spectrumFile, pRbase);
             }
-        } else {
+        }
+        else {
             guaranteExistanceofRemoteFile(spectrumFile, pRbase, "the Spectrum file designated by \"input_path\" ");
         }
     }
@@ -711,7 +715,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             XMLUtilities.outputLine("Writing to remote " + pFile1 + " " + pFile1.length() / 1000 + "kb");
             accessor.guaranteeFile(remotepath, pFile1);
             return 1;
-        } else {
+        }
+        else {
             if (accessor.exists(remotepath)) {
                 long existingLength = accessor.fileLength(remotepath);
                 // for very large data files we will tolerate a lot of error to avoid recopying them
@@ -989,12 +994,23 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         if (pArg.startsWith("params=")) {
             gParamsFile = pArg.substring("params=".length());
             try {
-                String paramsFile = getParamsFile();
-                InputStream is = buildInputStream(paramsFile);
+                String paramsFileStr = getParamsFile();
+                File paramsFile = new File(paramsFileStr);
+                if (!paramsFile.exists())
+                    throw new IllegalStateException("params file " + gParamsFile + " does not exist - in the command line you must say params=<paramsFile> and that file MUST exist");
+                if (!paramsFile.canRead())
+                     throw new IllegalStateException("params file " + gParamsFile + " CANNOT BE READ - in the command line you must say params=<paramsFile> and that file MUST exist");
+                if(paramsFile.getParentFile() != null)
+                    gPassedBaseDirctory = paramsFile.getParentFile().getAbsolutePath().replace("\\","/");
+
+                InputStream is = new FileInputStream(paramsFile);
+
+                //noinspection ConstantConditions
                 if (is == null)
                     throw new IllegalStateException("params file " + gParamsFile + " does not exist - in the command line you must say params=<paramsFile> and that file MUST exist");
                 is.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
 
             }
@@ -1011,7 +1027,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
         if (pArg.startsWith("remoteBaseDirectory=")) {
             gPassedBaseDirctory = pArg.substring("remoteBaseDirectory=".length());
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("wrong argument provided: " + pArg);
         }
 
@@ -1024,7 +1041,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         Properties props = new Properties();
         try {
             props.load(describedStream);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -1093,13 +1111,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             return;
         }
         if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
-               int value = Integer.parseInt(pValue);
-              XTandemHadoopUtilities.setMaxReduceTasksX(value);  // todo fix
-               if(false )
-                   throw new UnsupportedOperationException("Fix This"); // ToDo
-     //            XTandemHadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
-               return;
-           }
+            int value = Integer.parseInt(pValue);
+            XTandemHadoopUtilities.setMaxReduceTasksX(value);  // todo fix
+            //noinspection ConstantIfStatement
+            if (false)
+                throw new UnsupportedOperationException("Fix This"); // ToDo
+            //            XTandemHadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
+            return;
+        }
 
         if (MAX_SPLIT_SIZE_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
@@ -1174,7 +1193,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             if (outputFiles == null) {
                 outFile = copyOutputFile(outFile, hdfsPath);
 
-            } else {
+            }
+            else {
                 //noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < outputFiles.length; i++) {
                     outFile = outputFiles[i];
@@ -1200,7 +1220,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             }
 
 
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             XMLUtilities.outputLine("Cannot copy remote file " + hdfsPath + " to local file " + outFile +
                     " because " + e.getMessage());
             e.printStackTrace();
@@ -1285,7 +1306,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             if (isRemote) {
                 cfg.set("fs.default.name", "hdfs://" + RemoteUtilities.getHost() + ":" + RemoteUtilities.getPort());
 
-            } else {
+            }
+            else {
                 cfg.set("fs.default.name", "file:///");    // use local
             }
 
@@ -1327,7 +1349,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
                 main.setRemoteBaseDirectory(passedBaseDirctory);
 
-            } else {
+            }
+            else {
                 IFileSystem access = new LocalMachineFileSystem(new File(main.getRemoteBaseDirectory()));
                 main.setAccessor(access);
                 main.setBuildJar(false);
@@ -1382,7 +1405,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             total.showElapsed("Total Time", System.out);
 
             // I think hadoop has launched some threads so we can shut down now
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             e.printStackTrace();
             if (e != e.getCause() && e.getCause() != null) {
                 while (e != e.getCause() && e.getCause() != null) {
@@ -1420,10 +1444,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         if (!isVersion1) {
             workingMain(args);
-        } else {
+        }
+        else {
             //noinspection ConstantConditions
             if (!isVersion1)
                 throw new IllegalStateException("This Code will not work under Version 0.2");
+           throw new UnsupportedOperationException("Fix This"); // ToDo
 
 //            // by using reflection the class is never loaded when running
 //            //noinspection unchecked
