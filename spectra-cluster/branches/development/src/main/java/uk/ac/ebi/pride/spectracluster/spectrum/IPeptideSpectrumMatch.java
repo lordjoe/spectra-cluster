@@ -10,7 +10,8 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  */
 public interface IPeptideSpectrumMatch extends ISpectrum {
 
-    public static final int MAJOR_PEAK_NUMBER = 6; // Frand et al does 5 we do 1 more
+    public static final int MAJOR_PEAK_NUMBER = 6; // Frank et al does 5 we do 1 more
+
     /**
      * return scored peptide - maybe null
      */

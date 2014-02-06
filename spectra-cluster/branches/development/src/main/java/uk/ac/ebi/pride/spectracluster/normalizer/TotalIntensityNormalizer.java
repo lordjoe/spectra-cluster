@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.normalizer;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -110,7 +111,7 @@ public class TotalIntensityNormalizer implements IntensityNormalizer {
 
         final TotalIntensityNormalizer that = (TotalIntensityNormalizer) o;
 
-        if (Double.compare(that.totalIntensity, totalIntensity) != 0)
+        if (CompareTo.compare(that.totalIntensity, totalIntensity) != 0)
             return false;
 
         return true;

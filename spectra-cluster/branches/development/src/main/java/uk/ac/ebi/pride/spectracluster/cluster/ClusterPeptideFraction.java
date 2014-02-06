@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
+
 import javax.annotation.*;
 
 /**
@@ -12,7 +14,7 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
     public Comparable<ClusterPeptideFraction> TOP_FIRST = new Comparable<ClusterPeptideFraction>() {
         @Override
         public int compareTo(@Nonnull final ClusterPeptideFraction o) {
-            int ret = Double.compare(getPurity(), o.getPurity());
+            int ret = CompareTo.compare(getPurity(), o.getPurity());
             if (ret == 0)
                 return getPeptide().compareTo(o.getPeptide());
             return -ret;
@@ -92,13 +94,21 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
         return purity;
     }
 
-
+    /**
+     * sort least pure first
+     * @param o other
+     * @return
+     */
     @Override
     public int compareTo(@Nonnull ClusterPeptideFraction o) {
-        int ret = Double.compare(getPurity(), o.getPurity());
-        if (ret == 0)
-            return getPeptide().compareTo(o.getPeptide());
-        return ret;
+        int ret = CompareTo.compare(getPurity(), o.getPurity()) ;
+        if(ret != 0)
+            return ret;
+//        double del = getPurity() - o.getPurity();
+//        if (Math.abs(del) > 0.0001) {
+//            return del < 0 ? -1 : 1;
+//        }
+        return getPeptide().compareTo(o.getPeptide());
     }
 
     @Override

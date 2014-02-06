@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -236,7 +237,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         double d1 = m1.getDistance();
         double d2 = m2.getDistance();
 
-        return Double.compare(d1, d2);
+        return CompareTo.compare(d1, d2);
 
 
     }

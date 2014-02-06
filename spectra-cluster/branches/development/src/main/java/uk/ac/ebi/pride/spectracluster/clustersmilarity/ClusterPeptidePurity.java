@@ -92,7 +92,7 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         double fractionMostCommon1 = getFractionMostCommon();
         double fractionMostCommon2 = o.getFractionMostCommon();
         if(fractionMostCommon1 != fractionMostCommon2) {
-            return Double.compare(fractionMostCommon2,fractionMostCommon1) ;
+            return CompareTo.compare(fractionMostCommon2,fractionMostCommon1) ;
         }
         return getMostCommonPeptide().compareTo(o.getMostCommonPeptide());
     }

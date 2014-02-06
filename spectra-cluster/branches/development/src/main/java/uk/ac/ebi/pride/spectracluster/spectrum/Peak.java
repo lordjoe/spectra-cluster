@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
@@ -54,7 +55,7 @@ public class Peak implements IPeak{
     @Override
     public int compareTo(IPeak o) {
         if (Math.abs(getMz() - o.getMz()) > SMALL_MZ_DIFFERENCE)
-            return Double.compare(getMz(), o.getMz());
+            return CompareTo.compare(getMz(), o.getMz());
         if (Math.abs(getIntensity()- o.getIntensity()) > SMALL_INTENSITY_DIFFERENCE)
             return Double.compare(getIntensity(), o.getIntensity());
         return 0;

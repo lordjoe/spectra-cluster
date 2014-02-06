@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -30,7 +31,7 @@ public class QualitySpectrumComparator implements Comparator<ISpectrum> {
 
         double q1 = cluster1.getQualityScore();
         double q2 = cluster2.getQualityScore();
-        return Double.compare(q2, q1);
+        return CompareTo.compare(q2, q1);
 
     }
 
