@@ -8,8 +8,8 @@ import org.jfree.chart.renderer.xy.*;
 import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 
-import javax.annotation.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -20,14 +20,14 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusterDecoyChart {
-    private final ClusterComparisonMain mostSimilarClusterSet;
+public class PSMClusterDecoyChart {
+    private final PSMComparisonMain mostSimilarClusterSet;
 
-    public ClusterDecoyChart(ClusterComparisonMain cm) throws HeadlessException {
+    public PSMClusterDecoyChart(PSMComparisonMain cm) throws HeadlessException {
         this.mostSimilarClusterSet = cm;
     }
 
-    public ClusterComparisonMain getSet() {
+    public PSMComparisonMain getSet() {
         return mostSimilarClusterSet;
     }
 
@@ -40,14 +40,14 @@ public class ClusterDecoyChart {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
 
-        ClusterComparisonMain set = getSet();
+        PSMComparisonMain set = getSet();
 
 
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             addDecoyAndTargetData(dataset, cs, minimumSize);
 
-            final JFreeChart chart = createChart("Target and Decoy " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("Target and Decoy " + minimumSize, dataset, minimumSize, set.getPSMCount());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -55,7 +55,7 @@ public class ClusterDecoyChart {
         }
 
 
-        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        ret.setPreferredSize(new Dimension(800, 600));
         return ret;
     }
 
@@ -64,12 +64,12 @@ public class ClusterDecoyChart {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
 
-        ClusterComparisonMain set = getSet();
+        PSMComparisonMain set = getSet();
 
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        final JFreeChart chart = createChart(cs.getName(),dataset, 0, set.getNumberSpectra());
-         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
+        final JFreeChart chart = createChart(cs.getName(), dataset, 0, set.getPSMCount());
+        for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             addFDRData(dataset, cs, minimumSize);
 
 
@@ -79,25 +79,24 @@ public class ClusterDecoyChart {
         ret.add(chartPanel);
 
 
-        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        ret.setPreferredSize(new Dimension(800, 600));
         return ret;
     }
 
 
-
-    public JPanel generateCFDistributionChart() {
+    public JPanel generateFractionalChart(boolean normalizeTotal) {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
 
-        ClusterComparisonMain set = getSet();
+        PSMComparisonMain set = getSet();
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
-                addFDRData(dataset, cs, minimumSize);
+                addFractionalData(dataset, cs, minimumSize,normalizeTotal);
             }
 
 
-            final JFreeChart chart = createChart("CF Distribution " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("FractionalData " + minimumSize, dataset, minimumSize, set.getPSMCount());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -105,59 +104,15 @@ public class ClusterDecoyChart {
         }
 
 
-        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        ret.setPreferredSize(new Dimension(800, 600));
         return ret;
     }
-
-
-
-    protected void addDistributionData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize,ClusterDataType type) {
-        ClusterComparisonMain cm = getSet();
-        List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
-        XYSeries series;
-        series = buildDistributionSeries(cs.getName(), decoys, cm.getNumberSpectra());
-
-        dataset.addSeries(series);
-
-    }
-
-
-    public XYSeries buildDistributionSeries(String name, List<ClusterPeptideFraction> values, double number_spectra) {
-        final XYSeries series1 = new XYSeries(name);
-        int index = 0;
-        int cutindex = 1;
-
-        int number_total = 0;
-        int number_targets = 0;
-        int twice_number_decoys = 0;
-
-        Collections.reverse(values);
-
-
-        double cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];
-        for (ClusterPeptideFraction pp : values) {
-
-            double purity = pp.getPurity();
-            while (purity < cutPoint) {
-                series1.add(cutPoint, (double) twice_number_decoys / number_total);
-                if (cutindex >= CummulativeFDR.reverse_cummulativePurityPoints.length)
-                    return series1;
-                cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];
-            }
-            number_total++;
-            if (pp.isDecoy())
-                twice_number_decoys += 2;
-
-        }
-        return series1;
-    }
-
 
     public JPanel generateFDRChart() {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
 
-        ClusterComparisonMain set = getSet();
+        PSMComparisonMain set = getSet();
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
@@ -165,7 +120,7 @@ public class ClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("FDR " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("FDR " + minimumSize, dataset, minimumSize, set.getPSMCount());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -173,7 +128,7 @@ public class ClusterDecoyChart {
         }
 
 
-        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        ret.setPreferredSize(new Dimension(800, 600));
         return ret;
     }
 
@@ -182,15 +137,16 @@ public class ClusterDecoyChart {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
 
-        ClusterComparisonMain set = getSet();
+        PSMComparisonMain set = getSet();
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
-            for (IClusterSet cs : set.getClusterings()) {
+            List<IClusterSet> clusterings = set.getClusterings();
+            for (IClusterSet cs : clusterings) {
                 addCummulativeData(dataset, cs, minimumSize);
             }
 
 
-            final JFreeChart chart = createChart("Total PSMS " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("Total PSMS " + minimumSize, dataset, minimumSize, set.getPSMCount());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -198,7 +154,7 @@ public class ClusterDecoyChart {
         }
 
 
-        ret.setPreferredSize(new java.awt.Dimension(800, 600));
+        ret.setPreferredSize(new Dimension(800, 600));
         return ret;
     }
 
@@ -221,13 +177,75 @@ public class ClusterDecoyChart {
 
             double purity = pp.getPurity();
             while (purity < cutPoint) {
-                series1.add(cutPoint,1.0 -  number_total / number_values);
+                series1.add(cutPoint, 1.0 - number_total / number_values);
                 if (cutindex >= CummulativeFDR.reverse_cummulativePurityPoints.length)
                     return series1;
                 cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];
             }
             number_total++;
-         }
+        }
+        return series1;
+    }
+
+    public static int countDecoys( List<ClusterPeptideFraction> values)  {
+        int ret = 0;
+        for (ClusterPeptideFraction value : values) {
+              if(value.isDecoy())
+                  ret++;
+        }
+        return ret;
+    }
+    public static int countTargets( List<ClusterPeptideFraction> values)  {
+        int ret = 0;
+        for (ClusterPeptideFraction value : values) {
+              if(!value.isDecoy())
+                  ret++;
+        }
+        return ret;
+    }
+
+
+    public XYSeries buildFractionalTotalSeries(String name, List<ClusterPeptideFraction> values,  ClusterDataType type,  boolean normalizeTotal) {
+        final XYSeries series1 = new XYSeries(name + " " + type);
+        int index = 0;
+        int cutindex = 0;
+
+        int number_total = 0;
+        int number_cummulative = 0;
+        double number_values = values.size();
+
+        if (!normalizeTotal && type == ClusterDataType.Decoy)
+            number_values = countDecoys(values);
+
+
+          series1.add(0, 0.0);
+        double cutPoint = CummulativeFDR.cummulativePurityPoints[cutindex++];
+        for (ClusterPeptideFraction pp : values) {
+            boolean use = !pp.isDecoy();
+            if (type == ClusterDataType.Decoy)
+                use = !use;
+            if (type == ClusterDataType.All)
+                use = true;
+            if (!use)
+                continue;
+            double purity = pp.getPurity();
+            if (purity > cutPoint) {
+                while (purity > cutPoint) {
+                    series1.add(cutPoint, number_cummulative / number_values);
+                    if (cutindex >= CummulativeFDR.cummulativePurityPoints.length) {
+                        series1.add(1.0,  number_cummulative / number_values);
+                        return series1;
+                    }
+                    cutPoint = CummulativeFDR.cummulativePurityPoints[cutindex++];
+                }
+                number_cummulative = 0;
+            }
+            else {
+                number_cummulative++;
+             }
+            number_total++;
+        }
+        series1.add(cutPoint,   number_cummulative / number_values);
         return series1;
     }
 
@@ -329,21 +347,21 @@ public class ClusterDecoyChart {
     public static final boolean USE_REVERSE = true;
 
     protected void addDecoyAndTargetData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize) {
-        ClusterComparisonMain cm = getSet();
+        PSMComparisonMain cm = getSet();
         List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeDecoyData(cs, cm, minimumClusterSize);
         XYSeries series;
         if (USE_REVERSE)
-            series = reverseBuildCummulativeSeries("Decoys", decoys, cm.getNumberSpectra());
+            series = reverseBuildCummulativeSeries("Decoys", decoys, cm.getPSMCount());
         else
-            series = buildCummulativeSeries("Decoys", decoys, cm.getNumberSpectra());
+            series = buildCummulativeSeries("Decoys", decoys, cm.getPSMCount());
 
         dataset.addSeries(series);
 
         List<ClusterPeptideFraction> targets = ClusterComparisonMain.getCumulativeTargetData(cs, cm, minimumClusterSize);
         if (USE_REVERSE)
-            series = reverseBuildCummulativeSeries("Targets", targets, cm.getNumberSpectra());
+            series = reverseBuildCummulativeSeries("Targets", targets, cm.getPSMCount());
         else
-            series = buildCummulativeSeries("Targets", targets, cm.getNumberSpectra());
+            series = buildCummulativeSeries("Targets", targets, cm.getPSMCount());
 
 
         dataset.addSeries(series);
@@ -351,23 +369,36 @@ public class ClusterDecoyChart {
     }
 
     protected void addFDRData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize) {
-        ClusterComparisonMain cm = getSet();
+        PSMComparisonMain cm = getSet();
         List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
         XYSeries series;
-        series = buildFDRSeries(cs.getName(), decoys, cm.getNumberSpectra());
+        series = buildFDRSeries(cs.getName(), decoys, cm.getPSMCount());
 
         dataset.addSeries(series);
 
     }
 
     protected void addCummulativeData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize) {
-        ClusterComparisonMain cm = getSet();
+        PSMComparisonMain cm = getSet();
         List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
         XYSeries series;
-        series = buildCummulativeTotalSeries(cs.getName(), decoys, cm.getNumberSpectra());
+        series = buildCummulativeTotalSeries(cs.getName(), decoys, cm.getPSMCount());
 
         dataset.addSeries(series);
 
+    }
+
+    protected void addFractionalData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize, boolean normalizeTotal) {
+        PSMComparisonMain cm = getSet();
+        List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
+        XYSeries series;
+        series = buildFractionalTotalSeries(cs.getName(), decoys,  ClusterDataType.All,normalizeTotal);
+
+        dataset.addSeries(series);
+
+        series = buildFractionalTotalSeries(cs.getName(), decoys,   ClusterDataType.Decoy,normalizeTotal);
+
+        dataset.addSeries(series);
     }
 
     /**
@@ -376,7 +407,7 @@ public class ClusterDecoyChart {
      * @param dataset the data for the chart.
      * @return a chart.
      */
-    private JFreeChart createChart(String title,final XYDataset dataset, int minSize, int numberSPectra) {
+    private JFreeChart createChart(String title, final XYDataset dataset, int minSize, int numberSPectra) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
@@ -427,8 +458,8 @@ public class ClusterDecoyChart {
     }
 
 
-    public static void makeDecoyChart(ClusterComparisonMain cc, final IClusterSet pCs, String name) {
-        ClusterDecoyChart clusterSimilarityChart = new ClusterDecoyChart(cc);
+    public static void makeDecoyChart(PSMComparisonMain cc, final IClusterSet pCs, String name) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
         JPanel charts = clusterSimilarityChart.generateChart(pCs);
 
 
@@ -441,8 +472,8 @@ public class ClusterDecoyChart {
     }
 
 
-    public static void makeFDRChart(String name, final ClusterComparisonMain cc) {
-        ClusterDecoyChart clusterSimilarityChart = new ClusterDecoyChart(cc);
+    public static void makeFDRChart(String name, final PSMComparisonMain cc) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
         JPanel charts = clusterSimilarityChart.generateFDRChart();
 
 
@@ -454,9 +485,9 @@ public class ClusterDecoyChart {
     }
 
 
-    public static void makeCummulativeTotalChart(String name, final ClusterComparisonMain cc) {
-        ClusterDecoyChart clusterSimilarityChart = new ClusterDecoyChart(cc);
-        JPanel charts = clusterSimilarityChart.generateCummulativeTotalChart();
+    public static void makeFractionalChart(String name, final PSMComparisonMain cc,boolean normalizeTotal) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        JPanel charts = clusterSimilarityChart.generateFractionalChart( normalizeTotal);
 
 
         JFrame frame = new JFrame(name);
@@ -467,7 +498,17 @@ public class ClusterDecoyChart {
     }
 
 
+    public static void makeCummulativeTotalChart(String name, final PSMComparisonMain cc) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        JPanel charts = clusterSimilarityChart.generateCummulativeTotalChart();
 
+
+        JFrame frame = new JFrame(name);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(charts, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
+    }
 
 
     public static void usage() {
@@ -527,7 +568,7 @@ public class ClusterDecoyChart {
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
 
-        ClusterDecoyChart clusterSimilarityChart = null; // new ClusterDecoyChart(mostSimilarClusterSet);
+        PSMClusterDecoyChart clusterSimilarityChart = null; // new ClusterDecoyChart(mostSimilarClusterSet);
 
         JPanel charts = clusterSimilarityChart.generateChart(null);    // todo fix
 

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class QualityClusterComparator implements Comparator<ISpectralCluster> {
         // handle a nasty and possibly non existent case
         if (q1 == null) {
             if (q2 == null)
-                return Double.compare(cluster1.getPrecursorMz(), cluster2.getPrecursorMz());
+                return CompareTo.compare(cluster1.getPrecursorMz(), cluster2.getPrecursorMz());
             else
                 return -1;
         }

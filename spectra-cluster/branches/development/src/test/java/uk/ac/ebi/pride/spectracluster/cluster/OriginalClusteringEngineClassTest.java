@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
 import junit.framework.Assert;
 import org.junit.*;
 import org.junit.Test;
@@ -136,7 +137,7 @@ public class OriginalClusteringEngineClassTest {
             }
             final double q1 = o1.getHighestQualitySpectrum().getQualityScore();
             final double q2 = o2.getHighestQualitySpectrum().getQualityScore();
-             return Double.compare(q2,q1); // high quality first
+             return CompareTo.compare(q2, q1); // high quality first
         }
     }
 }

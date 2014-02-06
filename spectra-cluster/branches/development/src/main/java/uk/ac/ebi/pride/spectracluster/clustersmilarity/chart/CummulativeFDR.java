@@ -115,20 +115,23 @@ public class CummulativeFDR {
     }
 
 
-
     /**
      * collect all decoys as  ClusterPeptideFraction
      */
     public static class AccumulateClusterPeptideFractionVisitor implements TypedVisitor<ISpectralCluster> {
 
-        private final IDecoyDiscriminator discriminator;
-        private final List<ClusterPeptideFraction> data;
+          private final List<ClusterPeptideFraction> data;
         private final int minimumClusterSize;
+        private final ClusterDataType type;
 
-        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize, IDecoyDiscriminator pdiscriminator) {
+        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize,  ClusterDataType pType) {
             data = pData;
             minimumClusterSize = pminimumClusterSize;
-            discriminator = pdiscriminator;
+             type = pType;
+        }
+
+        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize ) {
+            this(pData, pminimumClusterSize,  ClusterDataType.All);
         }
 
         /**
@@ -138,7 +141,48 @@ public class CummulativeFDR {
         public void visit(@Nonnull final ISpectralCluster cluster) {
             if (cluster.getClusteredSpectraCount() < minimumClusterSize)
                 return;
-            for (ClusterPeptideFraction pp : cluster.getPeptidePurity(discriminator)) {
+
+            for (ClusterPeptideFraction pp : cluster.getPeptidePurity(null)) {
+                switch (type) {
+                    case All:
+                        data.add(pp);
+                        break;
+                    case Decoy:
+                        if (pp.isDecoy())
+                            data.add(pp);
+                        break;
+                    case Target:
+                        if (!pp.isDecoy())
+                            data.add(pp);
+                        break;
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * collect all decoys as  ClusterPeptideFraction
+     */
+    public static class AccumulateClusterPSMFractionVisitor implements TypedVisitor<ISpectralCluster> {
+
+        private final List<ClusterPeptideFraction> data;
+        private final int minimumClusterSize;
+
+        public AccumulateClusterPSMFractionVisitor(final List<ClusterPeptideFraction> pData,  int pminimumClusterSize) {
+            data = pData;
+            minimumClusterSize = pminimumClusterSize;
+        }
+
+        /**
+         * @param pISpectralCluster interface implemented by the visitor pattern
+         */
+        @Override
+        public void visit(@Nonnull final ISpectralCluster cluster) {
+            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
+                return;
+            for (ClusterPeptideFraction pp : cluster.getPeptidePurity(null)) {
                 data.add(pp);
             }
         }
@@ -201,7 +245,7 @@ public class CummulativeFDR {
                 return;
             for (ClusterPeptideFraction pp : cluster.getPeptidePurity(discriminator)) {
                 boolean decoy = pp.isDecoy();
-                 if (!decoy)
+                if (!decoy)
                     data.add(pp);
             }
 

@@ -394,7 +394,7 @@ public class ParserUtilities {
         return cluster;
     }
 
-    protected static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
+    public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
         try {
             float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
             float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);

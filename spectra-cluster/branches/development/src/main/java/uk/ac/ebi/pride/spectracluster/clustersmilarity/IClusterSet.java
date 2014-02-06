@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 import javax.annotation.*;
 import java.util.*;

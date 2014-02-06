@@ -1,7 +1,8 @@
-package uk.ac.ebi.pride.spectracluster.clustersmilarity;
+package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
 
 import java.io.*;
@@ -12,16 +13,18 @@ import java.util.*;
  * User: Steve
  * Date: 1/17/14
  */
-public class ClusterComparisonMain implements IDecoyDiscriminator {
-    public static final ClusterComparisonMain INSTANCE = new ClusterComparisonMain();
+public class PSMComparisonMain implements IDecoyDiscriminator {
+    public static final PSMComparisonMain INSTANCE = new PSMComparisonMain();
 
     private final Properties properties = new Properties();
     private final Set<String> decoys = new HashSet<String>();
     private final Set<String> used_decoys = new HashSet<String>();
     private final List<IClusterSet> clusterings = new ArrayList<IClusterSet>();
-    private final SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
+ //   private final SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
 
-    private ClusterComparisonMain() {
+    private final PSM_Holder psms = new PSM_Holder();
+
+    private PSMComparisonMain() {
     }
 
     public void handlePropertiesFile(final String propertyFileName) {
@@ -35,30 +38,47 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         }
     }
 
-    public int getNumberSpectra() {
-        return spectra.getSpectraCount();
+    public int getDecoyCount()
+    {
+        return getPsms().getDecoyCount();
     }
 
-    protected void handleProperties() {
-        String tsvFileName = getProperty("SpectraFile");
-        File tsvFile = new File(tsvFileName);
-        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, spectra);
 
+    public int getPSMCount()
+    {
+        return getPsms().getPSMSpectrumCount();
+    }
+
+
+
+    protected void handleProperties() {
 
         String decoyFileName = getProperty("Decoys");
-        File decoyFile = new File(decoyFileName);
-        try {
-            LineNumberReader rdr = new LineNumberReader(new FileReader(decoyFile));
-            String line = rdr.readLine();
-            while (line != null) {
-                decoys.add(line.trim());
-                line = rdr.readLine();
-            }
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+          File decoyFile = new File(decoyFileName);
+          try {
+              LineNumberReader rdr = new LineNumberReader(new FileReader(decoyFile));
+              String line = rdr.readLine();  // drop header
+              line = rdr.readLine();
+              while (line != null) {
+                  PSMSpectrum added = PSMSpectrum.getSpectrumFromLine(line);
+                  psms.addPSMSpectrum(added);
+                  line = rdr.readLine();
+              }
+          }
+          catch (IOException e) {
+              throw new RuntimeException(e);
 
-        }
+          }
+        int totalPSMs = psms.getPSMSpectrumCount();
+        int totalDecoys = psms.getDecoyCount();
+
+
+        String tsvFileName = getProperty("SpectraFile");
+        File tsvFile = new File(tsvFileName);
+        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, psms);
+
+
+
 
     }
 
@@ -100,19 +120,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
 
 
-    public static List<ClusterPeptideFraction> getDistributionData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize,ClusterDataType type) {
+    public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs,  int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys,minimumSize,  type);
-        //noinspection unchecked
-        cs.visitClusters(tv);
-        Collections.sort(decoys);
-        return decoys;
-    }
-
-
-    public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
-        List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPSMFractionVisitor(decoys,  minimumSize);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize );
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -121,9 +131,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
 
 
-    public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
+    public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs,IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys,  minimumSize,discriminator );
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize,discriminator);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -154,9 +164,6 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         return clusterings;
     }
 
-    public SimpleSpectrumRetriever getSpectra() {
-        return spectra;
-    }
 
     public void generateReports() {
         for (IClusterSet cs : clusterings) {
@@ -166,14 +173,13 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public void generateReport(IClusterSet cs) {
 
-        SimpleSpectrumRetriever spectra1 = getSpectra();
-        ClusterStatistics stat = new ClusterStatistics(spectra1, cs, new FractionInClustersOfSizeStatistics(spectra1));
-        stat.gatherData();
-        String report = stat.generateReport();
-        Set<String> usedDecoys = getUsedDecoys();
-        Set<String> unusedDecoys = getUnusedDecoys();
-        System.out.println("Used decoys " + usedDecoys.size() + " Unused Decoys " + unusedDecoys.size());
-        System.out.println(report);
+//          ClusterStatistics stat = new ClusterStatistics(spectra1, cs, new FractionInClustersOfSizeStatistics(spectra1));
+//        stat.gatherData();
+//        String report = stat.generateReport();
+//        Set<String> usedDecoys = getUsedDecoys();
+//        Set<String> unusedDecoys = getUnusedDecoys();
+//        System.out.println("Used decoys " + usedDecoys.size() + " Unused Decoys " + unusedDecoys.size());
+//        System.out.println(report);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -186,39 +192,47 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         System.out.println("Usage propertiesFile <ClusteringFile or Directory> ...");
     }
 
-    public static void showChart(final IClusterSet pCs) {
-        INSTANCE.generateReport(pCs);
 
-        ClusterDecoyChart.makeDecoyChart(INSTANCE, pCs, pCs.getName());
+     public void showFDRCharts(String name ) {
+
+         PSMClusterDecoyChart.makeFractionalChart(name + " Fractional PSMS", this,false);
+         PSMClusterDecoyChart.makeFractionalChart(name + " Total Fractional PSMS", this,true);
+        //   PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
+     //    PSMClusterDecoyChart.makeCummulativeTotalChart(name + " Total PSMS", this);
+       }
+
+
+    public PSM_Holder getPsms() {
+        return psms;
     }
-
-    public void showFDRCharts( ) {
-
-        ClusterDecoyChart.makeFDRChart("FDR", this);
-        ClusterDecoyChart.makeCummulativeTotalChart("Total PSMS", this);
-    }
-
 
     public static void main(String[] args) {
         if (args.length < 2) {
             usage();
             return;
         }
+
+        ElapsedTimer et = new ElapsedTimer();
         INSTANCE.handlePropertiesFile(args[0]);
-        SimpleSpectrumRetriever spectra1 = INSTANCE.getSpectra();
+
+        et.formatElapsed("Handled Properties");
+        et.reset();
+        PSM_Holder psms1 = INSTANCE.getPsms();
+
         for (int i = 1; i < args.length; i++) {
             INSTANCE.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
+            IClusterSet cs = PSMUtilities.readClusterSet( originalFile,psms1, arg + "SemiStableNew.clustering");
             cs.setName(arg);
             INSTANCE.addClustering(cs);
            // showChart(cs);
         }
+        et.formatElapsed("Read Properties");
 
 
-        INSTANCE.showFDRCharts();
-          INSTANCE.generateReports();
+        INSTANCE.showFDRCharts(INSTANCE.getProperty("name"));
+        INSTANCE.generateReports();
       }
 
 

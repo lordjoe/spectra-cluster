@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
+import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
@@ -245,7 +246,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
             double match1 = matchQuality(o1, clusterToMatch);
             double match2 = matchQuality(o2, clusterToMatch);
 
-            return Double.compare(match1, match2);
+            return CompareTo.compare(match1, match2);
         }
 
         private double matchQuality(ISpectralCluster c1, ISpectralCluster c2) {

@@ -1,8 +1,8 @@
-package uk.ac.ebi.pride.spectracluster.clustersmilarity;
+package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -14,70 +14,8 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectralCluster implements ISpectralCluster {
+public class PSMSpectralCluster implements ISpectralCluster {
 
-    protected static class DataFromDatabase {
-        private final String id;
-        private final float precursorMz;
-        private final int precursorCharge;
-        private final String peptide;
-
-        public DataFromDatabase(String id, float precursorMz, int precursorCharge, String peptide) {
-            this.id = id;
-            this.precursorMz = precursorMz;
-            this.precursorCharge = precursorCharge;
-            this.peptide = peptide;
-        }
-
-        public DataFromDatabase(String line) {
-            String[] items = line.split("\t");
-            int index = 0;
-            this.id = items[index++];
-            this.precursorMz = Float.parseFloat(items[index++]);
-            this.precursorCharge = Integer.parseInt(items[index++]);
-            this.peptide = items[index++];
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public float getPrecursorMz() {
-            return precursorMz;
-        }
-
-        public String getPeptide() {
-            return peptide;
-        }
-
-        public int getPrecursorCharge() {
-            return precursorCharge;
-        }
-    }
-
-    private static Map<String, DataFromDatabase> cachedData = new HashMap<String, DataFromDatabase>();
-
-    public static void guaranteeCachedData() {
-        if (cachedData.isEmpty())
-            fillCachedData();
-    }
-
-    protected static void fillCachedData() {
-        try {
-            String cachedDataFile = null;
-            LineNumberReader rdr = new LineNumberReader(new FileReader(cachedDataFile));
-            String line = rdr.readLine();
-            while (line != null) {
-                DataFromDatabase dbx = new DataFromDatabase(line);
-                cachedData.put(dbx.getId(), dbx);
-                line = rdr.readLine();
-            }
-            rdr.close();
-        }
-        catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-    }
 
     private String id;
     private Float precursorMz;
@@ -88,21 +26,9 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
 
-    public LazyLoadedSpectralCluster() {
+    public PSMSpectralCluster() {
     }
 
-    protected void guaranteeCachedRead() {
-        if (precursorMz == null) {
-            guaranteeCachedData();
-            DataFromDatabase dbf = cachedData.get(getId());
-            if (dbf != null) {
-                setPrecursorCharge(dbf.getPrecursorCharge());
-                setPrecursorMz(dbf.getPrecursorMz());
-                addPeptide(dbf.getPeptide());
-            }
-            //           buildPeptidePurities(dd);
-        }
-    }
 
 
     private static int Bad_SpectraCount = 0;
@@ -118,9 +44,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
                     spectral_peptides.add(s);
-                }
-            }
-
+                 }
+             }
         }
         double numberSpectra = getClusteredSpectraCount();
 
@@ -145,14 +70,14 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         double total_items = 0;
         for (int i = 0; i < items.length; i++) {
             CountedString item = items[i];
-            total_items += item.getCount();
+            total_items += item.getCount() ;
         }
         for (int i = 0; i < items.length; i++) {
-            CountedString item = items[i];
+             CountedString item = items[i];
             int count = item.getCount();
             peptideToFraction.put(item.getValue(), count / total_items);
-        }
-        for (ISpectrum iSpectrum : clusteredSpectra) {
+         }
+         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String value = sc1.getPeptide();
@@ -162,58 +87,19 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 String peptide = peptides[j];
                 decoy |= dd.isDecoy(peptide);
             }
-            if (peptides.length > 1)
+            if(peptides.length > 1)
                 MultipleSpectraCount++;
 
             String peptide = peptides[0];
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
-            if (purity == null)
+            if(purity == null)
                 throw new UnsupportedOperationException("Fix This"); // ToDo
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
         }
     }
 
 
-    protected void buildPSMPeptidePurities() {
-        double numberSpectra = getClusteredSpectraCount();
-        Set<String> decoys = new HashSet<String>();
-        final List<String> spectral_peptides = new ArrayList<String>();
-        for (ISpectrum iSpectrum : clusteredSpectra) {
-            PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
-            String peptide = sc1.getPeptide();
-            spectral_peptides.add(peptide);
-            if (sc1.isDecoy())
-                decoys.add(peptide);
-        }
-
-        // debug bad case
-        // end bad case
-
-        CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
-        Map<String, Double> peptideToFraction = new HashMap<String, Double>();
-        double total_items = 0;
-        for (int i = 0; i < items.length; i++) {
-            CountedString item = items[i];
-            total_items += item.getCount();
-        }
-        for (int i = 0; i < items.length; i++) {
-            CountedString item = items[i];
-            int count = item.getCount();
-            peptideToFraction.put(item.getValue(), count / total_items);
-        }
-        for (ISpectrum iSpectrum : clusteredSpectra) {
-            AllSpectraCount++;
-            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            boolean decoy = ((PSMSpectrum) sc1).isDecoy();
-             String peptide = sc1.getPeptide();
-            spectral_peptides.add(peptide);
-            Double purity = peptideToFraction.get(peptide);
-            if (purity == null)
-                throw new UnsupportedOperationException("Fix This"); // ToDo
-            byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
-        }
-    }
 
 
     @Override
@@ -227,8 +113,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public float getPrecursorMz() {
-        guaranteeCachedRead();
-        return precursorMz;
+         return precursorMz;
     }
 
     /**
@@ -253,14 +138,12 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public int getPrecursorCharge() {
-        guaranteeCachedRead();
-        return precursorCharge;
+         return precursorCharge;
     }
 
     @Override
     public List<String> getPeptides() {
-        guaranteeCachedRead();
-        return new ArrayList<String>(peptides);
+          return new ArrayList<String>(peptides);
     }
 
     @Override
@@ -281,12 +164,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     public
     @Nonnull
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
-        if (byPurity.size() == 0) {
-            if (dd == null)
-                buildPSMPeptidePurities();
-            else
-                buildPeptidePurities(dd);
-        }
+        if (byPurity.size() == 0)
+            buildPeptidePurities(dd);
         return byPurity;
 
     }
