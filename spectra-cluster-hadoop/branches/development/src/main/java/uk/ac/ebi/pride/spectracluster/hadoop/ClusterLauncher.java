@@ -1012,8 +1012,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                     throw new IllegalStateException("params file " + gParamsFile + " does not exist - in the command line you must say params=<paramsFile> and that file MUST exist");
                 if (!paramsFile.canRead())
                      throw new IllegalStateException("params file " + gParamsFile + " CANNOT BE READ - in the command line you must say params=<paramsFile> and that file MUST exist");
-                if(paramsFile.getParentFile() != null)
-                    gPassedBaseDirctory = paramsFile.getParentFile().getPath().replace("\\", "/");
+                File file = paramsFile.getParentFile();
+                if(file != null) {
+                    String path = file.getPath();
+                    String replace = path.replace("\\", "/");
+                    gPassedBaseDirctory = RemoteUtilities.getDefaultPath() + "/" + replace;
+                }
 
                 InputStream is = new FileInputStream(paramsFile);
 
@@ -1119,12 +1123,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 defaultDir = defaultDir.replace("/<LOCAL_DIRECTORY>","");
                  String localName = new File(System.getProperty("user.dir")).getName();
                 if( !USER_DIR.equals(getPassedBaseDirctory()) )
-                    localName = getPassedBaseDirctory();
+                    localName = defaultDir + "/" + getPassedBaseDirctory();
                 String local = localName;
                 baseDir = baseDir.replace("<LOCAL_DIRECTORY>", local);
             }
             String oldBaseDir = RemoteUtilities.getDefaultPath();
-              RemoteUtilities.setDefaultPath(defaultDir);
+            RemoteUtilities.setDefaultPath(defaultDir);
 
             gPassedBaseDirctory = baseDir;
             return;
