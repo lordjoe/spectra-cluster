@@ -112,7 +112,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPSMFractionVisitor(decoys,  minimumSize);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys,  minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);

@@ -14,7 +14,6 @@ import java.util.*;
  * Date: 1/17/14
  */
 public class PSMComparisonMain implements IDecoyDiscriminator {
-    public static final PSMComparisonMain INSTANCE = new PSMComparisonMain();
 
     private final Properties properties = new Properties();
     private final Set<String> decoys = new HashSet<String>();
@@ -196,9 +195,9 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
      public void showFDRCharts(String name ) {
 
          PSMClusterDecoyChart.makeFractionalChart(name + " Fractional PSMS", this,false);
-         PSMClusterDecoyChart.makeFractionalChart(name + " Total Fractional PSMS", this,true);
-        //   PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
-     //    PSMClusterDecoyChart.makeCummulativeTotalChart(name + " Total PSMS", this);
+    //     PSMClusterDecoyChart.makeFractionalChart(name + " Total Fractional PSMS", this,true);
+         PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
+          PSMClusterDecoyChart.makeCummulativeTotalChart(name + " Total PSMS", this);
        }
 
 
@@ -211,28 +210,29 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             usage();
             return;
         }
+         PSMComparisonMain mainClass = new PSMComparisonMain();
 
         ElapsedTimer et = new ElapsedTimer();
-        INSTANCE.handlePropertiesFile(args[0]);
+        mainClass.handlePropertiesFile(args[0]);
 
         et.formatElapsed("Handled Properties");
         et.reset();
-        PSM_Holder psms1 = INSTANCE.getPsms();
+        PSM_Holder psms1 = mainClass.getPsms();
 
         for (int i = 1; i < args.length; i++) {
-            INSTANCE.clearDecoyUse();
+            mainClass.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = PSMUtilities.readClusterSet( originalFile,psms1, arg + "SemiStableNew.clustering");
             cs.setName(arg);
-            INSTANCE.addClustering(cs);
+            mainClass.addClustering(cs);
            // showChart(cs);
         }
         et.formatElapsed("Read Properties");
 
 
-        INSTANCE.showFDRCharts(INSTANCE.getProperty("name"));
-        INSTANCE.generateReports();
+        mainClass.showFDRCharts(mainClass.getProperty("name"));
+        mainClass.generateReports();
       }
 
 

@@ -13,9 +13,9 @@ import java.util.*;
  * Date: 1/24/14
  */
 public class CummulativeFDR {
-    public static final double cummulativePurityPoints[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 1.0};
-    public static final double reverse_cummulativePurityPoints[] = {1.0, 0.99, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5,
-            0.4, 0.3, 0.2, 0.1, 0.0};
+    public static final double fractionalPurityPoints[] = {0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0};
+    public static final double cummulativePurityPoints[] = {0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.98, 0.99, 1.0};
+    public static final double reverse_cummulativePurityPoints[] = {1.0, 0.99, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0};
 
     private final SimpleSpectrumRetriever spectra;
 
@@ -120,18 +120,18 @@ public class CummulativeFDR {
      */
     public static class AccumulateClusterPeptideFractionVisitor implements TypedVisitor<ISpectralCluster> {
 
-          private final List<ClusterPeptideFraction> data;
+        private final List<ClusterPeptideFraction> data;
         private final int minimumClusterSize;
         private final ClusterDataType type;
 
-        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize,  ClusterDataType pType) {
+        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize, ClusterDataType pType) {
             data = pData;
             minimumClusterSize = pminimumClusterSize;
-             type = pType;
+            type = pType;
         }
 
-        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize ) {
-            this(pData, pminimumClusterSize,  ClusterDataType.All);
+        public AccumulateClusterPeptideFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
+            this(pData, pminimumClusterSize, ClusterDataType.All);
         }
 
         /**
@@ -170,7 +170,7 @@ public class CummulativeFDR {
         private final List<ClusterPeptideFraction> data;
         private final int minimumClusterSize;
 
-        public AccumulateClusterPSMFractionVisitor(final List<ClusterPeptideFraction> pData,  int pminimumClusterSize) {
+        public AccumulateClusterPSMFractionVisitor(final List<ClusterPeptideFraction> pData, int pminimumClusterSize) {
             data = pData;
             minimumClusterSize = pminimumClusterSize;
         }
