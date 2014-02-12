@@ -45,6 +45,14 @@ public class PSM_Holder {
          return idToPSMSpectrum.get(id);
      }
 
+    public Set<PSMSpectrum> getAllSpectrums( )   {
+        Set<PSMSpectrum> ret = new HashSet<PSMSpectrum>() ;
+        for (String id : idToPSMSpectrum.keySet()) {
+            ret.addAll(getPSMSpectrums(id));
+        }
+        return ret;
+     }
+
     public Set<PSMSpectrum> getPSMSpectrumsByPeptide(String id)   {
          return peptideToPSMSpectrum.get(id);
      }

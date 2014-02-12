@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -11,15 +12,23 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakReducer
  * Form clusters from peaks
  */
 public class MajorPeakReducer extends AbstractParameterizedReducer {
 
+
+
+    private double majorPeakWindowSize;
     private double majorPeak;
     private int currentCharge;
     private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
 
+
+    public double getMajorPeakWindowSize() {
+        return majorPeakWindowSize;
+    }
 
     public double getMajorPeak() {
         return majorPeak;
@@ -31,6 +40,13 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
 
     public IIncrementalClusteringEngine getEngine() {
         return engine;
+    }
+
+
+    @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        Defaults.configureAnalysisParameters(getApplication());
     }
 
     @Override
@@ -147,7 +163,8 @@ public class MajorPeakReducer extends AbstractParameterizedReducer {
         }
         // if not at end make a new engine
         if (pMzKey != null) {
-            engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_MAJOR_PEAK_MZ_WINDOW);
+
+            engine = factory.getIncrementalClusteringEngine(Defaults.getMajorPeakMZWindowSize());
             majorPeak = pMzKey.getPeakMZ();
             currentCharge = pMzKey.getCharge();
         }

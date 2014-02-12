@@ -43,7 +43,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
         String id = items[0].trim();
         PSMSpectrum ret = getSpectrum(id);
         ret.setPeptide(items[1].trim());
-        ;
         ret.setDecoy("1".equals(items[2].trim()));
         return ret;
     }

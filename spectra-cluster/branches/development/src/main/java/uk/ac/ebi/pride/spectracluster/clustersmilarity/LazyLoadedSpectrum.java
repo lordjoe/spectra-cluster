@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -31,6 +32,19 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     public String getId() {
         return id;
     }
+
+
+    /**
+     * true if we know this is a decoy
+     *
+     * @return
+     */
+    @Override
+    public boolean isDecoy() {
+        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId()) ;
+        return psm.isDecoy();
+    }
+
 
     @Override
     public float getPrecursorMz() {

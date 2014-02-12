@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -192,6 +193,10 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
         if (cluster instanceof LazyLoadedSpectralCluster) {
             ((LazyLoadedSpectralCluster) cluster).setId(id);
+            return;
+        }
+        if (cluster instanceof PSMSpectralCluster) {
+            ((PSMSpectralCluster) cluster).setId(id);
             return;
         }
         if (cluster instanceof SpectralCluster) {

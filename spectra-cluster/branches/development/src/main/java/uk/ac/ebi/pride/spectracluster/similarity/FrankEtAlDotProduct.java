@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -17,21 +18,13 @@ import java.util.*;
  * dot-product are filled with the 1+ln(I) where I
  * is the peak's normalized intensity.
  *
+ * uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct
  * @author jg
  *         <p/>
  *         todo: this class needs to be reviewed
  */
 public class FrankEtAlDotProduct implements SimilarityChecker {
 
-    public static final int NUMBER_COMPARED_PEAKS = 15;
-
-    public static final double DEFAULT_MZ_RANGE = 0.5;
-
-    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
-
-    public static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
-
-    public static final int LARGE_BINNING_REGION = 1000;
 
     public static final int K2011_BIN_SIZE = 50;
     /**
@@ -79,7 +72,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         return getVersion().toString();
     }
 
-    private double mzRange = DEFAULT_MZ_RANGE;
+    private double mzRange = Defaults.getSimilarityMZRange();
     /**
      * The algorithm version to use. By
      * default the version described in
@@ -94,7 +87,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      */
     @Override
     public double getDefaultThreshold() {
-        return DEFAULT_SIMILARITY_THRESHOLD;
+        return Defaults.getSimilarityThreshold();
     }
 
     /**
@@ -105,7 +98,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      */
     @Override
     public double getDefaultRetainThreshold() {
-        return DEFAULT_RETAIN_THRESHOLD;
+        return Defaults.getRetainThreshold();
     }
 
     /**
@@ -187,7 +180,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     }
 
     protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
-        int numberComparedPeaks = NUMBER_COMPARED_PEAKS;
+        int numberComparedPeaks = Defaults.getNumberComparedPeaks();
         float precursorMz = spectrum1.getPrecursorMz();
         float precursor2 = spectrum2.getPrecursorMz();
         switch (version) {
@@ -216,15 +209,16 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                                Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-            return NUMBER_COMPARED_PEAKS;
+            return  Defaults.getNumberComparedPeaks();;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
-        int k = NUMBER_COMPARED_PEAKS * (int) (peptideMass / LARGE_BINNING_REGION);
+        int largeBinningRegion = Defaults.getLargeBinningRegion();
+        int k =  Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
 
-        if (peptideMass % LARGE_BINNING_REGION > 0)
-            k += NUMBER_COMPARED_PEAKS;
+        if (peptideMass % largeBinningRegion > 0)
+            k +=  Defaults.getNumberComparedPeaks();;
 
         return k;
     }
@@ -239,7 +233,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     private int calculateK2011(Float precursor1, Float precursor2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null)
-            return NUMBER_COMPARED_PEAKS;
+            return Defaults.getNumberComparedPeaks();
 
         // use m/z / 50
         int k = (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);

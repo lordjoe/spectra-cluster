@@ -180,12 +180,15 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         Set<String> decoys = new HashSet<String>();
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
-            PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
+            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String peptide = sc1.getPeptide();
             spectral_peptides.add(peptide);
             if (sc1.isDecoy())
                 decoys.add(peptide);
         }
+
+        String pureDecoy = null;
+        String purityStr = null;
 
         // debug bad case
         // end bad case
@@ -205,14 +208,23 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            boolean decoy = ((PSMSpectrum) sc1).isDecoy();
-             String peptide = sc1.getPeptide();
+            boolean decoy =  sc1.isDecoy();
+            String peptide = sc1.getPeptide();
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
             if (purity == null)
                 throw new UnsupportedOperationException("Fix This"); // ToDo
+            if(decoy && purity > 0.8)     {
+                   pureDecoy = peptide;
+                   purityStr = String.format("%8.2f", purity).trim();
+               }
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
         }
+
+        if(pureDecoy != null)  {
+            System.out.println(pureDecoy + " " + purityStr);
+        }
+
     }
 
 

@@ -51,6 +51,14 @@ public class StableSpectrumMergeReducerOld extends AbstractParameterizedReducer 
         return currentGroup;
     }
 
+
+    @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        Defaults.configureAnalysisParameters(getApplication());
+      }
+
+
     @Override
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {

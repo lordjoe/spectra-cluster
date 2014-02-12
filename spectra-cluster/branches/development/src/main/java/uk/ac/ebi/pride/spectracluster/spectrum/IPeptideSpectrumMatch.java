@@ -29,4 +29,10 @@ public interface IPeptideSpectrumMatch extends ISpectrum {
      */
     public void appendTSV(Appendable out);
 
+    /**
+     * true if we know this is a decoy
+     * @return
+     */
+    public boolean isDecoy();
+
 }

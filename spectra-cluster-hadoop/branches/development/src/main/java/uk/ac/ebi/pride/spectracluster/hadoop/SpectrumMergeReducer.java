@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumMergeReducer.
  * Form clusters from peaks
  */
 public class SpectrumMergeReducer extends AbstractParameterizedReducer {
@@ -25,6 +26,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
     private IIncrementalClusteringEngine engine;
     private ElapsedTimer binTime = new ElapsedTimer();
     private ElapsedTimer jobTime = new ElapsedTimer();
+    private double spectrumMergeWindowSize;
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -48,13 +50,19 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         return binner;
     }
 
+    public double getSpectrumMergeWindowSize() {
+        return spectrumMergeWindowSize;
+    }
+
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
         boolean offsetBins = context.getConfiguration().getBoolean("offsetBins", false);
         if(offsetBins)
             binner = (IWideBinner)binner.offSetHalf();
-    }
+
+          Defaults.configureAnalysisParameters(getApplication());
+     }
 
     @Override
     public void reduceNormal(Text key, Iterable<Text> values,
@@ -242,7 +250,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
         boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
-            engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_SPECTRUM_MERGE_WINDOW);
+            engine = factory.getIncrementalClusteringEngine(getSpectrumMergeWindowSize() );
             majorMZ = pMzKey.getPrecursorMZ();
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());

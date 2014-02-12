@@ -112,7 +112,7 @@ public class PSMUtilities {
 
      protected static ISpectralCluster processIntoCluster(List<String> clusterLines, PSM_Holder psms) {
 
-         LazyLoadedSpectralCluster cluster = new LazyLoadedSpectralCluster();
+         PSMSpectralCluster cluster = new PSMSpectralCluster();
          PSMSpectrum spectrum = null;
          String consensusMzLine = null;
          String consensusIntensityLine = null;
