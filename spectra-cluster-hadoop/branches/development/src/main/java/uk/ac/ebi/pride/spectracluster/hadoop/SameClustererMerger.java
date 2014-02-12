@@ -26,6 +26,7 @@ import java.util.*;
  */
 public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunner {
 
+
     /**
      * mapper sends out clusters with the same id (highest quality spectrum)
      * clusters with the same id are merged
@@ -69,10 +70,18 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
         public IIncrementalClusteringEngine getEngine() {
             if (engine == null) {
-                engine = factory.getIncrementalClusteringEngine(Defaults.DEFAULT_SPECTRUM_MERGE_WINDOW);
+                engine = factory.getIncrementalClusteringEngine(Defaults.getSameClusterMergeMZWindowSize());
             }
             return engine;
         }
+
+        @Override
+        protected void setup(final Context context) throws IOException, InterruptedException {
+            super.setup(context);
+            Defaults.configureAnalysisParameters(getApplication());
+         }
+
+
 
         /**
          * this reducer get all clusters with the same id, usually the highest quality spectrum and merges them

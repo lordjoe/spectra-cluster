@@ -30,12 +30,11 @@ public class PSMSpectralCluster implements ISpectralCluster {
     }
 
 
-
     private static int Bad_SpectraCount = 0;
     private static int MultipleSpectraCount = 0;
     private static int AllSpectraCount = 0;
 
-    protected void buildPeptidePurities(IDecoyDiscriminator dd) {
+    protected void buildPeptidePurities() {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
@@ -44,10 +43,13 @@ public class PSMSpectralCluster implements ISpectralCluster {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
                     spectral_peptides.add(s);
-                 }
-             }
+                }
+            }
         }
         double numberSpectra = getClusteredSpectraCount();
+        String pureDecoy = null;
+        String purityStr = null;
+
 
         // debug bad case
         if (spectral_peptides.size() == 0) {
@@ -67,39 +69,44 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
         CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
         Map<String, Double> peptideToFraction = new HashMap<String, Double>();
+        int nunberSpectra = getClusteredSpectraCount();
         double total_items = 0;
         for (int i = 0; i < items.length; i++) {
             CountedString item = items[i];
-            total_items += item.getCount() ;
+            total_items += item.getCount();
         }
         for (int i = 0; i < items.length; i++) {
-             CountedString item = items[i];
+            CountedString item = items[i];
             int count = item.getCount();
             peptideToFraction.put(item.getValue(), count / total_items);
-         }
-         for (ISpectrum iSpectrum : clusteredSpectra) {
+        }
+        for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
-            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            String value = sc1.getPeptide();
-            String[] peptides = value.split(";");
-            boolean decoy = false;
-            for (int j = 0; j < peptides.length; j++) {
-                String peptide = peptides[j];
-                decoy |= dd.isDecoy(peptide);
-            }
-            if(peptides.length > 1)
+            PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
+            String peptide =sc1.getPeptide();
+               boolean decoy = sc1.isDecoy();
+            if (peptides.contains(";")) {
                 MultipleSpectraCount++;
+                throw new UnsupportedOperationException("Should never happen");
+            }
 
-            String peptide = peptides[0];
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
-            if(purity == null)
-                throw new UnsupportedOperationException("Fix This"); // ToDo
+            if (purity == null)
+                throw new UnsupportedOperationException("Should never happen");
+
+            if (decoy && purity > 0.8) {
+                pureDecoy = peptide;
+                purityStr = String.format("%8.2f", purity).trim();
+            }
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
+
+        }
+
+        if (pureDecoy != null) {
+            System.out.println(pureDecoy + " " + purityStr);
         }
     }
-
-
 
 
     @Override
@@ -113,7 +120,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
     @Override
     public float getPrecursorMz() {
-         return precursorMz;
+        return precursorMz;
     }
 
     /**
@@ -138,12 +145,12 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
     @Override
     public int getPrecursorCharge() {
-         return precursorCharge;
+        return precursorCharge;
     }
 
     @Override
     public List<String> getPeptides() {
-          return new ArrayList<String>(peptides);
+        return new ArrayList<String>(peptides);
     }
 
     @Override
@@ -161,11 +168,12 @@ public class PSMSpectralCluster implements ISpectralCluster {
      *
      * @return list ordered bu purity
      */
+    @Override
     public
     @Nonnull
-    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
+    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
         if (byPurity.size() == 0)
-            buildPeptidePurities(dd);
+            buildPeptidePurities();
         return byPurity;
 
     }

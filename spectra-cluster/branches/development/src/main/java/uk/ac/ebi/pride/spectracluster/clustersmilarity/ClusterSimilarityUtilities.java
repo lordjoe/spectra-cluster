@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
+import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
@@ -407,7 +408,7 @@ public class ClusterSimilarityUtilities {
 //                 similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1); // break here
 //             }
 //
-//             if (similarityScore >= sCheck.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
+//             if (similarityScore >= sCheck.getWindowSize() && similarityScore > highestSimilarityScore) {
 //                 highestSimilarityScore = similarityScore;
 //                 mostSimilarCluster = cluster;
 //             }
@@ -415,6 +416,57 @@ public class ClusterSimilarityUtilities {
 //         }
 
     }
+
+
+    /**
+     * read a file looking like
+     *
+     *  spectrum_id	sequence	is_decoy
+     237	QSNNKYAASSYLSLTPEQWK	0
+     238	QSNNKYAASSYLSLTPEQWK	0
+     388	DMDGEQLEGASSEKR	0
+      * @param pDecoyFile  non-null readable existing file
+     * @return  non-null  PSM_Holder
+     */
+    public static PSM_Holder readPSMDecoySpectra(final File pDecoyFile) {
+        PSM_Holder ret = new PSM_Holder();
+        readPSMDecoySpectra(pDecoyFile,ret);
+        return ret;
+     }
+
+    /**
+     * read a file looking like
+      *
+      *  spectrum_id	sequence	is_decoy
+      237	QSNNKYAASSYLSLTPEQWK	0
+      238	QSNNKYAASSYLSLTPEQWK	0
+      388	DMDGEQLEGASSEKR	0
+     * @param pDecoyFile   non-null readable existing file
+     * @param psms  non-null  PSM_Holder
+     */
+
+    public static int Number_Lines_read = 0;
+
+    public static void readPSMDecoySpectra(final File pDecoyFile,PSM_Holder psms) {
+        ElapsedTimer timer = new ElapsedTimer();
+         try {
+             LineNumberReader rdr = new LineNumberReader(new FileReader(pDecoyFile));
+             String line = rdr.readLine();  // drop header
+             line = rdr.readLine();
+             while (line != null) {
+                 PSMSpectrum added = PSMSpectrum.getSpectrumFromLine(line);
+                 psms.addPSMSpectrum(added);
+                 line = rdr.readLine();
+                 Number_Lines_read++ ;
+             }
+             timer.showElapsed("Finished PSM Decoy Read");
+         }
+         catch (IOException e) {
+             throw new RuntimeException(e);
+
+         }
+     }
+
 
     /**
      * look at cluster addition code for testing
@@ -518,7 +570,12 @@ public class ClusterSimilarityUtilities {
         return true;
     }
 
-
+    /**
+     * build a tsv file from an mgf directory
+     * @param pArg
+     * @param outFile
+     * @throws IOException
+     */
     public static void buildTSV(final String pArg, String outFile) throws IOException {
         SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
         File mgfs = new File(pArg);
@@ -540,6 +597,83 @@ public class ClusterSimilarityUtilities {
         System.out.println(spectrumRetriever.getSpectra().size());
     }
 
+
+    /**
+     * build a set of lines in the file - might be sequences
+     * @param decoyFileName    existing readable file
+     * @return  non-nuill set of lines
+     */
+    public   static  Set<String> readDecoySequences(@Nonnull String decoyFileName)
+    {
+        Set<String>  ret = new HashSet<String>();
+           File decoyFile = new File(decoyFileName);
+        populateSequenceSet(ret, decoyFile);
+        return ret;
+    }
+
+    /**
+     * fill a set with the constnets of line - presumably sequences
+     * @param decoys set to fill
+     * @param pDecoyFile  file to read from
+     */
+    public static void populateSequenceSet(@Nonnull final Set<String> decoys,@Nonnull  final File pDecoyFile) {
+        try {
+            LineNumberReader rdr = new LineNumberReader(new FileReader(pDecoyFile));
+            String line = rdr.readLine();
+            while (line != null) {
+                decoys.add(line.trim());
+                line = rdr.readLine();
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    /**
+     * build a tsv file from an mgf directory
+     * @param pArg
+     * @param outFile
+     * @throws IOException
+     */
+    public static void compareDecoys(final String ruiTSV, final String johannesTSV, String outFile) throws IOException {
+
+        File f = new File(johannesTSV);
+        PSM_Holder psms = readPSMDecoySpectra(f);
+
+        Set<String> decoys = readDecoySequences(ruiTSV);
+
+
+//        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
+//        File tsvFile = new File(johannesTSV);
+//        ClusterSimilarityUtilities.buildFromTSVFile( tsvFile,spectrumRetriever);
+//        List<IPeptideSpectrumMatch> spectra = spectrumRetriever.getSpectra();
+//        for (IPeptideSpectrumMatch sm : spectra) {
+//            if(sm.isDecoy()) {
+//                String peptide = sm.getPeptide();
+//                if(!decoys.contains(peptide))
+//                    System.out.println("not listed decoy " + peptide);
+//            }
+//        }
+
+
+        Set<PSMSpectrum> spectra = psms.getAllSpectrums();
+        for (IPeptideSpectrumMatch sm : spectra) {
+            if(sm.isDecoy()) {
+                String peptide = sm.getPeptide();
+                if(!decoys.contains(peptide))
+                    System.out.println("not listed decoy " + peptide);
+            }
+        }
+
+
+        File outTSV = new File(outFile);
+        PrintWriter out = new PrintWriter(new FileWriter(outTSV));
+
+         System.out.println(spectra.size());
+    }
+
     public static void usage() {
         System.out.println("Usage propertiesFile <MfgFile or Directory> <outputFile>");
     }
@@ -550,7 +684,8 @@ public class ClusterSimilarityUtilities {
             usage();
             return;
         }
-        buildTSV(args[0], args[1]);
+        compareDecoys(args[0], args[1],args[2]);
+//        buildTSV(args[0], args[1]);
     }
 
 

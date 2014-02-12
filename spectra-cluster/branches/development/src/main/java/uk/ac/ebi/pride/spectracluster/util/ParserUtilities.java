@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -368,8 +369,10 @@ public class ParserUtilities {
             }
             else if (clusterLine.startsWith(SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
+                String id = parts[1];
+           //     IPeptideSpectrumMatch spectrum = PSMSpectrum.getSpectrum(id );
                 LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
-                cluster.addSpectra(spectrum);
+                 cluster.addSpectra(spectrum);
             }
             else //noinspection StatementWithEmptyBody
                 if (clusterLine.startsWith(AVERAGE_PRECURSOR_INTENSITY)) {

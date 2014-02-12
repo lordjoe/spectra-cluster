@@ -40,7 +40,9 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
         peptide = pPeptide;
         decoy = pDecoy;
         if (pPurity > 0.8 && pDecoy) {
-            number_pure_decoy++;
+            {
+                  number_pure_decoy++;
+            }
         }
     }
 

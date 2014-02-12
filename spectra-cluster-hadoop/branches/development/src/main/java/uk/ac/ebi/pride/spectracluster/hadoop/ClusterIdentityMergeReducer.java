@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -17,6 +18,13 @@ import java.io.*;
 @SuppressWarnings("UnusedDeclaration")
 public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
 
+
+    @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        Defaults.configureAnalysisParameters(getApplication());
+
+    }
 
     @Override
     protected void reduceNormal(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {

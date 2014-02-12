@@ -60,19 +60,19 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ISpectralCluster> spectrumComparator;
-    private final double defaultThreshold;
+    private final double windowSize;
     private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(SimilarityChecker sck,
                                           Comparator<ISpectralCluster> scm, double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
-        defaultThreshold = windowSize;
+        this.windowSize = windowSize;
 
     }
 
-    public double getDefaultThreshold() {
-        return defaultThreshold;
+    public double getWindowSize() {
+        return windowSize;
     }
 
 
@@ -225,7 +225,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     protected List<ISpectralCluster> findClustersTooLow(double precursorMz) {
         double oldMZ = getCurrentMZ();
-        double defaultThreshold1 = getDefaultThreshold();
+        double defaultThreshold1 = getWindowSize();
         double lowestMZ = precursorMz - defaultThreshold1;
         List<ISpectralCluster> clustersToremove = new ArrayList<ISpectralCluster>();
         List<ISpectralCluster> myClusters = internalGetClusters();

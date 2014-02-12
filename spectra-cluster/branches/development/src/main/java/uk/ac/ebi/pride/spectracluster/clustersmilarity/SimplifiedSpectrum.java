@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -41,6 +42,17 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     public int getPrecursorCharge() {
         return precursorCharge;
     }
+
+
+    /**
+     * true if we know this is a decoy
+     *
+     * @return
+     */
+    @Override
+    public boolean isDecoy() {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+      }
 
 
     @Override

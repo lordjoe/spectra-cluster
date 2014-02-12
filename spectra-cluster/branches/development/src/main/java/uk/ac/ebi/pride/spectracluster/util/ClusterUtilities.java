@@ -666,7 +666,7 @@ public class ClusterUtilities {
             out.append("\n");
 
 
-            double defaultSimilarityThreshold = FrankEtAlDotProduct.DEFAULT_SIMILARITY_THRESHOLD;
+            double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
             if (similarityChecker instanceof FrankEtAlDotProduct) {
                 //noinspection RedundantCast
                 defaultSimilarityThreshold = ((FrankEtAlDotProduct) similarityChecker).getDefaultThreshold();

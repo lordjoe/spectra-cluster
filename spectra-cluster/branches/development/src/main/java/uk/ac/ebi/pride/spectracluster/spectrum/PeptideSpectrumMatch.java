@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
@@ -354,6 +355,17 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             throw new RuntimeException(e);
 
         }
+    }
+
+    /**
+     * true if we know this is a decoy
+     *
+     * @return
+     */
+    @Override
+    public boolean isDecoy() {
+        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId()) ;
+        return psm.isDecoy();
     }
 
     @Override
