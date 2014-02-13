@@ -47,7 +47,7 @@ public class PSMClusterDecoyChart {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             addDecoyAndTargetData(dataset, cs, minimumSize);
 
-            final JFreeChart chart = createChart("Target and Decoy " + minimumSize, dataset, minimumSize, set.getPSMCount());
+            final JFreeChart chart = createChart("Target and Decoy " + minimumSize, dataset, "Cummulative Fraction", "Fraction");
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -68,7 +68,7 @@ public class PSMClusterDecoyChart {
 
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        final JFreeChart chart = createChart(cs.getName(), dataset, 0, set.getPSMCount());
+        final JFreeChart chart = createChart(cs.getName(), dataset, "Cummulative Fraction", "Fraction");
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             addFDRData(dataset, cs, minimumSize);
 
@@ -81,6 +81,42 @@ public class PSMClusterDecoyChart {
 
         ret.setPreferredSize(new Dimension(800, 600));
         return ret;
+    }
+
+
+    public JPanel generateClusterRangeChart(boolean normalizeTotal) {
+        JPanel ret = new JPanel();
+        ret.setLayout(new GridLayout(0, 2));
+
+        PSMComparisonMain set = getSet();
+        for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
+            final XYSeriesCollection dataset = new XYSeriesCollection();
+            for (IClusterSet cs : set.getClusterings()) {
+                System.out.println("===" + cs.getName() + "===");
+                addClusterRangeData(dataset, cs, minimumSize, normalizeTotal);
+            }
+
+
+            final JFreeChart chart = createLogLinear("Cluster Ranges " + minimumSize, dataset, "Range", "Fraction");
+
+            final ChartPanel chartPanel = new ChartPanel(chart);
+            ret.add(chartPanel);
+
+        }
+
+
+        ret.setPreferredSize(new Dimension(800, 600));
+        return ret;
+    }
+
+
+    protected void addClusterRangeData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize, boolean normalizeTotal) {
+        PSMComparisonMain cm = getSet();
+        List<ClusterMZSpread> psms = ClusterComparisonMain.getClusterRangeData(cs, cm, minimumClusterSize);
+        XYSeries series;
+        series = buildFractionalSpread(cs.getName(), psms, normalizeTotal);
+        dataset.addSeries(series);
+
     }
 
 
@@ -97,7 +133,7 @@ public class PSMClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("FractionalData " + minimumSize, dataset, minimumSize, set.getPSMCount());
+            final JFreeChart chart = createChart("FractionalData " + minimumSize, dataset, "Cummulative Fraction", "Fraction");
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -121,7 +157,7 @@ public class PSMClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("FDR " + minimumSize, dataset, minimumSize, set.getPSMCount());
+            final JFreeChart chart = createChart("FDR " + minimumSize, dataset, "Cummulative Fraction", "Fraction");
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -143,11 +179,11 @@ public class PSMClusterDecoyChart {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             List<IClusterSet> clusterings = set.getClusterings();
             for (IClusterSet cs : clusterings) {
-                addCummulativeData(dataset, cs, minimumSize, true,0.8);    // true says normalize decoy plots to total
+                addCummulativeData(dataset, cs, minimumSize, true, 0.8);    // true says normalize decoy plots to total
             }
 
 
-            final JFreeChart chart = createChart("Total PSMS " + minimumSize, dataset, minimumSize, set.getPSMCount());
+            final JFreeChart chart = createChart("Total PSMS " + minimumSize, dataset, "Cummulative Fraction", "Fraction");
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -160,7 +196,7 @@ public class PSMClusterDecoyChart {
     }
 
 
-    public XYSeries buildCummulativeTotalSeries(String name, List<ClusterPeptideFraction> values, ClusterDataType type, boolean normalizeTotal,double maxCut) {
+    public XYSeries buildCummulativeTotalSeries(String name, List<ClusterPeptideFraction> values, ClusterDataType type, boolean normalizeTotal, double maxCut) {
         final XYSeries series1 = new XYSeries(name + " " + type);
         int index = 0;
         int cutindex = 0;
@@ -206,7 +242,7 @@ public class PSMClusterDecoyChart {
                     //                  number_cummulative = 0;
                 }
                 // drop really pure clusters
-                if(cutPoint > maxCut)
+                if (cutPoint > maxCut)
                     break;
                 //              number_cummulative = 0;
             }
@@ -222,7 +258,7 @@ public class PSMClusterDecoyChart {
             double nn = number_not_used / number_values;
             System.out.println("Not Used fraction " + Util.formatDouble(nn));
         }
-        if(cutPoint <= maxCut)
+        if (cutPoint <= maxCut)
             series1.add(cutPoint, y);
         return series1;
     }
@@ -236,6 +272,7 @@ public class PSMClusterDecoyChart {
         int number_total = 0;
         int number_targets = 0;
         double number_values = values.size();
+
 
         Collections.reverse(values);
 
@@ -280,6 +317,61 @@ public class PSMClusterDecoyChart {
                 ret++;
         }
         return ret;
+    }
+
+
+    public static final double MINIMUM_RANGE_BIN = 0.02;
+
+    public XYSeries buildFractionalSpread(String name, List<ClusterMZSpread> values, boolean normalizeTotal) {
+        final XYSeries series1 = new XYSeries(name);
+        int cutindex = 0;
+
+        double cummulativeFraction = 0;
+        int number_cummulative = 0;
+        double number_values = values.size();
+        double number_total = 0;
+        double number_zero = 0;
+
+        double maxRange = values.get(values.size() - 1).getRange();
+        maxRange = 3;
+
+        double maxbin = MINIMUM_RANGE_BIN;
+
+
+        for (ClusterMZSpread pp : values) {
+            double range = pp.getStandardDeviation();
+            if(range == 0)  {
+                number_zero++;
+                number_cummulative++;
+                continue;
+            }
+            if (range > maxRange)
+                break;
+            number_total++;
+            if (range > maxbin) {
+                while (range > maxbin) {
+                    double y = number_cummulative / number_values;
+                    cummulativeFraction += y;
+                    System.out.println(Util.formatDouble(maxbin) + " , " + Util.formatDouble(y));
+                    series1.add(maxbin, y);
+                    maxbin *= 1.5;
+                    number_cummulative = 0;
+                }
+                number_cummulative = 0;
+            }
+            else {
+                number_cummulative++;
+            }
+        }
+
+        // everything else
+        double y = (number_values - number_total) / number_values;
+
+        cummulativeFraction += y;
+        //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+        System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+        series1.add(maxbin, y);
+        return series1;
     }
 
 
@@ -470,16 +562,16 @@ public class PSMClusterDecoyChart {
 
     }
 
-    protected void addCummulativeData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize, boolean normalizeTotal,double maxCut) {
+    protected void addCummulativeData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize, boolean normalizeTotal, double maxCut) {
         PSMComparisonMain cm = getSet();
         List<ClusterPeptideFraction> psms = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
         XYSeries series;
-        series = buildCummulativeTotalSeries(cs.getName(), psms, ClusterDataType.All, normalizeTotal,  maxCut);
+        series = buildCummulativeTotalSeries(cs.getName(), psms, ClusterDataType.All, normalizeTotal, maxCut);
 
         dataset.addSeries(series);
 
 
-        series = buildCummulativeTotalSeries(cs.getName(), psms, ClusterDataType.Decoy, normalizeTotal,  maxCut);
+        series = buildCummulativeTotalSeries(cs.getName(), psms, ClusterDataType.Decoy, normalizeTotal, maxCut);
 
         dataset.addSeries(series);
 
@@ -504,13 +596,13 @@ public class PSMClusterDecoyChart {
      * @param dataset the data for the chart.
      * @return a chart.
      */
-    private JFreeChart createChart(String title, final XYDataset dataset, int minSize, int numberSPectra) {
+    private JFreeChart createChart(String title, final XYDataset dataset, String XAxisName, String YAxisName) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 title,      // chart title
-                "Cummulative Fraction",                      // x axis label
-                "Number",                      // y axis label
+                XAxisName,                      // x axis label
+                YAxisName,                      // y axis label
                 dataset,                  // data
                 PlotOrientation.VERTICAL,
                 true,                     // include legend
@@ -526,6 +618,60 @@ public class PSMClusterDecoyChart {
 
         // get a reference to the plot for further customisation...
         final XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(Color.lightGray);
+        //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+
+        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesLinesVisible(0, true);
+        renderer.setSeriesShapesVisible(1, true);
+        plot.setRenderer(renderer);
+
+        // change the auto tick unit selection to integer units only...
+        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
+        //  rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        //    rangeAxis.setRange(0,numberSPectra);
+        // OPTIONAL CUSTOMISATION COMPLETED.
+
+        return chart;
+
+    }
+
+    /**
+     * Creates a chart.
+     *
+     * @param dataset the data for the chart.
+     * @return a chart.
+     */
+    private JFreeChart createLogLinear(String title, final XYDataset dataset, String XAxisName, String YAxisName) {
+
+        // create the chart...
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+                title,      // chart title
+                XAxisName,                      // x axis label
+                YAxisName,                      // y axis label
+                dataset,                  // data
+                PlotOrientation.VERTICAL,
+                true,                     // include legend
+                true,                     // tooltips
+                false                     // urls
+        );
+
+
+        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+        chart.setBackgroundPaint(Color.white);
+
+        //        final StandardLegend legend = (StandardLegend) chart.getLegend();
+        //      legend.setDisplaySeriesShapes(true);
+
+        // get a reference to the plot for further customisation...
+        final XYPlot plot = chart.getXYPlot();
+
+        final NumberAxis domainAxis = new LogarithmicAxis(YAxisName);
+        plot.setDomainAxis(domainAxis);
+
         plot.setBackgroundPaint(Color.lightGray);
         //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
         plot.setDomainGridlinePaint(Color.white);
@@ -573,6 +719,12 @@ public class PSMClusterDecoyChart {
         packChartIntoFrame(name, charts);
     }
 
+
+    public static void makeClusterRangeChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        JPanel charts = clusterSimilarityChart.generateClusterRangeChart(normalizeTotal);
+        packChartIntoFrame(name, charts);
+    }
 
     public static void makeFractionalChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
         PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
