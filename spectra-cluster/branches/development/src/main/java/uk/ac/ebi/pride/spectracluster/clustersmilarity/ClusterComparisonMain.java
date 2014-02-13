@@ -121,6 +121,17 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
 
 
+    public static List<ClusterMZSpread> getClusterRangeData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
+        List<ClusterMZSpread> ranges = new ArrayList<ClusterMZSpread>();
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterMZRangeVisitor(ranges,  minimumSize);
+        //noinspection unchecked
+        cs.visitClusters(tv);
+        Collections.sort(ranges);
+        return ranges;
+    }
+
+
+
     public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
         TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys,  minimumSize,discriminator );

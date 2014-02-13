@@ -163,6 +163,31 @@ public class CummulativeFDR {
 
 
     /**
+     * collect all ClusterMZSpread
+     */
+    public static class AccumulateClusterMZRangeVisitor implements TypedVisitor<ISpectralCluster> {
+
+        private final List<ClusterMZSpread> data;
+        private final int minimumClusterSize;
+
+        public AccumulateClusterMZRangeVisitor(final List<ClusterMZSpread> pData, int pminimumClusterSize ) {
+            data = pData;
+            minimumClusterSize = pminimumClusterSize;
+         }
+
+        /**
+         * @param pISpectralCluster interface implemented by the visitor pattern
+         */
+        @Override
+        public void visit(@Nonnull final ISpectralCluster cluster) {
+            if (cluster.getClusteredSpectraCount() < minimumClusterSize)
+                return;
+             data.add(new ClusterMZSpread(cluster));
+        }
+
+    }
+
+    /**
      * collect all decoys as  ClusterPeptideFraction
      */
     public static class AccumulateClusterPSMFractionVisitor implements TypedVisitor<ISpectralCluster> {

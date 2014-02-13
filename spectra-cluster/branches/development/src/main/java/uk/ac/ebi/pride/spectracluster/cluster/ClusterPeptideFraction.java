@@ -106,7 +106,7 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
         int ret = CompareTo.compare(getPurity(), o.getPurity()) ;
         if(ret != 0)
             return ret;
-//        double del = getPurity() - o.getPurity();
+//        double del = getMean() - o.getMean();
 //        if (Math.abs(del) > 0.0001) {
 //            return del < 0 ? -1 : 1;
 //        }

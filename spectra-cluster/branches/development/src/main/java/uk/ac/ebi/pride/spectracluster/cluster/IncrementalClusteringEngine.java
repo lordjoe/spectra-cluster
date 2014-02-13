@@ -68,8 +68,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;
-
-    }
+     }
 
     public double getWindowSize() {
         return windowSize;
