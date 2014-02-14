@@ -420,7 +420,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
             if(ret != 0)
                 return ret;
             if (getPrecursorCharge() != o.getPrecursorCharge()) {
-              return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
+              return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
           }
             if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
                 return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;

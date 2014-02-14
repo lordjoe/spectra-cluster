@@ -27,7 +27,7 @@ public class PSMUtilities {
         }
     };
 
-    public static final int MAX_PROCESSED_FILES_DEBUG_ONLY = Integer.MAX_VALUE; // 4;
+    public static final int MAX_PROCESSED_FILES_DEBUG_ONLY =  Integer.MAX_VALUE; // 4;
 
     public static void appendFileClusters(Appendable out, String clusterDirectory, IFileSystem fs, TypedPredicate<String>... tests) {
         SimpleClusterSet cst = new SimpleClusterSet();

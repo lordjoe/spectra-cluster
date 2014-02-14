@@ -496,25 +496,10 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 
     @Override
     public int compareTo(ISpectralCluster o) {
-        if (o == this)
-            return 0;
-        if (getPrecursorMz() != o.getPrecursorMz()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (getPrecursorCharge() != o.getPrecursorCharge()) {
-            return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
-        }
-        if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
-            return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
-        }
+        return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
 
-        int hash1 = hashCode();
-        int hash2 = o.hashCode();
-        if (hash1 != hash2)
-            return hash1 < hash2 ? -1 : 0;
-
-        return 0;
     }
+
 
     @Override
     public boolean equivalent(ISpectralCluster o) {

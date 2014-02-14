@@ -17,6 +17,30 @@ import java.util.*;
  */
 public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
 
+    public static final Comparator<ISpectralCluster>  SIMPLE_CLUSTER_COMPARATOR =  new Comparator<ISpectralCluster>() {
+        @Override
+        public int compare(ISpectralCluster o1, ISpectralCluster o2) {
+               int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());
+                if (ret != 0) {
+                   return ret;
+               }
+                if (o1.getPrecursorCharge() != o2.getPrecursorCharge()) {
+                    return o1.getPrecursorCharge() < o2.getPrecursorCharge() ? -1 : 1;
+                }
+                if (o1.getClusteredSpectraCount() != o2.getClusteredSpectraCount()) {
+                    return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
+                }
+        
+                int hash1 = o1.hashCode();
+                int hash2 = o2.hashCode();
+                if (hash1 != hash2)
+                    return hash1 < hash2 ? -1 : 1;
+        
+                return 0;
+            }
+            
+     };
+    
     public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
         @Override
         public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
@@ -116,14 +140,14 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public @Nonnull  Set<String> getSpectralIds();
 
     /**
-     * write out the data as a .cgf fragment
+     * write out the data as a .cgf frago1nt
      *
      * @param out place to append   // todo move out of SpectralCLustering
      */
     public void appendSpectra(Appendable out);
 
     /**
-     * write out the data as a .clustering fragment
+     * write out the data as a .clustering frago1nt
      *
      * @param out place to append     // todo move out of SpectralCLustering
      */

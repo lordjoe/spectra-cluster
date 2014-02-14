@@ -375,38 +375,8 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
     @Override
     public int compareTo(ISpectralCluster o) {
-        if (o == this)
-            return 0;
-
-        if (getPrecursorMz() != o.getPrecursorMz()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (getPrecursorCharge() != o.getPrecursorCharge()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
-            return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
-        }
-
-//        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
-//        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
-//        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
-//            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
-//                //noinspection UnusedAssignment
-//                highestQualitySpectrum1 = getHighestQualitySpectrum();
-//                throw new IllegalStateException("problem"); // ToDo change
-//            }
-//
-//            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
-//        }
-
-        int hash1 = hashCode();
-        int hash2 = o.hashCode();
-        if (hash1 != hash2)
-            return hash1 < hash2 ? -1 : 0;
-
-        return 0;
-    }
+        return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
+       }
 
     @Override
     public boolean equivalent(ISpectralCluster o) {

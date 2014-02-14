@@ -255,20 +255,9 @@ public class OriginalSpectralCluster implements ISpectralCluster {
      * Sort according to m/z.
      */
     public int compareTo(ISpectralCluster o) {
-        if (o == this)
-            return 0;
-        if (getPrecursorMz() != o.getPrecursorMz()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (getPrecursorCharge() != o.getPrecursorCharge()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
-            return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
-        }
-
-        return 0;
-    }
+         // debug inconsistent compare
+        return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
+       }
 
     /**
      * like equals but weaker - says other is equivalent to this
