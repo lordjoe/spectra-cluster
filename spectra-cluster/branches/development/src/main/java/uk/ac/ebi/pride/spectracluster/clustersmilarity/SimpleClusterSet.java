@@ -2,10 +2,11 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
+import org.systemsbiology.common.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import javax.annotation.*;
@@ -17,6 +18,8 @@ import java.util.*;
  * @version $Id$
  */
 public class SimpleClusterSet extends SimpleClusterRetriever implements IClusterSet {
+
+
 
 
     /**
@@ -59,7 +62,8 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
                 toMerge.clear();
                 toMerge.add(cluster);
                 currentPeptide = mostCommonPeptide;
-            } else {
+            }
+            else {
                 if (!currentPeptide.equals(mostCommonPeptide)) {
                     if (toMerge.size() > 1) {
                         StringBuilder sb = new StringBuilder();
@@ -81,14 +85,16 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
                     toMerge.add(cluster);
                     currentPeptide = mostCommonPeptide;
 
-                } else {
+                }
+                else {
                     // these may be the same
                     double sim = similarityChecker.assessSimilarity(lastCluster.getConsensusSpectrum(), cluster.getConsensusSpectrum());
                     if (sim > similarityChecker.getDefaultThreshold()) {
                         mergable++;
                         toMerge.add(cluster);
                         //   lastCluster.addSpectra(cluster.getClusteredSpectra());
-                    } else {
+                    }
+                    else {
                         holder.add(lastCluster);
                         samePeptideNonMergable++;
                     }

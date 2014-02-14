@@ -204,7 +204,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             mainClass.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = PSMUtilities.readClusterSet(originalFile, psms1, arg + "SemiStableNew.clustering");
+            IClusterSet cs = PSMUtilities.readClusterSet(originalFile,   arg + "SemiStableNew.clustering");
             cs.setName(arg);
             mainClass.addClustering(cs);
             // showChart(cs);
