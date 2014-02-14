@@ -73,8 +73,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 line = rdr.readLine();
             }
             rdr.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -208,20 +207,20 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            boolean decoy =  sc1.isDecoy();
+            boolean decoy = sc1.isDecoy();
             String peptide = sc1.getPeptide();
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
             if (purity == null)
                 throw new UnsupportedOperationException("Fix This"); // ToDo
-            if(decoy && purity > 0.8)     {
-                   pureDecoy = peptide;
-                   purityStr = String.format("%8.2f", purity).trim();
-               }
+            if (decoy && purity > 0.8) {
+                pureDecoy = peptide;
+                purityStr = String.format("%8.2f", purity).trim();
+            }
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
         }
 
-        if(pureDecoy != null)  {
+        if (pureDecoy != null) {
             System.out.println(pureDecoy + " " + purityStr);
         }
 
@@ -368,8 +367,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             out.append("\t");
 
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
@@ -401,8 +399,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -447,8 +444,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 out.append(csq);
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -506,23 +502,11 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
         }
         if (getPrecursorCharge() != o.getPrecursorCharge()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
+            return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
         }
         if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
-
-//        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
-//        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
-//        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
-//            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
-//                //noinspection UnusedAssignment
-//                highestQualitySpectrum1 = getHighestQualitySpectrum();
-//                throw new IllegalStateException("problem"); // ToDo change
-//            }
-//
-//            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
-//        }
 
         int hash1 = hashCode();
         int hash2 = o.hashCode();
@@ -568,8 +552,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                     return false;
             }
             return true; // just one spectrum so check peaks
-        }
-        else {
+        } else {
             if (spc1.size() != spc2.size())
                 return false;
 

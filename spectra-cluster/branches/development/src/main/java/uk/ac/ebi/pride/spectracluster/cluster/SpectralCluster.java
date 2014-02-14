@@ -415,26 +415,30 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     public int compareTo(ISpectralCluster o) {
         if (o == this)
             return 0;
-        if (getPrecursorMz() != o.getPrecursorMz()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (getPrecursorCharge() != o.getPrecursorCharge()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
-            return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
-        }
-
-        ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
-        ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
-        if (highestQualitySpectrum1 != highestQualitySpectrum2) {
-            if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
-                //noinspection UnusedAssignment
-                highestQualitySpectrum1 = getHighestQualitySpectrum();
-                throw new IllegalStateException("problem"); // ToDo change
+        try {
+            int ret = CompareTo.compare(getPrecursorMz() ,o.getPrecursorMz());
+            if(ret != 0)
+                return ret;
+            if (getPrecursorCharge() != o.getPrecursorCharge()) {
+              return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
+          }
+            if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
+                return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
             }
 
-            return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
+            ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
+            ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
+            if (highestQualitySpectrum1 != highestQualitySpectrum2) {
+                if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
+                    //noinspection UnusedAssignment
+                    highestQualitySpectrum1 = getHighestQualitySpectrum();
+                    throw new IllegalStateException("problem"); // ToDo change
+                }
+
+                return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
+            }
+        } catch (IllegalStateException e) {
+            //  give up use hash code
         }
 
         int hash1 = hashCode();
