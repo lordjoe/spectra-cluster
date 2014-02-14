@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
 import com.lordjoe.utilities.*;
 import org.systemsbiology.common.*;
+import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
@@ -26,23 +27,31 @@ public class PSMUtilities {
         }
     };
 
+    public static final int MAX_PROCESSED_FILES_DEBUG_ONLY = Integer.MAX_VALUE; // 4;
 
     public static void appendFileClusters(Appendable out, String clusterDirectory, IFileSystem fs, TypedPredicate<String>... tests) {
         SimpleClusterSet cst = new SimpleClusterSet();
         TypedVisitor<ISpectralCluster> visitor = new AppendClusterings(out);
         cst.setName(clusterDirectory);
+        int numberProcessed = 0;
         if (fs.isDirectory(clusterDirectory)) {
             final String[] files = fs.ls(clusterDirectory);
-            for (String file : files) {
+            for (int i = 0; i < files.length; i++) {
+                String file = files[i];
+
+
                 boolean use = true;
                 for (int j = 0; j < tests.length; j++) {
                     use &= tests[j].apply(file);
                 }
-                if (use)
+                if (use) {
                     readClusterSet(clusterDirectory + "/" + file, fs, cst);
+                    System.out.println("Read File " + file);
+                    if(numberProcessed++ > MAX_PROCESSED_FILES_DEBUG_ONLY)
+                        break;
+                }
             }
-        }
-        else {
+        } else {
             readClusterSet(clusterDirectory, fs, cst);
         }
         cst.visitClusters(visitor);
@@ -69,8 +78,7 @@ public class PSMUtilities {
 
         if (fs.isDirectory(clusterDirectory)) {
             throw new UnsupportedOperationException("Fix This"); // ToDo
-        }
-        else {
+        } else {
             String contents = fs.readFromFileSystem(clusterDirectory);
             LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(contents));
 
@@ -87,7 +95,7 @@ public class PSMUtilities {
     }
 
 
-    public static IClusterSet readClusterSet(File file,   String name) {
+    public static IClusterSet readClusterSet(File file, String name) {
         SimpleClusterSet simpleClusterSet = new SimpleClusterSet();
         simpleClusterSet.setName(name);
 
@@ -102,8 +110,7 @@ public class PSMUtilities {
 
                 simpleClusterSet.addClusters(clusterSet.getClusters());
             }
-        }
-        else if (file.getName().endsWith(".clustering")) {
+        } else if (file.getName().endsWith(".clustering")) {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 
@@ -113,10 +120,9 @@ public class PSMUtilities {
                     simpleClusterSet.setHeader(header);
                 }
 
-                ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader );
+                ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
                 simpleClusterSet.addClusters(Arrays.asList(clusters));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -150,8 +156,7 @@ public class PSMUtilities {
                         }
                     }
                     clusterContent.clear();
-                }
-                else {
+                } else {
                     clusterContent.add(line);
                 }
 
@@ -164,8 +169,7 @@ public class PSMUtilities {
                     holder.add(cluster);
                 }
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
@@ -189,28 +193,22 @@ public class PSMUtilities {
             if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_MZ)) {
                 float precursorMz = Float.parseFloat(clusterLine.replace(ParserUtilities.AVERAGE_PRECURSOR_MZ, ""));
                 cluster.setPrecursorMz(precursorMz);
-            }
-            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
+            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
                 consensusMzLine = clusterLine.replace(ParserUtilities.CONSENSUS_MZ, "");
-            }
-            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
+            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
                 consensusIntensityLine = clusterLine.replace(ParserUtilities.CONSENSUS_INTENSITY, "");
-            }
-            else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
+            } else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
                 String peptideSequence = clusterLine.replace(ParserUtilities.PEPTIDE_SEQUENCE, "");
                 peptideSequence = peptideSequence.replace("[", "").replace("]", "");
                 cluster.addPeptides(peptideSequence);
-            }
-            else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
+            } else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
                 spectrum = PSMSpectrum.getSpectrum(parts[1]);
                 cluster.addSpectra(spectrum);
-            }
-            else //noinspection StatementWithEmptyBody
+            } else //noinspection StatementWithEmptyBody
                 if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_INTENSITY)) {
                     // do nothing here
-                }
-                else {
+                } else {
                     if (clusterLine.length() > 0) {
                         throw new IllegalArgumentException("cannot process line " + clusterLine);
                     }
@@ -230,41 +228,74 @@ public class PSMUtilities {
     }
 
 
-
     public static void usage() {
         System.out.println("Usage   <ClusteringFile or Directory> <outfile>");
     }
 
 
+    private static void mergeWithHDFS(String[] args) throws IOException {
+
+        String NAME_NODE = RemoteUtilities.getHost();
+        int HDFS_PORT = RemoteUtilities.getPort();
+
+        IFileSystem fs = HDFSAccessor.getFileSystem(NAME_NODE, HDFS_PORT);
+        String inDir = args[0];
+        if (!fs.exists(inDir) || !fs.isDirectory(inDir))
+            throw new IllegalStateException("input directory does not exist " + inDir);
+
+        String outFileStr = args[1];
+        PrintWriter out = new PrintWriter(new FileWriter(outFileStr));
+        TypedPredicate<String> test = new TypedPredicate<String>() {
+            @Override
+            public boolean apply(@Nonnull final String s, final Object... otherdata) {
+                if (!s.endsWith(".clustering"))
+                    return false;
+                if (!s.startsWith("ClusteringBin"))
+                    return false;
+                return true;
+            }
+        };
+        try {
+            appendFileClusters(out, args[0], fs, test);
+        } finally {
+            out.close();
+        }
+    }
+
+    private static void mergeWithFileSystem(String[] args) throws IOException {
+        File inFiles = new File(args[0]);
+        if (!inFiles.exists() || !inFiles.isDirectory())
+            throw new IllegalStateException("problem"); // ToDo change
+
+        IFileSystem fs = new LocalMachineFileSystem(inFiles);
+        String outFileStr = args[1];
+        PrintWriter out = new PrintWriter(new FileWriter(outFileStr));
+        TypedPredicate<String> test = new TypedPredicate<String>() {
+            @Override
+            public boolean apply(@Nonnull final String s, final Object... otherdata) {
+                if (!s.endsWith(".clustering"))
+                    return false;
+                if (!s.startsWith("ClusteringBin"))
+                    return false;
+                return true;
+            }
+        };
+        try {
+            appendFileClusters(out, args[0], fs, test);
+        } finally {
+            out.close();
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             usage();
             return;
         }
-        File inFiles  = new File(args[0]);
-        if(!inFiles.exists() || !inFiles.isDirectory())
-                throw new IllegalStateException("problem"); // ToDo change
-
-        IFileSystem fs = new LocalMachineFileSystem(inFiles);
-        String outFileStr = args[1];
-        PrintWriter out = new PrintWriter(new FileWriter(outFileStr));
-        TypedPredicate<String>  test = new TypedPredicate<String>() {
-            @Override
-            public boolean apply(@Nonnull final String s, final Object... otherdata) {
-                if(!s.endsWith(".clustering"))
-                    return false;
-                if(!s.startsWith("ClusteringBin"))
-                    return false;
-                return true;
-            }
-        } ;
-        try {
-            appendFileClusters(out,args[0],fs,test);
-        }
-        finally {
-            out.close();
-        }
+        //      mergeWithFileSystem(args);
+        mergeWithHDFS(args);
 
     }
+
+
 }

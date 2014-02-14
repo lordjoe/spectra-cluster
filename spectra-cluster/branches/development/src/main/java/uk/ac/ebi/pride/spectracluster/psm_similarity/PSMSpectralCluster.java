@@ -377,6 +377,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
     public int compareTo(ISpectralCluster o) {
         if (o == this)
             return 0;
+
         if (getPrecursorMz() != o.getPrecursorMz()) {
             return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
         }

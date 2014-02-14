@@ -34,7 +34,15 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         if (sortedClusters.isEmpty()) {
             ArrayList<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>(clusterById.values());
             sortedClusters.addAll(clusters);
-            Collections.sort(sortedClusters);
+            try {
+                Collections.sort(sortedClusters);
+            } catch (Exception e) {
+                Throwable t = e;
+                while(t.getCause() != null && t.getCause() != t)
+                    t = t.getCause();
+                t.printStackTrace();
+                Collections.sort(sortedClusters);
+            }
         }
         return sortedClusters;
     }

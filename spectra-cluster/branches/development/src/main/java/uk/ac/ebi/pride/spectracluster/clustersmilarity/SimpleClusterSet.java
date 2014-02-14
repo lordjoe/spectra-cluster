@@ -21,7 +21,6 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
 
 
-
     /**
      * merge similar clusters
      *
