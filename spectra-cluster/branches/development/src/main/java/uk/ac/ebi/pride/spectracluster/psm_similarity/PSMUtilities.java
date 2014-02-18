@@ -27,7 +27,7 @@ public class PSMUtilities {
         }
     };
 
-    public static final int MAX_PROCESSED_FILES_DEBUG_ONLY =  Integer.MAX_VALUE; // 4;
+    public static final int MAX_PROCESSED_FILES_DEBUG_ONLY = Integer.MAX_VALUE; // 4;
 
     public static void appendFileClusters(Appendable out, String clusterDirectory, IFileSystem fs, TypedPredicate<String>... tests) {
         SimpleClusterSet cst = new SimpleClusterSet();
@@ -47,11 +47,12 @@ public class PSMUtilities {
                 if (use) {
                     readClusterSet(clusterDirectory + "/" + file, fs, cst);
                     System.out.println("Read File " + file);
-                    if(numberProcessed++ > MAX_PROCESSED_FILES_DEBUG_ONLY)
+                    if (numberProcessed++ > MAX_PROCESSED_FILES_DEBUG_ONLY)
                         break;
                 }
             }
-        } else {
+        }
+        else {
             readClusterSet(clusterDirectory, fs, cst);
         }
         cst.visitClusters(visitor);
@@ -64,6 +65,9 @@ public class PSMUtilities {
             out = pOut;
         }
 
+        public Appendable getOut() {
+            return out;
+        }
 
         /**
          * @param pISpectralCluster interface implemented by the visitor pattern
@@ -74,11 +78,31 @@ public class PSMUtilities {
         }
     }
 
+    private static AppendClusterings gClusterSaver;
+
+    public static AppendClusterings getClusterSaver() {
+        return gClusterSaver;
+    }
+
+    public static void startClusterSaver(final Appendable pOut) {
+        gClusterSaver = new AppendClusterings(pOut);
+    }
+
+    public static void closeClusterSaver() {
+         if (getClusterSaver() != null) {
+             Appendable out = getClusterSaver().getOut();
+             if (out instanceof PrintWriter)
+                 ((PrintWriter) out).close();
+         }
+     }
+
+
     public static void readClusterSet(String clusterDirectory, IFileSystem fs, SimpleClusterSet simpleClusterSet) {
 
         if (fs.isDirectory(clusterDirectory)) {
             throw new UnsupportedOperationException("Fix This"); // ToDo
-        } else {
+        }
+        else {
             String contents = fs.readFromFileSystem(clusterDirectory);
             LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(contents));
 
@@ -110,7 +134,8 @@ public class PSMUtilities {
 
                 simpleClusterSet.addClusters(clusterSet.getClusters());
             }
-        } else if (file.getName().endsWith(".clustering")) {
+        }
+        else if (file.getName().endsWith(".clustering")) {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 
@@ -122,7 +147,8 @@ public class PSMUtilities {
 
                 ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
                 simpleClusterSet.addClusters(Arrays.asList(clusters));
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -156,7 +182,8 @@ public class PSMUtilities {
                         }
                     }
                     clusterContent.clear();
-                } else {
+                }
+                else {
                     clusterContent.add(line);
                 }
 
@@ -169,7 +196,8 @@ public class PSMUtilities {
                     holder.add(cluster);
                 }
             }
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
@@ -193,22 +221,28 @@ public class PSMUtilities {
             if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_MZ)) {
                 float precursorMz = Float.parseFloat(clusterLine.replace(ParserUtilities.AVERAGE_PRECURSOR_MZ, ""));
                 cluster.setPrecursorMz(precursorMz);
-            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
+            }
+            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
                 consensusMzLine = clusterLine.replace(ParserUtilities.CONSENSUS_MZ, "");
-            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
+            }
+            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
                 consensusIntensityLine = clusterLine.replace(ParserUtilities.CONSENSUS_INTENSITY, "");
-            } else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
+            }
+            else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
                 String peptideSequence = clusterLine.replace(ParserUtilities.PEPTIDE_SEQUENCE, "");
                 peptideSequence = peptideSequence.replace("[", "").replace("]", "");
                 cluster.addPeptides(peptideSequence);
-            } else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
+            }
+            else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
                 spectrum = PSMSpectrum.getSpectrum(parts[1]);
                 cluster.addSpectra(spectrum);
-            } else //noinspection StatementWithEmptyBody
+            }
+            else //noinspection StatementWithEmptyBody
                 if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_INTENSITY)) {
                     // do nothing here
-                } else {
+                }
+                else {
                     if (clusterLine.length() > 0) {
                         throw new IllegalArgumentException("cannot process line " + clusterLine);
                     }
@@ -257,7 +291,8 @@ public class PSMUtilities {
         };
         try {
             appendFileClusters(out, args[0], fs, test);
-        } finally {
+        }
+        finally {
             out.close();
         }
     }
@@ -282,7 +317,8 @@ public class PSMUtilities {
         };
         try {
             appendFileClusters(out, args[0], fs, test);
-        } finally {
+        }
+        finally {
             out.close();
         }
     }

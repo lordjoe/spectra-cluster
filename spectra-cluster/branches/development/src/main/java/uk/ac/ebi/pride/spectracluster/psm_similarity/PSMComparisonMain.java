@@ -186,11 +186,14 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         return psms;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             usage();
             return;
         }
+
+        PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
+
         PSMComparisonMain mainClass = new PSMComparisonMain();
 
         ElapsedTimer et = new ElapsedTimer();
@@ -214,6 +217,9 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
         mainClass.showFDRCharts(mainClass.getProperty("name"));
         mainClass.generateReports();
+
+        PSMUtilities.closeClusterSaver();
+
     }
 
 

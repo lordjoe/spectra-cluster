@@ -13,15 +13,25 @@ import javax.annotation.*;
 public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 
     @SuppressWarnings("UnusedDeclaration")
-    public Comparable<ClusterMZSpread> BY_RANGE = new Comparable<ClusterMZSpread>() {
+    public Comparable<ClusterMZSpread> BY_STANDARD_DEVIATION = new Comparable<ClusterMZSpread>() {
         @Override
         public int compareTo(@Nonnull final ClusterMZSpread o) {
-            int ret = CompareTo.compare(getRange(), o.getRange());
+            int ret = CompareTo.compare(getStandardDeviation(), o.getStandardDeviation());
             if (ret == 0)
                 return CompareTo.compare(getMean(), o.getMean());
             return -ret;
         }
     };
+    @SuppressWarnings("UnusedDeclaration")
+     public Comparable<ClusterMZSpread> BY_RANGE = new Comparable<ClusterMZSpread>() {
+         @Override
+         public int compareTo(@Nonnull final ClusterMZSpread o) {
+             int ret = CompareTo.compare(getRange(), o.getRange());
+             if (ret == 0)
+                 return CompareTo.compare(getMean(), o.getMean());
+             return -ret;
+         }
+     };
 
     @SuppressWarnings("UnusedDeclaration")
      public Comparable<ClusterMZSpread> TOP_FIRST = new Comparable<ClusterMZSpread>() {
@@ -75,8 +85,9 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
         maxMz = maxmz;
         minMz = minmz;
         range = maxMz - minMz;
-        if(range > 2)
-            sum = 0; // break here
+        if(n >= 32 && standardDeviation > 2) {
+            cluster.appendClustering(System.out);
+        }
         if(n > 10 && range < 0.00001)
             sum = 0; // break here
     }
@@ -113,7 +124,7 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
      */
     @Override
     public int compareTo(@Nonnull ClusterMZSpread o) {
-        int ret = CompareTo.compare(getStandardDeviation(), o.getStandardDeviation()) ;
+        int ret = CompareTo.compare(getRange(), o.getRange()) ;
         if(ret != 0)
             return ret;
 
