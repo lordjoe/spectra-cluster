@@ -31,8 +31,8 @@ public class PSMClusterDecoyChart {
         return mostSimilarClusterSet;
     }
 
-    public static final int MAX_CLUSTER_SIZE = 32;
-    public static final int MIN_CLUSTER_SIZE = 4;
+    public static final int MAX_CLUSTER_SIZE = 64;
+    public static final int MIN_CLUSTER_SIZE = 8;
     public static final int CLUSTER_SIZE_MULTIPLIER = 2;
 
 
@@ -97,7 +97,7 @@ public class PSMClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createLogLinear("Cluster Ranges " + minimumSize, dataset, "Range", "Fraction");
+            final JFreeChart chart = createLogLinear("Cluster Ranges " + minimumSize, dataset, "MZ Range", "Fraction of Clusters");
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -229,7 +229,7 @@ public class PSMClusterDecoyChart {
             if (purity > cutPoint) {
                 while (purity > cutPoint) {
                     double y = number_cummulative / number_values;
-                    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+             //       System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
                     series1.add(cutPoint, y);
                     if (cutindex >= fractionalPurityPoints.length) {
                         y = number_cummulative / number_values;
@@ -253,10 +253,10 @@ public class PSMClusterDecoyChart {
         }
         double y = number_cummulative / number_values;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
-        System.out.println("Cummulative fraction " + Util.formatDouble(y));
+  //      System.out.println("Cummulative fraction " + Util.formatDouble(y));
         if (type == ClusterDataType.Decoy) {
             double nn = number_not_used / number_values;
-            System.out.println("Not Used fraction " + Util.formatDouble(nn));
+    //        System.out.println("Not Used fraction " + Util.formatDouble(nn));
         }
         if (cutPoint <= maxCut)
             series1.add(cutPoint, y);
@@ -320,7 +320,7 @@ public class PSMClusterDecoyChart {
     }
 
 
-    public static final double MINIMUM_RANGE_BIN = 0.02;
+    public static final double MINIMUM_RANGE_BIN = 0.05;
 
     public XYSeries buildFractionalSpread(String name, List<ClusterMZSpread> values, boolean normalizeTotal) {
         final XYSeries series1 = new XYSeries(name);
@@ -340,7 +340,7 @@ public class PSMClusterDecoyChart {
 
         for (ClusterMZSpread pp : values) {
             double range = pp.getStandardDeviation();
-            if(range == 0)  {
+            if (range == 0) {
                 number_zero++;
                 number_cummulative++;
                 continue;
@@ -352,7 +352,7 @@ public class PSMClusterDecoyChart {
                 while (range > maxbin) {
                     double y = number_cummulative / number_values;
                     cummulativeFraction += y;
-                    System.out.println(Util.formatDouble(maxbin) + " , " + Util.formatDouble(y));
+     //               System.out.println(Util.formatDouble(maxbin) + " , " + Util.formatDouble(y));
                     series1.add(maxbin, y);
                     maxbin *= 1.5;
                     number_cummulative = 0;
@@ -369,7 +369,7 @@ public class PSMClusterDecoyChart {
 
         cummulativeFraction += y;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
-        System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+ //       System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
         series1.add(maxbin, y);
         return series1;
     }
@@ -406,7 +406,7 @@ public class PSMClusterDecoyChart {
                 while (purity > cutPoint) {
                     double y = number_cummulative / number_values;
                     cummulativeFraction += y;
-                    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+  //                  System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
                     series1.add(cutPoint, y);
                     if (cutindex >= fractionalPurityPoints.length) {
                         y = number_cummulative / number_values;
@@ -428,8 +428,13 @@ public class PSMClusterDecoyChart {
         double y = number_cummulative / number_values;
         cummulativeFraction += y;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
-        System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+      //  System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
         series1.add(cutPoint, y);
+
+        while (cutindex < CummulativeFDR.fractionalPurityPoints.length) {
+            series1.add(cutPoint, 0);
+            cutPoint = CummulativeFDR.fractionalPurityPoints[cutindex++];
+        }
         return series1;
     }
 
@@ -460,6 +465,10 @@ public class PSMClusterDecoyChart {
             if (pp.isDecoy())
                 twice_number_decoys += 2;
 
+        }
+        while (cutindex < CummulativeFDR.reverse_cummulativePurityPoints.length) {
+            series1.add(cutPoint, (double) twice_number_decoys / number_total);
+            cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];
         }
         return series1;
     }
@@ -669,7 +678,7 @@ public class PSMClusterDecoyChart {
         // get a reference to the plot for further customisation...
         final XYPlot plot = chart.getXYPlot();
 
-        final NumberAxis domainAxis = new LogarithmicAxis(YAxisName);
+        final NumberAxis domainAxis = new LogarithmicAxis(XAxisName);
         plot.setDomainAxis(domainAxis);
 
         plot.setBackgroundPaint(Color.lightGray);
