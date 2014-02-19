@@ -274,6 +274,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Equiv
             return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
         }
 
+        /**
         ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
         ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
         if (highestQualitySpectrum1 != highestQualitySpectrum2) {
@@ -289,6 +290,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Equiv
         int hash2 = o.hashCode();
         if(hash1 != hash2)
             return hash1 < hash2 ? -1 : 0;
+         **/
 
          return 0;
     }
