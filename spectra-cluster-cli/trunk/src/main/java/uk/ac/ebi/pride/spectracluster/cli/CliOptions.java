@@ -50,7 +50,7 @@ public class CliOptions {
 
         Option clusteringRounds = OptionBuilder
                 .hasArg()
-                .withArgName("clustering ronds")
+                .withArgName("clustering rounds")
                 .withDescription("number of time the 'processClusters()' method is called.")
                 .create(OPTIONS.CLUSTERING_ROUNDS.getValue());
         options.addOption(clusteringRounds);
