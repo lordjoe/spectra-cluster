@@ -69,23 +69,28 @@ public class PublishedClusteringEngine implements IClusteringEngine {
         dataChanged = dataChanged || clustersAdded;
         long durCluster1 = System.currentTimeMillis() - start;
 
+        System.out.format("Cluster1 = %d", durCluster1);
+
         // Step 2 - merge
         int clustersMerged = mergeClusters();
         dataChanged = dataChanged || clustersMerged > 0;
         long durMerge = System.currentTimeMillis() - start - durCluster1;
+
+        System.out.format("\t\tMerge = %d (%d merged)", durMerge, clustersMerged);
 
         // Step 3- remove non-fitting peptides
         int nSpectraRemoved = removeNonFittingSpectra();
         dataChanged = dataChanged || nSpectraRemoved > 0;
         long durRemove = System.currentTimeMillis() - start - durCluster1 - durMerge;
 
+        System.out.format("\t\tRemove = %d (%d removed)", durRemove, nSpectraRemoved);
+
         // Step 4 - cluster non-fitting peptides again, repeat at step 2
         clustersAdded = processClusterToAdd();
         dataChanged = dataChanged || clustersAdded;
         long durCluster2 = System.currentTimeMillis() - start - durCluster1 - durMerge - durRemove;
 
-        System.out.format("Cluster1 = %d\t\tMerge = %d (%d merged)\t\tRemove = %d (%d removed)\t\tCluster2 = %d\n",
-                durCluster1, durMerge, clustersMerged, durRemove, nSpectraRemoved, durCluster2);
+        System.out.format("\t\tCluster2 = %d\n", durCluster2);
 
         return dataChanged;
     }
