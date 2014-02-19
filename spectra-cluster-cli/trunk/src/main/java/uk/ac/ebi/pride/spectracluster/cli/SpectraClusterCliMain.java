@@ -115,10 +115,12 @@ public class SpectraClusterCliMain {
 
 
         System.out.println("Processing clusters (" + clusteringRounds + " rounds)...");
+        long start = System.currentTimeMillis();
         for (int currentRound = 0; currentRound < clusteringRounds; currentRound++) {
             theClusteringEngine.processClusters();
         }
-        System.out.print("Clustering done.\n");
+        long duration = System.currentTimeMillis() - start;
+        System.out.printf("Clustering done (%d msec).\n", duration);
 
         // write out the results
         saveClustersAsClusterings(theClusteringEngine.getClusters(), mgfFile, clusteringEngine);
