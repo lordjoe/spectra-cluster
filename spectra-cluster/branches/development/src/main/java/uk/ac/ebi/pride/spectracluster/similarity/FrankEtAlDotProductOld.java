@@ -111,12 +111,8 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         }
 
         // get the k highest peaks from every spectrum
-        List<IPeak> kHighestPeaks1 = getHighestPeaks(new ArrayList<IPeak>(spectrum1.getPeaks()), k);
-        List<IPeak> kHighestPeaks2 = getHighestPeaks(new ArrayList<IPeak>(spectrum2.getPeaks()), k);
-
-        // order the two peak lists based on their m/z values
-        Collections.sort(kHighestPeaks1, PeakMzComparator.INSTANCE);
-        Collections.sort(kHighestPeaks2, PeakMzComparator.INSTANCE);
+        List<IPeak> kHighestPeaks1 = spectrum1.getHighestNPeaks(k).getPeaks();
+        List<IPeak> kHighestPeaks2 = spectrum2.getHighestNPeaks(k).getPeaks();
 
         // create two intensity vectors
         List<Double> intensities1 = new ArrayList<Double>(k * 2);
@@ -124,6 +120,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
 
         // indicates the last item in the k2HighestPeakList that was merged
         int lastIndex2 = 0;
+        Set<Integer> processedPeaksSpec2 = new HashSet<Integer>();
 
         for (IPeak p1 : kHighestPeaks1) {
             // add the intensity to the intensity array of spectrum 1
@@ -139,6 +136,8 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
             for (int i = lastIndex2; i < kHighestPeaks2.size(); i++) {
                 // make sure the object exists
                 if (kHighestPeaks2.get(i) == null)
+                    throw new IllegalStateException("A peak must never be null");
+                if (processedPeaksSpec2.contains(i))
                     continue;
 
                 // compare the m/z
@@ -158,6 +157,9 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
             int closestIndex = -1;
             double closestDiff = 100;
 
+            if (comparableIndexes.size() > 1)
+                System.out.printf("comparableIndexes = %d\n", comparableIndexes.size());
+
             for (Integer i : comparableIndexes) {
                 IPeak iPeak = kHighestPeaks2.get(i);
                 double mz2 = iPeak.getMz();
@@ -174,16 +176,20 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
                 IPeak iPeak = kHighestPeaks2.get(closestIndex);
                 double intensity1 = iPeak.getIntensity();
                 intensities2.add(1 + Math.log(intensity1));
-                kHighestPeaks2.set(closestIndex, null);
+                processedPeaksSpec2.add(closestIndex);
             } else {
                 intensities2.add(0.0);
             }
         }
 
         // add the intensities for the second spectrum
-        for (IPeak p2 : kHighestPeaks2) {
+        for (int i = 0; i < kHighestPeaks2.size(); i++) {
+            IPeak p2 = kHighestPeaks2.get(i);
+
             // ignore all peaks set to NULL as they were already processed
             if (p2 == null)
+                throw new IllegalStateException("A peak must never be null");
+            if (processedPeaksSpec2.contains(i))
                 continue;
 
             // the peak doesn't exist in spectrum 1 as this was already checked
@@ -204,8 +210,6 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         for (int i = 0; i < intensities1.size(); i++) {
             double i1 = intensities1.get(i);
             double i2 = intensities2.get(i);
-   //         String fmt  = String.format("%8.3f %8.3f", i1, i2);
-    //        System.out.println(fmt);
             dotProduct += i1 * i2;
             numberMatches++;
             sumSquareIntensity1 += Math.pow(i1, 2);
