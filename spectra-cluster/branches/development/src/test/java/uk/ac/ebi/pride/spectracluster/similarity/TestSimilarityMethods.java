@@ -1,10 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
+import junit.framework.*;
 import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.similarity.TestSimilarityMethods
@@ -564,9 +568,7 @@ public class TestSimilarityMethods {
         double oldDP = oldSimilarity.assessSimilarity(spectrum1, spectrum2);
         double newDP = newSimilarity.assessSimilarity(spectrum1, spectrum2);
 
-        Assert.assertEquals(oldDP, newDP, 0.001 * (oldDP + newDP));
-
-        Assert.assertTrue(Math.abs(oldDP - newDP) < 0.8);
+        Assert.assertEquals(oldDP, newDP, 0);
 
 //        double newSimilarity = newSimilarity.assessSimilarity(spectrum1, spectrum2);
 //
@@ -582,11 +584,47 @@ public class TestSimilarityMethods {
         SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
         double toSelf = oldSimilarity.assessSimilarity(spectrum1, spectrum1);
-        Assert.assertEquals(1, toSelf, 0.001);
+        Assert.assertEquals(1, toSelf, 0);
 
         double toSelfNew = newSimilarity.assessSimilarity(spectrum1, spectrum1);
-        Assert.assertEquals(1, toSelfNew, 0.001);
+        Assert.assertEquals(1, toSelfNew, 0);
 
 
+    }
+
+    @Test
+    public void testInterestingSpectra() throws Exception {
+        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+
+        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+
+        for (IPeptideSpectrumMatch s1 : spectra) {
+            for (IPeptideSpectrumMatch s2 : spectra) {
+                if (s1.getId().equals("44905") && s2.getId().equals("67027"))            {
+                    double oldDP = oldSimilarity.assessSimilarity(s1, s2);
+                    double newDP = newSimilarity.assessSimilarity(s1, s2);
+
+                    TestCase.assertEquals(String.format("Spec %s vs %s, DP org = %f, DP new = %f\n", s1.getId(), s2.getId(), oldDP, newDP), oldDP, newDP, 0.001);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testManySpectra() throws Exception {
+        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+
+        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+
+        for (IPeptideSpectrumMatch s1 : spectra) {
+            for (IPeptideSpectrumMatch s2 : spectra) {
+                double oldDP = oldSimilarity.assessSimilarity(s1, s2);
+                double newDP = newSimilarity.assessSimilarity(s1, s2);
+
+                TestCase.assertEquals(String.format("Spec %s vs %s, DP org = %f, DP new = %f\n", s1.getId(), s2.getId(), oldDP, newDP), oldDP, newDP, 0.001);
+            }
+        }
     }
 }
