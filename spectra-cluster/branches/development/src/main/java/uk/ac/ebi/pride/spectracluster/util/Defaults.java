@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
+import com.lordjoe.utilities.*;
+import org.apache.hadoop.fs.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
@@ -10,7 +12,9 @@ import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
+import javax.annotation.*;
 import javax.sql.*;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -52,11 +56,16 @@ public class Defaults {
 
     private static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
 
+
+    private static final String DEFAULT_OUTPUT_PATH = "ConsolidatedClusters";
+
     private static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
 
     private static final int LARGE_BINNING_REGION = 1000;
 
     private static double similarityThreshold = DEFAULT_SIMILARITY_THRESHOLD;
+
+    private static String gOutputPath = DEFAULT_OUTPUT_PATH;
 
     public static double getSimilarityThreshold() {
         return similarityThreshold;
@@ -147,6 +156,20 @@ public class Defaults {
 
     private IClusteringEngineFactory defaultClusteringEngineFactory;
 
+    private Appendable debugOutput;
+
+    /**
+     * code might append results we want to look at
+     * @return
+     */
+    public Appendable getDebugOutput() {
+        return debugOutput;
+    }
+
+    public void setDebugOutput(final Appendable pDebugOutput) {
+        debugOutput = pDebugOutput;
+    }
+
     private DataSource defaultDataSource;
 
     private ConcensusSpectrumBuilderFactory consensusFactory = ConsensusSpectrum.FACTORY;
@@ -157,6 +180,10 @@ public class Defaults {
 
     private Defaults() {
 
+    }
+
+    public static String getOutputPath() {
+        return gOutputPath;
     }
 
     public WorkingDatabaseFactory getDatabaseFactory() {
@@ -277,17 +304,45 @@ public class Defaults {
         this.defaultJobBuilderFactory = defaultJobBuilderFactory;
     }
 
-    public static void configureAnalysisParameters(ISetableParameterHolder application) {
+    /**
+     * this method and the one below
+     * @param application source of parameters
+     */
+    public static void configureAnalysisParameters(@Nonnull IParameterHolder application) {
         largeBinningRegion = application.getIntParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.LargeBinningRegion", LARGE_BINNING_REGION);
         numberComparedPeaks = application.getIntParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.NumberComparedPeaks", NUMBER_COMPARED_PEAKS);
         similarityMZRange = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.SimilarityMZRange", DEFAULT_MZ_RANGE);
-        similarityThreshold = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.RetainThreshold", DEFAULT_RETAIN_THRESHOLD);
+        retainThreshold = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.RetainThreshold", DEFAULT_RETAIN_THRESHOLD);
         similarityThreshold = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.SimilarityThreshold", DEFAULT_SIMILARITY_THRESHOLD);
 
 
         sameClusterMergeMZWindowSize = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.SameClustererMerger.SpectrumMergeWindow", DEFAULT_SAME_CLUSTER_MERGE_WINDOW);
         majorPeakMZWindowSize = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakReducer.MajorPeakWindow", DEFAULT_MAJOR_PEAK_MZ_WINDOW);
         spectrumMergeMZWindowSize = application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.SpectrumMergeReducer.SpectrumMergeWindow", DEFAULT_SPECTRUM_MERGE_WINDOW);
+
+        gOutputPath = application.getParameter("uk.ac.ebi.pride.spectracluster.hadoop.OutputPath",DEFAULT_OUTPUT_PATH);
+    }
+
+    /**
+     * used to write parameters in to a data sink like a clustering file
+     * @param out  output
+     */
+    public static void appendAnalysisParameters(@Nonnull Appendable out)   {
+        try {
+            out.append("largeBinningRegion=" + largeBinningRegion  + "\n");
+            out.append("numberComparedPeaks=" + numberComparedPeaks  + "\n");
+            out.append("similarityMZRange=" + Util.formatDouble(similarityMZRange, 3)  + "\n");
+            out.append("similarityThreshold=" + Util.formatDouble(similarityThreshold, 3)  + "\n");
+            out.append("retainThreshold=" + Util.formatDouble(retainThreshold, 3)  + "\n");
+            out.append("sameClusterMergeMZWindowSize=" + Util.formatDouble(sameClusterMergeMZWindowSize, 3)  + "\n");
+            out.append("majorPeakMZWindowSize=" + Util.formatDouble(majorPeakMZWindowSize, 3)  + "\n");
+            out.append("spectrumMergeMZWindowSize=" + Util.formatDouble(spectrumMergeMZWindowSize, 3)  + "\n");
+            out.append("outputPath=" + getOutputPath()  + "\n");
+            }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
 }

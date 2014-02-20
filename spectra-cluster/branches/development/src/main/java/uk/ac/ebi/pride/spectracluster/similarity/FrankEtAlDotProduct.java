@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -107,6 +108,8 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      */
     @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
+
+        Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
         // initialize the number of peaks1 to use with 15
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
@@ -143,8 +146,18 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
             if (Math.abs(mass_difference) <= mzRange) {
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
-                // String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f", peak1.getMz(), match1, peak2.getMz(), match2);
-                //          System.out.println(fmt);
+
+                // print the peaks if a debugOutput is supplied
+                if(debugOutput != null)   {
+                      String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
+                    try {
+                        debugOutput.append(fmt);
+                    }
+                    catch (IOException e1) {
+                        throw new RuntimeException(e1);
+
+                    }
+                 }
 
                 MatchingProducts++;
                 dotProduct += match1 * match2;

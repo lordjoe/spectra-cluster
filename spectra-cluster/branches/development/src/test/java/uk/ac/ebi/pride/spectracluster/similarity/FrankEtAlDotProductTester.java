@@ -3,7 +3,9 @@
 
     import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
     import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+    import uk.ac.ebi.pride.spectracluster.util.*;
 
+    import java.io.*;
     import java.util.ArrayList;
     import java.util.Collections;
     import java.util.HashSet;
@@ -102,6 +104,7 @@
          */
         @Override
         public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
+            Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
             // initialize the number of peaks to use with 15
             int k = 15;
             switch (version) {
@@ -131,13 +134,13 @@
             int lastIndex2 = 0;
             HashSet<Integer> addedPeaks2 = new HashSet<Integer>();
 
-            for (IPeak p1 : kHighestPeaks1) {
+            for (IPeak peak1 : kHighestPeaks1) {
                 // add the intensity to the intensity array of spectrum 1
-                double intensity = p1.getIntensity();
+                double intensity = peak1.getIntensity();
                 double intensity2 = 1 + Math.log(intensity);
                 intensities1.add(intensity2);
 
-                double mz1 = p1.getMz();
+                double mz1 = peak1.getMz();
 
                 // get the indexes of the comparable masses from peak list 2
                 List<Integer> comparableIndexes = new ArrayList<Integer>(3);
@@ -205,7 +208,20 @@
                 // the peak doesn't exist in spectrum 1 as this was already checked
                 intensities1.add(0.0);
 
-                intensities2.add(1 + Math.log(kHighestPeaks2.get(i).getIntensity()));
+                IPeak peak2 = kHighestPeaks2.get(i);
+
+//                if(debugOutput != null)   {
+//                       String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
+//                     try {
+//                         debugOutput.append(fmt);
+//                     }
+//                     catch (IOException e1) {
+//                         throw new RuntimeException(e1);
+//
+//                     }
+//                  }
+
+                intensities2.add(1 + Math.log(peak2.getIntensity()));
             }
 
             // make sure both intensities have the same size
