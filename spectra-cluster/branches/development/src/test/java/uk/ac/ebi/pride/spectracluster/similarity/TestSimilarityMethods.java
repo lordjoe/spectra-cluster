@@ -613,6 +613,8 @@ public class TestSimilarityMethods {
 
     @Test
     public void testManySpectra() throws Exception {
+        FrankEtAlDotProduct.CHECK_BEST_PEAK_SPEC1 = false;
+
         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
         SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();

@@ -122,7 +122,9 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
         int lastIndex2 = 0;
         Set<Integer> processedPeaksSpec2 = new HashSet<Integer>();
 
-        for (IPeak p1 : kHighestPeaks1) {
+        for (int counterPeaks1 = 0; counterPeaks1 < kHighestPeaks1.size(); counterPeaks1++) {
+            IPeak p1 = kHighestPeaks1.get(counterPeaks1);
+
             // add the intensity to the intensity array of spectrum 1
             double intensity = p1.getIntensity();
             double intensity2 = 1 + Math.log(intensity);
@@ -156,9 +158,6 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
             // get the comparable mass closest to the current one
             int closestIndex = -1;
             double closestDiff = 100;
-
-            if (comparableIndexes.size() > 1)
-                System.out.printf("comparableIndexes = %d\n", comparableIndexes.size());
 
             for (Integer i : comparableIndexes) {
                 IPeak iPeak = kHighestPeaks2.get(i);

@@ -22,10 +22,16 @@ import java.util.*;
  * uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct
  * @author jg
  *         <p/>
- *         todo: this class needs to be reviewed
- */
+  */
 public class FrankEtAlDotProduct implements SimilarityChecker {
-
+    /**
+     * This is for debugging purposes only! Do not turn this to false in productive mode.
+     * If this boolean is set to false, the algorithm does not check whether there is
+     * a better matching peak in spectrum 1 than the current one.
+     *
+     * TODO: this should be removed once testing is complete
+     */
+    public static boolean CHECK_BEST_PEAK_SPEC1 = true;
 
     public static final int K2011_BIN_SIZE = 50;
     /**
@@ -139,18 +145,36 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
             double mass_difference = mz2 - mz1;
 
-            // also calculate the difference for the next t and e peaks
-            double mass_difference_nextT = 100;
-            if (t + 1 < peaks1.length) {
-                mass_difference_nextT = mz2 - peaks1[t+1].getMz();
-            }
-            double mass_difference_nextE = 100;
-            if (e + 1 < peaks2.length) {
-                mass_difference_nextE = peaks2[e+1].getMz() - mz1;
-            }
-
             if (Math.abs(mass_difference) <= mzRange) {
+                // also calculate the difference for the next t and e peaks
+                double mass_difference_nextT = 100;
+                if (t + 1 < peaks1.length) {
+                    mass_difference_nextT = mz2 - peaks1[t+1].getMz();
+                }
+                double mass_difference_nextE = 100;
+                if (e + 1 < peaks2.length) {
+                    mass_difference_nextE = peaks2[e+1].getMz() - mz1;
+                }
 
+                // use the next spectrum in E if it's a better match
+                if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
+                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT)) {
+                    e++;
+                    peak2 = peaks2[e];
+                    mz2 = peak2.getMz();
+                    mass_difference = mass_difference_nextE;
+                }
+
+                // use the next spectrum in T if it's a better match
+                if (CHECK_BEST_PEAK_SPEC1 && Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
+                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE)) {
+                    t++;
+                    peak1 = peaks1[t];
+                    mz1 = peak1.getMz();
+                    mass_difference = mass_difference_nextT;
+                }
+
+                // do the matching
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
 
@@ -171,6 +195,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                 // increment both counters since both peaks must not be compared again
                 e++;
                 t++;
+                continue;
             }
             if (mass_difference == 0) {
                 if (lastIsT) {
