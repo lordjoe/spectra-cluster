@@ -129,21 +129,28 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         boolean lastIsT = false;
         int t = 0;
         int e = 0;
-        int MatchingProducts = 0;
-        int TotalProducts = 0;
         double dotProduct = 0.0;
-        double charge = spectrum1.getPrecursorCharge();
-        double charge2 = spectrum2.getPrecursorCharge();
-        // todo do we penalize different charges??
+
         while (t < peaks1.length && e < peaks2.length) {
-            TotalProducts++;
             IPeak peak1 = peaks1[t];
             double mz1 = peak1.getMz();
             IPeak peak2 = peaks2[e];
             double mz2 = peak2.getMz();
 
             double mass_difference = mz2 - mz1;
+
+            // also calculate the difference for the next t and e peaks
+            double mass_difference_nextT = 100;
+            if (t + 1 < peaks1.length) {
+                mass_difference_nextT = mz2 - peaks1[t+1].getMz();
+            }
+            double mass_difference_nextE = 100;
+            if (e + 1 < peaks2.length) {
+                mass_difference_nextE = peaks2[e+1].getMz() - mz1;
+            }
+
             if (Math.abs(mass_difference) <= mzRange) {
+
                 double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
 
@@ -159,8 +166,11 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                     }
                  }
 
-                MatchingProducts++;
                 dotProduct += match1 * match2;
+
+                // increment both counters since both peaks must not be compared again
+                e++;
+                t++;
             }
             if (mass_difference == 0) {
                 if (lastIsT) {
