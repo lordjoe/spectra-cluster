@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import com.google.gdata.data.spreadsheet.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -24,7 +23,7 @@ import java.util.*;
  * @author jg
  *         <p/>
   */
-public class FrankEtAlDotProduct implements SimilarityChecker {
+public class FrankEtAlDotProductJohannes implements SimilarityChecker {
     /**
      * This is for debugging purposes only! Do not turn this to false in productive mode.
      * If this boolean is set to false, the algorithm does not check whether there is
@@ -33,10 +32,6 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      * TODO: this should be removed once testing is complete
      */
     public static boolean CHECK_BEST_PEAK_SPEC1 = true;
-
-    // add a nonsense park
-    public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE,0);
-
 
     public static final int K2011_BIN_SIZE = 50;
     /**
@@ -61,7 +56,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      * Set the class with Defaults.setSimilarityCheckerClass
      */
 
-    public FrankEtAlDotProduct() {
+    public FrankEtAlDotProductJohannes() {
     }
 
     /**
@@ -128,16 +123,12 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         IPeaksSpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
-       // the collection is immutable we need to build a new one
-        List<IPeak> kHighestPeaks1 = new ArrayList(highestPeaksSpectrum1.getPeaks());
-        kHighestPeaks1.add(LAST_PEAK); //add a peak we will not use
+        List<IPeak> kHighestPeaks1 = highestPeaksSpectrum1.getPeaks();
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
         IPeaksSpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
-        // the collection is immutable we need to build a new one
-        List<IPeak> kHighestPeaks2 = new ArrayList(highestPeaksSpectrum2.getPeaks());
-        kHighestPeaks2.add(LAST_PEAK); //add a peak we will not use
+        List<IPeak> kHighestPeaks2 = highestPeaksSpectrum2.getPeaks();
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
 
         double mzRange = this.getMzRange();
@@ -146,7 +137,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         int e = 0;
         double dotProduct = 0.0;
 
-        while (t < peaks1.length  - 1 && e < peaks2.length - 1) {
+        while (t < peaks1.length && e < peaks2.length) {
             IPeak peak1 = peaks1[t];
             double mz1 = peak1.getMz();
             IPeak peak2 = peaks2[e];
@@ -156,19 +147,26 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
             if (Math.abs(mass_difference) <= mzRange) {
                 // also calculate the difference for the next t and e peaks
-                IPeak nextPeak1 =  peaks1[t+1];
-                IPeak nextPeak2 =  peaks2[e+1];
-                double mass_difference_nextT = mz2 -nextPeak1.getMz();
-                double mass_difference_nextE = nextPeak2.getMz() - mz1;
-                double mass_difference_nextTE = nextPeak2.getMz() - nextPeak1.getMz();
-
+                double mass_difference_nextT = 100;
+                if (t + 1 < peaks1.length) {
+                    mass_difference_nextT = mz2 - peaks1[t+1].getMz();
+                }
+                double mass_difference_nextE = 100;
+                if (e + 1 < peaks2.length) {
+                    mass_difference_nextE = peaks2[e+1].getMz() - mz1;
+                }
+                double mass_difference_nextTE = 100;
+                if (t + 1 < peaks1.length && e + 1 < peaks2.length) {
+                    mass_difference_nextTE = peaks2[e + 1].getMz() - peaks1[t + 1].getMz();
+                }
 
                 // use the next spectrum in E if it's a better match
                 if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
                         Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT) &&
                         Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextTE)) {
                     e++;
-                    peak2 = nextPeak2;
+                    peak2 = peaks2[e];
+                    mz2 = peak2.getMz();
                     mass_difference = mass_difference_nextE;
                 }
 
@@ -177,8 +175,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                         Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE) &&
                         Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextTE)) {
                     t++;
-                    peak1 = nextPeak1;
-                      mass_difference = mass_difference_nextT;
+                    peak1 = peaks1[t];
+                    mz1 = peak1.getMz();
+                    mass_difference = mass_difference_nextT;
                 }
 
                 // do the matching

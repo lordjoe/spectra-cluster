@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
-import org.apache.hadoop.fs.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
@@ -251,7 +250,7 @@ public class Defaults {
 
     public SimilarityChecker getDefaultSimilarityChecker() {
         if (defaultSimilarityChecker == null) {
-            defaultSimilarityChecker = new FrankEtAlDotProduct();
+            defaultSimilarityChecker = new FrankEtAlDotProductJohannes();
         }
         return defaultSimilarityChecker;
     }
