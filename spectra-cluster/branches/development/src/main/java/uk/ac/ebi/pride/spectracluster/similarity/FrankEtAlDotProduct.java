@@ -155,10 +155,15 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                 if (e + 1 < peaks2.length) {
                     mass_difference_nextE = peaks2[e+1].getMz() - mz1;
                 }
+                double mass_difference_nextTE = 100;
+                if (t + 1 < peaks1.length && e + 1 < peaks2.length) {
+                    mass_difference_nextTE = peaks2[e].getMz() - peaks1[t].getMz();
+                }
 
                 // use the next spectrum in E if it's a better match
                 if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
-                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT)) {
+                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT) &&
+                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextTE)) {
                     e++;
                     peak2 = peaks2[e];
                     mz2 = peak2.getMz();
@@ -167,7 +172,8 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
                 // use the next spectrum in T if it's a better match
                 if (CHECK_BEST_PEAK_SPEC1 && Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
-                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE)) {
+                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE) &&
+                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextTE)) {
                     t++;
                     peak1 = peaks1[t];
                     mz1 = peak1.getMz();
