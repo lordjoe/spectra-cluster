@@ -20,6 +20,7 @@ import java.util.*;
  *         <p/>
  *         todo: this class needs to be reviewed
  */
+@Deprecated
 public class FrankEtAlDotProductOld implements SimilarityChecker {
     public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
     /**
