@@ -23,6 +23,7 @@ import java.util.*;
  * @author jg
  *         <p/>
   */
+@Deprecated
 public class FrankEtAlDotProductJohannes implements SimilarityChecker {
     /**
      * This is for debugging purposes only! Do not turn this to false in productive mode.

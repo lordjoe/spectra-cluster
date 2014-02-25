@@ -64,7 +64,7 @@ public class MultiSimillarityTest {
                     double newDotP;
                     newDotP = newSimilarity.assessSimilarity(spectra.get(index1), spectra.get(index2));
 
-                    Assert.assertEquals(oldDotP, newDotP, 1.5 * (oldDotP + newDotP));
+                    Assert.assertEquals(oldDotP, newDotP, 0.00001);
                     //Assert.assertTrue(Math.abs(oldDotP - newDotP) < SIMILAR_THRESHOLD);
 
                 }
