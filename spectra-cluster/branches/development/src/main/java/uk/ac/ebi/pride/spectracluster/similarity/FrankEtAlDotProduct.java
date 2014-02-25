@@ -30,9 +30,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      * If this boolean is set to false, the algorithm does not check whether there is
      * a better matching peak in spectrum 1 than the current one.
      *
-     * TODO: this should be removed once testing is complete
+     * TODO: this MUST be removed once testing is complete
      */
-    public static boolean CHECK_BEST_PEAK_SPEC1 = true;
+    protected static boolean CHECK_BEST_PEAK_SPEC1 = true;
 
     // add a nonsense park
     public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE,0);
@@ -93,7 +93,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     private AlgorithmVersion version = DEFAULT_ALGORITHM;
 
     /**
-     * erturn the default similarity Threshold
+     * return the default similarity Threshold
      *
      * @return as above
      */
@@ -161,6 +161,9 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                 double mass_difference_nextT = mz2 -nextPeak1.getMz();
                 double mass_difference_nextE = nextPeak2.getMz() - mz1;
                 double mass_difference_nextTE = nextPeak2.getMz() - nextPeak1.getMz();
+
+                if (!CHECK_BEST_PEAK_SPEC1)
+                    mass_difference_nextTE = Double.MAX_VALUE;
 
 
                 // use the next spectrum in E if it's a better match

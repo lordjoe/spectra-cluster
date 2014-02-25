@@ -158,6 +158,7 @@ public class ClosestPeaksTest {
         int total = 0;
         int different = 0;
         SimilarityChecker checker = new FrankEtAlDotProduct();
+        FrankEtAlDotProduct.CHECK_BEST_PEAK_SPEC1 = false;
         SimilarityChecker oldChecker = new FrankEtAlDotProductTester();
 
         Set<String> interestingIds = new HashSet<String>();
