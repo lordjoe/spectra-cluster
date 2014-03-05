@@ -85,9 +85,12 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
         maxMz = maxmz;
         minMz = minmz;
         range = maxMz - minMz;
-        if(n >= 32 && standardDeviation > 2) {
-            cluster.appendClustering(System.out);
-        }
+
+        // show wide stable clusters
+//        if(n >= 32 && standardDeviation > 2) {
+//            cluster.appendClustering(System.out);
+//        }
+
         if(n > 10 && range < 0.00001)
             sum = 0; // break here
     }

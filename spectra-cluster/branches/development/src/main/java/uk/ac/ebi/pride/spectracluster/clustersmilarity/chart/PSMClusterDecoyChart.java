@@ -92,7 +92,7 @@ public class PSMClusterDecoyChart {
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
-                System.out.println("===" + cs.getName() + "===");
+     //           System.out.println("===" + cs.getName() + "===");
                 addClusterRangeData(dataset, cs, minimumSize, normalizeTotal);
             }
 
@@ -128,7 +128,7 @@ public class PSMClusterDecoyChart {
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
-                System.out.println("===" + cs.getName() + "===");
+ //               System.out.println("===" + cs.getName() + "===");
                 addFractionalData(dataset, cs, minimumSize, normalizeTotal);
             }
 
