@@ -102,10 +102,10 @@ public class PSMSpectralCluster implements ISpectralCluster {
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
 
         }
-
-        if (pureDecoy != null) {
-            System.out.println(pureDecoy + " " + purityStr);
-        }
+          // show bad decoys
+//        if (pureDecoy != null) {
+//            System.out.println(pureDecoy + " " + purityStr);
+//        }
     }
 
 

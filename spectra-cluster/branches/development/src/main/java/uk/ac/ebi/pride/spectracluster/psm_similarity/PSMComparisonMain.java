@@ -4,6 +4,7 @@ import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
 import java.util.*;
@@ -62,7 +63,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
 
     }
- 
+
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
@@ -177,7 +178,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
         PSMClusterDecoyChart.makeFractionalChart(name + " Fractional PSMS", this, false);
         //     PSMClusterDecoyChart.makeFractionalChart(name + " Total Fractional PSMS", this,true);
-    //    PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
+        //    PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
         PSMClusterDecoyChart.makeCummulativeTotalChart(name + " Total PSMS", this);
     }
 
@@ -207,7 +208,8 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             mainClass.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = PSMUtilities.readClusterSet(originalFile,   arg + "SemiStableNew.clustering");
+            IClusterSet cs = PSMUtilities.readClusterSet(originalFile, arg + "SemiStableNew.clustering");
+            showClusterSizesAndCounts(arg, cs);
             cs.setName(arg);
             mainClass.addClustering(cs);
             // showChart(cs);
@@ -220,6 +222,28 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
         PSMUtilities.closeClusterSaver();
 
+    }
+
+    public static void showClusterSizesAndCounts(final String pArg, final IClusterSet pCs) {
+        long totalSpectra = 0;
+        long totalStableClusters = 0;
+        Set<String> uniqueIds = new HashSet<String>();
+        for (ISpectralCluster scs : pCs.getClusters()) {
+            for (ISpectrum spec  : scs.getClusteredSpectra()) {
+                uniqueIds.add(spec.getId());
+            }
+            totalSpectra += scs.getClusteredSpectraCount();
+        }
+        int uniqueSpectra = uniqueIds.size();
+        // if 64 is a stable pride cluster then shink it for smaller sets
+        double v = ((double) uniqueSpectra) / 30000000;
+        double stableClusterSize = Math.max(16, 64.0 * v);
+
+        for (ISpectralCluster scs : pCs.getClusters()) {
+            if (scs.getClusteredSpectraCount() >= stableClusterSize)
+                totalStableClusters++;
+        }
+        System.out.println(pArg + "  Unique Spectra " + uniqueSpectra +" Number Spectra " + totalSpectra + " Number Stable Clusters " + totalStableClusters + " Stable Cluster Size " + stableClusterSize);
     }
 
 

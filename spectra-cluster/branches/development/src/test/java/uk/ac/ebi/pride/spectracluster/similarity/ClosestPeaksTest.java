@@ -109,7 +109,7 @@ public class ClosestPeaksTest {
                 double dotOrg = checker.assessSimilarity(psm1, psm2);
                 double dotNew = currentChecker.assessSimilarity(psm1, psm2);
 
-                if (dotOrg - 0.01 > dotNew || dotOrg + 0.01 < dotNew) {
+                if (Math.abs(dotOrg - dotNew) > 0.00001) {
                     different++;
 
                     StringBuilder usedPeaksTester = new StringBuilder();
