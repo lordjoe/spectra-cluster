@@ -101,9 +101,11 @@ public  class AbstractClusterLauncherJobBuilder implements IJobBuilder {
             jobNumber++;
         }
 
+
         for (int i = startAtJob; i < jobClasses.length; i++) {
             String job0Output = base.getOutputLocation(jobNumber);
-            IHadoopJob j1 = buildJob(job0Output, jobClasses[i], jobNumber);
+
+              IHadoopJob j1 = buildJob(job0Output, jobClasses[i], jobNumber);
             holder.add(j1);
             jobNumber++;
 
@@ -133,6 +135,10 @@ public  class AbstractClusterLauncherJobBuilder implements IJobBuilder {
                 outputLocation,
                 added
         );
+
+        String jarFile = job.getJarFile();
+        if(jarFile != null)
+             base.setJarFile(jarFile);
 
         if (base.getJarFile() != null)
             job.setJarFile(base.getJarFile());

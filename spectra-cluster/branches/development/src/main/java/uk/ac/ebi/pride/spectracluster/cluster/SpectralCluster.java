@@ -15,8 +15,9 @@ import java.util.concurrent.*;
 /**
  * @author Rui Wang
  * @version $Id$
+ *  * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster /* extends WatchedClass */implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
 
     private String id;
@@ -56,6 +57,7 @@ public class SpectralCluster implements ISpectralCluster, ISpectrumHolder, Inter
     }
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
+        super();
         this.id = id;
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
         addSpectrumHolderListener(this.consensusSpectrumBuilder);

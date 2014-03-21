@@ -7,14 +7,16 @@ package org.systemsbiology.xtandem.peptide;
  */
 public enum PeptideModificationRestriction {
     Global,NTerminal,CTerminal;
-    public static final PeptideModificationRestriction[] EMPTY_ARRAY = {};
+
+    public static final String NTERMINAL_STRING = "[";
+    public static final String CTERMINAL_STRING = "]";
 
     public String getRestrictionString() {
         switch(this)  {
             case NTerminal:
-                  return "[" ;
+                  return NTERMINAL_STRING ;
             case CTerminal:
-                  return "]" ;
+                  return CTERMINAL_STRING ;
             default:
                 return "";
           }

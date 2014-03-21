@@ -72,6 +72,18 @@ public interface  IPolypeptide {
      public boolean hasAminoAcid(FastaAminoAcid aa);
 
     /**
+     * return the N Terminal amino acid
+     * @return
+     */
+     public FastaAminoAcid getNTerminal() ;
+
+    /**
+     * return the C Terminal amino acid
+     * @return
+     */
+     public FastaAminoAcid getCTerminal() ;
+
+    /**
       * is the Amino Acid Present and not modified
       * @param aa  !null amino acid
       * @return true if present
@@ -205,4 +217,10 @@ public interface  IPolypeptide {
        * @return
        */
       public int getNumberModifications();
+
+
+    public double getRetentionTime();
+
+    public void setRetentionTime(final double pRetentionTime);
+
 }

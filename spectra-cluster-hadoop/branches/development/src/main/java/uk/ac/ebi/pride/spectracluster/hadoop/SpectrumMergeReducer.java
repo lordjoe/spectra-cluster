@@ -117,7 +117,7 @@ public class SpectrumMergeReducer extends AbstractParameterizedReducer {
 
                 }
             }
-            if (numberProcessed % 100 == 0)
+            if (numberProcessed > 0 && numberProcessed % 100 == 0)
                 binTime.showElapsed("processed " + numberProcessed, System.err);
             //     System.err.println("processed " + numberProcessed);
             numberProcessed++;

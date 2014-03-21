@@ -941,8 +941,8 @@ public class ParserUtilities {
 
     protected static String getTextPart(String line, String prefix) {
         if (line.startsWith(prefix))
-            return line.substring(prefix.length()).trim();
-        return null;
+            return new  String(line.substring(prefix.length()).trim());  // I am worried about small substrings of big strings
+            return null;
     }
 
     /**
@@ -1022,7 +1022,7 @@ public class ParserUtilities {
         if (items.length > 1) {
             spectrumId = items[0].trim().substring("TITLE=id=".length());
         }
-        return spectrumId;
+        return new  String(spectrumId);  // I am worried about small substrings of big strings
     }
 
 

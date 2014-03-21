@@ -1,12 +1,17 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.util;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.impl.*;
 import uk.ac.ebi.pride.tools.mgf_parser.model.*;
 
 import java.util.*;
 
-public class ClusteringSpectrum {
+/**
+ * NOTE extend WatchedClass to look for possible memory leaks
+
+ */
+public class ClusteringSpectrum /* extends WatchedClass */  {
     private String id;
     private String peptide;
     private Double precursorMZ;

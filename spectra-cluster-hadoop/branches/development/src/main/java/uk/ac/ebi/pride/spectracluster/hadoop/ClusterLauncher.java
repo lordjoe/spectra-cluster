@@ -131,6 +131,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         return ret;
     }
+
     public static final String USER_DIR = System.getProperty("user.dir").replace("\\", "/");
 
 
@@ -245,7 +246,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         return m_StartAtJob;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+
     public void setStartAtJob(int startAtJob) {
         m_StartAtJob = startAtJob;
     }
@@ -281,6 +282,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     public boolean isBuildJar() {
+        if (getJarFile() != null)
+            return false;
         return m_BuildJar;
     }
 
@@ -386,14 +389,24 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             String val = properties.getProperty(key);
             m_Application.setParameter(key, val);
         }
-        setDefaultStartAtJob(m_Application.getIntParameter(START_AT_JOB_PROPERTY, 0));
+        Integer startAtJob = m_Application.getIntParameter(START_AT_JOB_PROPERTY, 0);
+        setDefaultStartAtJob(startAtJob);
+        setStartAtJob(startAtJob);
 
 
     }
 
-    protected String refinePath(String originalPath)   {
-        if(!USER_DIR.equals(getRemoteBaseDirectory()) )
-            return  getRemoteBaseDirectory() + "/" +  originalPath;
+    protected String refinePath(String originalPath) {
+        String remoteBaseDirectory = getRemoteBaseDirectory();
+        if (remoteBaseDirectory.startsWith("/"))
+            return originalPath; // already absolute
+        String adjustedUserDir = USER_DIR;
+        int clnIdx = USER_DIR.indexOf(":");
+        if (clnIdx > -1) {
+            adjustedUserDir = adjustedUserDir.substring(clnIdx + 1); // drop things like C:/
+        }
+        if (!adjustedUserDir.equals(remoteBaseDirectory))
+            return remoteBaseDirectory + "/" + originalPath;
         else
             return originalPath;
     }
@@ -1011,9 +1024,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 if (!paramsFile.exists())
                     throw new IllegalStateException("params file " + gParamsFile + " does not exist - in the command line you must say params=<paramsFile> and that file MUST exist");
                 if (!paramsFile.canRead())
-                     throw new IllegalStateException("params file " + gParamsFile + " CANNOT BE READ - in the command line you must say params=<paramsFile> and that file MUST exist");
+                    throw new IllegalStateException("params file " + gParamsFile + " CANNOT BE READ - in the command line you must say params=<paramsFile> and that file MUST exist");
                 File file = paramsFile.getParentFile();
-                if(file != null) {
+                if (file != null) {
                     String path = file.getPath();
                     String replace = path.replace("\\", "/");
                     gPassedBaseDirctory = RemoteUtilities.getDefaultPath() + "/" + replace;
@@ -1120,9 +1133,9 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 baseDir = pValue.replace("File://", "");
             }
             if (pValue.endsWith("<LOCAL_DIRECTORY>")) {
-                defaultDir = defaultDir.replace("/<LOCAL_DIRECTORY>","");
-                 String localName = new File(System.getProperty("user.dir")).getName();
-                if( !USER_DIR.equals(getPassedBaseDirctory()) )
+                defaultDir = defaultDir.replace("/<LOCAL_DIRECTORY>", "");
+                String localName = new File(System.getProperty("user.dir")).getName();
+                if (!USER_DIR.equals(getPassedBaseDirctory()))
                     localName = defaultDir + "/" + getPassedBaseDirctory();
                 String local = localName;
                 baseDir = baseDir.replace("<LOCAL_DIRECTORY>", local);
@@ -1375,6 +1388,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             }
             else {
                 IFileSystem access = new LocalMachineFileSystem(new File(main.getRemoteBaseDirectory()));
+                // locally we have classes - no jar is needed
                 main.setAccessor(access);
                 main.setBuildJar(false);
                 HadoopJob.setJarRequired(false);
@@ -1475,7 +1489,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             //noinspection ConstantConditions
             if (!isVersion1)
                 throw new IllegalStateException("This Code will not work under Version 0.2");
-           throw new UnsupportedOperationException("Fix This"); // ToDo
+            throw new UnsupportedOperationException("Fix This"); // ToDo
 
 //            // by using reflection the class is never loaded when running
 //            //noinspection unchecked
