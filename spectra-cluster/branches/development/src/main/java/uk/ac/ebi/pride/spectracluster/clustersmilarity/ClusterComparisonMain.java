@@ -209,6 +209,17 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         ClusterDecoyChart.makeCummulativeTotalChart("Total PSMS", this);
     }
 
+    public void compareClusters() {
+        SimpleSpectrumRetriever spectra1 = getSpectra();
+        List<IClusterSet> clst = getClusterings();
+        if(clst.size() < 2)
+            return;
+        IClusterSet cs1 = clst.get(0);
+        IClusterSet cs2 = clst.get(1);
+        MostSimilarClusterSet.compareClusterSets(  spectra1, cs1,cs2) ;
+
+    }
+
 
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -226,10 +237,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             INSTANCE.addClustering(cs);
            // showChart(cs);
         }
-
-
+        INSTANCE.compareClusters();
         INSTANCE.showFDRCharts();
-          INSTANCE.generateReports();
+        INSTANCE.generateReports();
       }
 
 

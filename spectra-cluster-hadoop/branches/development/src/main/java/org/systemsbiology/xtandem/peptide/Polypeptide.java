@@ -143,7 +143,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
      * @param s
      * @return
      */
-    public static IPolypeptide fromString(String s) {
+    public static Polypeptide fromString(String s) {
         s = s.trim();
         // has modifications so make a modified peptide
         if (s.contains("["))
@@ -172,6 +172,7 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     private double m_MatchingMass;
     private String m_Sequence;
     private int m_SequenceLength;
+    private double m_RetentionTime;
     private PeptideValidity m_Validity;
     //    private IProtein m_ParentProtein;   // not final since proteins need to set later
     //   private   int m_StartPosition = -1;
@@ -267,6 +268,14 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
         return false;
     }
 
+    public double getRetentionTime() {
+        return m_RetentionTime;
+    }
+
+    public void setRetentionTime(final double pRetentionTime) {
+        m_RetentionTime = pRetentionTime;
+    }
+
     /**
      * count the occurrance of an amino acid in the sequence
      *
@@ -286,6 +295,34 @@ public class Polypeptide implements IPolypeptide, Comparable<IPolypeptide> {
     @Override
     public boolean hasAminoAcid(FastaAminoAcid aa) {
         return getSequence().contains(aa.toString());
+    }
+
+    /**
+     * return the N Terminal amino acid
+     *
+     * @return
+     */
+    @Override
+    public FastaAminoAcid getNTerminal() {
+        int sequenceLength = getSequenceLength();
+        if(sequenceLength == 0)
+            return null;
+        String aas = getSequence().substring(1) ;
+         return FastaAminoAcid.valueOf(aas);
+    }
+
+    /**
+     * return the C Terminal amino acid
+     *
+     * @return
+     */
+    @Override
+    public FastaAminoAcid getCTerminal() {
+        int sequenceLength = getSequenceLength();
+        if(sequenceLength == 0)
+            return null;
+         String aas = getSequence().substring(sequenceLength -1, sequenceLength) ;
+        return FastaAminoAcid.valueOf(aas);
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.lordjoe.algorithms.*;
 import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
@@ -15,9 +16,9 @@ import uk.ac.ebi.pride.tools.pride_spectra_clustering.similarity_checker.Similar
  * Represents a cluster of spectra
  * 
  * @author jg
- * 
+ * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectraCluster {
+public class SpectraCluster /*  extends WatchedClass */ {
 	/**
 	 * The logger to use.
 	 */

@@ -112,6 +112,26 @@ public class DummyPeptide implements IPolypeptide {
         return false;
     }
 
+    /**
+     * return the N Terminal amino acid
+     *
+     * @return
+     */
+    @Override
+    public FastaAminoAcid getNTerminal() {
+        return null;
+    }
+
+    /**
+     * return the C Terminal amino acid
+     *
+     * @return
+     */
+    @Override
+    public FastaAminoAcid getCTerminal() {
+        return null;
+    }
+
     @Override
     public boolean hasUnmodifiedAminoAcid(FastaAminoAcid aa) {
         return false;
@@ -303,6 +323,16 @@ public class DummyPeptide implements IPolypeptide {
         return 0;
     }
 
+
+    @Override
+    public double getRetentionTime() {
+        return 0;
+    }
+
+    @Override
+    public void setRetentionTime(final double pRetentionTime) {
+       throw new UnsupportedOperationException("Cannot Do");
+    }
 
     @Override
     public String toString() {

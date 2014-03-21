@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
+import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
@@ -166,12 +167,14 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 
             return ret;
         } catch (IOException e) {
+            ExceptionUtilities.printCausalStacks(e);
             throw new RuntimeException(e);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
         } catch (ClassNotFoundException e) {
+            ExceptionUtilities.printCausalStacks(e);
             throw new RuntimeException(e);
 
         }

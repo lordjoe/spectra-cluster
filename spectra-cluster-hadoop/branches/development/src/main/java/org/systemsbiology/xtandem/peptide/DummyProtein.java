@@ -116,4 +116,16 @@ public class DummyProtein extends DummyPeptide implements IProtein {
             throw new UnsupportedOperationException("Dummy proteins cannot get this");
         return 0;
     }
+
+
+    @Override
+    public double getRetentionTime() {
+        return 0;
+    }
+
+    @Override
+    public void setRetentionTime(final double pRetentionTime) {
+       throw new UnsupportedOperationException("Cannot Do");
+    }
+
 }

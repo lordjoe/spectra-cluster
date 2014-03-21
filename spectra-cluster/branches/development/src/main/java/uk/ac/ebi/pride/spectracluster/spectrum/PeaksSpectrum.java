@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
+import com.lordjoe.algorithms.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -8,8 +10,9 @@ import java.util.*;
  * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
  * User: Steve
  * Date: 6/20/13
+ * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class PeaksSpectrum implements IPeaksSpectrum {
+public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum {
 
     /**
      * who knows why Johannes does this but we can as well

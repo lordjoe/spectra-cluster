@@ -45,7 +45,9 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
 
             for (int i = 0; i < classNames.length; i++) {
                 String className = classNames[i].trim();
-                holder.add(Class.forName(className));
+                Class<?> cls = Class.forName(className);
+                cls.getMethods(); // force fuller load
+                holder.add(cls);
             }
             Class[] ret = new Class[holder.size()];
             holder.toArray(ret);
@@ -59,6 +61,7 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
 
     public ClusterLauncherJobBuilder(ClusterLauncher launcher) {
         super(launcher, makeJobClasses(launcher));
+         HadoopJob.setJarRequired(true);
     }
 
     /**
@@ -68,10 +71,6 @@ public class ClusterLauncherJobBuilder extends AbstractClusterLauncherJobBuilder
      */
     @Override
     public int getNumberJobs() {
-        // patch for development
-        if (true)
-            return 4;
         return super.getNumberJobs();
-
     }
 }

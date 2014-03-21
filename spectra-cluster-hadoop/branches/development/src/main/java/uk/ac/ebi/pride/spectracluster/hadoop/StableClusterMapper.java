@@ -34,6 +34,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
             WIDE_BIN_OVERLAP);
 
     private Map<Integer, String[]> binToAllKeys = new HashMap<Integer, String[]>();
+    private int numberMapCalls;
 
     /**
      * return all posssible keys for a bin - this may be subfragmanets
@@ -53,6 +54,9 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     }
 
     private String[] buildBinKeys(int bin, int charge, final double mz, Context context) {
+        if(numberMapCalls++ % 1000 == 0)
+            System.gc(); // garbage collect to try to cure memory issues
+
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         List<String> holder = new ArrayList<String>();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
