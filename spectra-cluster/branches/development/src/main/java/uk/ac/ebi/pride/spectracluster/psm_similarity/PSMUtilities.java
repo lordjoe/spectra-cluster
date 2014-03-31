@@ -122,6 +122,7 @@ public class PSMUtilities {
     public static IClusterSet readClusterSet(File file, String name) {
         SimpleClusterSet simpleClusterSet = new SimpleClusterSet();
         simpleClusterSet.setName(name);
+        SpectrumToCluster stc = new SpectrumToCluster();
 
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -146,12 +147,24 @@ public class PSMUtilities {
                 }
 
                 ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
-                simpleClusterSet.addClusters(Arrays.asList(clusters));
+                List<ISpectralCluster> clusters1 = Arrays.asList(clusters);
+                stc.addClusters(clusters1);
+                simpleClusterSet.addClusters(clusters1);
             }
             catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
+        int[] duplicatedOfSize = stc.getDuplicatedOfSize();
+        for (int i = 1; i < duplicatedOfSize.length; i++) {
+            int dups = duplicatedOfSize[i];
+            System.out.println("duplicates " + i + " " + dups);
+        }
+        StringBuilder sb = new StringBuilder();
+        stc.appendDuplicatedSpectra(sb);
+
+
 
         return simpleClusterSet;
     }
