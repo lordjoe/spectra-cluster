@@ -1,65 +1,27 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import com.lordjoe.utilities.ElapsedTimer;
-import org.apache.hadoop.io.Text;
-import org.systemsbiology.hadoop.AbstractParameterizedReducer;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Merge spectra with unstable clusters
  */
-public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
+public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
-    private double majorMZ;
-    private int currentCharge;
-    private int currentBin;
-    private IWideBinner binner = StableClusterMapper.BINNER;
-    private IStableClusteringEngine clusteringEngine;
-    private ElapsedTimer binTime = new ElapsedTimer();
-    private ElapsedTimer jobTime = new ElapsedTimer();
-    private int currentGroup;
+     private IStableClusteringEngine clusteringEngine;
+      private int currentGroup;
 
 
-    @SuppressWarnings("UnusedDeclaration")
-    public double getMajorMZ() {
-        return majorMZ;
-    }
 
-    public int getCurrentCharge() {
-        return currentCharge;
-    }
-
-    public IStableClusteringEngine getClusteringEngine() {
-        return clusteringEngine;
-    }
-
-    public int getCurrentBin() {
-        return currentBin;
-    }
-
-    public IWideBinner getBinner() {
-        return binner;
-    }
 
     public int getCurrentGroup() {
         return currentGroup;
-    }
-
-
-    @Override
-    protected void setup(final Context context) throws IOException, InterruptedException {
-        super.setup(context);
-        Defaults.configureAnalysisParameters(getApplication());
-
     }
 
 
@@ -84,7 +46,7 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
             updateEngine(context, realKey);
         }
 
-        IStableClusteringEngine stableClusteringEngine = getClusteringEngine();
+        IStableClusteringEngine stableClusteringEngine = (IStableClusteringEngine)getEngine();
 
         int numberProcessed = 0;
 
@@ -108,7 +70,7 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
                 }
             }
             if (numberProcessed % 100 == 0)
-                binTime.showElapsed("processed " + numberProcessed, System.err);
+                getBinTime().showElapsed("processed " + numberProcessed, System.err);
             //     System.err.println("processed " + numberProcessed);
             numberProcessed++;
         }
@@ -126,34 +88,34 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
         }
     }
 
+//
+//    /**
+//     * write one cluster and key
+//     *
+//     * @param context !null context
+//     * @param cluster !null cluster
+//     */
+//    protected void writeCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
+//        final List<ISpectralCluster> allClusters = getClusteringEngine().findNoneFittingSpectra(cluster);
+//        if (!allClusters.isEmpty()) {
+//            for (ISpectralCluster removedCluster : allClusters) {
+//
+//                // drop all spectra
+//                final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
+//                ISpectrum[] allRemoved = clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]);
+//                cluster.removeSpectra(allRemoved);
+//
+//                // and write as stand alone
+//                writeOneVettedCluster(context, removedCluster);
+//            }
+//
+//        }
+//        // now write the original
+//        if (cluster.getClusteredSpectraCount() > 0)
+//            writeOneVettedCluster(context, cluster);     // nothing removed
+//    }
 
-    /**
-     * write one cluster and key
-     *
-     * @param context !null context
-     * @param cluster !null cluster
-     */
-    protected void writeCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
-        final List<ISpectralCluster> allClusters = getClusteringEngine().findNoneFittingSpectra(cluster);
-        if (!allClusters.isEmpty()) {
-            for (ISpectralCluster removedCluster : allClusters) {
-
-                // drop all spectra
-                final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
-                ISpectrum[] allRemoved = clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]);
-                cluster.removeSpectra(allRemoved);
-
-                // and write as stand alone
-                writeOneCluster(context, removedCluster);
-            }
-
-        }
-        // now write the original
-        if (cluster.getClusteredSpectraCount() > 0)
-            writeOneCluster(context, cluster);     // nothing removed
-    }
-
-    protected void writeOneCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -161,7 +123,7 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
         float precursorMz = cluster.getPrecursorMz();
         int bin = binner1.asBin(precursorMz);
         // you can merge clusters outside the current bin but not write them
-        if (bin != currentBin)
+        if (bin != getCurrentBin())
             return;
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
@@ -177,23 +139,17 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
 
     @SuppressWarnings("UnusedDeclaration")
     public void setMajorMZ(double majorMZ) {
-        this.majorMZ = majorMZ;
+        setMajorPeak(majorMZ);
     }
 
-    public void setCurrentCharge(int currentCharge) {
-        if (currentCharge == this.currentCharge)
-            return;
-        this.currentCharge = currentCharge;
-        System.err.println("Setting charge   " + currentCharge);
-    }
-
-    public void setCurrentBin(int currentBin) {
-        this.currentBin = currentBin;
-        double mid = getBinner().fromBin(currentBin);
-        String midStr = String.format("%10.1f", mid).trim();
-        binTime.reset();
-        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr, System.err);
-    }
+//
+//    public void setCurrentBin(int currentBin) {
+//        this.currentBin = currentBin;
+//        double mid = getBinner().fromBin(currentBin);
+//        String midStr = String.format("%10.1f", mid).trim();
+//        binTime.reset();
+//        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr, System.err);
+//    }
 
     public void setCurrentGroup(int currentGroup) {
         this.currentGroup = currentGroup;
@@ -205,7 +161,8 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
      * @param context !null context
      * @param pMzKey  !null unless done
      */
-    protected void updateEngine(final Context context, final StableChargeBinMZKey pMzKey) throws IOException, InterruptedException {
+    protected <T> boolean  updateEngine(final Context context,T key ) throws IOException, InterruptedException {
+        final StableChargeBinMZKey pMzKey =  (StableChargeBinMZKey)key;
         if (clusteringEngine != null) {
             Collection<ISpectralCluster> clusters = clusteringEngine.getClusters();
             writeClusters(context, clusters);
@@ -215,23 +172,15 @@ public class StableSpectrumMergeReducer extends AbstractParameterizedReducer {
         // if not at end make a new engine
         if (pMzKey != null) {
             clusteringEngine = new StableClusteringEngine();
-            majorMZ = pMzKey.getPrecursorMZ();
+            setMajorMZ(pMzKey.getPrecursorMZ());
             setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
             setCurrentGroup(pMzKey.getGroup());
         }
+        return true;
     }
 
-    /**
-     * Called once at the end of the task.
-     */
-    @Override
-    protected void cleanup(final Context context) throws IOException, InterruptedException {
-        //    writeParseParameters(context);
-        updateEngine(context, null); // write any left over clusters
-        super.cleanup(context);
 
-    }
 
 
 
