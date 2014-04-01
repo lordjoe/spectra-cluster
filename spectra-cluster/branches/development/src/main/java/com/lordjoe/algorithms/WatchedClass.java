@@ -1,8 +1,6 @@
 package com.lordjoe.algorithms;
 
 
-import org.eclipse.jetty.util.*;
-
 import javax.annotation.*;
 import java.lang.ref.*;
 import java.util.*;
@@ -48,12 +46,12 @@ public class WatchedClass {
     /**
      * we keep a list of created classes and a  WatchedClassHolder recording use
      */
-    private static Map<Class, WatchedClassHolder> gWatchUsages = new ConcurrentHashMap<Class, WatchedClassHolder>();
+    private static final Map<Class, WatchedClassHolder> gWatchUsages = new ConcurrentHashMap<Class, WatchedClassHolder>();
     /**
      * interned Strings of the stack trace to where the objects were created -
      * may not tell who is holding a reference but at least adds a point to look
      */
-    private static Set<String> gLocations = new ConcurrentHashSet<String>();
+    private static final Set<String> gLocations = new HashSet<String>();
 
     /**
      * return locations in the code where all instances of WatchedClass were created
@@ -189,10 +187,13 @@ public class WatchedClass {
             synchronized (m_Instances) {
                 m_Instances.put(new WeakReference<WatchedClass>(x), location);
             }
-            if (!gLocations.contains(location)) {
-                System.out.println("==== New Build Location ====");
-                System.out.println(location);
-                gLocations.add(location);
+            synchronized (gLocations)
+            {
+                if (!gLocations.contains(location)) {
+                                System.out.println("==== New Build Location ====");
+                                System.out.println(location);
+                                gLocations.add(location);
+                            }
             }
             // every report interval look at usage
             if (System.currentTimeMillis() > m_LastClean + getReportIntervalSec() * SECONDS_PER_MILLISEC) {

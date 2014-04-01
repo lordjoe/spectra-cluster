@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
+import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.xtandem.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -127,9 +128,12 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 Path parentPath = inputPath.getParent();
                 outPath = new Path(parentPath, Defaults.getOutputPath());
 
-                 FileSystem fileSystem = outPath.getFileSystem(conf);
+                FileSystem fileSystem = outPath.getFileSystem(conf);
+            //    fileSystem.delete(outPath,true); // drop prior contents
                 fileSystem.mkdirs(outPath);
-                conf.set(CONSOLIDATOR_PATH_PROPERTY, outPath.toString());
+                String outPathName = outPath.toString();
+                System.out.println(outPathName);
+                conf.set(CONSOLIDATOR_PATH_PROPERTY, outPathName);
             }
 
             // you must pass the output directory as the last argument
@@ -143,7 +147,8 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             Path outputDir = new Path(athString);
 
             FileSystem fileSystem = outputDir.getFileSystem(conf);
-            XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
+            fileSystem.delete(outputDir,true); // drop prior contents
+         //   XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
