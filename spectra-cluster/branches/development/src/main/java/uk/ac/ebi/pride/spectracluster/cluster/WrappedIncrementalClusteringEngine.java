@@ -82,7 +82,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         final List<ISpectralCluster> internalClusters = internalGetClusters();
         Set<ISpectralCluster> internalSet = new HashSet<ISpectralCluster>(internalClusters) ;
         IIncrementalClusteringEngine engine = getRealEngine() ;
-        final List<ISpectralCluster> lastClusters = engine.getClusters();
+        final Collection<ISpectralCluster> lastClusters = engine.getClusters();
         internalSet.addAll(lastClusters);
         List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(internalSet);
          Collections.sort(ret);
@@ -99,7 +99,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cluster.length; i++) {
             ISpectralCluster added = cluster[i];
-            final List<ISpectralCluster> finalClusters = engine.addClusterIncremental(added);
+            final Collection<ISpectralCluster> finalClusters = engine.addClusterIncremental(added);
             internalClusters.addAll(finalClusters);
         }
         setDirty(true);

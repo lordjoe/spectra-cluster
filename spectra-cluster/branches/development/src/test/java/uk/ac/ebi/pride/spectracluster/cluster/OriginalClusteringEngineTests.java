@@ -62,7 +62,7 @@ public class OriginalClusteringEngineTests {
             if (!originalClusteringEngine.processClusters())
                 break;
         }
-        List<ISpectralCluster> originalClusters = originalClusteringEngine.getClusters();
+        List<ISpectralCluster> originalClusters =  (List<ISpectralCluster> )originalClusteringEngine.getClusters();
         Collections.sort(originalClusters);
         Assert.assertEquals(originalClusters.size(), scs.size());
 
@@ -79,10 +79,10 @@ public class OriginalClusteringEngineTests {
         }
 
              //noinspection UnusedDeclaration
-        final List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
+        final List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
 
 
-        List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();
+        List<ISpectralCluster> oldClusters =  (List<ISpectralCluster> )oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
 

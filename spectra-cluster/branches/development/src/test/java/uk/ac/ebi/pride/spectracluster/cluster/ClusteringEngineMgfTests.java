@@ -36,7 +36,7 @@ public class ClusteringEngineMgfTests {
             }
         }
 
-        List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();
+        List<ISpectralCluster> oldClusters =  (List<ISpectralCluster> )oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
     }
 }

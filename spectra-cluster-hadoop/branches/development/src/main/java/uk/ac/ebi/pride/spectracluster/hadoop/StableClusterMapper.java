@@ -36,6 +36,15 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     private Map<Integer, String[]> binToAllKeys = new HashMap<Integer, String[]>();
     private int numberMapCalls;
 
+
+    @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        ISetableParameterHolder application = getApplication();
+        ClusterUtilities.setStableClusterSizeFromProperties(application);
+      }
+
+
     /**
      * return all posssible keys for a bin - this may be subfragmanets
      *

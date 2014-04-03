@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -27,6 +28,72 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         this.similarityChecker = similarityChecker;
     }
 
+    /**
+     * add one cluster and return any clusters which are too far in mz from further consideration
+     * NOTE clusters MUST be added in ascending MZ order
+     *
+     * @param added !null cluster to add
+     * @return !null list of clusters not far enough away they will no longer change
+     */
+    @Override public Collection<ISpectralCluster> addClusterIncremental(final ISpectralCluster added) {
+        throw new UnsupportedOperationException("This Should NEVER be Called");
+    }
+
+    /**
+     * add some clusters
+     *
+     * @param cluster
+     */
+    @Override public void addClusters(final ISpectralCluster... cluster) {
+        throw new UnsupportedOperationException("This Should NEVER be Called");
+    }
+
+    /**
+     * clusters are merged in the internal collection
+     *
+     * @return true is  anything happened
+     */
+    @Override public boolean processClusters() {
+        throw new UnsupportedOperationException("This Should NEVER be Called");
+    }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @return possibly null name
+     */
+    @Override public String getName() {
+        return "StableClusteringEngine";
+    }
+
+    /**
+     * nice for debugging to name an engine
+     *
+     * @param pName possibly null name
+     */
+    @Override public void setName(final String pName) {
+        throw new UnsupportedOperationException("This Should NEVER be Called");
+     }
+
+    /**
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override public int size() {
+        return unstableClusters.size();
+    }
+
+    /**
+     * add code to monitor progress
+     *
+     * @param handler !null monitor
+     */
+    @Override public void addProgressMonitor(final IProgressHandler handler) {
+        throw new UnsupportedOperationException("This Should NEVER be Called");
+
+    }
+
     @Override
     public void addUnstableCluster(ISpectralCluster unstableCluster) {
         if (stableClusterProcessed) {
@@ -41,7 +108,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     public void processStableCluster(ISpectralCluster stableCluster) {
         stableClusterProcessed = true;
 
-        HashSet<ISpectralCluster> emptyUnstableClusters = new HashSet<ISpectralCluster>();
+        Set<ISpectralCluster> emptyUnstableClusters = new HashSet<ISpectralCluster>();
         for (ISpectralCluster unstableCluster : unstableClusters) {
             boolean empty = mergeUnstableCluster(stableCluster, unstableCluster);
             if (empty) {
@@ -56,7 +123,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         ISpectrum consensusSpectrum = stableCluster.getConsensusSpectrum();
 
         // find all the unstable spectra which can be merged into the stable cluster
-        HashSet<ISpectrum> spectraToRemove = new HashSet<ISpectrum>();
+        Set<ISpectrum> spectraToRemove = new HashSet<ISpectrum>();
         for (ISpectrum unstableSpectrum : unstableCluster.getClusteredSpectra()) {
             double similarity = similarityChecker.assessSimilarity(unstableSpectrum, consensusSpectrum);
             if (similarity >= similarityChecker.getDefaultThreshold()) {
