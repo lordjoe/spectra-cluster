@@ -127,7 +127,7 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
         boolean anythingDone = false;
         // todo use multiple threads
          for (IClusteringEngine engine : engineForBin.values()) {
-             final List<ISpectralCluster> clusters = engine.getClusters();
+             final Collection<ISpectralCluster> clusters = engine.getClusters();
              anythingDone |= engine.processClusters();
          }
         return anythingDone ;
@@ -155,7 +155,7 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     public List<ISpectralCluster> getClusters() {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (IClusteringEngine engine : engineForBin.values()) {
-            final List<ISpectralCluster> clusters = engine.getClusters();
+            final Collection<ISpectralCluster> clusters = engine.getClusters();
             holder.addAll(clusters);
         }
         Collections.sort(holder);

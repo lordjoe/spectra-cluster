@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -76,12 +77,12 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
                 if (engine != null) {     // todo why might this happen
                     // look in great detail at a few cases
                     if (isInterestingCluster(cluster)) {
-                        List<ISpectralCluster> clusters = engine.getClusters();
+                        Collection<ISpectralCluster> clusters = engine.getClusters();
                         ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
                     }
 
 
-                    final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+                    final Collection<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
@@ -122,7 +123,14 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
     }
 
 
-    protected void writeOneVettedCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
+    /**
+         * this version of writeCluster does all the real work
+         * @param context
+         * @param cluster
+         * @throws IOException
+         * @throws InterruptedException
+         */
+       protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull final ISpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -157,7 +165,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
       protected  <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
           ChargeBinMZKey pMzKey = (ChargeBinMZKey)key;
         if (getEngine() != null) {
-            final List<ISpectralCluster> clusters = getEngine().getClusters();
+            final Collection<ISpectralCluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
             setEngine(null);
         }

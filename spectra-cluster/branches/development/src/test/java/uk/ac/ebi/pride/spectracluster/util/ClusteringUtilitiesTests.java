@@ -68,7 +68,7 @@ public class ClusteringUtilitiesTests {
                  break;
         }
         // we have solved for these
-        List<ISpectralCluster> found = engine.getClusters();
+        List<ISpectralCluster> found =  (List<ISpectralCluster> )engine.getClusters();
 
 
         final SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();

@@ -40,7 +40,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
     public List<ISpectralCluster> getClusters() {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (IClusteringEngine engine : engineForBin.values()) {
-            final List<ISpectralCluster> clusters = engine.getClusters();
+            final Collection<ISpectralCluster> clusters = engine.getClusters();
             holder.addAll(clusters);
         }
         Collections.sort(holder);
@@ -123,7 +123,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
         // todo use multiple threads
         for (IClusteringEngine engine : engineForBin.values()) {
             //noinspection UnusedDeclaration
-            final List<ISpectralCluster> clusters = engine.getClusters();
+            final Collection<ISpectralCluster> clusters = engine.getClusters();
             anythingDone |= engine.processClusters();
         }
         return anythingDone;

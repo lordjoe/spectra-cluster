@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -54,7 +55,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
             final ISpectralCluster cluster = match.asCluster();
 
 
-            final List<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+            final Collection<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
 
             writeClusters(context, removedClusters);
 
@@ -62,8 +63,14 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         }
     }
 
-   
-    protected void writeOneVettedCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
+    /**
+     * this version of writeCluster does all the real work
+     * @param context
+     * @param cluster
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ISpectralCluster cluster) throws IOException, InterruptedException {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
@@ -95,7 +102,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
           ChargePeakMZKey pMzKey = (ChargePeakMZKey)key;
 
           if (getEngine() != null) {
-              final List<ISpectralCluster> clusters = getEngine().getClusters();
+              final Collection<ISpectralCluster> clusters = getEngine().getClusters();
               writeClusters(context, clusters);
               setEngine(null);
           }

@@ -8,7 +8,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public interface IStableClusteringEngine {
+public interface IStableClusteringEngine extends IIncrementalClusteringEngine {
 
     public void addUnstableCluster(ISpectralCluster unstableCluster);
 

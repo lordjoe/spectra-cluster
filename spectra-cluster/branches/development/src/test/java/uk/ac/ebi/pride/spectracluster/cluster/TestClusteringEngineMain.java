@@ -70,7 +70,7 @@ public class TestClusteringEngineMain {
             }
         }
 
-        final List<ISpectralCluster> clusters1 = engine.getClusters();
+        final List<ISpectralCluster> clusters1 =  (List<ISpectralCluster> )engine.getClusters();
 
 
         saveClusters(clusters1, inputFile);

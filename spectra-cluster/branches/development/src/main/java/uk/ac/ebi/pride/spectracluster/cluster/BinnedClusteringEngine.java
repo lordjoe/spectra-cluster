@@ -34,7 +34,7 @@ public class BinnedClusteringEngine implements IClusteringEngine {
      */
     @Override
     public List<ISpectralCluster> getClusters() {
-        final List<ISpectralCluster> clusters = engine.getClusters();
+        final Collection<ISpectralCluster> clusters = engine.getClusters();
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectralCluster cluster : clusters) {
             final float precursorMz = cluster.getPrecursorMz();

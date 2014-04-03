@@ -56,10 +56,10 @@ public class ClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters = clusteringEngine.getClusters();
+        List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();
+        List<ISpectralCluster> oldClusters =  (List<ISpectralCluster> )oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass

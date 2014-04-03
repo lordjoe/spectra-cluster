@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.io.*;
 import java.util.*;
 
@@ -126,7 +127,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param context  !null context
      * @param clusters !null list of clusters
      */
-    protected final void writeClusters(final Context context, final List<ISpectralCluster> clusters) throws IOException, InterruptedException {
+    protected final void writeClusters(final Context context, final Collection<ISpectralCluster> clusters) throws IOException, InterruptedException {
         for (ISpectralCluster cluster : clusters) {
             writeCluster(context, cluster);
         }
@@ -205,8 +206,14 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
 
     }
 
-
-    protected abstract void writeOneVettedCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException;
+    /**
+       * this version of writeCluster does all the real work
+       * @param context
+       * @param cluster
+       * @throws IOException
+       * @throws InterruptedException
+       */
+    protected abstract void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ISpectralCluster cluster) throws IOException, InterruptedException;
 //    {
 //        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 //

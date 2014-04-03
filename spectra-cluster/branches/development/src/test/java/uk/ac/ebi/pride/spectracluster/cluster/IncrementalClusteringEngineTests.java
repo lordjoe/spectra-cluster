@@ -57,7 +57,7 @@ public class IncrementalClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters = incrementalEngine.getClusters();
+        List<ISpectralCluster> newClusters = (List<ISpectralCluster> )incrementalEngine.getClusters();
         Collections.sort(newClusters);
 
         List<ISpectralCluster> oldClusters = oldClusteringEngine.getClusters();

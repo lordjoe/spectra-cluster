@@ -19,6 +19,11 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
     @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
+        super.setup(context);
+    }
+
+    @Override
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
         String label = key.toString();
         String text = value.toString();

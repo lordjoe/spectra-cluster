@@ -178,7 +178,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 if (engine.size() < 2)
                     continue; // nothing to cluster
                 engine.processClusters();
-                final List<ISpectralCluster> clusters = engine.getClusters();
+                final Collection<ISpectralCluster> clusters = engine.getClusters();
                 currentClusters.addAll(clusters);
                 for (ISpectralCluster cluster : clusters) {
                     alreadyClustered.addAll(cluster.getClusteredSpectra());

@@ -18,7 +18,7 @@ public interface IClusteringEngine {
      * Get clustered clusters sorted by MZ is useful
      * @return !null list this will be sorted by mz a include clusters of all sizes
      */
-    public List<ISpectralCluster> getClusters();
+    public Collection<ISpectralCluster> getClusters();
 
 
     /**

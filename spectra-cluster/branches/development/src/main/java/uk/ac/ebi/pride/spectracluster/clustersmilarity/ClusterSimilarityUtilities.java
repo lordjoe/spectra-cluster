@@ -474,7 +474,7 @@ public class ClusterSimilarityUtilities {
      * @param clusterToAdd
      * @param myClusters
      */
-    public static void testAddToClusters(final ISpectralCluster clusterToAdd, List<ISpectralCluster> myClusters) {
+    public static void testAddToClusters(final ISpectralCluster clusterToAdd, Collection<ISpectralCluster> myClusters) {
         String mcpIn = clusterToAdd.getMostCommonPeptide();
         Map<String, List<ISpectralCluster>> clusterPeptides = mapByMostCommonPeptide(myClusters);
 
@@ -488,7 +488,7 @@ public class ClusterSimilarityUtilities {
 
     }
 
-    public static void examineIndividualSpectra(final ISpectralCluster clusterToAdd, final List<ISpectralCluster> myClusters, final String pMcpIn) {
+    public static void examineIndividualSpectra(final ISpectralCluster clusterToAdd, final Collection<ISpectralCluster> myClusters, final String pMcpIn) {
         SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         double highestSimilarityScore = 0;
@@ -517,7 +517,7 @@ public class ClusterSimilarityUtilities {
         }
     }
 
-    public static Map<String, List<ISpectralCluster>> mapByMostCommonPeptide(final List<ISpectralCluster> myClusters) {
+    public static Map<String, List<ISpectralCluster>> mapByMostCommonPeptide(final Collection<ISpectralCluster> myClusters) {
         Map<String, List<ISpectralCluster>> clusterPeptides = new HashMap<String, List<ISpectralCluster>>();
         for (ISpectralCluster cluster : myClusters) {
             String mostCommonPeptide = cluster.getMostCommonPeptide();

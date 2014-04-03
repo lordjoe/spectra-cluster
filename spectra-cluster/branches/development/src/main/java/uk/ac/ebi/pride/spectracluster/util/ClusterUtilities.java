@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.algorithms.*;
+import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -22,10 +23,43 @@ public class ClusterUtilities {
     public static final String CLUSTERING_EXTENSION = ".clustering";
     public static final String CGF_EXTENSION = ".cgf";
 
-    public static final int STABLE_CLUSTER_SIZE = 20;
-    public static final int SEMI_STABLE_CLUSTER_SIZE = 10;
+    public static final String STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.StableClusterSize";
+    public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
+
+    public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
+    public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
+
+
+    public static void setStableClusterSizeFromProperties(final ISetableParameterHolder pApplication) {
+        int stableClusterSize = pApplication.getIntParameter( ClusterUtilities.STABLE_CLUSTER_SIZE_PROPERTY,ClusterUtilities.DEFAULT_STABLE_CLUSTER_SIZE);
+        ClusterUtilities.setStableClusterSize(stableClusterSize);
+        int semiStableClusterSize = pApplication.getIntParameter(ClusterUtilities.SEMI_STABLE_CLUSTER_SIZE_PROPERTY,ClusterUtilities.DEFAULT_SEMI_STABLE_CLUSTER_SIZE);
+        ClusterUtilities.setSemiStableClusterSize(semiStableClusterSize);
+    }
+
+
     public static final String STABLE_CLUSTER_PREFIX = "SC";
+    @SuppressWarnings("UnusedDeclaration")
     public static final String SEMI_STABLE_CLUSTER_PREFIX = "SSC";
+
+    private static int stableClusterSize = DEFAULT_STABLE_CLUSTER_SIZE;
+    private static int semiStableClusterSize = DEFAULT_SEMI_STABLE_CLUSTER_SIZE;
+
+    public static int getStableClusterSize() {
+        return stableClusterSize;
+    }
+
+     public static void setStableClusterSize(final int pStableClusterSize) {
+        stableClusterSize = pStableClusterSize;
+    }
+
+    public static int getSemiStableClusterSize() {
+        return semiStableClusterSize;
+    }
+
+     public static void setSemiStableClusterSize(final int pSemiStableClusterSize) {
+        semiStableClusterSize = pSemiStableClusterSize;
+    }
 
     public static String getStableClusterId()
     {
@@ -45,14 +79,18 @@ public class ClusterUtilities {
      */
     public static boolean isClusterStable(ISpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
-        if (count >= STABLE_CLUSTER_SIZE)
+        if(count == 1)
+            return false; // Duh but saves other tests
+        if (count >= getStableClusterSize())
             return true;
+        // some tests for debugging
         if (count < 5)
             return false;
         if (count < 10)
             return false;
         if (count < 15)
             return false;
+
         return false;
     }
 
@@ -64,8 +102,11 @@ public class ClusterUtilities {
      */
     public static boolean isClusterSemiStable(ISpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
-        if (count >= SEMI_STABLE_CLUSTER_SIZE)
+        if(count == 1)
+             return false; // Duh but saves other tests
+        if (count >= getSemiStableClusterSize())
             return true;
+         // some tests for debugging
         if (count < 5)
             return false;
         return false;
@@ -90,7 +131,7 @@ public class ClusterUtilities {
         return ret;
     }
 
-
+     @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
         float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
         float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
@@ -312,6 +353,7 @@ public class ClusterUtilities {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         final List<String> peptideList = getPeptideList(clusteredSpectra);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
 
         return stringsByOccurance;
