@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class StableClusteringEngine implements IStableClusteringEngine {
 
-    private final Set<ISpectralCluster> unstableClusters = new HashSet<ISpectralCluster>();
+    private final SortedSet<ISpectralCluster> unstableClusters = new TreeSet<ISpectralCluster>();
 
     private final SimilarityChecker similarityChecker;
 

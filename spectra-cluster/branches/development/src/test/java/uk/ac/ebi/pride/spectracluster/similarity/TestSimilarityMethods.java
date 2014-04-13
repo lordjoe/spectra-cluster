@@ -611,7 +611,12 @@ public class TestSimilarityMethods {
         }
     }
 
-    @Test
+    /**
+     * test that FrankEtAlDotProductOld and  FrankEtAlDotProductJohannes
+     * are the same
+     * @throws Exception
+     */
+   // @Test
     public void testManySpectra() throws Exception {
         FrankEtAlDotProductJohannes.CHECK_BEST_PEAK_SPEC1 = false;
 

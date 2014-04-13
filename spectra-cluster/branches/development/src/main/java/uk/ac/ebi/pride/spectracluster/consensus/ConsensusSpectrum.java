@@ -25,6 +25,7 @@ import java.util.*;
  */
 public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
+    public static final int DEFAULT_PEAKS_TO_KEEP = 5;
     public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less thaqn this all all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
 
@@ -69,12 +70,12 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * The m/z threshold to consider to peaks identical
      */
-    protected final float FINAL_MZ_THRESHOLD = 0.4F;
+    protected static final float FINAL_MZ_THRESHOLD = 0.4F;
     /**
      * The m/z threshold for identical peaks is not applied instantly, but gradually increased
      * to reach the final threshold. Each iteration increases the threshold by MZ_THRESHOLD_STEP.
      */
-    protected final float MZ_THRESHOLD_STEP = 0.1F;
+    protected static final float MZ_THRESHOLD_STEP = 0.1F;
 
     protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
     public final static boolean USE_ROUNDING = false;
@@ -387,7 +388,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             setIsDirty(false);
             return;
         }
-        List<IPeak> newPeaks = findConsensusPeaks(allPeaks);
+        List<IPeak> newPeaks = findConsensusPeaks(allPeaks,DEFAULT_PEAKS_TO_KEEP,nSpectra);
 
         // update the consensus spectrum
         consensusPeaks.clear();
@@ -415,25 +416,25 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * @param input !null set of all peaks
      * @return !null set of  consensus peaks
      */
-    protected List<IPeak> findConsensusPeaks(List<IPeak> input) {
+    protected static List<IPeak> findConsensusPeaks(List<IPeak> input,int peaksToKeep,int nSpectra) {
 
 
         // Step 1: merge identical peaks
         List<IPeak> ret = mergeIdenticalPeaks(input);
 
 
-        // Step 2: addapt the peak intensities based on the probability that the peak has been obeserved
-        ret = adaptPeakIntensities(ret);
+        // Step 2: adapt the peak intensities based on the probability that the peak has been observed
+        ret = adaptPeakIntensities(ret,nSpectra);
 
         // Step 3: filter the spectrum
-        ret = filterNoise(ret);
+        ret = filterNoise(ret,peaksToKeep);
         return ret;
     }
 
     /**
      * Filters the consensus spectrum keeping only the top 5 peaks per 100 m/z
      */
-    protected List<IPeak> filterNoise(List<IPeak> inp) {
+    protected static List<IPeak> filterNoise(List<IPeak> inp,int peaksInBinToKeep) {
         List<IPeak> filteredSpectrum = new ArrayList<IPeak>();
 
         int lowerBound = 0;
@@ -467,9 +468,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
             Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
 
-            List<IPeak> fivePeaks = new ArrayList<IPeak>(5);
+            List<IPeak> fivePeaks = new ArrayList<IPeak>(peaksInBinToKeep);
 
-            for (int i = 0; i < 5 && i < peakBuffer.size(); i++)
+            for (int i = 0; i < peaksInBinToKeep && i < peakBuffer.size(); i++)
                 fivePeaks.add(peakBuffer.get(i));
 
             Collections.sort(fivePeaks, PeakMzComparator.getInstance());
@@ -484,7 +485,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * I = I * (0.95 + 0.05 * (1 + pi))^5
      * where pi is the peaks probability
      */
-    protected List<IPeak> adaptPeakIntensities(List<IPeak> inpx) {
+    protected static List<IPeak> adaptPeakIntensities(List<IPeak> inpx, int nSpectra) {
 
         int originalCount = ClusterUtilities.getTotalCount(inpx);   // for debugging
 
@@ -508,7 +509,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * Merges identical peaks in the consensusPeaks List based on FINAL_MZ_THRESHOLD and
      * MZ_THRESHOLD_STEP.
      */
-    protected List<IPeak> mergeIdenticalPeaks(List<IPeak> inPeaks) {
+    protected static  List<IPeak> mergeIdenticalPeaks(List<IPeak> inPeaks) {
         int originalCount = ClusterUtilities.getTotalCount(inPeaks);   // for debugging
 
         List<IPeak> ret = new ArrayList<IPeak>();

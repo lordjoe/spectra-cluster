@@ -23,7 +23,7 @@ public class MostSimilarClusters {
     public MostSimilarClusters(ISpectralCluster baseCluster, IClusterDistance clusterDistance) {
         this.baseCluster = baseCluster;
         this.clusterDistance = clusterDistance;
-        this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS);
+        this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS );
     }
 
     public ISpectralCluster getBaseCluster() {
@@ -31,11 +31,15 @@ public class MostSimilarClusters {
     }
 
     public ISpectralCluster getBestMatchingCluster() {
-        return getBestMatch().getTarget();
+
+        ClusterDistanceItem bestMatch = getBestMatch();
+        return bestMatch.getTarget();
     }
 
     public ClusterDistanceItem getBestMatch() {
-        return mostSimilarClusters.first();
+       // List<ClusterDistanceItem> clusters = mostSimilarClusters.toList();
+     //   Collections.sort(clusters);
+         return mostSimilarClusters.first();
     }
 
     public List<ClusterDistanceItem> getBestMatches() {

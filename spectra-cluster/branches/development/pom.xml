@@ -95,12 +95,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.25</version>
         </dependency>
-
+      <!-- USE SOURCES ON DISK  -->
         <dependency>
             <groupId>uk.ac.ebi.pride.spectracluster</groupId>
             <artifactId>concurrenttools</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -112,6 +113,11 @@
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>2.0.1</version>
         </dependency>
 
     </dependencies>
