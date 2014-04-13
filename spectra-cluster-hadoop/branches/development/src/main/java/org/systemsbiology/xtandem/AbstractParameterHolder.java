@@ -18,7 +18,6 @@ public abstract class AbstractParameterHolder implements ISetableParameterHolder
 
 {
     public static AbstractParameterHolder[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = AbstractParameterHolder.class;
     private final Map<String, String> m_Parameters = new HashMap<String, String>();
     private final Set<String> m_UsedKeys = new HashSet<String>();
 
