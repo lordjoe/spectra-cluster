@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import com.google.gdata.data.spreadsheet.*;
+
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 

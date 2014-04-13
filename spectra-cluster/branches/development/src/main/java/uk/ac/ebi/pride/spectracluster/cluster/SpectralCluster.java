@@ -568,7 +568,9 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
             out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
             out.append("\n");
 
-            for (ISpectrum spec : getClusteredSpectra()) {
+            List<ISpectrum> spectra = getClusteredSpectra();
+            Collections.sort(spectra,ISpectrum.ID_COMAPRATOR);   // sort by id
+            for (ISpectrum spec : spectra) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");
                 String id1 = spec.getId();

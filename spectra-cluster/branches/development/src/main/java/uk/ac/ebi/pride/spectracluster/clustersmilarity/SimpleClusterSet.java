@@ -229,6 +229,16 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     }
 
     @Override
+    public IClusterSet dropClustersLessThanSize(final int minsize) {
+        SimpleClusterSet ret = new SimpleClusterSet();
+        for (ISpectralCluster sc : getClusters()) {
+             if(sc.getClusteredSpectraCount() >= minsize)
+                ret.addCluster(sc);
+        }
+        return ret;
+    }
+
+    @Override
     public List<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches) {
         ClusterQualityComparator clusterQualityComparator = new ClusterQualityComparator(cluster);
 

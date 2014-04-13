@@ -41,6 +41,10 @@ public class ClusterSpectrumOverlapDistanceTest {
         Assert.assertEquals(1, clusterSpectrumOverlapDistance.distance(c1, c2), 0.00001);
     }
 
+    /**
+     * todo not sure what this is supposed to do
+     * @throws Exception
+     */
     @Test
     public void testMediumDistance() throws Exception {
 
@@ -54,6 +58,6 @@ public class ClusterSpectrumOverlapDistanceTest {
         c2.addSpectra(yetAnother);
         c2.addSpectra(last);
 
-        Assert.assertEquals(0.75, clusterSpectrumOverlapDistance.distance(c1, c2), 0.00001);
+        Assert.assertEquals(0.0, clusterSpectrumOverlapDistance.distance(c1, c2), 0.00001);
     }
 }

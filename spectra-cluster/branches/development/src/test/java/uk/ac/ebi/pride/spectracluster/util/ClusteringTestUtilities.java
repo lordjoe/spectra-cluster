@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
+import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
@@ -27,6 +28,26 @@ public class ClusteringTestUtilities {
 
     public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf";
     public static final String SAMPLE_SECOND_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/ClusterBin0400.cgf";
+
+
+    /**
+     * fial an assertion of all clusters om the set are not equivalent
+     * @param pScs
+     * @param pScs2
+     */
+    public static void assertEquivalentClusters(final List<ISpectralCluster> pScs, final List<ISpectralCluster> pScs2) {
+        Collections.sort(pScs,ISpectralCluster.BY_CLUSTER_CONTENTS);
+        Collections.sort(pScs2,ISpectralCluster.BY_CLUSTER_CONTENTS);
+        Assert.assertEquals(pScs.size(), pScs2.size());
+        for (int i = 0; i < pScs.size(); i++) {
+            ISpectralCluster cl1 = pScs.get(i) ;
+            ISpectralCluster cl2 = pScs2.get(i) ;
+            boolean equivalent = cl1.equivalent(cl2);
+            if(!equivalent)
+                     Assert.assertTrue(equivalent );
+
+        }
+    }
 
     /**
      * read a resource mgf as a list of spectra

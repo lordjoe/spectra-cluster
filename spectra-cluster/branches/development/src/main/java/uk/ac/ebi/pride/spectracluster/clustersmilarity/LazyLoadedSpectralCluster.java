@@ -181,6 +181,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String peptide = sc1.getPeptide();
+            if(peptide == null)
+                continue;
             spectral_peptides.add(peptide);
             if (sc1.isDecoy())
                 decoys.add(peptide);
@@ -209,6 +211,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             boolean decoy = sc1.isDecoy();
             String peptide = sc1.getPeptide();
+            if(peptide == null)
+                continue;
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
             if (purity == null)
@@ -424,7 +428,12 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             out.append("\n");
 
 
-            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+            String peptides1 = "";
+
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            peptides1 = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
+
+            out.append("sequence=[" + peptides1 + "]");
             out.append("\n");
 
             out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
@@ -432,7 +441,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
             out.append("\n");
 
-            for (ISpectrum spec : getClusteredSpectra()) {
+            for (ISpectrum spec : clusteredSpectra1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");
                 String id1 = spec.getId();

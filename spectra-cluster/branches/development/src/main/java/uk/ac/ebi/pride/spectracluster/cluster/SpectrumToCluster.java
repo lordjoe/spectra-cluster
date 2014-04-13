@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.*;
  * User: Steve
  * Date: 3/28/14
  */
-public class SpectrumToCluster {
+public class SpectrumToCluster   {
 
     public static final int MAX_DUPLICATED_REPORTED = 16;
 
@@ -107,5 +108,6 @@ public class SpectrumToCluster {
 
         }
     }
+
 
 }

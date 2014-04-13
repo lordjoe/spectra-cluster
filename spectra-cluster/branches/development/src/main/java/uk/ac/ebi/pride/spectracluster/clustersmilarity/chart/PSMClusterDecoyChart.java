@@ -31,7 +31,7 @@ public class PSMClusterDecoyChart {
         return mostSimilarClusterSet;
     }
 
-    public static final int MAX_CLUSTER_SIZE = 64;
+    public static final int MAX_CLUSTER_SIZE = 32;
     public static final int MIN_CLUSTER_SIZE = 8;
     public static final int CLUSTER_SIZE_MULTIPLIER = 2;
 
@@ -114,6 +114,11 @@ public class PSMClusterDecoyChart {
         PSMComparisonMain cm = getSet();
         List<ClusterMZSpread> psms = ClusterComparisonMain.getClusterRangeData(cs, cm, minimumClusterSize);
         XYSeries series;
+        if(psms.size() == 0)   {
+            psms = ClusterComparisonMain.getClusterRangeData(cs, cm, minimumClusterSize); // why are we here
+            return;
+        }
+
         series = buildFractionalSpread(cs.getName(), psms, normalizeTotal);
         dataset.addSeries(series);
 
@@ -332,7 +337,14 @@ public class PSMClusterDecoyChart {
         double number_total = 0;
         double number_zero = 0;
 
-        double maxRange = values.get(values.size() - 1).getRange();
+        double maxRange = 0;
+        try {
+            maxRange = values.get(values.size() - 1).getRange();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
         maxRange = 3;
 
         double maxbin = MINIMUM_RANGE_BIN;

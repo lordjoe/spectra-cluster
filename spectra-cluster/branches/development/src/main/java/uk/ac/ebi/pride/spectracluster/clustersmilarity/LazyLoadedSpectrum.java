@@ -87,7 +87,12 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public boolean equivalent(ISpectrum other) {
-        return getInternalSpectrum().equivalent(other);
+        if(!getId().equals(other.getId()))
+            return false;
+          if(getRetriever() != null )
+            return getInternalSpectrum().equivalent(other);
+        else
+            return true;
     }
 
     @Override
@@ -115,6 +120,8 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public String getPeptide() {
+        if(getRetriever() == null)
+            return null;
         IPeptideSpectrumMatch internalSpectrum1 = getInternalSpectrum();
         if(internalSpectrum1 == null)
             return null;

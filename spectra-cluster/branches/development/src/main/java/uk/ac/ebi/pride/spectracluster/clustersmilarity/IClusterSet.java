@@ -46,4 +46,6 @@ public interface IClusterSet {
 
     public Collection<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches);
 
+    public IClusterSet dropClustersLessThanSize(int minsize);
+
 }

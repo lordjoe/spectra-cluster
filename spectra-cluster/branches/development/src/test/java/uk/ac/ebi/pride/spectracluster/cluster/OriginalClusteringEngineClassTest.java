@@ -95,7 +95,7 @@ public class OriginalClusteringEngineClassTest {
 
         SimilarityChecker similariyChecker = new FrankEtAlDotProductOld();
         double simC1C2 = similariyChecker.assessSimilarity(cluster1.getConsensusSpectrum(), cluster2.getConsensusSpectrum());
-        System.out.println("Similariy cluster1, cluster2 = " + simC1C2);
+     //   System.out.println("Similariy cluster1, cluster2 = " + simC1C2);
         Assert.assertEquals(24, cluster1.getClusteredSpectraCount());
 
         if(IGNORE_KNOWN_TO_FAIL)

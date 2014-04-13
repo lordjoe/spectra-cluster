@@ -233,6 +233,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
+            cs = cs.dropClustersLessThanSize(4);
             cs.setName(arg);
             INSTANCE.addClustering(cs);
            // showChart(cs);

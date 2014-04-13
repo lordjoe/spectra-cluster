@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import com.lordjoe.algorithms.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -25,6 +26,11 @@ public class ClusterUtilities {
 
     public static final String STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.StableClusterSize";
     public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
+
+    public static final String PLACE_SPECTRUM_IN_BEST_CLUSTER = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.PlaceSpectrumInBestCluster";
+    // todo add a parameter
+    public static final String BREAK_UP_CLUSTERS_LESS_THAN = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.BreakUpClustersLessThan";
+    // todo add a parameter
 
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
@@ -92,6 +98,55 @@ public class ClusterUtilities {
             return false;
 
         return false;
+    }
+
+
+    public static SpectrumInCluster readSpectrumInCluster(String str)
+    {
+        LineNumberReader rdr = new LineNumberReader(new StringReader(str));
+        return  readSpectrumInCluster(  rdr);
+    }
+
+
+
+    public static SpectrumInCluster readSpectrumInCluster(LineNumberReader rdr)
+    {
+        try {
+            String line = rdr.readLine();
+            SpectrumInCluster ret = new SpectrumInCluster();
+            while(line != null)   {
+                if("=SpectrumInCluster=".equals(line.trim())) {
+                    line = rdr.readLine();
+                    break;
+                }
+              }
+
+            if(!line.startsWith("removeFromCluster="))
+                throw new IllegalStateException("badSpectrumInCluster");
+            ret.setRemoveFromCluster(Boolean.parseBoolean(line.substring("removeFromCluster=".length())));
+            line = rdr.readLine();
+
+            if(!line.startsWith("distance="))
+                 throw new IllegalStateException("badSpectrumInCluster");
+            double distance = Double.parseDouble(line.substring("distance=".length()));
+            if(distance >= 0)    // todo fix later
+                 ret.setDistance(distance);
+
+            IPeptideSpectrumMatch  spec = ParserUtilities.readSPTextScan(rdr,   line);
+
+            ret.setSpectrum(spec);
+
+            ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(rdr, null);
+            if(clusters.length != 1)
+                throw new IllegalStateException("badSpectrumInCluster");
+
+            ret.setCluster(clusters[0]);
+            return ret;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
     /**
@@ -548,7 +603,7 @@ public class ClusterUtilities {
         for (IPeak pk : spec.getPeaks()) {
             if (sb.length() > 0)
                 sb.append(",");
-            sb.append(String.format("%10.5f", pk.getIntensity()).trim());
+            sb.append(String.format("%10.2f", pk.getIntensity()).trim());
         }
         return sb.toString();
 
@@ -724,6 +779,21 @@ public class ClusterUtilities {
             throw new RuntimeException(e);
 
         }
+    }
+
+    /**
+     * null safe equals function
+     * @param o1
+     * @param o2
+     * @return
+     */
+    public static boolean equalObject(Object o1, Object o2)
+    {
+        if(o1 == o2)
+            return true;
+        if(o1 == null || o2 == null)
+            return false;
+        return o1.equals(o2);
     }
 
 }

@@ -17,6 +17,9 @@ import java.util.*;
  */
 public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
 
+    /**
+     * compare by MZ then charge
+     */
     public static final Comparator<ISpectralCluster>  SIMPLE_CLUSTER_COMPARATOR =  new Comparator<ISpectralCluster>() {
         @Override
         public int compare(ISpectralCluster o1, ISpectralCluster o2) {
@@ -40,7 +43,27 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
             }
             
      };
-    
+
+
+    /**
+     * compare list of spectra in the cluster
+     */
+    public static final Comparator<ISpectralCluster>  BY_CLUSTER_CONTENTS =  new Comparator<ISpectralCluster>() {
+         @Override
+         public int compare(ISpectralCluster o1, ISpectralCluster o2) {
+             String s1 = SpectrumInCluster.listClusterIds(o1);
+             String s2 = SpectrumInCluster.listClusterIds(o2);
+             if(!s1.equals(s2))
+                 return s1.compareTo(s2);  // differrent spectra
+             // same spectra
+             return SIMPLE_CLUSTER_COMPARATOR.compare(o1,o2);
+
+         }
+
+      };
+
+
+
     public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
         @Override
         public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {

@@ -38,6 +38,8 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
          */
         @Override
         public IClusteringEngine getClusteringEngine(Object... otherdata) {
+            if(otherdata.length < 1)
+                throw new IllegalArgumentException("WrappedClusteringEngine needs a Double as WindowSize"); //
             double windowSize = (Double) otherdata[0];
             return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine( windowSize));
         }

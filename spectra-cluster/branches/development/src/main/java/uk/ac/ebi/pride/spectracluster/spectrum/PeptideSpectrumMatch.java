@@ -437,7 +437,9 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         if (o instanceof PeptideSpectrumMatch) {
             PeptideSpectrumMatch realO = (PeptideSpectrumMatch) o;
 
-            if (!getPeptide().equals(realO.getPeptide()))
+            String peptide1 = getPeptide();
+            String peptide2 = realO.getPeptide();
+            if (!ClusterUtilities.equalObject(peptide1,peptide2))
                 return false;
 
 

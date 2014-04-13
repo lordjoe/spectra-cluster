@@ -57,7 +57,7 @@ public class ClusterDistanceTests {
 
         List<ISpectralCluster> bestMatchingClusters = sc2.getBestMatchingClusters(me, 3);
         for (ISpectralCluster bestMatchingCluster : bestMatchingClusters) {
-            System.out.println(bestMatchingCluster);
+ //           System.out.println(bestMatchingCluster);
         }
 
     }

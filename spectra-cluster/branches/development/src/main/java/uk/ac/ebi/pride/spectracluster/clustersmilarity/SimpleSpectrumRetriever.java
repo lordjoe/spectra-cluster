@@ -56,7 +56,7 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
         IPeptideSpectrumMatch iPeptideSpectrumMatch = spectraById.get(spectrumId);
         if(iPeptideSpectrumMatch != null)
             return iPeptideSpectrumMatch;
-        System.out.println("Cannot find " + spectrumId);
+      //  System.out.println("Cannot find " + spectrumId);
         return null;
     }
 

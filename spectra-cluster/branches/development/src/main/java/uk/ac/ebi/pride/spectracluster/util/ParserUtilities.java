@@ -721,7 +721,7 @@ public class ParserUtilities {
 
     /**
      * @param inp  !null reader
-     * @param line if non null the firat line of the stricture
+     * @param line if non null the first line of the stricture
      * @return
      */
     public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp, String line) {
@@ -1116,4 +1116,4 @@ public class ParserUtilities {
         }
     }
 
-}
+ }
