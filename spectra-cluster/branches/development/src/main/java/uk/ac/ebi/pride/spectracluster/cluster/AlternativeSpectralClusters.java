@@ -127,6 +127,8 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return id;
     }
 
+
+
     protected void guaranteeClean() {
         // do nothing but keep code more compatable with SpectraCluster
     }
@@ -141,6 +143,20 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         if (true) throw new UnsupportedOperationException("Fix This");
         return null;
     }
+
+    @Override
+    public String getSpectralId() {
+        StringBuilder sb = new StringBuilder();
+        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        Collections.sort(spectralIds);
+        sb.append(spectralIds.get(0)) ;
+        for (int i = 1; i < spectralIds.size(); i++) {
+            sb.append(",") ;
+            sb.append(spectralIds.get(i)) ;
+        }
+        return sb.toString();
+    }
+
 
     /**
      * all internally spectrum

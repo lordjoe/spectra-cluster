@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
+
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -12,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.StableClusterMapper
+ * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterMapper
  * write each spectrum as a SpectrumToCluster with the spectrum id as the key
  * This guarantees that all clusters containing a spectrum go to one place
  * see  uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterReducer
@@ -22,8 +21,6 @@ import java.util.*;
  */
 public class SpectrumInClusterMapper extends AbstractParameterizedMapper<Text> {
 
-
-    public static final Random RND = new Random();
 
 
 

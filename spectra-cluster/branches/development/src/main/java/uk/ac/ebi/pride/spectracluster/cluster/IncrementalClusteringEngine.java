@@ -68,7 +68,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;
-     }
+    }
 
     public double getWindowSize() {
         return windowSize;
@@ -255,6 +255,11 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             numberNotMerge++;
             return;
         }
+
+        if (handleFullContainment(clusterToAdd ))
+            return; // no need to add we are contained
+
+
         SimilarityChecker sCheck = getSimilarityChecker();
         List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
 
@@ -290,7 +295,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
 
-         // add to cluster
+        // add to cluster
         if (mostSimilarCluster != null) {
             ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
             final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
@@ -300,17 +305,43 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
         // maybe a lot of overlap here
-        if (bestMatch != null  ) {
-            if (handlePotentialOverlap(clusterToAdd, bestMatch,highestSimilarityScore))
+        if (bestMatch != null) {
+            if (handlePotentialOverlap(clusterToAdd, bestMatch, highestSimilarityScore))
                 return;
         }
         myClusters.add(new SpectralCluster(clusterToAdd));
         numberNotMerge++;
     }
 
+    /**
+     *
+     * @param clusterToAdd
+     * @return  true is we fully replace a cluster with a larger or find this fully contained
+     */
+    protected boolean handleFullContainment(final ISpectralCluster clusterToAdd) {
+         final List<ISpectralCluster> myclusters = internalGetClusters();
+        ISpectralCluster toReplace = null;
+        for (ISpectralCluster myCluster : myclusters) {
+            ISpectralCluster s1 = ClusterSimilarityUtilities.clusterFullyContains(myCluster, clusterToAdd);
+            if (s1 == null)
+                continue; // no match
+            if (s1 != clusterToAdd)
+                return true;
+            toReplace = myCluster;
+            break;
+        }
+
+        if (toReplace != null) {
+            myclusters.remove(toReplace);
+            myclusters.add(clusterToAdd);
+        }
+        return false;
+    }
+
     public static final double MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP = 0.2;
     public static final double BONUS_PER_OVERLAP = 0.05;
-       /**
+
+    /**
      * if there are overlapping spectra among the current cluster and the best match
      * then  firure out what is best
      *
@@ -318,11 +349,11 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
-    protected boolean handlePotentialOverlap(final ISpectralCluster cluster1, final ISpectralCluster cluster2,double highestSimilarityScore) {
-        if(highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
+    protected boolean handlePotentialOverlap(final ISpectralCluster cluster1, final ISpectralCluster cluster2, double highestSimilarityScore) {
+        if (highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
             return false;     // we did nothing
         Set<String> ids = cluster1.getSpectralIds();
-         int numberIds = ids.size();
+        int numberIds = ids.size();
         Set<String> best = cluster2.getSpectralIds();
         Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, cluster2);
         int numberOverlap = spectraOverlap.size();
@@ -337,7 +368,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
         // allow a bonus for overlap
         SimilarityChecker sCheck = getSimilarityChecker();
-        if(highestSimilarityScore + BONUS_PER_OVERLAP > sCheck.getDefaultThreshold()) {
+        if (highestSimilarityScore + BONUS_PER_OVERLAP > sCheck.getDefaultThreshold()) {
             mergeIntoCluster(cluster1, cluster2);
             return true;
 
@@ -345,7 +376,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
 
         // force overlappping spectra into the best cluster
-        return assignOverlapsToBestCluster(cluster1, cluster2,spectraOverlap );
+        return assignOverlapsToBestCluster(cluster1, cluster2, spectraOverlap);
 
 
     }
@@ -360,28 +391,29 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     /**
      * this assigns
+     *
      * @param cluster1
      * @param cluster2
-       * @return
+     * @return
      */
-    protected boolean assignOverlapsToBestCluster(final ISpectralCluster cluster1, final ISpectralCluster cluster2 , Set<String> spectraOverlap) {
+    protected boolean assignOverlapsToBestCluster(final ISpectralCluster cluster1, final ISpectralCluster cluster2, Set<String> spectraOverlap) {
         List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
         // I am not sure here but I think we let duplicates move to the best cluster
         SimilarityChecker sCheck = getSimilarityChecker();
-        ISpectrum cs1  = cluster1.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
-        ISpectrum cs2  = cluster2.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+        ISpectrum cs1 = cluster1.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
+        ISpectrum cs2 = cluster2.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
         for (ISpectrum spc : clusteredSpectra1) {
-            if(!spectraOverlap.contains(spc.getId()))
+            if (!spectraOverlap.contains(spc.getId()))
                 continue; // not an overlapping spectrum
             // choose the better cluster
             double ss1 = sCheck.assessSimilarity(cs1, spc);
             double ss2 = sCheck.assessSimilarity(cs2, spc);
-            if(ss1 > ss2)
+            if (ss1 > ss2)
                 cluster1.removeSpectra(spc);
             else
                 cluster2.removeSpectra(spc);
             numberReAsssigned++;
-       }
+        }
 
         return false;
     }

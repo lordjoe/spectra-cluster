@@ -17,51 +17,64 @@ import java.util.*;
  */
 public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
 
+
+    /**
+     * sort by size highest first
+     */
+    public static final Comparator<ISpectralCluster> BY_SIZE = new Comparator<ISpectralCluster>() {
+        @Override
+        public int compare(final ISpectralCluster cluster1, final ISpectralCluster cluster2) {
+            int diff = cluster1.getClusteredSpectraCount() - cluster2.getClusteredSpectraCount();
+            if (diff != 0)
+                return diff > 0 ? -1 : 1;
+            return cluster1.compareTo(cluster2);
+        }
+    };
+
     /**
      * compare by MZ then charge
      */
-    public static final Comparator<ISpectralCluster>  SIMPLE_CLUSTER_COMPARATOR =  new Comparator<ISpectralCluster>() {
+    public static final Comparator<ISpectralCluster> SIMPLE_CLUSTER_COMPARATOR = new Comparator<ISpectralCluster>() {
         @Override
         public int compare(ISpectralCluster o1, ISpectralCluster o2) {
-               int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());
-                if (ret != 0) {
-                   return ret;
-               }
-                if (o1.getPrecursorCharge() != o2.getPrecursorCharge()) {
-                    return o1.getPrecursorCharge() < o2.getPrecursorCharge() ? -1 : 1;
-                }
-                if (o1.getClusteredSpectraCount() != o2.getClusteredSpectraCount()) {
-                    return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
-                }
-        
-                int hash1 = o1.hashCode();
-                int hash2 = o2.hashCode();
-                if (hash1 != hash2)
-                    return hash1 < hash2 ? -1 : 1;
-        
-                return 0;
+            int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());
+            if (ret != 0) {
+                return ret;
             }
-            
-     };
+            if (o1.getPrecursorCharge() != o2.getPrecursorCharge()) {
+                return o1.getPrecursorCharge() < o2.getPrecursorCharge() ? -1 : 1;
+            }
+            if (o1.getClusteredSpectraCount() != o2.getClusteredSpectraCount()) {
+                return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
+            }
+
+            int hash1 = o1.hashCode();
+            int hash2 = o2.hashCode();
+            if (hash1 != hash2)
+                return hash1 < hash2 ? -1 : 1;
+
+            return 0;
+        }
+
+    };
 
 
     /**
      * compare list of spectra in the cluster
      */
-    public static final Comparator<ISpectralCluster>  BY_CLUSTER_CONTENTS =  new Comparator<ISpectralCluster>() {
-         @Override
-         public int compare(ISpectralCluster o1, ISpectralCluster o2) {
-             String s1 = SpectrumInCluster.listClusterIds(o1);
-             String s2 = SpectrumInCluster.listClusterIds(o2);
-             if(!s1.equals(s2))
-                 return s1.compareTo(s2);  // differrent spectra
-             // same spectra
-             return SIMPLE_CLUSTER_COMPARATOR.compare(o1,o2);
+    public static final Comparator<ISpectralCluster> BY_CLUSTER_CONTENTS = new Comparator<ISpectralCluster>() {
+        @Override
+        public int compare(ISpectralCluster o1, ISpectralCluster o2) {
+            String s1 = SpectrumInCluster.listClusterIds(o1);
+            String s2 = SpectrumInCluster.listClusterIds(o2);
+            if (!s1.equals(s2))
+                return s1.compareTo(s2);  // differrent spectra
+            // same spectra
+            return SIMPLE_CLUSTER_COMPARATOR.compare(o1, o2);
 
-         }
+        }
 
-      };
-
+    };
 
 
     public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
@@ -84,6 +97,14 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     public String getId();
 
     /**
+     * build an id from spectral ids
+     *
+     * @return
+     */
+    public String getSpectralId();
+
+
+    /**
      * concensus spectrum MZ
      *
      * @return
@@ -102,20 +123,21 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public  @Nonnull List<String> getPeptides();
+    public @Nonnull List<String> getPeptides();
 
     /**
      * Get the single most common peptide sequence
+     *
      * @return
      */
     public String getMostCommonPeptide();
 
     /**
      * get peptides with statistics
+     *
      * @return list ordered bu purity
      */
     public @Nonnull List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
-
 
 
     /**
@@ -134,13 +156,12 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     /**
      * all internally spectrum
      */
-    public  @Nonnull List<ISpectrum> getHighestQualitySpectra();
+    public @Nonnull List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
-    public  @Nonnull List<ISpectrum> getClusteredSpectra();
-
+    public @Nonnull List<ISpectrum> getClusteredSpectra();
 
 
     /**
@@ -160,7 +181,7 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public @Nonnull  Set<String> getSpectralIds();
+    public @Nonnull Set<String> getSpectralIds();
 
     /**
      * write out the data as a .cgf frago1nt

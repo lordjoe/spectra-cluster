@@ -169,6 +169,9 @@ public class ParserUtilities {
                     ret.addSpectra(internal);
 
                 line = inp.readLine();
+                if(line == null)
+                    return null; // huh - not terminated well
+
                 if (line.startsWith(END_CLUSTER))
                     return ret;
             }
@@ -302,9 +305,10 @@ public class ParserUtilities {
 
         try {
             String line = inp.readLine();
-            while (line != null && !line.equals(BEGIN_CLUSTERING)) {
+            while (line != null && !line.startsWith(BEGIN_CLUSTERING)) {
                 line = inp.readLine();
             }
+
 
             List<String> clusterContent = new ArrayList<String>();
             while (line != null) {

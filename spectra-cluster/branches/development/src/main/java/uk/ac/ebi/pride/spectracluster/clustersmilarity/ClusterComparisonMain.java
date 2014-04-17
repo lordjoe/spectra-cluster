@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
+import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
+import uk.ac.ebi.pride.spectracluster.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -233,8 +235,13 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
-            cs = cs.dropClustersLessThanSize(4);
+       //      cs = cs.dropClustersLessThanSize(4);
+            for (ISpectralCluster sc : cs.getClusters()) {
+                sc.getPeptidePurity(INSTANCE);
+            }
             cs.setName(arg);
+            CountedMap<String> countedMap = ClusterSimilarityUtilities.getCountedMap(cs);
+              System.out.println("duplicates " + countedMap.getDuplicates() + " total " + countedMap.getTotal());
             INSTANCE.addClustering(cs);
            // showChart(cs);
         }

@@ -213,6 +213,9 @@ public class MostSimilarClusterSet {
             out.append(report);
             out.append("\n");
 
+
+            if(true)
+                return; // todo add later
             out.append("=======New ste duplicates =======================================");
             out.append("\n");
             //  newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
