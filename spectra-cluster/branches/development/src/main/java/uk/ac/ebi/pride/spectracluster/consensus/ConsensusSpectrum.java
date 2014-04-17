@@ -26,7 +26,7 @@ import java.util.*;
 public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
     public static final int DEFAULT_PEAKS_TO_KEEP = 5;
-    public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less thaqn this all all peaks
+    public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this all all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
 
 
@@ -53,15 +53,15 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     }
 
     private final String id;
-    protected int nSpectra = 0;
-    protected boolean isDirty = false;
-    protected float averagePrecursorMz = 0;
-    protected float sumPrecursorMz = 0;
-    protected float averagePrecursorIntens = 0;
-    protected float sumPrecursorIntens = 0;
-    protected float lowestConcensusPeak = 0;
-    protected int averageCharge = 0;
-    protected int sumCharge = 0;
+    protected int nSpectra;
+    protected boolean isDirty;
+    protected float averagePrecursorMz;
+    protected float sumPrecursorMz;
+    protected float averagePrecursorIntens;
+    protected float sumPrecursorIntens;
+    protected float lowestConcensusPeak;
+    protected int averageCharge;
+    protected int sumCharge;
     protected ISpectrum consensusSpectrum;
 
     protected final String methodName = "Crowded Consensus Spectrum Builder";
@@ -127,7 +127,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             return;
 
         for (ISpectrum spectrum : merged) {
-            List<IPeak> spectrumPeaks = spectrum.getPeaks();
+            List<IPeak> spectrumPeaks =  spectrum.getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP).getPeaks();
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();

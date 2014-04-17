@@ -5,6 +5,7 @@ import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
+import uk.ac.ebi.pride.spectracluster.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -243,7 +244,9 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             File originalFile = new File(arg);
             IClusterSet cs = PSMUtilities.readClusterSet(originalFile, arg + "SemiStableNew.clustering");
              showClusterSizesAndCounts(arg, cs);
-            cs = cs.dropClustersLessThanSize(4); // drop the riff raff
+
+
+               cs = cs.dropClustersLessThanSize(4); // drop the riff raff
             showClusterSizesAndCounts(arg, cs);
                cs.setName(arg);
             mainClass.addClustering(cs);

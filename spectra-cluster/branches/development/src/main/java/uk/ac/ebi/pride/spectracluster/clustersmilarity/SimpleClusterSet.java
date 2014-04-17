@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
-import org.systemsbiology.common.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
@@ -51,6 +50,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
         for (ISpectralCluster cluster : clusters) {
             total++;
+            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             String id = cluster.getId();
             String mostCommonPeptide = cluster.getMostCommonPeptide();
             if ("HGHLGFLPR".equals(mostCommonPeptide))
@@ -131,6 +131,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
         name = pName;
     }
 
+
     /**
      * return header imformation
      *
@@ -171,6 +172,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     public void visitClusters(TypedVisitor<ISpectralCluster> visitor, TypedVisitor<ISpectralCluster>... otherVisitors) {
         for (ISpectralCluster cluster : getClusters()) {
             visitor.visit(cluster);
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < otherVisitors.length; i++) {
                 otherVisitors[i].visit(cluster);
 

@@ -10,8 +10,8 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterReducer
- *
- * Merge spectra with unstable clusters
+ * <p/>
+ * combine clusters for a single spectrum
  */
 public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
 
@@ -21,7 +21,7 @@ public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
         super.setup(context);
 
         ISetableParameterHolder application = getApplication();
-        spectrumInBestCluster = application.getBooleanParameter(ClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER);
+        spectrumInBestCluster = application.getBooleanParameter(ClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
     }
 
 
@@ -33,30 +33,41 @@ public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
         int numberProcessed = 0;
 
         // grab all spectraInClusters - these are guaranteed to be small
-        List<SpectrumInCluster> holder = new ArrayList<SpectrumInCluster>();
+        List<SpectrumInCluster> passedClusters = SpectrumInClusterReducer.parseSpectrumInClusterFromValues(values);
 
-
-        //noinspection LoopStatementThatDoesntLoop
-        for (Text val : values) {
-            String valStr = val.toString();
-
-            LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
-            holder.add(sci2);
-        }
-
-        if (holder.size() == 0)
+        if (passedClusters.size() == 0)
             return;
-        SpectrumInCluster.handleClusters(holder);
-        for (SpectrumInCluster spectrumInCluster : holder) {
-            writeSpectrumInCluster(spectrumInCluster,context);
+
+        // drop smaller clusters contained in larger
+        // Note - everywhere they are seem these will be dropped
+        List<SpectrumInCluster> handler = SpectrumInCluster.dropContainedClusters(passedClusters);
+
+        SpectrumInCluster.handleClusters(handler);
+        for (SpectrumInCluster spectrumInCluster : handler) {
+            writeSpectrumInCluster(spectrumInCluster, context);
         }
 
     }
 
-     protected void writeSpectrumInCluster( SpectrumInCluster  cluster, Context context) {
-         throw new UnsupportedOperationException("Fix This"); // ToDo
+    public static List<SpectrumInCluster> parseSpectrumInClusterFromValues(final Iterable<Text> values) {
+        // grab all spectraInClusters - these are guaranteed to be small
+        List<SpectrumInCluster> passedClusters = new ArrayList<SpectrumInCluster>();
+        //noinspection LoopStatementThatDoesntLoop
+        for (Text val : values) {
+            String valStr = val.toString();
+            LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
+            SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+            passedClusters.add(sci2);
+        }
+        return passedClusters;
+    }
 
-     }
+
+    protected void writeSpectrumInCluster(SpectrumInCluster inCluster, Context context) {
+        String id = inCluster.getCluster().getSpectralId();
+        StringBuilder sb = new StringBuilder();
+        inCluster.append(sb);
+        writeKeyValue(id, sb.toString(), context);
+    }
 
 }

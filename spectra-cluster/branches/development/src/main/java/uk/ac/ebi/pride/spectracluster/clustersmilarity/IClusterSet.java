@@ -27,6 +27,9 @@ public interface IClusterSet {
 
     public List<ISpectralCluster> getClusters();
 
+
+    public int getNumberDuplicateClusters();
+
     /**
      * visit all clusters
      * @param visitor !null visitor(s)
@@ -41,6 +44,9 @@ public interface IClusterSet {
     public List<ISpectralCluster> getMatchingClusters(TypedPredicate<ISpectralCluster> condition);
 
     public void addClusters(Collection<ISpectralCluster> clusters);
+
+      public void addCluster(ISpectralCluster cluster);
+
 
     public List<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
 

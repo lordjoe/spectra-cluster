@@ -358,6 +358,30 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
     /**
+     * superclass appends all peaks but this version only uses the top 100
+     * @param out
+     */
+    @Override
+    protected void appendPeaks(final Appendable out) {
+        try {
+            IPeaksSpectrum highestNPeaks = this;
+            if(ISpectrum.USE_HIGHEST_PEAKS)
+              highestNPeaks = getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP);
+            for (IPeak peak : highestNPeaks.getPeaks()) {
+                   String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
+                           String.format("%10.3f", peak.getIntensity()).trim();
+                   out.append(line);
+                   out.append("\n");
+               }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    /**
      * true if we know this is a decoy
      *
      * @return

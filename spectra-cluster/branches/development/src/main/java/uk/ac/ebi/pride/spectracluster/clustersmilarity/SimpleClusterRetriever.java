@@ -16,6 +16,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
 
     private final Map<String, ISpectralCluster> clusterById = new HashMap<String, ISpectralCluster>();
     private final List<ISpectralCluster> sortedClusters = new ArrayList<ISpectralCluster>();
+    private int numberDuplicateClusters;
 
     public SimpleClusterRetriever(Collection<ISpectralCluster> cluaters) {
         for (ISpectralCluster cluater : cluaters) {
@@ -23,9 +24,14 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         }
     }
 
-    public int getClusterCount() {
+    public final int getClusterCount() {
         return clusterById.size();
     }
+
+      public int getNumberDuplicateClusters() {
+        return numberDuplicateClusters;
+    }
+
 
     /**
      * Get sorted clusters
@@ -36,9 +42,10 @@ public class SimpleClusterRetriever implements IClusterRetriever {
             sortedClusters.addAll(clusters);
             try {
                 Collections.sort(sortedClusters);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Throwable t = e;
-                while(t.getCause() != null && t.getCause() != t)
+                while (t.getCause() != null && t.getCause() != t)
                     t = t.getCause();
                 t.printStackTrace();
                 Collections.sort(sortedClusters);
@@ -47,9 +54,22 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return sortedClusters;
     }
 
-    public void addCluster(ISpectralCluster cluater) {
-        guaranteeClusterId(cluater);
-        clusterById.put(cluater.getId(), cluater);
+    public void addCluster(ISpectralCluster cluster) {
+        try {
+            guaranteeClusterId(cluster);
+        }
+        catch (Exception e) {
+            guaranteeClusterId(cluster);
+            throw new RuntimeException(e);
+
+        }
+        String id = cluster.getSpectralId();
+        if (!clusterById.containsKey(id)) {
+            clusterById.put(id, cluster);
+        }
+        else {
+            numberDuplicateClusters++;
+        }
         sortedClusters.clear();
     }
 

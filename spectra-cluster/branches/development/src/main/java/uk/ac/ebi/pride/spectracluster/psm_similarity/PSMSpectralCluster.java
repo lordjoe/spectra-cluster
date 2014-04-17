@@ -114,6 +114,21 @@ public class PSMSpectralCluster implements ISpectralCluster {
         return id;
     }
 
+
+    @Override
+    public String getSpectralId() {
+        StringBuilder sb = new StringBuilder();
+        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        Collections.sort(spectralIds);
+        sb.append(spectralIds.get(0)) ;
+        for (int i = 1; i < spectralIds.size(); i++) {
+            sb.append(",") ;
+            sb.append(spectralIds.get(i)) ;
+        }
+        return sb.toString();
+    }
+
+
     public void setId(String id) {
         this.id = id;
     }

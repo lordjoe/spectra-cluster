@@ -44,7 +44,7 @@ public class SpectrumInClustererRunner extends ConfiguredJobRunner implements IJ
 //            System.err.println("Usage: wordcount <in> <out>");
 //            System.exit(2);
 //        }
-            Job job = new Job(conf, "Spectrum Peak Merger");
+            Job job = new Job(conf, "Spectrum Cluster Combiner");
             setJob(job);
 
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
@@ -65,8 +65,6 @@ public class SpectrumInClustererRunner extends ConfiguredJobRunner implements IJ
 
              job.setMapperClass(SpectrumInClusterMapper.class);
             job.setReducerClass(SpectrumInClusterReducer.class);
-            //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
-            // job.setPartitionerClass(ChargeBinPartitioner.class);
 
 
             // We always do this

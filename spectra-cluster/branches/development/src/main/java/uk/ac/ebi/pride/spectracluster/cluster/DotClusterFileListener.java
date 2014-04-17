@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
@@ -111,6 +112,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
 
         }
     }
+
 
     protected static void usage() {
         System.out.println("usage <file1.cgf> <file2.cgf> ... or <directory holding cgf files>");
