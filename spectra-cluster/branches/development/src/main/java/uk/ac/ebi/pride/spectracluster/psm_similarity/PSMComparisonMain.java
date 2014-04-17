@@ -189,6 +189,8 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         PSMClusterDecoyChart.makeClusterRangeChart(name + " Cluster Ranges", this, false);
 
         PSMClusterDecoyChart.makeFractionalChart(name + " Fractional PSMS", this, false);
+
+        PSMClusterDecoyChart.makeDuplicatesChart(name + " Fractional PSMS", this, false);
         //     PSMClusterDecoyChart.makeFractionalChart(name + " Total Fractional PSMS", this,true);
         //    PSMClusterDecoyChart.makeFDRChart(name + " FDR", this);
         PSMClusterDecoyChart.makeCummulativeTotalChart(name + " Total PSMS", this);

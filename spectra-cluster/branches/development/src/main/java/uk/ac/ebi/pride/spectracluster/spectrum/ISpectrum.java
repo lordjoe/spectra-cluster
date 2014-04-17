@@ -15,7 +15,7 @@ import java.util.*;
  */
 public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksHolder {
 
-    // if true only  MAX_PEAKS_TO_KEEP are used
+    // if true only  MAX_PEAKS_TO_KEEP are usedI know
     public static final boolean  USE_HIGHEST_PEAKS = false;
     /**
      * after this many peaks we can drop the rest

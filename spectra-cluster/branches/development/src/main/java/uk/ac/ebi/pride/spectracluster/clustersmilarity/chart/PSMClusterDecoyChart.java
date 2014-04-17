@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
+import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
@@ -92,7 +93,7 @@ public class PSMClusterDecoyChart {
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
-     //           System.out.println("===" + cs.getName() + "===");
+                //           System.out.println("===" + cs.getName() + "===");
                 addClusterRangeData(dataset, cs, minimumSize, normalizeTotal);
             }
 
@@ -114,7 +115,7 @@ public class PSMClusterDecoyChart {
         PSMComparisonMain cm = getSet();
         List<ClusterMZSpread> psms = ClusterComparisonMain.getClusterRangeData(cs, cm, minimumClusterSize);
         XYSeries series;
-        if(psms.size() == 0)   {
+        if (psms.size() == 0) {
             psms = ClusterComparisonMain.getClusterRangeData(cs, cm, minimumClusterSize); // why are we here
             return;
         }
@@ -133,7 +134,7 @@ public class PSMClusterDecoyChart {
         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             for (IClusterSet cs : set.getClusterings()) {
- //               System.out.println("===" + cs.getName() + "===");
+                //               System.out.println("===" + cs.getName() + "===");
                 addFractionalData(dataset, cs, minimumSize, normalizeTotal);
             }
 
@@ -144,6 +145,24 @@ public class PSMClusterDecoyChart {
             ret.add(chartPanel);
 
         }
+
+
+        ret.setPreferredSize(new Dimension(800, 600));
+        return ret;
+    }
+
+    public JPanel generateDuplicatesChart(boolean normalizeTotal) {
+        JPanel ret = new JPanel();
+        ret.setLayout(new GridLayout(0, 2));
+
+        PSMComparisonMain set = getSet();
+        final XYSeriesCollection dataset = new XYSeriesCollection();
+         for (IClusterSet cs : set.getClusterings()) {
+              addDuplicatesData(dataset, cs);
+         }
+        final JFreeChart chart = createChart("Duplicate ", dataset, "Cummulative Fraction", "Fraction");
+        final ChartPanel chartPanel = new ChartPanel(chart);
+        ret.add(chartPanel);
 
 
         ret.setPreferredSize(new Dimension(800, 600));
@@ -234,7 +253,7 @@ public class PSMClusterDecoyChart {
             if (purity > cutPoint) {
                 while (purity > cutPoint) {
                     double y = number_cummulative / number_values;
-             //       System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+                    //       System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
                     series1.add(cutPoint, y);
                     if (cutindex >= fractionalPurityPoints.length) {
                         y = number_cummulative / number_values;
@@ -258,10 +277,10 @@ public class PSMClusterDecoyChart {
         }
         double y = number_cummulative / number_values;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
-  //      System.out.println("Cummulative fraction " + Util.formatDouble(y));
+        //      System.out.println("Cummulative fraction " + Util.formatDouble(y));
         if (type == ClusterDataType.Decoy) {
             double nn = number_not_used / number_values;
-    //        System.out.println("Not Used fraction " + Util.formatDouble(nn));
+            //        System.out.println("Not Used fraction " + Util.formatDouble(nn));
         }
         if (cutPoint <= maxCut)
             series1.add(cutPoint, y);
@@ -364,7 +383,7 @@ public class PSMClusterDecoyChart {
                 while (range > maxbin) {
                     double y = number_cummulative / number_values;
                     cummulativeFraction += y;
-     //               System.out.println(Util.formatDouble(maxbin) + " , " + Util.formatDouble(y));
+                    //               System.out.println(Util.formatDouble(maxbin) + " , " + Util.formatDouble(y));
                     series1.add(maxbin, y);
                     maxbin *= 1.5;
                     number_cummulative = 0;
@@ -381,7 +400,7 @@ public class PSMClusterDecoyChart {
 
         cummulativeFraction += y;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
- //       System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+        //       System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
         series1.add(maxbin, y);
         return series1;
     }
@@ -418,7 +437,7 @@ public class PSMClusterDecoyChart {
                 while (purity > cutPoint) {
                     double y = number_cummulative / number_values;
                     cummulativeFraction += y;
-  //                  System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+                    //                  System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
                     series1.add(cutPoint, y);
                     if (cutindex >= fractionalPurityPoints.length) {
                         y = number_cummulative / number_values;
@@ -440,7 +459,71 @@ public class PSMClusterDecoyChart {
         double y = number_cummulative / number_values;
         cummulativeFraction += y;
         //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
-      //  System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+        //  System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
+        series1.add(cutPoint, y);
+
+        while (cutindex < CummulativeFDR.fractionalPurityPoints.length) {
+            series1.add(cutPoint, 0);
+            cutPoint = CummulativeFDR.fractionalPurityPoints[cutindex++];
+        }
+        return series1;
+    }
+
+
+    public XYSeries buildFractionalDuplicatesSeries(String name, List<ClusterPeptideFraction> values, ClusterDataType type, boolean normalizeTotal) {
+        final XYSeries series1 = new XYSeries(name + " " + type);
+        int index = 0;
+        int cutindex = 0;
+
+        int number_total = 0;
+        double cummulativeFraction = 0;
+        int number_cummulative = 0;
+        double number_values = values.size();
+
+        if (!normalizeTotal && type == ClusterDataType.Decoy)
+            number_values = countDecoys(values);
+
+
+        series1.add(0, 0.0);
+        double[] fractionalPurityPoints = CummulativeFDR.fractionalPurityPoints;
+        double cutPoint = fractionalPurityPoints[cutindex++];
+        for (ClusterPeptideFraction pp : values) {
+            boolean use = !pp.isDecoy();
+            if (type == ClusterDataType.Decoy)
+                use = !use;
+            if (type == ClusterDataType.All)
+                use = true;
+            if (!use)
+                continue;
+            double purity = pp.getPurity();
+
+            if (purity > cutPoint) {
+                while (purity > cutPoint) {
+                    double y = number_cummulative / number_values;
+                    cummulativeFraction += y;
+                    //                  System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+                    series1.add(cutPoint, y);
+                    if (cutindex >= fractionalPurityPoints.length) {
+                        y = number_cummulative / number_values;
+                        cummulativeFraction += y;
+                        series1.add(1.0, y);
+                        //  System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+                        return series1;
+                    }
+                    cutPoint = fractionalPurityPoints[cutindex++];
+                    number_cummulative = 0;
+                }
+                number_cummulative = 0;
+            }
+            else {
+                number_cummulative++;
+            }
+            number_total++;
+        }
+        double y = number_cummulative / number_values;
+        cummulativeFraction += y;
+        //    System.out.println(Util.formatDouble(cutPoint) + " , " + Util.formatDouble(y));
+        //  System.out.println("Cummulative fraction " + Util.formatDouble(cummulativeFraction));
         series1.add(cutPoint, y);
 
         while (cutindex < CummulativeFDR.fractionalPurityPoints.length) {
@@ -611,6 +694,18 @@ public class PSMClusterDecoyChart {
         dataset.addSeries(series);
     }
 
+    protected void addDuplicatesData(final XYSeriesCollection dataset, IClusterSet cs) {
+        final XYSeries series1 = new XYSeries(cs.getName());
+        CountedMap<String> countedMap = ClusterSimilarityUtilities.getCountedMap(cs);
+        double[] duplicateFraction = countedMap.getCountDistribution();
+        for (int i = 0; i < duplicateFraction.length; i++) {
+            double v = duplicateFraction[i];
+            series1.add(i,1.0 - v);
+
+        }
+        dataset.addSeries(series1);
+    }
+
     /**
      * Creates a chart.
      *
@@ -750,6 +845,13 @@ public class PSMClusterDecoyChart {
     public static void makeFractionalChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
         PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
         JPanel charts = clusterSimilarityChart.generateFractionalChart(normalizeTotal);
+        packChartIntoFrame(name, charts);
+    }
+
+
+    public static void makeDuplicatesChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
+        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        JPanel charts = clusterSimilarityChart.generateDuplicatesChart(normalizeTotal);
         packChartIntoFrame(name, charts);
     }
 
