@@ -25,28 +25,50 @@ public class ClusterSimilarityUtilities {
     /**
      * return non-null if c1 contains all spactra in c2 or vice
      * versa
+     *
      * @param c1 cluster
-     * @param c2  cluster
-     * @return  non-null if we can use the return as an enclosing cluster
+     * @param c2 cluster
+     * @return non-null if we can use the return as an enclosing cluster
      */
-    public static @Nullable ISpectralCluster clusterFullyContains(@Nonnull ISpectralCluster c1,@Nonnull  ISpectralCluster c2)
-    {
+    public static @Nullable ISpectralCluster clusterFullyContains(@Nonnull ISpectralCluster c1, @Nonnull ISpectralCluster c2) {
         int size1 = c1.getClusteredSpectraCount();
         int size2 = c1.getClusteredSpectraCount();
-        if(size1 == size2)  {
-            if(c1.getSpectralId().equals(c2.getSpectralId()))
+        if (size1 == size2) {
+            if (c1.getSpectralId().equals(c2.getSpectralId()))
                 return c1; // same size same spectra;
-         }
+        }
         ISpectralCluster containing = c1;
         ISpectralCluster smaller = c2;
-         if(size1 < size2) {
-             containing = c2;
-             smaller = c1;
-         }
+        if (size1 < size2) {
+            containing = c2;
+            smaller = c1;
+        }
         Set<String> spectralIds = containing.getSpectralIds();
-        if(spectralIds.containsAll(smaller.getSpectralIds()))
-              return containing;   // contains all spectra in c1
+        if (spectralIds.containsAll(smaller.getSpectralIds()))
+            return containing;   // contains all spectra in c1
         return null; // clusters are distinct
+    }
+
+
+    /**
+     * score commonality
+     *
+     * @param existing cluster
+     * @param added    cluster
+     * @return non-null if we can use the return as an enclosing cluster
+     */
+    public static double clusterFullyContainsScore(@Nonnull ISpectralCluster existing, @Nonnull ISpectralCluster added) {
+        Set<String> spectralIds1 = existing.getSpectralIds();
+        Set<String> spectralIds2 = added.getSpectralIds();
+        double maxSize = Math.max(spectralIds1.size(), spectralIds2.size());
+        double minSize = Math.min(spectralIds1.size(), spectralIds2.size());
+
+        Set<String> common = new HashSet<String>(spectralIds1);
+        boolean theSame = common.retainAll(spectralIds2);
+        if (theSame)
+            return 1;
+
+        return (double) common.size() / minSize;
     }
 
     public static CountedMap<String> getCountedMap(IClusterSet cl) {
@@ -54,10 +76,10 @@ public class ClusterSimilarityUtilities {
         for (ISpectralCluster sc : cl.getClusters()) {
             Set<String> c1SpectralIds = sc.getSpectralIds();
             for (String c1SpectralId : c1SpectralIds) {
-                 ret.add(c1SpectralId);
+                ret.add(c1SpectralId);
             }
         }
-         return ret;
+        return ret;
     }
 
     public static Set<String> allSpectralIds(ISpectralCluster c1, ISpectralCluster c2) {

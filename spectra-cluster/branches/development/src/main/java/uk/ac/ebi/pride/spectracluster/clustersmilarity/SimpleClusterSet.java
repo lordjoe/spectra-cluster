@@ -241,6 +241,12 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     }
 
     @Override
+    public String toString()
+    {
+        return getName();
+    }
+
+    @Override
     public List<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches) {
         ClusterQualityComparator clusterQualityComparator = new ClusterQualityComparator(cluster);
 

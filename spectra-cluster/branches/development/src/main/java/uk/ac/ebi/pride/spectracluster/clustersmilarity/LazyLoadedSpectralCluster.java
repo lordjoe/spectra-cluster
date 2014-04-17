@@ -155,6 +155,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String value = sc1.getPeptide();
+            if(value == null)
+                continue;
             String[] peptides = value.split(";");
             boolean decoy = false;
             for (int j = 0; j < peptides.length; j++) {

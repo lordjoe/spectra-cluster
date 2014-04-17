@@ -313,27 +313,29 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         numberNotMerge++;
     }
 
+    public static final double MINIMUM_MERGE_SCORE = 0.5;
     /**
-     *
+     *   figure out is
      * @param clusterToAdd
      * @return  true is we fully replace a cluster with a larger or find this fully contained
      */
     protected boolean handleFullContainment(final ISpectralCluster clusterToAdd) {
-         final List<ISpectralCluster> myclusters = internalGetClusters();
+        final List<ISpectralCluster> myclusters = internalGetClusters();
         ISpectralCluster toReplace = null;
+        double bestSimilarity = Double.MIN_VALUE;
         for (ISpectralCluster myCluster : myclusters) {
-            ISpectralCluster s1 = ClusterSimilarityUtilities.clusterFullyContains(myCluster, clusterToAdd);
-            if (s1 == null)
-                continue; // no match
-            if (s1 != clusterToAdd)
-                return true;
-            toReplace = myCluster;
-            break;
-        }
+            double score = ClusterSimilarityUtilities.clusterFullyContainsScore(myCluster, clusterToAdd);
+            if(score > bestSimilarity) {
+                bestSimilarity = score;
+                toReplace = myCluster;
+                if(score == 1)
+                    break;
+              }
+         }
 
-        if (toReplace != null) {
-            myclusters.remove(toReplace);
-            myclusters.add(clusterToAdd);
+        if (bestSimilarity >= MINIMUM_MERGE_SCORE ) {
+            mergeIntoCluster(clusterToAdd, toReplace);
+            return true; // done
         }
         return false;
     }
