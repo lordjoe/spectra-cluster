@@ -190,6 +190,9 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
                 break;
             case 2:
             case 3:
+                if(true)
+                    break; // being conservative to fiz test sets
+                // todo - is this step too aggressive
                 for (ISpectrum spc1 : clusteredSpectra) {
                     id = spc1.getId();
                     if (writtenSpectra.contains(id) || lastWrittenSpectra.contains(id)) {
