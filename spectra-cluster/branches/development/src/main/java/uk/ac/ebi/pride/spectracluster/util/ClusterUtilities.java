@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.util;
 import com.lordjoe.algorithms.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
@@ -28,9 +27,7 @@ public class ClusterUtilities {
     public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
 
     public static final String PLACE_SPECTRUM_IN_BEST_CLUSTER = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.PlaceSpectrumInBestCluster";
-    // todo add a parameter
     public static final String BREAK_UP_CLUSTERS_LESS_THAN = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.BreakUpClustersLessThan";
-    // todo add a parameter
 
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;

@@ -313,7 +313,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         numberNotMerge++;
     }
 
-    public static final double MINIMUM_MERGE_SCORE = 0.5;
+    // with 1 we merge all true subclusters but not others
+    public static final double MINIMUM_MERGE_SCORE = 1; // 0.5;
     /**
      *   figure out is
      * @param clusterToAdd
