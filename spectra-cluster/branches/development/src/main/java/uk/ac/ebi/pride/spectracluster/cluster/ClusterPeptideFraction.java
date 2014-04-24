@@ -33,13 +33,15 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
 //            throw new IllegalArgumentException("bad pepide " + pPeptide);
 //        }
         if (pPurity > 1)
-            purity = pPurity;
+            purity = pPurity;  // why could we get this
         else
             purity = pPurity;
 
         peptide = pPeptide;
         decoy = pDecoy;
-        if (pPurity > 0.8 && pDecoy) {
+        if(!pDecoy)
+            return;
+        if (pPurity > 0.8 ) {
             {
                   number_pure_decoy++;
             }

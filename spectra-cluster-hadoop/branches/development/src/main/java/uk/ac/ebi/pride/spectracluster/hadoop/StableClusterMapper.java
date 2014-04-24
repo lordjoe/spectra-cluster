@@ -42,6 +42,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         super.setup(context);
         ISetableParameterHolder application = getApplication();
         ClusterUtilities.setStableClusterSizeFromProperties(application);
+        AbstractBinnedAPrioriPartitioner.setBinner(BINNER);
       }
 
 
@@ -164,7 +165,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     }
 
     public void incrementDaltonCounters(int precursorMZ, Context context) {
-        Counter counter = context.getCounter("Binning", "MZ" + String.format("%03d", precursorMZ));
+        Counter counter = context.getCounter("Binning", ClusterUtilities.describeDaltons(precursorMZ));
         counter.increment(1);
     }
 

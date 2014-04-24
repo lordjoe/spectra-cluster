@@ -9,7 +9,6 @@ import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 
-import javax.annotation.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -235,7 +234,7 @@ public class ClusterDecoyChart {
     public XYSeries buildFDRSeries(String name, List<ClusterPeptideFraction> values, double number_spectra) {
         final XYSeries series1 = new XYSeries(name);
         int index = 0;
-        int cutindex = 1;
+        int cutindex = 0;
 
         int number_total = 0;
         int number_targets = 0;
@@ -249,7 +248,8 @@ public class ClusterDecoyChart {
 
             double purity = pp.getPurity();
             while (purity < cutPoint) {
-                series1.add(cutPoint, (double) twice_number_decoys / number_total);
+                double y = (double) twice_number_decoys / (double) number_total;
+                series1.add(cutPoint, y);
                 if (cutindex >= CummulativeFDR.reverse_cummulativePurityPoints.length)
                     return series1;
                 cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];

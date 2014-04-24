@@ -18,9 +18,20 @@ import java.io.*;
 public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
+    private IWideBinner mapBinner;
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
+        setMapBinner(Defaults.DEFAULT_WIDE_MZ_BINNER);
+    }
+
+    public IWideBinner getMapBinner() {
+        return mapBinner;
+    }
+
+    public void setMapBinner(final IWideBinner pMapBinner) {
+        mapBinner = pMapBinner;
+           AbstractBinnedAPrioriPartitioner.setBinner(pMapBinner);
     }
 
     @Override
@@ -32,7 +43,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = getMapBinner();
 
         boolean offsetBins = context.getConfiguration().getBoolean("offsetBins", false);
         if (offsetBins)
@@ -76,7 +87,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementDaltonCounters(int precursorMZ, Context context) {
-        Counter counter = context.getCounter("Binning", "MZ" + String.format("%03d", precursorMZ));
+        Counter counter = context.getCounter("Binning", ClusterUtilities.describeDaltons(precursorMZ));
         counter.increment(1);
     }
 

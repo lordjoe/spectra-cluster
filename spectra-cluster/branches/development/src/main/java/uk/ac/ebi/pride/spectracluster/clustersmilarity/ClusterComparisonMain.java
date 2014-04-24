@@ -4,7 +4,6 @@ import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
-import uk.ac.ebi.pride.spectracluster.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -245,8 +244,8 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             INSTANCE.addClustering(cs);
            // showChart(cs);
         }
-        INSTANCE.compareClusters();
         INSTANCE.showFDRCharts();
+        INSTANCE.compareClusters();
         INSTANCE.generateReports();
       }
 
