@@ -40,6 +40,16 @@ public class ClusterUtilities {
         ClusterUtilities.setSemiStableClusterSize(semiStableClusterSize);
     }
 
+    public static String describeDaltons(double precursorMZ)
+    {
+             return "MZ" + String.format("%05d", (int)(precursorMZ + 0.5));
+     }
+
+    public static double asDaltons(String asDaltons)
+     {
+         return Integer.parseInt(asDaltons.substring(2));
+       }
+
 
     public static final String STABLE_CLUSTER_PREFIX = "SC";
     @SuppressWarnings("UnusedDeclaration")

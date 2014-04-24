@@ -149,10 +149,6 @@ public class StableClusterMapperOld extends AbstractParameterizedMapper<Text> {
         //      incrementDaltonCounters((int)mzKey.getPrecursorMZ(),context);
     }
 
-    public void incrementDaltonCounters(int precursorMZ, Context context) {
-        Counter counter = context.getCounter("Binning", "MZ" + String.format("%03d", precursorMZ));
-        counter.increment(1);
-    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {

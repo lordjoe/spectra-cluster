@@ -18,6 +18,21 @@ import java.io.*;
 @SuppressWarnings("UnusedDeclaration")
 public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
+    private IWideBinner mapBinner;
+     @Override
+     protected void setup(final Context context) throws IOException, InterruptedException {
+         super.setup(context);
+         setMapBinner(Defaults.DEFAULT_WIDE_MZ_BINNER);
+     }
+
+     public IWideBinner getMapBinner() {
+         return mapBinner;
+     }
+
+     public void setMapBinner(final IWideBinner pMapBinner) {
+         mapBinner = pMapBinner;
+         AbstractBinnedAPrioriPartitioner.setBinner(pMapBinner);
+      }
 
     @Override
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
@@ -28,7 +43,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
         if (label.length() == 0 || text.length() == 0)
             return;
 
-        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = getMapBinner();
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
