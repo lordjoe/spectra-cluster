@@ -8,6 +8,8 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 import java.io.*;
 import java.util.*;
 
+import static uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityEnum.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.RatedClusterSimilarity
  *
@@ -36,7 +38,13 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         ClusterDistanceItem m1 = clusters.getBestMatch();
 
         if (m1 == null)
-            return ClusterSimilarityEnum.NoFit;
+            return  NoFit;
+
+        if(m1.isIdentical())
+            return Identical;
+
+        if(m1.isSubset())
+             return Subset;
 
         double distance = m1.getDistance();
         if (distance > MEDIUM_DISTANCE) {
@@ -52,7 +60,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         ISpectralCluster source = m1.getSource();
         ISpectralCluster target = m1.getTarget();
 
-        similarityDistance = similarity.assessSimilarity(source.getConsensusSpectrum(),target.getConsensusSpectrum());
+        similarityDistance = similarity.assessSimilarity(source.getConsensusSpectrum(), target.getConsensusSpectrum());
 
         int sourceCount = source.getClusteredSpectraCount();
         int targetCount = target.getClusteredSpectraCount();
@@ -61,7 +69,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         double min = Math.min(targetCount, sourceCount);
         if (min == 0) {
             problems.add(ClusterSimilarityProblem.NoSpectra);
-        } else {
+        }
+        else {
             double farcDifference = del / min;
             if (farcDifference > 0.20) {
                 problems.add(ClusterSimilarityProblem.UnevenSize);
@@ -73,14 +82,14 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             problems.add(ClusterSimilarityProblem.DifferentBestPeptide);
 
         if (distance >= BAD_DISTANCE)
-            return ClusterSimilarityEnum.Bad;
+            return Bad;
 
         if (distance >= MEDIUM_DISTANCE)
-            return ClusterSimilarityEnum.Medium;
+            return Medium;
 
         if (problems.isEmpty())
-            return ClusterSimilarityEnum.Good;
-        return ClusterSimilarityEnum.Medium;
+            return Good;
+        return  Medium;
     }
 
 
@@ -131,18 +140,27 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             appendable.append("\t");
 
             String mostCommonPeptide = source.getMostCommonPeptide();
-            if(!hasProblem(ClusterSimilarityProblem.DifferentBestPeptide))
-                appendable.append(mostCommonPeptide);
+   //         if (!hasProblem(ClusterSimilarityProblem.DifferentBestPeptide))
+            appendable.append(mostCommonPeptide);
             appendable.append("\t");
 
-             String simdistStr = String.format("%f8.3", similarityDistance);
+            String mostCommonTargetPeptide = target.getMostCommonPeptide();
+            appendable.append(mostCommonTargetPeptide);
+             appendable.append("\t");
+
+            if(mostCommonPeptide.equals(mostCommonTargetPeptide))
+                appendable.append("SAME");
+
+             appendable.append("\t");
+
+            String simdistStr = String.format("%f8.3", similarityDistance);
             appendable.append(simdistStr);
             appendable.append("\t");
 
 
-
             appendable.append("\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -165,17 +183,34 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
             appendable.append("distance");
             appendable.append("\t");
-            appendable.append("common peptide");
+            appendable.append("source peptide");
             appendable.append("\t");
-            appendable.append("similarity distance");
+            appendable.append("target peptide");
              appendable.append("\t");
+             appendable.append("similarity distance");
+            appendable.append("\t");
 
             appendable.append("\n");
 
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        MostSimilarClusters mostSimilarClusters = getClusters();
+        List<ClusterDistanceItem> bestMatches = mostSimilarClusters.getBestMatches();
+
+        if(bestMatches.size() == 0)
+            return "===== BAD BAD ========";
+        ClusterDistanceItem bestMatch = bestMatches.get(0);
+        bestMatch.appendReport(sb);
+        return sb.toString();
+
     }
 
     public void appendReport(Appendable appendable) {
@@ -189,7 +224,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
                 return;
             }
             String simdistStr = String.format("%f8.3", similarityDistance);
-             appendable.append(getRating().toString() + " " + getProblemString() +
+            appendable.append(getRating().toString() + " " + getProblemString() +
                     simdistStr +
                     "\n");
             MostSimilarClusters mostSimilarClusters = getClusters();
@@ -207,7 +242,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 //                        }
 //                    }
             appendable.append("============================================\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

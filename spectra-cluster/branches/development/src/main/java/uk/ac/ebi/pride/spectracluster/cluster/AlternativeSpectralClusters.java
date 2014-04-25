@@ -523,10 +523,12 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             out.append("\n");
 
 
-            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
+            out.append("sequence=[" + s + "]");
             out.append("\n");
 
-            for (ISpectrum spec : getClusteredSpectra()) {
+            for (ISpectrum spec : clusteredSpectra1) {
                 out.append("SPEC\t");
                 out.append(spec.getId());
                 out.append("\ttrue\n");

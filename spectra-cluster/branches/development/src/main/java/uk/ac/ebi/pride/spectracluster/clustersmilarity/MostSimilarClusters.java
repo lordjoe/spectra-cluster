@@ -53,7 +53,7 @@ public class MostSimilarClusters {
         return clusterDistanceItems;
     }
     public  ClusterDistanceItem  getNextBestMatches() {
-          List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
+        List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
         if(clusterDistanceItems.size() < 2)
             return null;
           clusterDistanceItems.remove(getBestMatch());
