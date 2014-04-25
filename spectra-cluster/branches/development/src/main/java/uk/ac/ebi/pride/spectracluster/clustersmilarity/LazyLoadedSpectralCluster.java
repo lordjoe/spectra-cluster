@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -91,7 +90,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     }
 
     protected void guaranteeCachedRead() {
-        if (precursorMz == null) {
+        if (precursorMz == null ) {
             guaranteeCachedData();
             DataFromDatabase dbf = cachedData.get(getId());
             if (dbf != null) {

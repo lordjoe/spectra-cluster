@@ -34,21 +34,19 @@ public class ClusterUtilities {
 
 
     public static void setStableClusterSizeFromProperties(final ISetableParameterHolder pApplication) {
-        int stableClusterSize = pApplication.getIntParameter( ClusterUtilities.STABLE_CLUSTER_SIZE_PROPERTY,ClusterUtilities.DEFAULT_STABLE_CLUSTER_SIZE);
+        int stableClusterSize = pApplication.getIntParameter(ClusterUtilities.STABLE_CLUSTER_SIZE_PROPERTY, ClusterUtilities.DEFAULT_STABLE_CLUSTER_SIZE);
         ClusterUtilities.setStableClusterSize(stableClusterSize);
-        int semiStableClusterSize = pApplication.getIntParameter(ClusterUtilities.SEMI_STABLE_CLUSTER_SIZE_PROPERTY,ClusterUtilities.DEFAULT_SEMI_STABLE_CLUSTER_SIZE);
+        int semiStableClusterSize = pApplication.getIntParameter(ClusterUtilities.SEMI_STABLE_CLUSTER_SIZE_PROPERTY, ClusterUtilities.DEFAULT_SEMI_STABLE_CLUSTER_SIZE);
         ClusterUtilities.setSemiStableClusterSize(semiStableClusterSize);
     }
 
-    public static String describeDaltons(double precursorMZ)
-    {
-             return "MZ" + String.format("%05d", (int)(precursorMZ + 0.5));
-     }
+    public static String describeDaltons(double precursorMZ) {
+        return "MZ" + String.format("%05d", (int) (precursorMZ + 0.5));
+    }
 
-    public static double asDaltons(String asDaltons)
-     {
-         return Integer.parseInt(asDaltons.substring(2));
-       }
+    public static double asDaltons(String asDaltons) {
+        return Integer.parseInt(asDaltons.substring(2));
+    }
 
 
     public static final String STABLE_CLUSTER_PREFIX = "SC";
@@ -62,7 +60,7 @@ public class ClusterUtilities {
         return stableClusterSize;
     }
 
-     public static void setStableClusterSize(final int pStableClusterSize) {
+    public static void setStableClusterSize(final int pStableClusterSize) {
         stableClusterSize = pStableClusterSize;
     }
 
@@ -70,18 +68,16 @@ public class ClusterUtilities {
         return semiStableClusterSize;
     }
 
-     public static void setSemiStableClusterSize(final int pSemiStableClusterSize) {
+    public static void setSemiStableClusterSize(final int pSemiStableClusterSize) {
         semiStableClusterSize = pSemiStableClusterSize;
     }
 
-    public static String getStableClusterId()
-    {
-        return  STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
+    public static String getStableClusterId() {
+        return STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
     }
 
-    public static String getSemiStableClusterId()
-    {
-        return  STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
+    public static String getSemiStableClusterId() {
+        return STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
     }
 
     /**
@@ -92,7 +88,7 @@ public class ClusterUtilities {
      */
     public static boolean isClusterStable(ISpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
-        if(count == 1)
+        if (count == 1)
             return false; // Duh but saves other tests
         if (count >= getStableClusterSize())
             return true;
@@ -108,43 +104,40 @@ public class ClusterUtilities {
     }
 
 
-    public static SpectrumInCluster readSpectrumInCluster(String str)
-    {
+    public static SpectrumInCluster readSpectrumInCluster(String str) {
         LineNumberReader rdr = new LineNumberReader(new StringReader(str));
-        return  readSpectrumInCluster(  rdr);
+        return readSpectrumInCluster(rdr);
     }
 
 
-
-    public static SpectrumInCluster readSpectrumInCluster(LineNumberReader rdr)
-    {
+    public static SpectrumInCluster readSpectrumInCluster(LineNumberReader rdr) {
         try {
             String line = rdr.readLine();
             SpectrumInCluster ret = new SpectrumInCluster();
-            while(line != null)   {
-                if("=SpectrumInCluster=".equals(line.trim())) {
+            while (line != null) {
+                if ("=SpectrumInCluster=".equals(line.trim())) {
                     line = rdr.readLine();
                     break;
                 }
-              }
+            }
 
-            if(!line.startsWith("removeFromCluster="))
+            if (!line.startsWith("removeFromCluster="))
                 throw new IllegalStateException("badSpectrumInCluster");
             ret.setRemoveFromCluster(Boolean.parseBoolean(line.substring("removeFromCluster=".length())));
             line = rdr.readLine();
 
-            if(!line.startsWith("distance="))
-                 throw new IllegalStateException("badSpectrumInCluster");
+            if (!line.startsWith("distance="))
+                throw new IllegalStateException("badSpectrumInCluster");
             double distance = Double.parseDouble(line.substring("distance=".length()));
-            if(distance >= 0)    // todo fix later
-                 ret.setDistance(distance);
+            if (distance >= 0)    // todo fix later
+                ret.setDistance(distance);
 
-            IPeptideSpectrumMatch  spec = ParserUtilities.readSPTextScan(rdr,   line);
+            IPeptideSpectrumMatch spec = ParserUtilities.readSPTextScan(rdr, line);
 
             ret.setSpectrum(spec);
 
             ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(rdr, null);
-            if(clusters.length != 1)
+            if (clusters.length != 1)
                 throw new IllegalStateException("badSpectrumInCluster");
 
             ret.setCluster(clusters[0]);
@@ -164,11 +157,11 @@ public class ClusterUtilities {
      */
     public static boolean isClusterSemiStable(ISpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
-        if(count == 1)
-             return false; // Duh but saves other tests
+        if (count == 1)
+            return false; // Duh but saves other tests
         if (count >= getSemiStableClusterSize())
             return true;
-         // some tests for debugging
+        // some tests for debugging
         if (count < 5)
             return false;
         return false;
@@ -193,7 +186,7 @@ public class ClusterUtilities {
         return ret;
     }
 
-     @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
         float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
         float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
@@ -349,7 +342,8 @@ public class ClusterUtilities {
                 for (ISpectrum spectrum : clusteredSpectra) {
                     asSingleSpectra.add(spectrum.asCluster()); // di not retain but return as one spectrum clusters
                 }
-            } else {
+            }
+            else {
                 retained.add(cluster); // large enough keep it
             }
         }
@@ -401,13 +395,21 @@ public class ClusterUtilities {
      */
     public static String mostCommonPeptides(List<ISpectrum> spectra) {
         final List<String> peptideList = getPeptideList(spectra);
-        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+        CountedString[] countedStrings = CountedString.getCountedStrings(peptideList);
         StringBuilder sb = new StringBuilder();
-        for (String s : stringsByOccurance) {
+        for (int i = 0; i < countedStrings.length; i++) {
+            CountedString countedString = countedStrings[i];
             if (sb.length() > 0)
                 sb.append(",");
-            sb.append(s);
+            sb.append(countedString);
+
         }
+//        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+//          for (String s : stringsByOccurance) {
+//            if (sb.length() > 0)
+//                sb.append(",");
+//            sb.append(s);
+//        }
         return sb.toString();
     }
 
@@ -652,7 +654,8 @@ public class ClusterUtilities {
             }
             if (mergeWith == null) {
                 retained.add(cluster); // nothing to merge with so keep the cluster
-            } else {  // merge with a close enough cluster
+            }
+            else {  // merge with a close enough cluster
                 mergeWith.addSpectra(cluster.getClusteredSpectra());
             }
         }
@@ -699,7 +702,8 @@ public class ClusterUtilities {
             }
             if (mergeWith == null) {
                 retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
-            } else {  // merge with a close enough cluster
+            }
+            else {  // merge with a close enough cluster
                 // note this may disturb the order of the cluster list but should not stop
                 // the algorithm from working
                 mergeWith.addSpectra(cluster.getClusteredSpectra());
@@ -782,7 +786,8 @@ public class ClusterUtilities {
             out.append("description=" + name);
             out.append("\n");
             out.append("\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -790,15 +795,15 @@ public class ClusterUtilities {
 
     /**
      * null safe equals function
+     *
      * @param o1
      * @param o2
      * @return
      */
-    public static boolean equalObject(Object o1, Object o2)
-    {
-        if(o1 == o2)
+    public static boolean equalObject(Object o1, Object o2) {
+        if (o1 == o2)
             return true;
-        if(o1 == null || o2 == null)
+        if (o1 == null || o2 == null)
             return false;
         return o1.equals(o2);
     }

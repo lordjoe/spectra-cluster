@@ -49,6 +49,6 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
 
     @Override
     public double getMinimalMatchDistance() {
-        return DEFUALT_MINIMAL_DISTANCE;
+        return DEFAULT_MINIMAL_DISTANCE;
     }
 }

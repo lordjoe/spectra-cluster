@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * Date: 6/17/13
  */
 public interface IClusterDistance extends IAlgorithm {
-    public static final double DEFUALT_MINIMAL_DISTANCE = 0.15;
+    public static final double DEFAULT_MINIMAL_DISTANCE = 0.15;
 
 
     /**

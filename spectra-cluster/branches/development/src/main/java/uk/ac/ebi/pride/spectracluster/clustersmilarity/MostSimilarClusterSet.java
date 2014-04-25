@@ -19,7 +19,7 @@ public class MostSimilarClusterSet {
     private final IClusterSet baseSet;
     private final IClusterDistance clusterDistance;
     private final List<RatedClusterSimilarity> byRating = new ArrayList<RatedClusterSimilarity>();
-
+    private final int[] countByRating = new int[ClusterSimilarityEnum.values().length];
 
     public MostSimilarClusterSet(IClusterSet baseSet, IClusterDistance clusterDistance) {
         this.baseSet = baseSet;
@@ -77,6 +77,7 @@ public class MostSimilarClusterSet {
     }
 
     public void buildQualityGroups() {
+        Arrays.fill(countByRating,0);
         byRating.clear();
         for (ISpectralCluster cluster : baseSet.getClusters()) {
             MostSimilarClusters mostSimilarClusters = getMostSimilarClusters(cluster);
@@ -84,6 +85,14 @@ public class MostSimilarClusterSet {
             byRating.add(rateed);
         }
         Collections.sort(byRating);
+
+        for (RatedClusterSimilarity rating : byRating) {
+            ClusterSimilarityEnum rating1 = rating.getRating();
+            countByRating[rating1.getValue()]++;
+        }
+        for (ClusterSimilarityEnum val : ClusterSimilarityEnum.values()) {
+            System.out.println(val + " " + countByRating[val.getValue()]);
+        }
     }
 
 
@@ -136,19 +145,32 @@ public class MostSimilarClusterSet {
         }
     }
 
-    protected static void compareDifferentClusters(String[] args) throws IOException {
+    public static SimpleSpectrumRetriever getSimpleSpectrumRetriever(final String propertyFileName) {
+        try {
+            Properties properties = new Properties();
+            properties.load(new FileReader(propertyFileName));
+
+            SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
 
 
-        SimpleSpectrumRetriever simpleSpectrumRetriever = new SimpleSpectrumRetriever();
+            String tsvFileName = properties.getProperty("SpectraFile");
+            File tsvFile = new File(tsvFileName);
+             ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, simpleSpectrumRetriever);
+            return simpleSpectrumRetriever;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+
+    protected static void compareDifferentClusters(SimpleSpectrumRetriever simpleSpectrumRetriever, String[] args1) throws IOException {
 
         ElapsedTimer timer = new ElapsedTimer();
 
-        File tsvFile = new File(args[0]);
-        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, simpleSpectrumRetriever);
-        timer.showElapsed("Read TSV");
-        timer.reset(); // back to 0
 
-        File originalFile = new File(args[1]);
+        File originalFile = new File(args1[0]);
 
         IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile, "SemiStableOriginal.clustering");
         timer.showElapsed("Read Original set");
@@ -159,7 +181,7 @@ public class MostSimilarClusterSet {
         String report = stat.generateReport();
         System.out.println(report);
 
-        File newFile = new File(args[2]);
+        File newFile = new File(args1[1]);
         IClusterSet newClusterSet = readClusterSet(simpleSpectrumRetriever, newFile, "StableNew.clustering");
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
@@ -187,12 +209,15 @@ public class MostSimilarClusterSet {
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
 
-        PrintWriter writer = new PrintWriter(new FileWriter(new File(args[3])));
+        Appendable out = System.out;
+        if(args1.length > 2)
+             out = new PrintWriter(new FileWriter(new File(args1[2])));
         if (!USE_TSV)
-            writer.append("Algorithm " + ClusterContentDistance.INSTANCE.getName()).append("\n");
-        mostSimilarClusterSet.appendReport(writer);
-        writer.close();
+            out.append("Algorithm " + ClusterContentDistance.INSTANCE.getName()).append("\n");
+        mostSimilarClusterSet.appendReport(out);
+       // writer.close();  // bad idea to close system .out
     }
+
 
     public static void compareClusterSets(SimpleSpectrumRetriever simpleSpectrumRetriever, IClusterSet originalClusterSet, IClusterSet newClusterSet) {
         compareClusterSets(simpleSpectrumRetriever, originalClusterSet, newClusterSet, System.out);
@@ -214,7 +239,7 @@ public class MostSimilarClusterSet {
             out.append("\n");
 
 
-            if(true)
+            if (true)
                 return; // todo add later
             out.append("=======New ste duplicates =======================================");
             out.append("\n");
@@ -277,18 +302,13 @@ public class MostSimilarClusterSet {
     }
 
 
-    protected static void compareSameCluster(String[] args) throws IOException {
+    protected static void compareSameCluster(SimpleSpectrumRetriever spectra, String[] args1) throws IOException {
 
-        SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
 
         ElapsedTimer timer = new ElapsedTimer();
 
-        File tsvFile = new File(args[0]);
-        ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, spectra);
-        timer.showElapsed("Read TSV");
-        timer.reset(); // back to 0
 
-        File originalFile = new File(args[1]);
+        File originalFile = new File(args1[0]);
 
         IClusterSet originalClusterSet = readClusterSet(spectra, originalFile, "SemiStableNew.clustering");
         timer.showElapsed("Read   set");
@@ -333,7 +353,7 @@ public class MostSimilarClusterSet {
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
 
-        PrintWriter writer = new PrintWriter(new FileWriter(new File(args[2])));
+        PrintWriter writer = new PrintWriter(new FileWriter(new File(args1[1])));
         if (!USE_TSV)
             writer.append("Algorithm " + ClusterContentDistance.INSTANCE.getName()).append("\n");
         mostSimilarClusterSet.appendReport(writer);
@@ -367,7 +387,7 @@ public class MostSimilarClusterSet {
     }
 
 
-    public static void mergeClustering(final String[] args) throws IOException {
+    public static void mergeClustering(SimpleSpectrumRetriever sr, final String[] args) throws IOException {
         File directory = new File(args[0]);
         PrintWriter out = new PrintWriter(new FileWriter(args[1]));
         mergeClustersing(directory, out);
@@ -380,9 +400,13 @@ public class MostSimilarClusterSet {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-        //  compareSameCluster(args);
-        //  mergeClustering(args);
-        compareDifferentClusters(args);
+
+        SimpleSpectrumRetriever sr = getSimpleSpectrumRetriever(args[0]);
+        args = Arrays.copyOfRange(args, 1, args.length);
+
+        //         compareSameCluster(sr,args);
+//          mergeClustering(sr,args);
+        compareDifferentClusters(sr, args);
 
     }
 

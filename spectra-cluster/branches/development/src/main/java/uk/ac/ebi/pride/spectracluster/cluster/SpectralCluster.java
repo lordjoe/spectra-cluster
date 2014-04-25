@@ -577,7 +577,9 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
             out.append("\n");
 
 
-            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
+            out.append("sequence=[" + s + "]");
             out.append("\n");
 
             out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
@@ -585,7 +587,7 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
             out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
             out.append("\n");
 
-            List<ISpectrum> spectra = getClusteredSpectra();
+            List<ISpectrum> spectra = clusteredSpectra1;
             Collections.sort(spectra,ISpectrum.ID_COMAPRATOR);   // sort by id
             for (ISpectrum spec : spectra) {
                 StringBuilder sb = new StringBuilder();

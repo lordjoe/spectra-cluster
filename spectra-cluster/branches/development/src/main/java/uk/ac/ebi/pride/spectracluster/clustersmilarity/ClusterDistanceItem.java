@@ -22,7 +22,28 @@ public class ClusterDistanceItem implements IClusterMatch {
         this.distance = distance;
     }
 
-    /**
+    public boolean isIdentical()
+    {
+        Set<String> commonSpectralIds = ClusterSimilarityUtilities.commonSpectralIds(source, target);
+        if(commonSpectralIds.size() != source.getClusteredSpectraCount())
+            return false;
+        if(commonSpectralIds.size() != target.getClusteredSpectraCount())
+             return false;
+        return true;
+     }
+
+
+    public boolean isSubset()
+    {
+        Set<String> allSpectrumIds = ClusterSimilarityUtilities.allSpectralIds(source, target);
+        if(allSpectrumIds.size() == source.getClusteredSpectraCount())
+            return true;
+        if(allSpectrumIds.size() == target.getClusteredSpectraCount())
+             return true;
+        return false;
+     }
+
+     /**
      * !null source cluster
      *
      * @return
