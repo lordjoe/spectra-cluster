@@ -38,13 +38,13 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         ClusterDistanceItem m1 = clusters.getBestMatch();
 
         if (m1 == null)
-            return  NoFit;
+            return NoFit;
 
-        if(m1.isIdentical())
+        if (m1.isIdentical())
             return Identical;
 
-        if(m1.isSubset())
-             return Subset;
+        if (m1.isSubset())
+            return Subset;
 
         double distance = m1.getDistance();
         if (distance > MEDIUM_DISTANCE) {
@@ -89,7 +89,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
         if (problems.isEmpty())
             return Good;
-        return  Medium;
+        return Medium;
     }
 
 
@@ -118,44 +118,47 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             ClusterDistanceItem bestMatch = mostSimilarClusters.getBestMatch();
             appendable.append(getRating().toString());
             appendable.append("\t");
-            ISpectralCluster source = bestMatch.getSource();
-            ISpectralCluster target = bestMatch.getTarget();
-            appendable.append(source.getId());
-            appendable.append("\t");
-            appendable.append(target.getId());
-            appendable.append("\t");
+            if (bestMatch != null) {
+                ISpectralCluster source = bestMatch.getSource();
+                ISpectralCluster target = bestMatch.getTarget();
+                appendable.append(source.getId());
+                appendable.append("\t");
+                appendable.append(target.getId());
+                appendable.append("\t");
+                appendable.append(Integer.toString(source.getClusteredSpectraCount()));
+                appendable.append("\t");
+                appendable.append(Integer.toString(target.getClusteredSpectraCount()));
+                appendable.append("\t");
+                Set<String> commonIds = ClusterSimilarityUtilities.commonSpectralIds(source, target);
+                appendable.append(Integer.toString(commonIds.size()));
+                appendable.append("\t");
+                // header up tp here
 
-            appendable.append(Integer.toString(source.getClusteredSpectraCount()));
-            appendable.append("\t");
-            appendable.append(Integer.toString(target.getClusteredSpectraCount()));
-            appendable.append("\t");
-            Set<String> commonIds = ClusterSimilarityUtilities.commonSpectralIds(source, target);
-            appendable.append(Integer.toString(commonIds.size()));
-            appendable.append("\t");
-            // header up tp here
+                double distance = bestMatch.getDistance();
+                String distStr = String.format("%f8.3", distance);
+                appendable.append(distStr);
+                appendable.append("\t");
 
-            double distance = bestMatch.getDistance();
-            String distStr = String.format("%f8.3", distance);
-            appendable.append(distStr);
-            appendable.append("\t");
+                String mostCommonPeptide = source.getMostCommonPeptide();
+                //         if (!hasProblem(ClusterSimilarityProblem.DifferentBestPeptide))
+                appendable.append(mostCommonPeptide);
+                appendable.append("\t");
 
-            String mostCommonPeptide = source.getMostCommonPeptide();
-   //         if (!hasProblem(ClusterSimilarityProblem.DifferentBestPeptide))
-            appendable.append(mostCommonPeptide);
-            appendable.append("\t");
+                String mostCommonTargetPeptide = target.getMostCommonPeptide();
+                appendable.append(mostCommonTargetPeptide);
+                appendable.append("\t");
 
-            String mostCommonTargetPeptide = target.getMostCommonPeptide();
-            appendable.append(mostCommonTargetPeptide);
-             appendable.append("\t");
+                if (mostCommonPeptide.equals(mostCommonTargetPeptide))
+                    appendable.append("SAME");
 
-            if(mostCommonPeptide.equals(mostCommonTargetPeptide))
-                appendable.append("SAME");
+                appendable.append("\t");
 
-             appendable.append("\t");
+                String simdistStr = String.format("%f8.3", similarityDistance);
+                appendable.append(simdistStr);
+                appendable.append("\t");
 
-            String simdistStr = String.format("%f8.3", similarityDistance);
-            appendable.append(simdistStr);
-            appendable.append("\t");
+
+            }
 
 
             appendable.append("\n");
@@ -186,8 +189,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             appendable.append("source peptide");
             appendable.append("\t");
             appendable.append("target peptide");
-             appendable.append("\t");
-             appendable.append("similarity distance");
+            appendable.append("\t");
+            appendable.append("similarity distance");
             appendable.append("\t");
 
             appendable.append("\n");
@@ -205,7 +208,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         MostSimilarClusters mostSimilarClusters = getClusters();
         List<ClusterDistanceItem> bestMatches = mostSimilarClusters.getBestMatches();
 
-        if(bestMatches.size() == 0)
+        if (bestMatches.size() == 0)
             return "===== BAD BAD ========";
         ClusterDistanceItem bestMatch = bestMatches.get(0);
         bestMatch.appendReport(sb);
@@ -267,8 +270,13 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         ClusterSimilarityEnum r2 = o2.getRating();
         if (r1 != r2)
             return ClusterSimilarityEnum.compare(r1, r2);
-        ClusterDistanceItem m1 = getClusters().getBestMatch();
-        ClusterDistanceItem m2 = o2.getClusters().getBestMatch();
+        MostSimilarClusters clusters1 = getClusters();
+        ClusterDistanceItem m1 = clusters1.getBestMatch();
+        MostSimilarClusters clusters2 = o2.getClusters();
+        ClusterDistanceItem m2 = clusters2.getBestMatch();
+
+        if (m1 == null || m2 == null)
+            return clusters1.toString().compareTo(clusters2.toString());
 
         double d1 = m1.getDistance();
         double d2 = m2.getDistance();

@@ -67,4 +67,10 @@ public interface LimitedList<T> {
      */
     public boolean remove(@Nonnull T removed);
 
+    /**
+     * like collection
+     * @return
+     */
+    public boolean isEmpty();
+
 }

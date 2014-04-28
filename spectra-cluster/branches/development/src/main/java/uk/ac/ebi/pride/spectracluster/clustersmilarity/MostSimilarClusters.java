@@ -39,6 +39,8 @@ public class MostSimilarClusters {
     public ClusterDistanceItem getBestMatch() {
        // List<ClusterDistanceItem> clusters = mostSimilarClusters.toList();
      //   Collections.sort(clusters);
+        if(mostSimilarClusters.isEmpty())
+            return null;
          return mostSimilarClusters.first();
     }
 
