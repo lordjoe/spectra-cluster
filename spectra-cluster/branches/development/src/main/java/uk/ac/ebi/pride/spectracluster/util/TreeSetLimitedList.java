@@ -65,6 +65,10 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
         return realSet.first();
     }
 
+    public boolean isEmpty()
+    {
+        return realSet.isEmpty();
+    }
     /**
      * return the last item - not null if the list is not empty
      *
