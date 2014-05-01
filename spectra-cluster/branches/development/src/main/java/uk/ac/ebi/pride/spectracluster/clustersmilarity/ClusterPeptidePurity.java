@@ -18,6 +18,30 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         return getPurities(clusters1 );
     }
 
+    public static Map<ISpectrum,HashSet<ISpectralCluster>> getSpectraToClusterMap(final List<ISpectralCluster> pClusters1 ) {
+        Map<ISpectrum,HashSet<ISpectralCluster>>  ret = new HashMap<ISpectrum,HashSet<ISpectralCluster>> () ;
+        for (ISpectralCluster spc : pClusters1) {
+            for (ISpectrum spec  :spc.getClusteredSpectra()) {
+                   HashSet<ISpectralCluster> set = ret.get(spec);
+                if(set == null) {
+                     set = new  HashSet<ISpectralCluster>();
+                    ret.put(spec,set) ;
+                 }
+                set.add(spc);
+            }
+        }
+        return ret;
+    }
+
+    public static Map<ISpectralCluster,ClusterPeptidePurity> getPuritiesMap(final List<ISpectralCluster> pClusters1 ) {
+        Map<ISpectralCluster,ClusterPeptidePurity>  ret = new HashMap<ISpectralCluster, ClusterPeptidePurity>() ;
+        for (ISpectralCluster spc : pClusters1) {
+            ClusterPeptidePurity purity = new ClusterPeptidePurity(spc );
+            ret.put(spc, purity);
+        }
+          return ret;
+    }
+
     public static List<ClusterPeptidePurity> getPurities(final List<ISpectralCluster> pClusters1 ) {
         List<ClusterPeptidePurity> ret = new ArrayList<ClusterPeptidePurity>() ;
         for (ISpectralCluster spc : pClusters1) {

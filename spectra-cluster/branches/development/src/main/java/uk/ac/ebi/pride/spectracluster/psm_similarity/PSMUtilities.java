@@ -156,15 +156,15 @@ public class PSMUtilities {
             }
         }
 
-        int[] duplicatedOfSize = stc.getDuplicatedOfSize();
-        for (int i = 1; i < duplicatedOfSize.length; i++) {
-            int dups = duplicatedOfSize[i];
- //           System.out.println("duplicates " + i + " " + dups);
+        if(false)  {
+            int[] duplicatedOfSize = stc.getDuplicatedOfSize();
+            for (int i = 1; i < duplicatedOfSize.length; i++) {
+                int dups = duplicatedOfSize[i];
+     //           System.out.println("duplicates " + i + " " + dups);
+            }
+            StringBuilder sb = new StringBuilder();
+            stc.appendDuplicatedSpectra(sb);
         }
-        StringBuilder sb = new StringBuilder();
-        stc.appendDuplicatedSpectra(sb);
-
-
 
         return simpleClusterSet;
     }

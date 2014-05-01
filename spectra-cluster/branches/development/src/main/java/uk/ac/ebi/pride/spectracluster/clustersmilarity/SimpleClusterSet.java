@@ -192,11 +192,11 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
     protected void buildAndSetIdForClusterWithoutId(ISpectralCluster cluster) {
         List<String> peptides = cluster.getPeptides();
-        String id;
-        if (peptides.isEmpty())
-            id = cluster.toString();
-        else
-            id = usage.getPeptideId(peptides.get(0));
+        String id = cluster.getSpectralId();
+//        if (peptides.isEmpty())
+//            id = cluster.toString();
+//        else
+//            id = usage.getPeptideId(peptides.get(0));
 
         if (cluster instanceof LazyLoadedSpectralCluster) {
             ((LazyLoadedSpectralCluster) cluster).setId(id);
@@ -243,7 +243,9 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     @Override
     public String toString()
     {
-        return getName();
+        if(getName() != null)
+            return getName();
+        return super.toString();
     }
 
     @Override

@@ -46,15 +46,30 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         if (m1.isSubset())
             return Subset;
 
+        if (m1.isCloseSubset()) {
+            m1.isCloseSubset(); // rerun to look at code
+            return CloseSubset;
+        }
+
+        int testSize =  m1.getSmallerClusterSize();
+        double frac = m1.getCommonFraction();
+
+
         double distance = m1.getDistance();
         if (distance > MEDIUM_DISTANCE) {
             problems.add(ClusterSimilarityProblem.HighDotProduct);
         }
 
-        ClusterDistanceItem m2 = clusters.getNextBestMatches();
-        double d2 = m2.getDistance();
-        if (d2 < MEDIUM_DISTANCE) {
-            problems.add(ClusterSimilarityProblem.CloseSecondCluster);
+        if(frac > 0.7 && testSize > 10)
+            return Good;
+
+        if(false)    {  // ignore this it is OK
+            ClusterDistanceItem m2 = clusters.getNextBestMatches();
+              double d2 = m2.getDistance();
+              if (d2 < MEDIUM_DISTANCE) {
+                  problems.add(ClusterSimilarityProblem.CloseSecondCluster);
+              }
+
         }
 
         ISpectralCluster source = m1.getSource();
@@ -89,6 +104,10 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
         if (problems.isEmpty())
             return Good;
+        for (ClusterSimilarityProblem problem : problems) {
+            String prob = problem.toString();
+            prob  = null;
+        }
         return Medium;
     }
 

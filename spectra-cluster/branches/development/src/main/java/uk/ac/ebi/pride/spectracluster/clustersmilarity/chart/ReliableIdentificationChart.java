@@ -5,9 +5,7 @@ import com.lordjoe.utilities.*;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
 import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.*;
 import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.category.*;
 import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
@@ -23,10 +21,10 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class PSMClusterDecoyChart {
+public class ReliableIdentificationChart {
     private final PSMComparisonMain mostSimilarClusterSet;
 
-    public PSMClusterDecoyChart(PSMComparisonMain cm) throws HeadlessException {
+    public ReliableIdentificationChart(PSMComparisonMain cm) throws HeadlessException {
         this.mostSimilarClusterSet = cm;
     }
 
@@ -35,14 +33,16 @@ public class PSMClusterDecoyChart {
     }
 
     public static final int MAX_CLUSTER_SIZE = 32;
-    public static final int MIN_CLUSTER_SIZE = 8;
+    public static final int MIN_CLUSTER_SIZE = 10;
+    public static final double MIN_FRACTION = 0.7;
     public static final int CLUSTER_SIZE_MULTIPLIER = 2;
 
 
     public JPanel generateChart(IClusterSet cs) {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
-
+        if (true)
+            throw new UnsupportedOperationException("Fix This"); // ToDo
         PSMComparisonMain set = getSet();
 
 
@@ -62,69 +62,6 @@ public class PSMClusterDecoyChart {
         return ret;
     }
 
-
-    public static final int JOHANNES_ID_SIZE = 10;
-    public static final int MAX_ID_SIZE = 40;
-
-
-    public JPanel generateReliableIdentificationChart(double minimumfraction) {
-        JPanel ret = new JPanel();
-        ret.setLayout(new GridLayout(0, 2));
-
-        PSMComparisonMain set = getSet();
-        for (int minimumSize = JOHANNES_ID_SIZE; minimumSize < MAX_ID_SIZE * 2; minimumSize *= 2) {
-            final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-            for (IClusterSet cs : set.getClusterings()) {
-                //           System.out.println("===" + cs.getName() + "===");
-                addReliableIdentificationData(dataset, cs, minimumSize);
-            }
-
-
-            final JFreeChart chart = createBarChart("Reliable Identifications " + minimumSize, dataset, "Reliability", "Fraction of Spectra");
-
-            final ChartPanel chartPanel = new ChartPanel(chart);
-            ret.add(chartPanel);
-
-        }
-
-
-        ret.setPreferredSize(new Dimension(800, 600));
-        return ret;
-    }
-
-
-    protected void addReliableIdentificationData(final DefaultCategoryDataset dataset, IClusterSet cs, int minimumClusterSize) {
-        PSMComparisonMain cm = getSet();
-        for (IClusterSet cst : cm.getClusterings()) {
-            String name = cst.getName();
-            ReliableIdentificationStatistics statistics = new ReliableIdentificationStatistics(cst, minimumClusterSize);
-
-            double v = statistics.fractionWithPurity(1.0);
-            dataset.addValue(v, name, "Purity 1.0" );
-
-            v = statistics.fractionWithPurity(0.95);
-            dataset.addValue(v,  name,  "Purity 0.95" );
-
-            v = statistics.fractionWithPurity(0.9);
-            dataset.addValue(v,  name,  "Purity 0.9" );
-
-            v = statistics.fractionWithPurity(0.8);
-            dataset.addValue(v, name,  "Purity 0.8" );
-
-            v = statistics.fractionWithPurity(0.7);
-            dataset.addValue(v, name,  "Purity 0.7" );
-
-            double total_spectra = statistics.getTotal_spectra();
-            int totalClusterTooSmall = statistics.getTotalClusterTooSmall();
-            v = totalClusterTooSmall / total_spectra;
-            dataset.addValue(v, name,  "Cluster Too Small" );
-
-            int wrongPeptide = statistics.getTotalWrongPeptide();
-            v = wrongPeptide / total_spectra;
-            dataset.addValue(v,  name, "Not Major Peptide" );
-
-        }
-    }
 
     public JPanel generateClusterRangeChart(boolean normalizeTotal) {
         JPanel ret = new JPanel();
@@ -850,75 +787,6 @@ public class PSMClusterDecoyChart {
 
     }
 
-    /**
-     * Creates a chart.
-     *
-     * @param dataset the data for the chart.
-     * @return a chart.
-     */
-    private JFreeChart createBarChart(String title, final CategoryDataset dataset, String XAxisName, String YAxisName) {
-
-        // create the chart...
-        final JFreeChart chart = ChartFactory.createBarChart(
-                title,         // chart title
-                XAxisName,               // domain axis label
-                YAxisName,                  // range axis label
-                dataset,                  // data
-                PlotOrientation.VERTICAL, // orientation
-                true,                     // include legend
-                true,                     // tooltips?
-                false                     // URLs?
-        );
-
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
-        // set the background color for the chart...
-        chart.setBackgroundPaint(Color.white);
-
-        // get a reference to the plot for further customisation...
-        final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-
-        // set the range axis to display integers only...
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
-        rangeAxis.setRange(0,1);
-
-        // disable bar outlines...
-        final BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setDrawBarOutline(false);
-        /*
-        // set up gradient paints for series...
-        final GradientPaint gp0 = new GradientPaint(
-                0.0f, 0.0f, Color.blue,
-                0.0f, 0.0f, Color.lightGray
-        );
-        final GradientPaint gp1 = new GradientPaint(
-                0.0f, 0.0f, Color.green,
-                0.0f, 0.0f, Color.lightGray
-        );
-        final GradientPaint gp2 = new GradientPaint(
-                0.0f, 0.0f, Color.red,
-                0.0f, 0.0f, Color.lightGray
-        );
-        renderer.setSeriesPaint(0, gp0);
-        renderer.setSeriesPaint(1, gp1);
-        renderer.setSeriesPaint(2, gp2);
-        */
-
-        final CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0)
-        );
-        // OPTIONAL CUSTOMISATION COMPLETED.
-
-        return chart;
-
-    }
-
-
     private static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile, String saveName) {
         IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(newFile, simpleSpectrumRetriever);
         if (newFile.isDirectory())
@@ -928,7 +796,7 @@ public class PSMClusterDecoyChart {
 
 
     public static void makeDecoyChart(PSMComparisonMain cc, final IClusterSet pCs, String name) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateChart(pCs);
 
 
@@ -938,7 +806,7 @@ public class PSMClusterDecoyChart {
 
 
     public static void makeFDRChart(String name, final PSMComparisonMain cc) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateFDRChart();
 
 
@@ -947,33 +815,33 @@ public class PSMClusterDecoyChart {
 
 
     public static void makeReliableIdentificationChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
-        JPanel charts = clusterSimilarityChart.generateReliableIdentificationChart(ReliableIdentificationChart.MIN_FRACTION);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
+        JPanel charts = clusterSimilarityChart.generateClusterRangeChart(normalizeTotal);
         packChartIntoFrame(name, charts);
     }
 
     public static void makeClusterRangeChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateClusterRangeChart(normalizeTotal);
         packChartIntoFrame(name, charts);
     }
 
     public static void makeFractionalChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateFractionalChart(normalizeTotal);
         packChartIntoFrame(name, charts);
     }
 
 
     public static void makeDuplicatesChart(String name, final PSMComparisonMain cc, boolean normalizeTotal) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateDuplicatesChart(normalizeTotal);
         packChartIntoFrame(name, charts);
     }
 
 
     public static void makeCummulativeTotalChart(String name, final PSMComparisonMain cc) {
-        PSMClusterDecoyChart clusterSimilarityChart = new PSMClusterDecoyChart(cc);
+        ReliableIdentificationChart clusterSimilarityChart = new ReliableIdentificationChart(cc);
         JPanel charts = clusterSimilarityChart.generateCummulativeTotalChart();
         packChartIntoFrame(name, charts);
     }
@@ -1044,7 +912,7 @@ public class PSMClusterDecoyChart {
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
 
-        PSMClusterDecoyChart clusterSimilarityChart = null; // new ClusterDecoyChart(mostSimilarClusterSet);
+        ReliableIdentificationChart clusterSimilarityChart = null; // new ClusterDecoyChart(mostSimilarClusterSet);
 
         JPanel charts = clusterSimilarityChart.generateChart(null);    // todo fix
 
