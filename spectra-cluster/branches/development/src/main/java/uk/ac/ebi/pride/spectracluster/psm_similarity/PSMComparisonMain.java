@@ -1,11 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
 import com.lordjoe.utilities.*;
-import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
-import uk.ac.ebi.pride.spectracluster.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -185,6 +183,10 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
 
     public void showFDRCharts(String name) {
+
+        PSMClusterDecoyChart.makeReliableIdentificationChart(name + " Reliable Identifications", this, false);
+        if(true)
+            return;
 
         PSMClusterDecoyChart.makeClusterRangeChart(name + " Cluster Ranges", this, false);
 

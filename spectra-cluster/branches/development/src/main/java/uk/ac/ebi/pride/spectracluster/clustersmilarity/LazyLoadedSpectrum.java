@@ -202,9 +202,11 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public void appendSPText(final Appendable out) {
         throw new UnsupportedOperationException("Fix This");
+     }
 
-
-
+    public String toString()
+    {
+        return getId();
     }
 
     /**

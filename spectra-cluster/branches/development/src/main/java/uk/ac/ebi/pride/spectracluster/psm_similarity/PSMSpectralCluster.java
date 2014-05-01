@@ -172,7 +172,12 @@ public class PSMSpectralCluster implements ISpectralCluster {
     public String getMostCommonPeptide() {
         List<String> peptideStrings = getPeptides();
         if (!peptideStrings.isEmpty()) {
-            return peptideStrings.get(0);
+
+            String s = peptideStrings.get(0);
+            int index = s.indexOf(":");
+            if(index > -1)       // drop things like AERERTRYTE:9
+                return s.substring(0,index);
+            return s;
         }
         return null;
     }
@@ -184,9 +189,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
      * @return list ordered bu purity
      */
     @Override
-    public
-    @Nonnull
-    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
+    public @Nonnull  List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
         if (byPurity.size() == 0)
             buildPeptidePurities();
         return byPurity;
@@ -194,9 +197,30 @@ public class PSMSpectralCluster implements ISpectralCluster {
     }
 
 
+
+
     public void addPeptides(String peptides) {
         String[] parts = peptides.split(",");
+        if(parts[0].contains((":")))
+            parts = dropPeptideCounts(parts);
         addPeptide(parts);
+    }
+
+    public String[] dropPeptideCounts(String[] countedPeptides)
+    {
+        String[] ret = new String[countedPeptides.length];
+        for (int i = 0; i < countedPeptides.length; i++) {
+            ret[i] = dropPeptideCount(countedPeptides[i]);
+
+        }
+        return ret;
+    }
+
+    protected  String dropPeptideCount(final String p) {
+        int index = p.indexOf(":") ;
+        if(index < 0)
+            return p;
+        return p.substring(0,index);
     }
 
     public void addPeptide(String... peptides) {

@@ -134,7 +134,7 @@ public class ClusterSimilarityUtilities {
 
     public static IClusterSet buildFromClusteringFile(File file, ISpectrumRetriever spectrumRetriever) {
         SimpleClusterSet simpleClusterSet = new SimpleClusterSet();
-
+        simpleClusterSet.setName(file.getName());
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null)

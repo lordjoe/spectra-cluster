@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 
-import java.io.IOException;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDistanceItem
@@ -22,28 +22,55 @@ public class ClusterDistanceItem implements IClusterMatch {
         this.distance = distance;
     }
 
-    public boolean isIdentical()
-    {
+    public boolean isIdentical() {
         Set<String> commonSpectralIds = ClusterSimilarityUtilities.commonSpectralIds(source, target);
-        if(commonSpectralIds.size() != source.getClusteredSpectraCount())
+        if (commonSpectralIds.size() != source.getClusteredSpectraCount())
             return false;
-        if(commonSpectralIds.size() != target.getClusteredSpectraCount())
-             return false;
+        if (commonSpectralIds.size() != target.getClusteredSpectraCount())
+            return false;
         return true;
-     }
+    }
 
 
-    public boolean isSubset()
-    {
+    public boolean isSubset() {
         Set<String> allSpectrumIds = ClusterSimilarityUtilities.allSpectralIds(source, target);
-        if(allSpectrumIds.size() == source.getClusteredSpectraCount())
+        if (allSpectrumIds.size() == source.getClusteredSpectraCount())
             return true;
-        if(allSpectrumIds.size() == target.getClusteredSpectraCount())
-             return true;
+        if (allSpectrumIds.size() == target.getClusteredSpectraCount())
+            return true;
         return false;
-     }
+    }
 
-     /**
+
+    public static final int MINIMUM_CLOSE_SUBSET_SIZE = 10;
+    public static final double MINIMUM_CLOSE_SUBSET_FRACTION = 0.9;
+
+    public boolean isCloseSubset() {
+        double testSize = getSmallerClusterSize();
+        if (testSize < MINIMUM_CLOSE_SUBSET_SIZE)
+            return false;
+        double frac = getCommonFraction();
+        if (frac > MINIMUM_CLOSE_SUBSET_FRACTION)
+            return true;
+        return false;
+    }
+
+
+    public double getCommonFraction() {
+        double testSize = Math.min(source.getClusteredSpectraCount(), target.getClusteredSpectraCount());
+        if (testSize == 0)
+            return 0;
+        Set<String> commonSpectralIds = ClusterSimilarityUtilities.commonSpectralIds(source, target);
+
+        double frac = commonSpectralIds.size() / testSize;
+        return frac;
+    }
+
+    public int getSmallerClusterSize() {
+        return Math.min(source.getClusteredSpectraCount(), target.getClusteredSpectraCount());
+    }
+
+    /**
      * !null source cluster
      *
      * @return
@@ -120,7 +147,8 @@ public class ClusterDistanceItem implements IClusterMatch {
             Set<String> allPeptides = ClusterSimilarityUtilities.allPeptides(source, target);
             String all = ClusterSimilarityUtilities.idsToString(allPeptides);
             sb.append(" All peptide " + all);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             new RuntimeException(e);
         }
     }

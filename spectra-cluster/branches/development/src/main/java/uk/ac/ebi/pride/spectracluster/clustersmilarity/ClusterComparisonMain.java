@@ -233,7 +233,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             INSTANCE.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile, arg + "SemiStableNew.clustering");
+            IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile);
        //      cs = cs.dropClustersLessThanSize(4);
             for (ISpectralCluster sc : cs.getClusters()) {
                 sc.getPeptidePurity(INSTANCE);

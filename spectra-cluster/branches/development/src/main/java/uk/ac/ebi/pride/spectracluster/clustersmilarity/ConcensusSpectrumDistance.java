@@ -79,7 +79,7 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
                 ret -= 2; // match
                 int shouldBe1 = (TotakPeaks - 2) - 2 * e;
 
-                // debigging code only important when they should be the same
+                // debugging code only important when they should be the same
                 if (ret != shouldBe1)
                     shouldBe1 = (TotakPeaks - 2) - 2 * e; // break here
                 int shouldBe2 = (TotakPeaks - 2) - 2 * t;

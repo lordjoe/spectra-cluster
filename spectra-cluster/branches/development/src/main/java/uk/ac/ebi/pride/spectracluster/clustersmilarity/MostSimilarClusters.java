@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.util.LimitedList;
-import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 
@@ -17,6 +16,7 @@ public class MostSimilarClusters {
     private final ISpectralCluster baseCluster;
     private final LimitedList<ClusterDistanceItem> mostSimilarClusters;
     private final IClusterDistance clusterDistance;
+    private double bestDistance;
 
 
 
@@ -24,6 +24,7 @@ public class MostSimilarClusters {
         this.baseCluster = baseCluster;
         this.clusterDistance = clusterDistance;
         this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS );
+        bestDistance = Double.MAX_VALUE;
     }
 
     public ISpectralCluster getBaseCluster() {
@@ -48,6 +49,10 @@ public class MostSimilarClusters {
         return mostSimilarClusters.toList();
     }
 
+    public double getBestDistance() {
+        return bestDistance;
+    }
+
     public List<ClusterDistanceItem> getOtherMatches() {
         List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
         clusterDistanceItems.remove(getBestMatch());
@@ -65,6 +70,11 @@ public class MostSimilarClusters {
 
     public void addCluster(ISpectralCluster cluster) {
         double distance = clusterDistance.distance(baseCluster, cluster);
+        if(distance < bestDistance) {
+            bestDistance = distance;
+            if(bestDistance < 0.2)
+                distance = clusterDistance.distance(baseCluster, cluster); // break here
+        }
         mostSimilarClusters.add(new ClusterDistanceItem(baseCluster, cluster, distance));
     }
 
