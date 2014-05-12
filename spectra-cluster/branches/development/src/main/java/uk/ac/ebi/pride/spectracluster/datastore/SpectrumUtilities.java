@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.proteios.io.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.Base64Util;
 
 import java.util.*;
 
