@@ -42,7 +42,7 @@
 *
 **************************************************************************/
 
-package org.proteios.core;
+package uk.ac.ebi.pride.spectracluster.util;
 
 public class Base64Coder {
 

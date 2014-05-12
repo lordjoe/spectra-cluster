@@ -23,9 +23,8 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
  */
-package org.proteios.io;
+package uk.ac.ebi.pride.spectracluster.util;
 
-import org.proteios.core.Base64Coder;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class Base64Util
 	 * and returns an ArrayList<double>
 	 * containing the extracted data.
 	 * 
-	 * Uses class org.proteios.core.Base64Coder to decode data.
+	 * Uses class uk.ac.ebi.pride.spectracluster.util.Base64Coder to decode data.
 	 *
 	 * @param doublePrecision boolean flag, true if precision == "64".
 	 * @param bigEndian boolean flag indicating endian type.
@@ -78,7 +77,7 @@ public class Base64Util
 	 * and returns an ArrayList<double>
 	 * containing the extracted data.
 	 * 
-	 * Uses class org.proteios.core.Base64Coder to decode data.
+	 * Uses class uk.ac.ebi.pride.spectracluster.util.Base64Coder to decode data.
 	 *
 	 * @param doublePrecision boolean flag, true if precision == "64".
 	 * @param bigEndian boolean flag indicating endian type.
@@ -177,7 +176,7 @@ public class Base64Util
 	 * and returns a <String>
 	 * containing the encoded data.
 	 * 
-	 * Uses class org.proteios.core.Base64Coder to encode data.
+	 * Uses class uk.ac.ebi.pride.spectracluster.util.Base64Coder to encode data.
 	 *
 	 * @param doublePrecision boolean flag, true if precision == "64".
 	 * @param bigEndian boolean flag indicating endian type.
