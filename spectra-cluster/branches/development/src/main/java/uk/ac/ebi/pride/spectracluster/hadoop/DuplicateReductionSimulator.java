@@ -150,62 +150,7 @@ public class DuplicateReductionSimulator {
             return handler;
         }
     }
-//
-//    /**
-//     * word count mapper - takes lines  - break into words
-//     * emit real words as upper case count 1
-//     */
-//    public static class SpectrumInClusterByClusterMapper implements ITextMapper {
-//        @Override
-//        public TextKeyValue[] map(String key, String value, Properties config) {
-//            String label = key.toString();
-//             String text = value.toString();
-//             if (label == null || text == null)
-//                 return TextKeyValue.EMPTY_ARRAY;
-//             if (label.length() == 0 || text.length() == 0)
-//                 return TextKeyValue.EMPTY_ARRAY;
-//
-//
-//             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-//             ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
-//
-//             switch (clusters.length) {
-//                 case 0:
-//                     return TextKeyValue.EMPTY_ARRAY;
-//                 case 1:
-//                     return handleCluster(clusters[0]);
-//                 default:
-//                     throw new IllegalStateException("We got " + clusters.length +
-//                             " clusters - expected only 1"); //
-//             }
-//        }
-//        /**
-//            * write each spectrum as a SpectrumToCluster with the spectrum id as the key
-//            * This guarantees that all clusters containing a spectrum go to one place
-//            *
-//            * @param cluster
-//            * @param context
-//            */
-//           protected TextKeyValue[] handleCluster(ISpectralCluster cluster) {
-//               String id = cluster.getSpectralId();
-//               List<TextKeyValue> holder = new ArrayList<TextKeyValue>();
-//               holder.add
-//               for (ISpectrum sc : clusteredSpectra) {
-//                   SpectrumInCluster spectrumInCluster = new SpectrumInCluster((IPeptideSpectrumMatch) sc, cluster);
-//                   String id = sc.getId();
-//                   StringBuilder sb = new StringBuilder();
-//                   spectrumInCluster.append(sb);
-//                   //           writeKeyValue(id, sb.toString(), context);
-//                   holder.add(new TextKeyValue(id, sb.toString()));
-//                   numberMappedByCluster++;
-//
-//               }
-//               TextKeyValue[] ret = new TextKeyValue[holder.size()];
-//               holder.toArray(ret);
-//               return ret;
-//
-//           }
-//    }
+
 
     /**
      * standard WordCount Reducer for out jobs
