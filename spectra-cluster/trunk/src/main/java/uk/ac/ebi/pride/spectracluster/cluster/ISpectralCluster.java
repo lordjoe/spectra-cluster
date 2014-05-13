@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.CompareTo;
 import com.lordjoe.algorithms.Equivalent;
 import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
@@ -8,7 +7,6 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -23,65 +21,7 @@ import java.util.Set;
 public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
 
 
-    /**
-     * sort by size highest first
-     */
-    public static final Comparator<ISpectralCluster> BY_SIZE = new Comparator<ISpectralCluster>() {
-        @Override
-        public int compare(final ISpectralCluster cluster1, final ISpectralCluster cluster2) {
-            int diff = cluster1.getClusteredSpectraCount() - cluster2.getClusteredSpectraCount();
-            if (diff != 0)
-                return diff > 0 ? -1 : 1;
-            return cluster1.compareTo(cluster2);
-        }
-    };
-
-    /**
-     * compare by MZ then charge
-     */
-    public static final Comparator<ISpectralCluster> SIMPLE_CLUSTER_COMPARATOR = new Comparator<ISpectralCluster>() {
-        @Override
-        public int compare(ISpectralCluster o1, ISpectralCluster o2) {
-            int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());
-            if (ret != 0) {
-                return ret;
-            }
-            if (o1.getPrecursorCharge() != o2.getPrecursorCharge()) {
-                return o1.getPrecursorCharge() < o2.getPrecursorCharge() ? -1 : 1;
-            }
-            if (o1.getClusteredSpectraCount() != o2.getClusteredSpectraCount()) {
-                return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
-            }
-
-            int hash1 = o1.hashCode();
-            int hash2 = o2.hashCode();
-            if (hash1 != hash2)
-                return hash1 < hash2 ? -1 : 1;
-
-            return 0;
-        }
-
-    };
-
-
-    /**
-     * compare list of spectra in the cluster
-     */
-    public static final Comparator<ISpectralCluster> BY_CLUSTER_CONTENTS = new Comparator<ISpectralCluster>() {
-        @Override
-        public int compare(ISpectralCluster o1, ISpectralCluster o2) {
-            String s1 = SpectrumInCluster.listClusterIds(o1);
-            String s2 = SpectrumInCluster.listClusterIds(o2);
-            if (!s1.equals(s2))
-                return s1.compareTo(s2);  // differrent spectra
-            // same spectra
-            return SIMPLE_CLUSTER_COMPARATOR.compare(o1, o2);
-
-        }
-
-    };
-
-
+    @Deprecated
     public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
         @Override
         public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
@@ -89,6 +29,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
         }
     };
 
+    @Deprecated
     public static final TypedPredicate<ISpectralCluster> SEMI_STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
         @Override
         public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
