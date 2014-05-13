@@ -24,8 +24,8 @@ public class RunAsUserUseWithReflection implements RunAsUser {
     @Override
     public  void runAsUser(  final String user, final Object[] args) {
         try {
-            UserGroupInformation ugi = HDFWithNameAccessor.getCurrentUserGroup();
             if(true)    throw new UnsupportedOperationException("Uncomment when using version 1.0.*");
+ //           UserGroupInformation ugi = HDFWithNameAccessor.getCurrentUserGroup();
 //            UserGroupInformation current = UserGroupInformation.getCurrentUser();
 //
 //            final String[] realArgs = (String[])args[0];
