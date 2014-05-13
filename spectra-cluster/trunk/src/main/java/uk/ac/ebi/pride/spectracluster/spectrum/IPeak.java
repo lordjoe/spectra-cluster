@@ -22,23 +22,15 @@ public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
      */
     public float getMz();
 
-//    /**
-//     * Set peak m/z
-//     */
-//    public void setMz(double mz);
-
     /**
      * Peak intensity
      */
     public float getIntensity();
 
     /**
-     * Set peak intensity
-     */
-    //   public void setIntensity(double intensity);
-
-    /**
-     * number associated spectra
+     * If the peak is part of a consensus spectrum this number represents the number of
+     * spectra making up the consensus spectrum that contain the respective peak. In normal spectra
+     * this number is always 1.
      */
     public int getCount();
 
