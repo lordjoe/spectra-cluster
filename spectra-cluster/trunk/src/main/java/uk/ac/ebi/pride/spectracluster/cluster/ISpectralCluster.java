@@ -5,6 +5,7 @@ import com.lordjoe.algorithms.Equivalent;
 import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;

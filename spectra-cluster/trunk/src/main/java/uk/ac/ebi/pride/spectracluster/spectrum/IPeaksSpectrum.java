@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import com.lordjoe.algorithms.Equivalent;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeaksHolder;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
