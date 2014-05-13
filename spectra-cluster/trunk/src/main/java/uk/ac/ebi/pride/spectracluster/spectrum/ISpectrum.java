@@ -47,6 +47,7 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      *
      * @return !null spectrum - might be this
      */
+    @Deprecated
     public INormalizedSpectrum asNormalizedTo(double totalIntensity);
 
     /**
