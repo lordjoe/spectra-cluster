@@ -53,4 +53,12 @@ public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpect
      * @return count
      */
     public int getPeaksCount();
+
+    /**
+     * get the highest intensity peaks sorted by MZ - this value may be cached
+     *
+     * @param numberRequested number peaks requested
+     * @return Peaks spectrum
+     */
+    public IPeaksSpectrum getHighestNPeaks(int numberRequested);
 }
