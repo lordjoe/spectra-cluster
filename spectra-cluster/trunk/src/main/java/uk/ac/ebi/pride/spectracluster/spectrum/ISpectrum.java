@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.math.BigInteger;
-import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
@@ -22,15 +21,6 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      * after this many peaks we can drop the rest
      */
 //    public static final int MAX_PEAKS_TO_KEEP = 100;
-    /**
-     * sort spectra by ID
-     */
-    public static final Comparator<ISpectrum> ID_COMAPRATOR = new Comparator<ISpectrum>() {
-        @Override
-        public int compare(ISpectrum o1, ISpectrum o2) {
-            return o1.getId().compareTo(o2.getId());
-        }
-    };
 
     /**
      * make a cluster contaiming a single spectrum - this
