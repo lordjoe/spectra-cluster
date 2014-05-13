@@ -1,7 +1,10 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
 import com.lordjoe.utilities.Util;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -14,7 +17,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IncrementalClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine
  * a version of a clustering enging in which spectra are added incrementatlly and
  * clusters are shed when they are too far to use
  * <p/>

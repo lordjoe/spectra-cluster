@@ -1,6 +1,8 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -8,7 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.WrappedIncrementalClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.WrappedIncrementalClusteringEngine
  * Wraps an  IIncrementalClusteringEngine to do one pass clustering
  * User: Steve
  * Date: 8/13/13

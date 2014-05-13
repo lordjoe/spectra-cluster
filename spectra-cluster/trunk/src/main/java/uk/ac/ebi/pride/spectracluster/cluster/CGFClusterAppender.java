@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.io.IClusterAppender;
+
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
  * User: Steve
  * Date: 9/25/13
  */
-
+//todo: delete
+@Deprecated
 public class CGFClusterAppender implements IClusterAppender {
 
     public static final CGFClusterAppender INSTANCE = new CGFClusterAppender();

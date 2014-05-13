@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.algorithms.LinearWideBinner;
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -13,6 +14,8 @@ import java.util.*;
  * User: Steve
  * Date: 6/28/13
  */
+//todo: delete
+@Deprecated
 public class BinningClusteringEngine implements IClusteringEngine {
 
     public static final int DEFAULT_MAX_BIN = 1600;

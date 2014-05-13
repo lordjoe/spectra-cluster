@@ -1,6 +1,8 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -9,13 +11,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.NullClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.NullClusteringEngine
  * this version of the clustering engine never does anything - simply
  * returns the clusters passed in
  *
  * @author Steve Lewis
  * @date 20/05/13
  */
+//todo: delete
+@Deprecated
 @SuppressWarnings("UnusedDeclaration")
 public class NullClusteringEngine implements IClusteringEngine {
 

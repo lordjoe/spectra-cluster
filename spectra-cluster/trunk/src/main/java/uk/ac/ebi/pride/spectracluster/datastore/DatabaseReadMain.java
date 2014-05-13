@@ -1,8 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.datastore;
 
 
-import uk.ac.ebi.pride.spectracluster.datastore.ISpectrumDataStore;
-import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
@@ -16,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.DatabaseReadMain
+ * uk.ac.ebi.pride.spectracluster.datastore.DatabaseReadMain
  * main to use to test reading the database
  * User: Steve
  * Date: 7/5/13

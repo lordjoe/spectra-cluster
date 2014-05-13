@@ -1,17 +1,21 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
+
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
+ * uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender
+ * append to a dotclusterFile
  * User: Steve
  * Date: 9/25/13
  */
+public class DotClusterClusterAppender implements IClusterAppender {
 
-public class SPTextClusterAppender implements IClusterAppender {
+    public static final DotClusterClusterAppender INSTANCE = new DotClusterClusterAppender();
 
-    public static final SPTextClusterAppender INSTANCE = new SPTextClusterAppender();
-
-    private SPTextClusterAppender() {
+    private DotClusterClusterAppender() {
     }
+
 
     /**
      * @param out       !null open appendale
@@ -21,9 +25,10 @@ public class SPTextClusterAppender implements IClusterAppender {
      */
     @Override
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.getConsensusSpectrum().appendSPText(out);
+        data.appendClustering(out);
         return true;
     }
+
 
     /**
      * add whatever happens at the start
@@ -34,8 +39,10 @@ public class SPTextClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... OtherData) {
-        return false;
+    public boolean appendStart(final Appendable out, final Object... otherdata) {
+        String name = (String) otherdata[0];
+        ClusterUtilities.appendDotClusterHeader(out, name);
+        return true;
     }
 
     /**
@@ -47,7 +54,7 @@ public class SPTextClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... OtherData) {
+    public boolean appendEnd(final Appendable out, final Object... otherdata) {
         return false;
     }
 }

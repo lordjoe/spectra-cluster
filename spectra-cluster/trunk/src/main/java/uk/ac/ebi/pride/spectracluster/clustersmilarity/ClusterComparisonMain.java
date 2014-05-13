@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.TypedVisitor;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.ClusterDecoyChart;
@@ -19,6 +18,7 @@ import java.util.*;
  * User: Steve
  * Date: 1/17/14
  */
+@Deprecated
 public class ClusterComparisonMain implements IDecoyDiscriminator {
     public static final ClusterComparisonMain INSTANCE = new ClusterComparisonMain();
 

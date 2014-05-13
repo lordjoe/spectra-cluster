@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 
+import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -17,6 +18,8 @@ import java.util.List;
  * User: Steve
  * Date: 7/5/13
  */
+//todo: move to test
+@Deprecated
 public class ClusteringEngineMain {
 
     private static String name = "PeakMatchClustering";

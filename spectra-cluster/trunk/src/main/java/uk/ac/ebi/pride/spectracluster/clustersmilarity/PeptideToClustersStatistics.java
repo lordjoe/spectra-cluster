@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
  * @author Rui Wang
  * @version $Id$
  */
+@
 public class PeptideToClustersStatistics implements IClusterStatistics<PeptideToClusters> {
     private final PeptideToClusters peptideToClusters = new PeptideToClusters();
 

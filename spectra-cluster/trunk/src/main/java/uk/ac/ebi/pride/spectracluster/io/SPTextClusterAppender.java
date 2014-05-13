@@ -1,20 +1,19 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.DotClusterClusterAppender
- * append to a dotclusterFile
+ * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
  * User: Steve
  * Date: 9/25/13
  */
-public class DotClusterClusterAppender implements IClusterAppender {
 
-    public static final DotClusterClusterAppender INSTANCE = new DotClusterClusterAppender();
+public class SPTextClusterAppender implements IClusterAppender {
 
-    private DotClusterClusterAppender() {
+    public static final SPTextClusterAppender INSTANCE = new SPTextClusterAppender();
+
+    private SPTextClusterAppender() {
     }
-
 
     /**
      * @param out       !null open appendale
@@ -24,10 +23,9 @@ public class DotClusterClusterAppender implements IClusterAppender {
      */
     @Override
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.appendClustering(out);
+        data.getConsensusSpectrum().appendSPText(out);
         return true;
     }
-
 
     /**
      * add whatever happens at the start
@@ -38,10 +36,8 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... otherdata) {
-        String name = (String) otherdata[0];
-        ClusterUtilities.appendDotClusterHeader(out, name);
-        return true;
+    public boolean appendStart(final Appendable out, final Object... OtherData) {
+        return false;
     }
 
     /**
@@ -53,7 +49,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... otherdata) {
+    public boolean appendEnd(final Appendable out, final Object... OtherData) {
         return false;
     }
 }

@@ -15,6 +15,7 @@ import java.util.*;
  * @author jg
  *         Debrecated - use ConsensusSpectrum
  */
+//todo: delete
 @Deprecated
 @SuppressWarnings({"Deprecated", "deprecation", "UnusedDeclaration"})
 public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpectrumBuilder {

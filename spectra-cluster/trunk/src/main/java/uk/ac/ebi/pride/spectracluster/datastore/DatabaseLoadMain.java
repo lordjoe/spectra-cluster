@@ -1,8 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.datastore;
 
 
-import uk.ac.ebi.pride.spectracluster.datastore.IMutableSpectrumDataStore;
-import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -14,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.DatabaseLoadMain
+ * uk.ac.ebi.pride.spectracluster.datastore.DatabaseLoadMain
  * main to use for loading an mgf file or a directory of mgf files into a database
  * User: Steve
  * Date: 7/5/13
