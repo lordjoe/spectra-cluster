@@ -4,8 +4,6 @@ import com.lordjoe.utilities.*;
 import org.apache.hadoop.conf.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.xml.*;
-import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -74,7 +72,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         m_TaskFile = null;
         //     Protein.resetNextId();
         initOpeners();
-        Properties predefined = XTandemHadoopUtilities.getHadoopProperties();
+        Properties predefined =  HadoopUtilities.getHadoopProperties();
         for (String key : predefined.stringPropertyNames()) {
             setPredefinedParameter(key, predefined.getProperty(key));
         }
@@ -87,7 +85,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         m_TaskFile = pTaskFile.getAbsolutePath();
         //      Protein.resetNextId();
         initOpeners();
-        Properties predefined = XTandemHadoopUtilities.getHadoopProperties();
+        Properties predefined =  HadoopUtilities.getHadoopProperties();
         for (String key : predefined.stringPropertyNames()) {
             setPredefinedParameter(key, predefined.getProperty(key));
         }
@@ -161,7 +159,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
      */
     protected void initOpeners() {
         addOpener(new FileStreamOpener());
-        addOpener(new StreamOpeners.ResourceStreamOpener(XTandemUtilities.class));
+        addOpener(new StreamOpeners.ResourceStreamOpener(StreamOpeners.class));
         for (IStreamOpener opener : getPreloadOpeners())
             addOpener(opener);
     }
@@ -183,7 +181,8 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         m_Openers.addOpener(opener);
     }
 
-    public ElapsedTimer getElapsed() {
+    @SuppressWarnings("UnusedDeclaration")
+   public ElapsedTimer getElapsed() {
         return m_Elapsed;
     }
 
@@ -228,7 +227,6 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
             System.err.println("Cannot find file " + m_DefaultParameters);
         }
 
-        XTandemUtilities.validateParameters(this);
 
     }
 
@@ -275,6 +273,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         return m_OutputResults;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void process() {
 
         throw new UnsupportedOperationException("Fix This"); // ToDo
@@ -298,7 +297,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
             String paramName;
             InputStream is;
             if (m_DefaultParameters.startsWith("res://")) {
-                is = XTandemUtilities.getDescribedStream(m_DefaultParameters);
+                is = Util.getDescribedStream(m_DefaultParameters);
                 paramName = m_DefaultParameters;
             } else {
                 File f = new File(m_DefaultParameters);
@@ -319,7 +318,7 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
                 throw new IllegalArgumentException("the default input file designated by \"list path, default parameters\" " + m_DefaultParameters + "  does not exist"); // ToDo change
 
             } else {
-                Map<String, String> map = XTandemUtilities.readNotes(is, paramName);
+                Map<String, String> map = HadoopUtilities.readNotes(is, paramName);
                 for (String key : map.keySet()) {
                     if (!parametersMap.containsKey(key)) {
                         String value = map.get(key);

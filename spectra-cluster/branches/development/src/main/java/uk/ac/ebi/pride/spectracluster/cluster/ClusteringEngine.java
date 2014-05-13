@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -300,6 +301,19 @@ public class ClusteringEngine implements IClusteringEngine {
         }
 
         return noneFittingSpectra;
+    }
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,this);
     }
 
     /**

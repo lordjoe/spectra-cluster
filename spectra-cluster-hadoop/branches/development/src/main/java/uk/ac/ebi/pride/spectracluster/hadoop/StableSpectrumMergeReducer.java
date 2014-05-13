@@ -2,9 +2,9 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -145,14 +145,6 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         setMajorPeak(majorMZ);
     }
 
-//
-//    public void setCurrentBin(int currentBin) {
-//        this.currentBin = currentBin;
-//        double mid = getBinner().fromBin(currentBin);
-//        String midStr = String.format("%10.1f", mid).trim();
-//        binTime.reset();
-//        jobTime.showElapsed("Handling bin " + currentBin + " " + midStr, System.err);
-//    }
 
     /**
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null

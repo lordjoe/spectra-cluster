@@ -29,7 +29,8 @@ public class ClusterMatchAndRetrieverTests {
 
         // make sure we can retrieve all clusters with retrieve
         for (ISpectralCluster sc : start) {
-            ISpectralCluster retrieve = retriever.retrieve(sc.getId());
+            final String id = sc.getSpectralId();
+            ISpectralCluster retrieve = retriever.retrieve(id);
             Assert.assertTrue( retrieve.equivalent(sc));
         }
 

@@ -340,9 +340,24 @@ public class PSMSpectralCluster implements ISpectralCluster {
             out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
             out.append("\n");
 
+            final List<String> peptides1 = getPeptides();
+            if(peptides1.isEmpty())  {
+                out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+             }
+            else {
+                out.append("sequence=[");
+                boolean first = true;
+                for (String s : peptides1) {
+                  if(first)
+                      first = !first;
+                    else
+                      out.append(",") ;
+                    out.append(s);
+                }
+                out.append("]");
+            }
 
-            out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
-            out.append("\n");
+             out.append("\n");
 
             out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
             out.append("\n");

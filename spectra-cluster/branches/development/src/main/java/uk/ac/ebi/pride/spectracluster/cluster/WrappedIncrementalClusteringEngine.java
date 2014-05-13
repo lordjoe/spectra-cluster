@@ -4,6 +4,7 @@ import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -102,7 +103,8 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         for (int i = 0; i < cluster.length; i++) {
             ISpectralCluster added = cluster[i];
             final Collection<ISpectralCluster> finalClusters = engine.addClusterIncremental(added);
-            internalClusters.addAll(finalClusters);
+            if(!finalClusters.isEmpty())
+                internalClusters.addAll(finalClusters);
         }
         setDirty(true);
     }
@@ -129,6 +131,20 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
       public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
           return realEngine.findNoneFittingSpectra(  cluster);
       }
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,realEngine);
+    }
+
 
     /**
      * add code to monitor progress

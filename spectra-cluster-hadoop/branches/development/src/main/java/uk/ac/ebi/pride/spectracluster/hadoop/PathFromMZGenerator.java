@@ -4,6 +4,7 @@ import com.lordjoe.hadoop.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapreduce.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 
 import javax.annotation.*;
 import java.io.*;

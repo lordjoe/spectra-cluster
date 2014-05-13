@@ -6,15 +6,14 @@ import org.systemsbiology.common.*;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
 import org.systemsbiology.xml.*;
-import org.systemsbiology.xtandem.*;
-import org.systemsbiology.xtandem.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+ import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.prefs.*;
 
 import static org.systemsbiology.hadoop.HadoopUtilities.*;
+
 
 // add lots of constants from this class
 
@@ -112,7 +111,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     @SuppressWarnings("UnusedDeclaration")
-    protected static File getOutputFile(IMainData main, String key) {
+    protected static File getOutputFile(IParameterHolder main, String key) {
         File ret = new File(main.getParameter(key));
         File parentFile = ret.getParentFile();
         if (parentFile != null) {
@@ -137,7 +136,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     private SpectraHadoopMain m_Application;
 
-    private final JXTandemStatistics m_Statistics = new JXTandemStatistics();
+   private final RunStatistics m_Statistics = new RunStatistics();
     private String m_RemoteBaseDirectory;
     private String m_LocalBaseDirectory = USER_DIR;
     private String m_JarFile;
@@ -214,7 +213,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
 
-    public JXTandemStatistics getStatistics() {
+    public RunStatistics getStatistics() {
         return m_Statistics;
     }
 
@@ -340,8 +339,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
      */
     protected void initOpeners() {
         addOpener(new FileStreamOpener());
-        addOpener(new StreamOpeners.ResourceStreamOpener(XTandemUtilities.class));
-        for (IStreamOpener opener : XTandemMain.getPreloadOpeners())
+        addOpener(new StreamOpeners.ResourceStreamOpener(StreamOpeners.class));
+        for (IStreamOpener opener : HadoopUtilities.getPreloadOpeners())
             addOpener(opener);
     }
 
@@ -384,7 +383,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         m_Application = SpectraHadoopMain.getInstance(is, cfg);
 
-        Properties properties = XTandemHadoopUtilities.getHadoopProperties();
+        Properties properties = HadoopUtilities.getHadoopProperties();
         for (String key : properties.stringPropertyNames()) {
             String val = properties.getProperty(key);
             m_Application.setParameter(key, val);
@@ -428,7 +427,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
     public void setRemoteBaseDirectory(final String pRemoteBaseDirectory) {
         m_RemoteBaseDirectory = pRemoteBaseDirectory;
-        XTandemHadoopUtilities.setDefaultPath(pRemoteBaseDirectory);
+        HadoopUtilities.setDefaultPath(pRemoteBaseDirectory);
     }
 
     public String getRemoteHost() {
@@ -555,13 +554,13 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         Map<String, Long> counters;
         counters = job.getAllCounterValues();
         for (String key : counters.keySet()) {
-            if (XTandemHadoopUtilities.isCounterHadoopInternal(key))
+            if (HadoopUtilities.isCounterHadoopInternal(key))
                 continue;
             //Counter c = counters.get(key);
             String value = Long.toString(counters.get(key));
             setParameter(key, value);
         }
-        //  XTandemHadoopUtilities.showAllCounters(counters);
+        //  HadoopUtilities.showAllCounters(counters);
 
     }
 
@@ -574,7 +573,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         ElapsedTimer elapsed = getElapsed();
 
-        JXTandemStatistics statistics = getStatistics();
+        RunStatistics statistics = getStatistics();
 
         statistics.startJob(CLUSTERING_JOB_NAME);
         // remember the input file foe a final report
@@ -807,7 +806,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             sb.append("\n");
 
         }
-        Properties addedProps = XTandemHadoopUtilities.getHadoopProperties();
+        Properties addedProps = HadoopUtilities.getHadoopProperties();
         for (String key : addedProps.stringPropertyNames()) {
             if (EXCLUDED_PROPERTY_SET.contains(key))
                 continue;
@@ -860,14 +859,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         int p = getRemoteHostPort();
         List<String> holder = new ArrayList<String>();
         holder.add("-D");
-        holder.add(XTandemHadoopUtilities.PARAMS_KEY + "=" + taskParamsPath);
+        holder.add(DefaultParameterHolder.PARAMS_KEY + "=" + taskParamsPath);
         holder.add("-D");
-        holder.add(XTandemHadoopUtilities.PATH_KEY + "=" + remoteBaseDirectory);
+        holder.add(DefaultParameterHolder.PATH_KEY + "=" + remoteBaseDirectory);
         holder.add("-D");
-        holder.add(XTandemHadoopUtilities.HOST_KEY + "=" + remoteHost);
+        holder.add(DefaultParameterHolder.HOST_KEY + "=" + remoteHost);
         holder.add("-D");
-        holder.add(XTandemHadoopUtilities.HOST_PORT_KEY + "=" + p);
-//        Properties properties = XTandemHadoopUtilities.getHadoopProperties();
+        holder.add(DefaultParameterHolder.HOST_PORT_KEY + "=" + p);
+//        Properties properties = HadoopUtilities.getHadoopProperties();
 //        for (String key : properties.stringPropertyNames()) {
 //            holder.add("-D");
 //            String val = properties.getProperty(key);
@@ -1065,7 +1064,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     }
 
     protected static void handleConfigurationFile(final String pCnfigfile) {
-        InputStream describedStream = XTandemUtilities.getDescribedStream(pCnfigfile);
+        InputStream describedStream = Util.getDescribedStream(pCnfigfile);
 
         Properties props = new Properties();
         try {
@@ -1086,7 +1085,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
         if (pProperty.startsWith("DEFINE_")) {
             String prop = pProperty.substring("DEFINE_".length());
-            XTandemHadoopUtilities.setHadoopProperty(prop, pValue);
+            HadoopUtilities.setHadoopProperty(prop, pValue);
             return;
         }
         if (PARAMS_PROPERTY.equals(pProperty)) {
@@ -1148,17 +1147,17 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         }
         if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
-            XTandemHadoopUtilities.setMaxReduceTasksX(value);  // todo fix
+            HadoopUtilities.setMaxReduceTasks(value);  // todo fix
             //noinspection ConstantIfStatement
             if (false)
                 throw new UnsupportedOperationException("Fix This"); // ToDo
-            //            XTandemHadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
+            //            HadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
             return;
         }
 
         if (MAX_SPLIT_SIZE_PROPERTY.equals(pProperty)) {
             int value = Integer.parseInt(pValue);
-            XTandemHadoopUtilities.setMaxSplitSize(value);
+            HadoopUtilities.setMaxSplitSize(value);
             return;
         }
         if (CLUSTER_SIZE_PROPERTY.equals(pProperty)) {
@@ -1242,13 +1241,13 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             //          f = main.readRemoteFile(hdfsPathEric, outFile);
 
             /**
-             * if we are writine out high scoring mgf files then cop them back
+             * if we are writing out high scoring mgf files then copy them back
              */
 
             // used for filter on expected value limit_2
 
-            double limit_2 = application.getDoubleParameter(XTandemUtilities.WRITING_MGF_PROPERTY_2, 0);
-            double limit = application.getDoubleParameter(XTandemUtilities.WRITING_MGF_PROPERTY, 0);
+            double limit_2 = application.getDoubleParameter(HadoopUtilities.WRITING_MGF_PROPERTY_2, 0);
+            double limit = application.getDoubleParameter(HadoopUtilities.WRITING_MGF_PROPERTY, 0);
             if (limit > 0 || limit_2 > 0) {
                 String fileName = hdfsPath + ".mgf";
                 String outFile2 = outFileName + ".mgf";
@@ -1294,7 +1293,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
     public static InputStream buildInputStream(String paramsFile) {
         XMLUtilities.outputLine("reading params file " + paramsFile);
         if (paramsFile.startsWith("res://"))
-            return XTandemUtilities.getDescribedStream(paramsFile);
+            return Util.getDescribedStream(paramsFile);
 
         File test = new File(paramsFile);
         if (!test.exists()) {
@@ -1305,7 +1304,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             XMLUtilities.outputLine("  params file cannot be read " + test.getAbsolutePath());
             return null;
         }
-        return XTandemUtilities.getDescribedStream(paramsFile);
+        return Util.getDescribedStream(paramsFile);
 
 
     }
@@ -1401,12 +1400,12 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             main.setParamsPath(paramsFile);
 
             // Temporary fix take oput
-//            String hdfsPath1 = XTandemHadoopUtilities.getDefaultPath().toString();
+//            String hdfsPath1 = HadoopUtilities.getDefaultPath().toString();
 //            String[] files = accessor.ls(hdfsPath1);
 //            for (int i = 0; i < files.length; i++) {
 //                String file = files[i];
 //                if (file.startsWith("yeast_orfs_all_REV.20060126.short.task_")) {
-//                    Path dx = XTandemHadoopUtilities.getRelativePath(file);
+//                    Path dx = HadoopUtilities.getRelativePath(file);
 //                    accessor.deleteFile(dx.toString());
 //                }
 //
@@ -1437,7 +1436,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
             XMLUtilities.outputLine();
             XMLUtilities.outputLine();
-            JXTandemStatistics stats = main.getStatistics();
+            RunStatistics stats = main.getStatistics();
             XMLUtilities.outputLine(stats.toString());
             total.showElapsed("Total Time", System.out);
 
@@ -1493,7 +1492,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 //            // by using reflection the class is never loaded when running
 //            //noinspection unchecked
-//            Class<? extends RunAsUser> cls = (Class<? extends RunAsUser>) Class.forName("org.systemsbiology.hadoop.RunAsUserUseWithReflection");
+//            Class<? extends RunAsUser> cls = (Class<? extends RunAsUser>) Class.forName("uk.ac.ebi.pride.spectracluster.hadoop.RunAsUserUseWithReflection");
 //            RunAsUser runner = cls.newInstance();
 //            String user = RemoteUtilities.getUser();
 //            Object[] passedArgs = {args};

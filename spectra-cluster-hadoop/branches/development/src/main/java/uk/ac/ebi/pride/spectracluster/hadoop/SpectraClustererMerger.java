@@ -10,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
-import org.systemsbiology.xtandem.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -37,7 +36,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
             // GenericOptionsParser stops after the first non-argument
-            otherArgs = XTandemHadoopUtilities.handleGenericInputs(conf, otherArgs);
+            otherArgs = HadoopUtilities.handleGenericInputs(conf, otherArgs);
 
 
 //        if (otherArgs.length != 2) {
@@ -50,11 +49,12 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
 
             // make default settings
-            XTandemHadoopUtilities.setDefaultConfigurationArguments(conf);
+            HadoopUtilities.setDefaultConfigurationArguments(conf);
 
             // sincs reducers are writing to hdfs we do NOT want speculative execution
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
 
+            @SuppressWarnings("UnusedDeclaration")
             Properties paramProps = SpectraHadoopUtilities.readParamsProperties(conf, otherArgs[0]);
             job.setJarByClass(SpectraClustererMerger.class);
 
@@ -84,7 +84,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
 
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
-                XTandemHadoopUtilities.setInputPath(job, otherArg);
+                HadoopUtilities.setInputPath(job, otherArg);
                 System.err.println("Input path mass finder " + otherArg);
             }
 
@@ -99,7 +99,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             Path outputDir = new Path(athString);
 
             FileSystem fileSystem = outputDir.getFileSystem(conf);
-            XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
+            HadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
@@ -114,7 +114,7 @@ public class SpectraClustererMerger extends ConfiguredJobRunner implements IJobR
             boolean ans = job.waitForCompletion(true);
             int ret = ans ? 0 : 1;
             if (ans)
-                XTandemHadoopUtilities.saveCounters(fileSystem, XTandemHadoopUtilities.buildCounterFileName(this, conf), job);
+                HadoopUtilities.saveCounters(fileSystem, HadoopUtilities.buildCounterFileName(this, conf), job);
             else
                 throw new IllegalStateException("Job Failed");
 

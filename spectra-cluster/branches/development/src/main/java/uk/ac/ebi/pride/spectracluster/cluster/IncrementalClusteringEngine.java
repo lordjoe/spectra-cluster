@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -151,6 +152,20 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return noneFittingSpectra;
     }
 
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+    }
+
     /**
      * add code to monitor progress
      *
@@ -256,6 +271,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return;
         }
 
+        //  handle the case of subsets and almost subsets
         if (handleFullContainment(clusterToAdd ))
             return; // no need to add we are contained
 
@@ -329,7 +345,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             if(score > bestSimilarity) {
                 bestSimilarity = score;
                 toReplace = myCluster;
-                if(score == 1)
+                if(score == 1)   // is full subset
                     break;
               }
          }

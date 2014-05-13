@@ -52,6 +52,8 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
         String decoyFileName = getProperty("Decoys");
         File decoyFile = new File(decoyFileName);
+        String path = decoyFile.getAbsolutePath();
+        boolean exists = decoyFile.exists();
         ClusterSimilarityUtilities.readPSMDecoySpectra(decoyFile, psms);
         int totalPSMs = psms.getPSMSpectrumCount();
         int totalDecoys = psms.getDecoyCount();

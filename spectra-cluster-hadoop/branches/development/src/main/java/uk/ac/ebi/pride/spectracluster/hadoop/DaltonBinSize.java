@@ -2,8 +2,9 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.xtandem.hadoop.*;
+import org.systemsbiology.hadoop.*;
 
 import java.io.*;
 import java.util.*;
@@ -60,54 +61,54 @@ public class DaltonBinSize {
     }
 
     protected static void writeMapToTSV(Configuration conf, FileSystem fs) {
-        String fileName = XTandemHadoopUtilities.buildCounterFileName(TSV_COUNTERS_FILE, conf);
-        Path p = new Path(fileName);
-        Integer[] sortedBins = gMZ_to_number.keySet().toArray(new Integer[gMZ_to_number.keySet().size()]);
-        Arrays.sort(sortedBins);
-        try {
-            FSDataOutputStream fsout = fs.create(p, true);
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(fsout));
-            out.println(XTandemHadoopUtilities.TSV_BIN_COUNT_HEADER);
-            //noinspection ForLoopReplaceableByForEach
-            for (int i = 0; i < sortedBins.length; i++) {
-                Integer sortedBin = sortedBins[i];
-                out.println(sortedBin.toString() + "\t" + gMZ_to_number.get(sortedBin));
-            }
-            out.close();
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
+//        String fileName = HadoopUtilities.buildCounterFileName(TSV_COUNTERS_FILE, conf);
+//        Path p = new Path(fileName);
+//        Integer[] sortedBins = gMZ_to_number.keySet().toArray(new Integer[gMZ_to_number.keySet().size()]);
+//        Arrays.sort(sortedBins);
+//        try {
+//            FSDataOutputStream fsout = fs.create(p, true);
+//            PrintWriter out = new PrintWriter(new OutputStreamWriter(fsout));
+//            out.println(HadoopUtilities.TSV_BIN_COUNT_HEADER);
+//            //noinspection ForLoopReplaceableByForEach
+//            for (int i = 0; i < sortedBins.length; i++) {
+//                Integer sortedBin = sortedBins[i];
+//                out.println(sortedBin.toString() + "\t" + gMZ_to_number.get(sortedBin));
+//            }
+//            out.close();
+//        } catch (IOException e) {
+//            throw new UnsupportedOperationException(e);
+//        }
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
 
     protected static boolean populateMapFromTSV(Configuration conf, FileSystem fileSystem) {
-        String fileName = XTandemHadoopUtilities.buildCounterFileName(TSV_COUNTERS_FILE, conf);
-        Path p = new Path(fileName);
-        try {
-            if (!fileSystem.exists(p))
-                return false;
-
-            Map<Integer, Integer> ret = XTandemHadoopUtilities.readBinCountersFromTSV(fileSystem, fileName);
-            for (Integer key : ret.keySet()) {
-                gTotalSpectra += ret.get(key);
-            }
-            gMZ_to_number.putAll(ret);
-            return true;
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
+//        String fileName = HadoopUtilities.buildCounterFileName(TSV_COUNTERS_FILE, conf);
+//        Path p = new Path(fileName);
+//        try {
+//            if (!fileSystem.exists(p))
+//                return false;
+//
+//            Map<Integer, Integer> ret = HadoopUtilities.readBinCountersFromTSV(fileSystem, fileName);
+//            for (Integer key : ret.keySet()) {
+//                gTotalSpectra += ret.get(key);
+//            }
+//            gMZ_to_number.putAll(ret);
+//            return true;
+//        } catch (IOException e) {
+//            throw new UnsupportedOperationException(e);
+//        }
+         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     protected static boolean populateMapFromCounters(Configuration conf, FileSystem fileSystem) {
-        String fileName = XTandemHadoopUtilities.buildCounterFileName("SpectraPeakClustererPass1.counters", conf);
+        String fileName = HadoopUtilities.buildCounterFileName("SpectraPeakClustererPass1.counters", conf);
         Path p = new Path(fileName);
         try {
             if (!fileSystem.exists(p))
                 return false;
 
-            Map<Integer, Integer> ret = XTandemHadoopUtilities.readBinCounters(fileSystem, fileName);
+            Map<Integer, Integer> ret = HadoopUtilities.readBinCounters(fileSystem, fileName);
             for (Integer key : ret.keySet()) {
                 gTotalSpectra += ret.get(key);
             }

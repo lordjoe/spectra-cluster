@@ -5,6 +5,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -144,7 +145,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
                 else
                     akey = keys[RND.nextInt(keys.length)];
 
-                UnStableChargeBinMZKey uKey = new  UnStableChargeBinMZKey(akey);
+                UnStableChargeBinMZKey uKey = new UnStableChargeBinMZKey(akey);
                 akey = uKey.toString();
 
                 writeKeyValue(akey, value, context);

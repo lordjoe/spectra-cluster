@@ -250,7 +250,7 @@ public class Defaults {
 
     public SimilarityChecker getDefaultSimilarityChecker() {
         if (defaultSimilarityChecker == null) {
-            defaultSimilarityChecker = new FrankEtAlDotProductJohannes();
+            defaultSimilarityChecker = new FrankEtAlDotProduct();
         }
         return defaultSimilarityChecker;
     }

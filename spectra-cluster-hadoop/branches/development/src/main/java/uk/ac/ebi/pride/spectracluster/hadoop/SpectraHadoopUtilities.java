@@ -1,22 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import com.lordjoe.algorithms.SizedWideBinner;
-import com.lordjoe.utilities.IProgressHandler;
-import org.apache.hadoop.conf.Configuration;
+import com.lordjoe.utilities.*;
+import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.io.SequenceFile;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
-import org.systemsbiology.xtandem.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -74,10 +68,10 @@ public class SpectraHadoopUtilities {
 
     public static Properties readParamsProperties(Configuration conf, String altName) {
         Properties paramProps = new Properties();
-        String params = conf.get(XTandemHadoopUtilities.PARAMS_KEY);
+        String params = conf.get(DefaultParameterHolder.PARAMS_KEY);
         params = params.replace("\\", "/");
         if (params == null) {
-            conf.set(XTandemHadoopUtilities.PARAMS_KEY, altName);
+            conf.set(DefaultParameterHolder.PARAMS_KEY, altName);
         } else {
             paramProps = SpectraHadoopUtilities.readParams(new Path(params), conf);
             String property = paramProps.getProperty(HadoopUtilities.JOB_SIZE_PROPERTY);
