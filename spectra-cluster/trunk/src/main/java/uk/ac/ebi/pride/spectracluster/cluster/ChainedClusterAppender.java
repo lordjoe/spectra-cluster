@@ -1,11 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.io.IClusterAppender;
+
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ChainedDotClusterAppender
  * append a cluster as all appenders suggest
  * User: Steve
  * Date: 9/25/13
  */
+//todo: delete
+@Deprecated
 @SuppressWarnings("UnusedDeclaration")
 public class ChainedClusterAppender implements IClusterAppender {
     private final IClusterAppender[] m_Clauses;

@@ -22,6 +22,9 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      */
 //    public static final int MAX_PEAKS_TO_KEEP = 100;
 
+//    public static final int BAD_QUALITY_MEASURE = -1;
+
+
     /**
      * make a cluster contaiming a single spectrum - this
      *
@@ -50,6 +53,7 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      *
      * @return !null value - lazily built
      */
+    @Deprecated
     public BigInteger asMajorPeakBits();
 
     /**
@@ -74,5 +78,10 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      * @return number > 0
      */
     public double getSelfDotProduct();
+
+    /**
+     * Get the quality measure of a spectrum
+     */
+    public double getQualityScore();
 
 }

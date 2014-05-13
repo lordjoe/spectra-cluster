@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

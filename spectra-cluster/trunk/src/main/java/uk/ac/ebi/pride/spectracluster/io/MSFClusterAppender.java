@@ -1,20 +1,31 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
+
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IClusterWriter
- * Abstract the concept of appending a cluster to an appendable.
- * This may include filter
+ * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
  * User: Steve
  * Date: 9/25/13
  */
-public interface IClusterAppender {
+
+public class MSFClusterAppender implements IClusterAppender {
+
+    public static final MSFClusterAppender INSTANCE = new MSFClusterAppender();
+
+    private MSFClusterAppender() {
+    }
+
     /**
      * @param out       !null open appendale
      * @param data      !null cluster
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendCluster(Appendable out, ISpectralCluster data, Object... OtherData);
+    @Override
+    public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
+        data.getConsensusSpectrum().appendMSF(out);
+        return true;
+    }
 
     /**
      * add whatever happens at the start
@@ -24,7 +35,10 @@ public interface IClusterAppender {
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendStart(Appendable out, Object... OtherData);
+    @Override
+    public boolean appendStart(final Appendable out, final Object... OtherData) {
+        return false;
+    }
 
     /**
      * add whatever happens at the end
@@ -34,5 +48,8 @@ public interface IClusterAppender {
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendEnd(Appendable out, Object... OtherData);
+    @Override
+    public boolean appendEnd(final Appendable out, final Object... OtherData) {
+        return false;
+    }
 }

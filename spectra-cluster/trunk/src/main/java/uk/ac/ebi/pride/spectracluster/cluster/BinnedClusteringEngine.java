@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.annotation.Nonnull;
@@ -15,6 +16,8 @@ import java.util.List;
  * User: Steve
  * Date: 6/28/13
  */
+//todo: delete
+@Deprecated
 public class BinnedClusteringEngine implements IClusteringEngine {
 
     private final IWideBinner binner;

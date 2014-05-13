@@ -1,6 +1,7 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -18,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Rui Wang
  * @version $Id$
  */
+
 public class AlternativeSpectralClusters implements ISpectralCluster, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
     protected static String concensusId(ISpectralCluster... copied) {

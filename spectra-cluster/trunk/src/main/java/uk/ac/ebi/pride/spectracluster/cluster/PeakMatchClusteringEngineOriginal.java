@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -15,6 +18,7 @@ import java.util.*;
  * User: Steve
  * Date: 6/28/13
  */
+@Deprecated
 @SuppressWarnings("UnusedDeclaration")
 public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 

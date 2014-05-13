@@ -1,15 +1,20 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import org.apache.hadoop.io.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.IWideBinner;
+import org.apache.hadoop.io.Text;
+import uk.ac.ebi.pride.spectracluster.cluster.IIncrementalClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.ChargePeakMZKey;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import javax.annotation.*;
-import java.io.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.Collection;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakReducer

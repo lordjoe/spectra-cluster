@@ -19,7 +19,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterMZSpread;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;

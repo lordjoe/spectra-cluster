@@ -1,9 +1,11 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
+
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.util.Collection;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine
  * <p/>
  * This object does the clusters
  *

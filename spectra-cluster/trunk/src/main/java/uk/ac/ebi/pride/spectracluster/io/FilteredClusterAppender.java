@@ -1,9 +1,10 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
 
 import com.lordjoe.utilities.TypedPredicate;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.FilteredClusterAppender
+ * uk.ac.ebi.pride.spectracluster.io.FilteredClusterAppender
  * build with one appender and one filter - allend if the predicate says to do so
  * User: Steve
  * Date: 9/25/13

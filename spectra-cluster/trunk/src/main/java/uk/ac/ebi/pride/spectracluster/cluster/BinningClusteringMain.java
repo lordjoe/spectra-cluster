@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.algorithms.LinearWideBinner;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -16,6 +17,8 @@ import java.util.List;
  * User: Steve
  * Date: 7/5/13
  */
+//todo: delete
+@Deprecated
 public class BinningClusteringMain {
 
     protected static void processFile(final File inputFile) {

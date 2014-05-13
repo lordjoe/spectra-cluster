@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.AlternativeSpectralClusters;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.QualityClusterComparator;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

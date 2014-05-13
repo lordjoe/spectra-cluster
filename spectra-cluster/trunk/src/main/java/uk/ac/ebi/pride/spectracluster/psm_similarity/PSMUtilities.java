@@ -8,7 +8,6 @@ import org.systemsbiology.remotecontrol.LocalMachineFileSystem;
 import org.systemsbiology.remotecontrol.RemoteUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectrumToCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;

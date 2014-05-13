@@ -1,12 +1,13 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.SpectrumToCluster
+ * uk.ac.ebi.pride.spectracluster.psm_similarity.SpectrumToCluster
  * used for reporting duplicated spectra and similar clusters
  * User: Steve
  * Date: 3/28/14

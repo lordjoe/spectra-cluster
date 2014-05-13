@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;

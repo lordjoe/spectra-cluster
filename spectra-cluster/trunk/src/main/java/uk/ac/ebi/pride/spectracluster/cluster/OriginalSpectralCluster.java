@@ -21,6 +21,8 @@ import java.util.Set;
  * Time: 2:59 PM
  * To change this template use File | Settings | File Templates.
  */
+//todo: delete
+@Deprecated
 public class OriginalSpectralCluster implements ISpectralCluster {
     private final IConsensusSpectrumBuilder consensusSpectrum = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
     private List<ISpectrum> spectra = new ArrayList<ISpectrum>();

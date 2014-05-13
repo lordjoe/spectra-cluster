@@ -2,6 +2,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

@@ -3,6 +3,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 

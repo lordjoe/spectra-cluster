@@ -1,6 +1,9 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.QualityClusterComparator;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -10,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.PeakMatchClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine
  * performs clustering by looking at major peaks then merging clusters
  * - the this version tracks spectra already clustered
  * Original code in  PeakMatchClusteringEngineOriginal

@@ -14,6 +14,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
+@Deprecated
 public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     private final String id;
     private final String peptide;

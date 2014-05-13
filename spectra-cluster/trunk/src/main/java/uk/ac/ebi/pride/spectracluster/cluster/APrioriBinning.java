@@ -13,9 +13,11 @@ import java.util.Map;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.APrioriBinning
+ * used by Hadoop to bin based on known bin sizes
  * User: Steve
  * Date: 4/22/2014
- */
+ */                // todo move to Hadoop package
+@Deprecated
 public class APrioriBinning<T> {
 
     public static final String DEFAULT_RESOURCE = "/PrideBinning.tsv";

@@ -1,4 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
+
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,11 +10,17 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public interface IStableClusteringEngine extends IIncrementalClusteringEngine {
+public interface IUnStableClusteringEngine {
 
-    public void addUnstableCluster(ISpectralCluster unstableCluster);
+    public void addStableCluster(ISpectralCluster unstableCluster);
 
-    public void processStableCluster(ISpectralCluster stableCluster);
+    /**
+     * try to move spectra to the stable cluster
+     *
+     * @param unstableCluster
+     * @return true if changed
+     */
+    public boolean processUnStableCluster(ISpectralCluster unstableCluster);
 
     public Collection<ISpectralCluster> getClusters();
 

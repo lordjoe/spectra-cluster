@@ -1,13 +1,14 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine
+ * uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine
  * <p/>
  * This object does the clusters
  *

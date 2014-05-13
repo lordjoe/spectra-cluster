@@ -1,5 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
 
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -7,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 import java.io.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.DotClusterFileListener
+ * uk.ac.ebi.pride.spectracluster.io.DotClusterFileListener
  * User: Steve
  * Date: 9/23/13
  */

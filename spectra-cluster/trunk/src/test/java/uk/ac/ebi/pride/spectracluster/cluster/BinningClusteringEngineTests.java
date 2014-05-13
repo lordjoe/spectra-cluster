@@ -5,6 +5,7 @@ import com.lordjoe.algorithms.LinearWideBinner;
 import junit.framework.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterContentSimilarity;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
