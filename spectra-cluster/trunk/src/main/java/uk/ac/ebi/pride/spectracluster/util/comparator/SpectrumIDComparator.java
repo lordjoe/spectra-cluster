@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.comparator;
+package uk.ac.ebi.pride.spectracluster.util.comparator;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
