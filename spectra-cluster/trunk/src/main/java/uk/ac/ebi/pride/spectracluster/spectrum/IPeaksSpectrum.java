@@ -10,8 +10,10 @@ import java.util.List;
  * spectra
  * User: Steve
  * Date: 6/20/13
+ *
+ * todo: Replace all the ISpectrum with IPeaksSpectrum, then rename IPeaksSpectrum to ISpectrum
  */
-public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpectrum> {
+public interface IPeaksSpectrum extends Equivalent<IPeaksSpectrum>, Comparable<IPeaksSpectrum> {
 
     /**
      * globally unique id
