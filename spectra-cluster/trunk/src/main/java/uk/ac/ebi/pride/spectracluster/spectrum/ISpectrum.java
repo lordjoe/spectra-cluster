@@ -26,10 +26,12 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
 
 
     /**
-     * make a cluster contaiming a single spectrum - this
+     * make a cluster containing a single spectrum - this
      *
      * @return
      */
+    // todo: provide either util or constructor implmementation of this
+    @Deprecated
     public ISpectralCluster asCluster();
 
     /**
@@ -62,14 +64,16 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      *
      * @return
      */
+    @Deprecated
     public IPeaksSpectrum asMajorPeaks();
 
     /**
-     * does the concensus spectrum contin this is a major peak
+     * does the concensus spectrum contain this is a major peak
      *
      * @param mz peak as int
      * @return true if so
      */
+    @Deprecated
     public boolean containsMajorPeak(int mz);
 
     /**
