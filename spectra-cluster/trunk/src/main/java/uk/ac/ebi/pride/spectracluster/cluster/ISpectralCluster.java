@@ -4,6 +4,7 @@ import com.lordjoe.algorithms.Equivalent;
 import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
@@ -69,6 +70,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return
      */
+    @Deprecated
     public
     @Nonnull
     List<String> getPeptides();
@@ -78,6 +80,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return
      */
+    @Deprecated
     public String getMostCommonPeptide();
 
     /**
@@ -85,6 +88,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return list ordered bu purity
      */
+    @Deprecated
     public
     @Nonnull
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
@@ -93,7 +97,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Get consensus spectrum
      */
-    public ISpectrum getConsensusSpectrum();
+    public IPeaksSpectrum getConsensusSpectrum();
 
     /**
      * real spectrum with the highest quality - this is a
@@ -101,21 +105,21 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return !null spectrum
      */
-    public ISpectrum getHighestQualitySpectrum();
+    public IPeaksSpectrum getHighestQualitySpectrum();
 
     /**
      * all internally spectrum
      */
     public
     @Nonnull
-    List<ISpectrum> getHighestQualitySpectra();
+    List<IPeaksSpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
     public
     @Nonnull
-    List<ISpectrum> getClusteredSpectra();
+    List<IPeaksSpectrum> getClusteredSpectra();
 
 
     /**
