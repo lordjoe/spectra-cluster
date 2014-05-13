@@ -15,12 +15,13 @@ import java.util.Comparator;
  */
 public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaksHolder {
 
+    //todo: move constants out of this interface
     // if true only  MAX_PEAKS_TO_KEEP are usedI know
-    public static final boolean USE_HIGHEST_PEAKS = false;
+//    public static final boolean USE_HIGHEST_PEAKS = false;
     /**
      * after this many peaks we can drop the rest
      */
-    public static final int MAX_PEAKS_TO_KEEP = 100;
+//    public static final int MAX_PEAKS_TO_KEEP = 100;
     /**
      * sort spectra by ID
      */
