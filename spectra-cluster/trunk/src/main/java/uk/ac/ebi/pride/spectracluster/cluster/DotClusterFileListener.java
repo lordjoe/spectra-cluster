@@ -1,7 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
 
@@ -13,10 +14,9 @@ import java.io.*;
 public class DotClusterFileListener implements ClusterCreateListener {
 
 
-
     private final PrintWriter m_OutWriter;
     private final File m_OutFile;
-    private final IClusterAppender m_Appender =   DotClusterClusterAppender.INSTANCE;
+    private final IClusterAppender m_Appender = DotClusterClusterAppender.INSTANCE;
 
     /**
      * creat with an output file
@@ -29,8 +29,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             final PrintWriter printWriter = new PrintWriter(new FileWriter(inp));
             m_OutWriter = printWriter;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -64,7 +63,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
      * @param cluster
      */
     @Override
-    public void onClusterCreate(final ISpectralCluster cluster,Object... otherData) {
+    public void onClusterCreate(final ISpectralCluster cluster, Object... otherData) {
         m_Appender.appendCluster(m_OutWriter, cluster);
     }
 
@@ -92,8 +91,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
                     creatClusteringFromCGF(subfile);
                 }
             }
-        }
-        else {
+        } else {
             String name = pF.getName();
             if (name.toLowerCase().endsWith(ClusterUtilities.CGF_EXTENSION)) {
                 try {
@@ -102,8 +100,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
                     File outFile = new File(pF.getParent(), clusteringName);
                     DotClusterFileListener lstnr = new DotClusterFileListener(outFile);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstnr);
-                }
-                catch (FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
 
                 }

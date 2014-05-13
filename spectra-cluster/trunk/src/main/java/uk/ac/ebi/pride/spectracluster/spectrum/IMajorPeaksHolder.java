@@ -12,8 +12,9 @@ public interface IMajorPeaksHolder {
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
      * @return
      */
-     public int[] asMajorPeakMZs();
+    public int[] asMajorPeakMZs();
 
 }

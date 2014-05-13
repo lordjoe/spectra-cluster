@@ -8,14 +8,13 @@ package uk.ac.ebi.pride.spectracluster.util;
 public class Cast {
 
     /**
-     *
      * @param o
      * @param <T>
      * @return
      */
     @SuppressWarnings("unchecked")
     public static <T> T it(Object o) {
-          return (T)o;
+        return (T) o;
     }
 
 }

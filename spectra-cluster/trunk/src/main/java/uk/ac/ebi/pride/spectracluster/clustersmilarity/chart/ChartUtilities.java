@@ -31,7 +31,7 @@ public class ChartUtilities {
         xyDotRenderer.setDotHeight(2);
         xyPlot.setRenderer(xyDotRenderer);
 
-        NumberAxis domainAxis = (NumberAxis)xyPlot.getDomainAxis();
+        NumberAxis domainAxis = (NumberAxis) xyPlot.getDomainAxis();
         domainAxis.setAutoRangeIncludesZero(false);
 
         return createChartPanel(chart);

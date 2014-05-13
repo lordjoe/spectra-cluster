@@ -1,18 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumToClustersStatistics implements IClusterStatistics<SpectrumToClusters>{
+public class SpectrumToClustersStatistics implements IClusterStatistics<SpectrumToClusters> {
     private final SpectrumToClusters spectrumToClusters = new SpectrumToClusters();
-    private final ISpectrumRetriever totalSpectra ;
+    private final ISpectrumRetriever totalSpectra;
 
     public SpectrumToClustersStatistics(final ISpectrumRetriever pTotalSpectra) {
         totalSpectra = pTotalSpectra;

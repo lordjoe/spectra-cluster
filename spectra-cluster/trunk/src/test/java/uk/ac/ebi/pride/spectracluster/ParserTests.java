@@ -1,12 +1,20 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.CGFSpectrumIterable;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -41,7 +49,7 @@ public class ParserTests {
     public void testScansRead() {
         LineNumberReader inp = ParserUtilities.getDescribedReader(MGF_RESOURCE);
         Assert.assertNotNull(inp);  // make sure it exists
-           ISpectrum[] spectralClusters = ParserUtilities.readMGFScans(inp);
+        ISpectrum[] spectralClusters = ParserUtilities.readMGFScans(inp);
 
 
         Assert.assertEquals(4663, spectralClusters.length);
@@ -55,7 +63,7 @@ public class ParserTests {
         Assert.assertNotNull(inp);  // make sure it exists
 
         ISpectrum spectralCluster = ParserUtilities.readMGFScan(inp);
-         String id;
+        String id;
         int number_scans = 1;
 
         while (spectralCluster != null) {
@@ -83,7 +91,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-     *
      */
     //  @Test
     @SuppressWarnings("UnusedDeclaration")
@@ -95,7 +102,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-     *
      */
     protected void testMGFStream(final LineNumberReader inp) {
         Set<String> seenIds = new HashSet<String>();
@@ -402,7 +408,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-     *
      */
     @Test
     public void testClusterParse() throws Exception {
@@ -452,7 +457,6 @@ public class ParserTests {
 
     /**
      * test reading an MGF Scan and that all ids are unique
-
      */
     @Test
     public void testClusterIterator() throws Exception {
@@ -486,7 +490,7 @@ public class ParserTests {
 
         List<? extends ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
-           // load a file contains a list of clusters
+        // load a file contains a list of clusters
         URL url;
         url = ClusteringEngineMgfTests.class.getClassLoader().getResource(ClusteringTestUtilities.SAMPLE_MGF_FILE);
         if (url == null) {
@@ -495,25 +499,24 @@ public class ParserTests {
         File inputFile;
         try {
             inputFile = new File(url.toURI());
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
 
         }
 
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
         MGFSpectrumIterable itr = new MGFSpectrumIterable(inputFile);
-        for(ISpectrum sp : itr)   {
+        for (ISpectrum sp : itr) {
             holder.add(sp);
         }
-        Assert.assertEquals(holder.size(),spectra.size());
+        Assert.assertEquals(holder.size(), spectra.size());
 
         Collections.sort(holder);
         Collections.sort(spectra);
 
         // bettrer be the same
         for (int i = 0; i < holder.size(); i++) {
-                 Assert.assertTrue(holder.get(i).equivalent(spectra.get(i)) );
+            Assert.assertTrue(holder.get(i).equivalent(spectra.get(i)));
 
         }
 

@@ -2,12 +2,14 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rui Wang
@@ -20,17 +22,17 @@ public class MergeIdenticalPeaksComparisonTests {
     public void testSpectrumBuilderComparison() throws Exception {
 
         //noinspection UnusedDeclaration
-        IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder =  ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         //noinspection UnusedDeclaration
         uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder        //noinspection UnusedDeclaration
-        originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
+                originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
 
-         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
         List<Spectrum> originalSpectra = ClusteringTestUtilities.readSpectrumsFromResource();
 
         Assert.assertEquals(spectra.size(), originalSpectra.size());
 
-      // todo rewrite
+        // todo rewrite
 //        for (int i = 0; i < spectra.size() - 1; i++) {
 //            ISpectrum spectrum = spectra.get(i);
 //            ISpectrum nextSpectrum = spectra.get(i + 1);
@@ -61,7 +63,7 @@ public class MergeIdenticalPeaksComparisonTests {
     }
 
 
-       @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("UnusedDeclaration")
     private Map<Double, Peak> createPeakMap(List<Peak> originalPeaks) {
         Map<Double, Peak> originalPeakMap = new LinkedHashMap<Double, Peak>();
 

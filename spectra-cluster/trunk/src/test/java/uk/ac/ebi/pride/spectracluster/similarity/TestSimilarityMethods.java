@@ -4,10 +4,12 @@ import junit.framework.*;
 import org.junit.*;
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.List;
 
 /**
@@ -555,7 +557,7 @@ public class TestSimilarityMethods {
     }
 
 
-     /**
+    /**
      * make sure old and new tests give same similarity
      *
      * @throws Exception
@@ -601,7 +603,7 @@ public class TestSimilarityMethods {
 
         for (IPeptideSpectrumMatch s1 : spectra) {
             for (IPeptideSpectrumMatch s2 : spectra) {
-                if (s1.getId().equals("44905") && s2.getId().equals("67027"))            {
+                if (s1.getId().equals("44905") && s2.getId().equals("67027")) {
                     double oldDP = oldSimilarity.assessSimilarity(s1, s2);
                     double newDP = newSimilarity.assessSimilarity(s1, s2);
 
@@ -614,9 +616,10 @@ public class TestSimilarityMethods {
     /**
      * test that FrankEtAlDotProductOld and  FrankEtAlDotProductJohannes
      * are the same
+     *
      * @throws Exception
      */
-   // @Test
+    // @Test
     public void testManySpectra() throws Exception {
         FrankEtAlDotProductJohannes.CHECK_BEST_PEAK_SPEC1 = false;
 

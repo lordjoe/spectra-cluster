@@ -53,17 +53,16 @@ public class ClusterSimilarityChart {
     }
 
 
-    public static void makeDecoyChart(ClusterComparisonMain cc)
-    {
+    public static void makeDecoyChart(ClusterComparisonMain cc) {
         ClusterSimilarityChart clusterSimilarityChart = null; // new ClusterSimilarityChart(mostSimilarClusterSet);
         JPanel charts = clusterSimilarityChart.generateChart();
 
 
-          JFrame frame = new JFrame("Cluster similarity charts");
-          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-          frame.getContentPane().add(charts, BorderLayout.CENTER);
-          frame.pack();
-          frame.setVisible(true);
+        JFrame frame = new JFrame("Cluster similarity charts");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(charts, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
 
     }
 

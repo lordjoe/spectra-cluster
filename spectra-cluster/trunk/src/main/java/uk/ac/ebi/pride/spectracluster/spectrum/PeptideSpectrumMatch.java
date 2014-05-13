@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
-import java.math.*;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -40,8 +43,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         if (spectrum instanceof IPeptideSpectrumMatch) {
             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
             annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-        }
-        else {
+        } else {
             peptide = null;
             annotation = null;
         }
@@ -58,8 +60,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         if (spectrum instanceof IPeptideSpectrumMatch) {
             peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
             annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-        }
-        else {
+        } else {
             peptide = null;
             annotation = null;
         }
@@ -350,8 +351,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                 out.append(ParserUtilities.FULL_NAME_START + prop);
                 out.append("\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -359,22 +359,22 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     /**
      * superclass appends all peaks but this version only uses the top 100
+     *
      * @param out
      */
     @Override
     protected void appendPeaks(final Appendable out) {
         try {
             IPeaksSpectrum highestNPeaks = this;
-            if(ISpectrum.USE_HIGHEST_PEAKS)
-              highestNPeaks = getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP);
+            if (ISpectrum.USE_HIGHEST_PEAKS)
+                highestNPeaks = getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP);
             for (IPeak peak : highestNPeaks.getPeaks()) {
-                   String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
-                           String.format("%10.3f", peak.getIntensity()).trim();
-                   out.append(line);
-                   out.append("\n");
-               }
-        }
-        catch (IOException e) {
+                String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
+                        String.format("%10.3f", peak.getIntensity()).trim();
+                out.append(line);
+                out.append("\n");
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -388,7 +388,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     @Override
     public boolean isDecoy() {
-        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId()) ;
+        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId());
         return psm.isDecoy();
     }
 
@@ -403,21 +403,19 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                 if (!first) {
                     pOut.append(" ");
                     first = false;
-                }
-                else {
+                } else {
                     first = false;
                 }
                 pOut.append(string);
                 pOut.append("=");
                 String value = properties.get(string);
-                if(value.contains(" "))    {
+                if (value.contains(" ")) {
                     value = "\"" + value + "\"";
                 }
                 pOut.append(value);
             }
             pOut.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -435,18 +433,17 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             out.append("\t");
             out.append(Integer.toString(getPrecursorCharge()));
             out.append("\t");
-            String mzString = String.format("%10.2f",getPrecursorMz()).trim();
+            String mzString = String.format("%10.2f", getPrecursorMz()).trim();
             out.append(mzString);
             out.append("\t");
             out.append(getPeptide());
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
 
-      }
+    }
 
     /**
      * like equals but weaker - says other is equivalent to this
@@ -463,7 +460,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
             String peptide1 = getPeptide();
             String peptide2 = realO.getPeptide();
-            if (!ClusterUtilities.equalObject(peptide1,peptide2))
+            if (!ClusterUtilities.equalObject(peptide1, peptide2))
                 return false;
 
 

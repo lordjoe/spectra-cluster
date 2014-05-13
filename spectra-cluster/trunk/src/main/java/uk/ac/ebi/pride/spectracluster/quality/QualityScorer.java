@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.quality;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
 
 /**
  * Calculate the quality score of a given spectrum and
@@ -13,6 +13,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 public interface QualityScorer extends IAlgorithm {
     /**
      * return the quality of the spectrum
+     *
      * @param spectrum !null spectrum
      * @return quality >= 0
      */

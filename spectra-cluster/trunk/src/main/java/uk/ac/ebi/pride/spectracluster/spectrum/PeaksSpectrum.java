@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
-import com.lordjoe.algorithms.*;
-
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
@@ -193,10 +193,9 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
 
             appendPeaks(out);
 
-              out.append("END IONS");
+            out.append("END IONS");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -215,8 +214,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
             appendMSFComment(out);
             appendMSFPeaks(out);
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -230,8 +228,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
         try {
             out.append("Num peaks: " + internalGetPeaks().size() + "\n");
             appendPeaks(out);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -241,8 +238,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
         try {
             out.append("NumPeaks: " + internalGetPeaks().size() + "\n");
             appendPeaks(out);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -251,13 +247,12 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
     protected void appendPeaks(final Appendable out) {
         try {
             for (IPeak peak : internalGetPeaks()) {
-                   String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
-                           String.format("%10.3f", peak.getIntensity()).trim();
-                   out.append(line);
-                   out.append("\n");
-               }
-        }
-        catch (IOException e) {
+                String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
+                        String.format("%10.3f", peak.getIntensity()).trim();
+                out.append(line);
+                out.append("\n");
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -265,7 +260,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
     }
 
     protected void appendMSFStart(final Appendable out) {
-          throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
     /**
@@ -280,8 +275,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
             appendMSFComment(out);
             appendSPTextPeaks(out);
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -348,8 +342,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
             final List<IPeak> iPeaks1 = ((PeaksSpectrum) o).internalGetPeaks();
             peaks1 = iPeaks1.toArray(new IPeak[iPeaks1.size()]);
 
-        }
-        else {
+        } else {
             final List<IPeak> peaks2 = o.getPeaks();
             peaks1 = peaks2.toArray(new IPeak[peaks2.size()]);
 
@@ -365,7 +358,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum 
                 return false;
         }
 
-      return true;
+        return true;
     }
 
     @Override

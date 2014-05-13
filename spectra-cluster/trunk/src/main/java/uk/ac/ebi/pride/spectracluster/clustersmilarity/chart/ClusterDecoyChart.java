@@ -1,18 +1,26 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
-import com.lordjoe.utilities.*;
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.xy.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.utilities.ElapsedTimer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +54,7 @@ public class ClusterDecoyChart {
             final XYSeriesCollection dataset = new XYSeriesCollection();
             addDecoyAndTargetData(dataset, cs, minimumSize);
 
-            final JFreeChart chart = createChart("Target and Decoy " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("Target and Decoy " + minimumSize, dataset, minimumSize, set.getNumberSpectra());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -67,8 +75,8 @@ public class ClusterDecoyChart {
 
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        final JFreeChart chart = createChart(cs.getName(),dataset, 0, set.getNumberSpectra());
-         for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
+        final JFreeChart chart = createChart(cs.getName(), dataset, 0, set.getNumberSpectra());
+        for (int minimumSize = MIN_CLUSTER_SIZE; minimumSize < MAX_CLUSTER_SIZE * 2; minimumSize *= CLUSTER_SIZE_MULTIPLIER) {
             addFDRData(dataset, cs, minimumSize);
 
 
@@ -83,7 +91,6 @@ public class ClusterDecoyChart {
     }
 
 
-
     public JPanel generateCFDistributionChart() {
         JPanel ret = new JPanel();
         ret.setLayout(new GridLayout(0, 2));
@@ -96,7 +103,7 @@ public class ClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("CF Distribution " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("CF Distribution " + minimumSize, dataset, minimumSize, set.getNumberSpectra());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -109,8 +116,7 @@ public class ClusterDecoyChart {
     }
 
 
-
-    protected void addDistributionData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize,ClusterDataType type) {
+    protected void addDistributionData(final XYSeriesCollection dataset, IClusterSet cs, int minimumClusterSize, ClusterDataType type) {
         ClusterComparisonMain cm = getSet();
         List<ClusterPeptideFraction> decoys = ClusterComparisonMain.getCumulativeData(cs, cm, minimumClusterSize);
         XYSeries series;
@@ -164,7 +170,7 @@ public class ClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("FDR " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("FDR " + minimumSize, dataset, minimumSize, set.getNumberSpectra());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -189,7 +195,7 @@ public class ClusterDecoyChart {
             }
 
 
-            final JFreeChart chart = createChart("Total PSMS " + minimumSize,dataset, minimumSize, set.getNumberSpectra());
+            final JFreeChart chart = createChart("Total PSMS " + minimumSize, dataset, minimumSize, set.getNumberSpectra());
 
             final ChartPanel chartPanel = new ChartPanel(chart);
             ret.add(chartPanel);
@@ -220,13 +226,13 @@ public class ClusterDecoyChart {
 
             double purity = pp.getPurity();
             while (purity < cutPoint) {
-                series1.add(cutPoint,1.0 -  number_total / number_values);
+                series1.add(cutPoint, 1.0 - number_total / number_values);
                 if (cutindex >= CummulativeFDR.reverse_cummulativePurityPoints.length)
                     return series1;
                 cutPoint = CummulativeFDR.reverse_cummulativePurityPoints[cutindex++];
             }
             number_total++;
-         }
+        }
         return series1;
     }
 
@@ -376,7 +382,7 @@ public class ClusterDecoyChart {
      * @param dataset the data for the chart.
      * @return a chart.
      */
-    private JFreeChart createChart(String title,final XYDataset dataset, int minSize, int numberSPectra) {
+    private JFreeChart createChart(String title, final XYDataset dataset, int minSize, int numberSPectra) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
@@ -465,9 +471,6 @@ public class ClusterDecoyChart {
         frame.pack();
         frame.setVisible(true);
     }
-
-
-
 
 
     public static void usage() {

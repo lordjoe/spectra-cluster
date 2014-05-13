@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 import java.util.*;
 
@@ -159,13 +160,12 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
         for (ISpectrum sc : ret) {
             if (sc instanceof IPeptideSpectrumMatch) {
-                if (peptide.equals(((IPeptideSpectrumMatch)sc).getPeptide()))
+                if (peptide.equals(((IPeptideSpectrumMatch) sc).getPeptide()))
                     holder.add(sc);
             }
         }
         return holder;
     }
-
 
 
     /**
@@ -248,25 +248,24 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
     @Override
     public Iterable<ISpectralCluster> getClustersByPeptide(final String peptide) {
         List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(idToCluster.values());
-          Collections.sort(ret);  // sort by mz
-          List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-          for (ISpectralCluster sc : ret) {
-              String peptides = ClusterUtilities.mostCommonPeptides(sc);
-              if (peptides.contains(",")) {
-                  String[] items = peptides.split(",");
-                  for (int i = 0; i < items.length; i++) {
-                      String item = items[i];
-                      if (peptide.equals(item)) {
-                          holder.add(sc);
-                          break; // done
-                      }
-                  }
-              }
-              else {
-                  if (peptide.equals(peptides))  // only one peptide
-                      holder.add(sc);
-              }
-          }
-          return holder;
-      }
+        Collections.sort(ret);  // sort by mz
+        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        for (ISpectralCluster sc : ret) {
+            String peptides = ClusterUtilities.mostCommonPeptides(sc);
+            if (peptides.contains(",")) {
+                String[] items = peptides.split(",");
+                for (int i = 0; i < items.length; i++) {
+                    String item = items[i];
+                    if (peptide.equals(item)) {
+                        holder.add(sc);
+                        break; // done
+                    }
+                }
+            } else {
+                if (peptide.equals(peptides))  // only one peptide
+                    holder.add(sc);
+            }
+        }
+        return holder;
+    }
 }

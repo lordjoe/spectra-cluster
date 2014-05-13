@@ -1,13 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeakIntensityComparator;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.consensus.NewConsensusSpectrumTests
@@ -53,18 +58,19 @@ public class NewConsensusSpectrumTests {
             }
         }
     }
+
     @Test
     public void testSpectra() {
 
-        if(IGNORE_KNOWN_TO_FAIL)
+        if (IGNORE_KNOWN_TO_FAIL)
             return;
 
- //       System.out.println("------ testSpectra -------");
+        //       System.out.println("------ testSpectra -------");
 
         // create the old consensuNewConsensusSpectrumTestss spectrum
         long start = System.currentTimeMillis();
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(allOldOriginalSpectra);
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long durationOrig = System.currentTimeMillis() - start;
 
         start = System.currentTimeMillis();
@@ -73,19 +79,19 @@ public class NewConsensusSpectrumTests {
         long durationAdding = System.currentTimeMillis() - start;
         ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
         long durationNew = System.currentTimeMillis() - start;
-             //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long durationUpdate = durationNew - durationAdding;
 
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
         Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
         Collections.reverse(newConsensusPeaks);
 
-   //     System.out.println("Benchmark: old = " + durationOrig + ", new = " + durationNew + " (adding = " + durationAdding + ", update = " + durationUpdate + ")");
+        //     System.out.println("Benchmark: old = " + durationOrig + ", new = " + durationNew + " (adding = " + durationAdding + ", update = " + durationUpdate + ")");
 
         Assert.assertTrue("number of peaks differ: original = " + originalConsensusSpectrum.size() + ", new = " + newConsensusSpectrum.getPeaks().size(), newConsensusSpectrum.getPeaks().size() == originalConsensusSpectrum.size());
         // compare the peaks
-          boolean condition = ClusteringTestUtilities.arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
-        if(!condition) {
+        boolean condition = ClusteringTestUtilities.arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum);
+        if (!condition) {
             condition = ClusteringTestUtilities.arePeakListsEquivalent(newConsensusPeaks, originalConsensusSpectrum); // redo here
             Assert.assertTrue("intensities differ", condition);
         }
@@ -99,13 +105,13 @@ public class NewConsensusSpectrumTests {
      */
     public void testAddingSpectra() {
         if (IGNORE_KNOWN_TO_FAIL) return;
-  //      System.out.println("-----testAddingSpectra------");
+        //      System.out.println("-----testAddingSpectra------");
 
         // use the original code - run twice for benchmarking
         long start = System.currentTimeMillis();
         //noinspection UnusedAssignment
         List<Peak> originalConsensusSpectrumBeforeAdd = originalConsensusSpectrumBuilder.buildConsensusSpectrum(allOldOriginalSpectra);
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long duration1Orig = System.currentTimeMillis() - start;
         // run twice to see the performance difference (there shouldn't be one)
         start = System.currentTimeMillis();
@@ -121,7 +127,7 @@ public class NewConsensusSpectrumTests {
         long durationAdd1 = System.currentTimeMillis() - start;
         // build the consensus spectrum in between for benchmarking
         ISpectrum newConsensusSpectrumBeforeAdd = consensusSpectrumBuilder.getConsensusSpectrum();
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long durationUpdate1 = System.currentTimeMillis() - start - durationAdd1;
 
         // add the small set of spectra
@@ -129,7 +135,7 @@ public class NewConsensusSpectrumTests {
         manySpectra.addAll(filteredOldOriginalSpectra);
         start = System.currentTimeMillis();
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(manySpectra);
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long duration2Orig = System.currentTimeMillis() - start;
 
         start = System.currentTimeMillis();
@@ -137,7 +143,7 @@ public class NewConsensusSpectrumTests {
             consensusSpectrumBuilder.addSpectra(s);
         long durationAdd2 = System.currentTimeMillis() - start;
         ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         long durationUpdate2 = System.currentTimeMillis() - start - durationAdd2;
 
         // sort peaks in the same order (intensity ascending)
@@ -150,22 +156,22 @@ public class NewConsensusSpectrumTests {
         Collections.reverse(newConsensusPeaksBeforeAdd);
 
         // print stats
-  //      System.out.println("Original = " + duration1Orig + " (" + duration1Orig_2 + "), New = " + (durationAdd1 + durationUpdate1) + "(add = " + durationAdd1 + ", update = " + durationUpdate1 + ")");
- //       System.out.println("--Adding--");
- //       System.out.println("Original = " + duration2Orig + ", New = " + (durationAdd2 + durationUpdate2) + "(add = " + durationAdd2 + ", update = " + durationUpdate2 + ")");
+        //      System.out.println("Original = " + duration1Orig + " (" + duration1Orig_2 + "), New = " + (durationAdd1 + durationUpdate1) + "(add = " + durationAdd1 + ", update = " + durationUpdate1 + ")");
+        //       System.out.println("--Adding--");
+        //       System.out.println("Original = " + duration2Orig + ", New = " + (durationAdd2 + durationUpdate2) + "(add = " + durationAdd2 + ", update = " + durationUpdate2 + ")");
 
         // compare the total counts
-             //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int newCounts = 0;
         for (IPeak p : newConsensusPeaks)
             newCounts += p.getCount();
 
-              //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int oldCounts = 0;
         for (Peak p : originalConsensusSpectrum)
             oldCounts += p.getCount();
 
- //       System.out.println(manySpectra.size() + " spectra");
+        //       System.out.println(manySpectra.size() + " spectra");
 //        System.out.println("oldCounts = " + oldCounts + ", newCounts = " + newCounts);
 
         // make sure results are OK
@@ -207,10 +213,10 @@ public class NewConsensusSpectrumTests {
 
     @Test
     public void testDuplicateSpectra() {
-        if(IGNORE_KNOWN_TO_FAIL)
-              return;
-   //     System.out.println("---- testDuplicateSpectra ----");
-  //      System.out.println("new consensus builder nSpectra = " + consensusSpectrumBuilder.getSpectraCount());
+        if (IGNORE_KNOWN_TO_FAIL)
+            return;
+        //     System.out.println("---- testDuplicateSpectra ----");
+        //      System.out.println("new consensus builder nSpectra = " + consensusSpectrumBuilder.getSpectraCount());
 
         // original test
         List<List<Peak>> duplicateOldSpectra = new ArrayList<List<Peak>>();
@@ -250,12 +256,12 @@ public class NewConsensusSpectrumTests {
 
     @Test
     public void testManyDuplicateSpectra() {
-        if(IGNORE_KNOWN_TO_FAIL)
-              return;
+        if (IGNORE_KNOWN_TO_FAIL)
+            return;
         // test the original algorithm
         List<List<Peak>> manySpectraOld = new ArrayList<List<Peak>>();
         manySpectraOld.addAll(allOldOriginalSpectra);
-  //      manySpectraOld.addAll(allOldOriginalSpectra);
+        //      manySpectraOld.addAll(allOldOriginalSpectra);
 
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(manySpectraOld);
 
@@ -277,8 +283,8 @@ public class NewConsensusSpectrumTests {
 
     @Test
     public void testPool2() {
-        if(IGNORE_KNOWN_TO_FAIL)
-              return;
+        if (IGNORE_KNOWN_TO_FAIL)
+            return;
         List<Peak> originalConsensusSpectrum = originalConsensusSpectrumBuilder.buildConsensusSpectrum(oldSpectraPool2);
 
         for (ISpectrum s : spectraPool2)

@@ -1,9 +1,10 @@
 package com.lordjoe.algorithms;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.APrioriBinning;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * com.lordjoe.algorithms.APrioriBinningTests
@@ -39,7 +40,7 @@ public class APrioriBinningTests {
     @Test
     public void testSort() {
         List<MarkedNumber<String>> markedNumbers = APrioriBinning.readFromResource();
-          Collections.sort(markedNumbers);
+        Collections.sort(markedNumbers);
         double lastEntry = Double.MAX_VALUE;
         for (MarkedNumber<String> markedNumber : markedNumbers) {
             double current = markedNumber.getValue();
@@ -51,16 +52,16 @@ public class APrioriBinningTests {
     }
 
     @Test
-      public void testNormalizedSort() {
+    public void testNormalizedSort() {
         List<MarkedNumber<String>> markedNumbers = APrioriBinning.readFromResource();
         List<MarkedNumber<String>> normalized = MarkedNumber.normalize(markedNumbers);
-          double lastEntry = Double.MAX_VALUE;
+        double lastEntry = Double.MAX_VALUE;
         for (MarkedNumber<String> markedNumber : normalized) {
             double current = markedNumber.getValue();
             Assert.assertTrue(current <= lastEntry);
             lastEntry = current;
         }
 
-      }
+    }
 
-  }
+}

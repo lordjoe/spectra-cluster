@@ -1,19 +1,23 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import org.apache.log4j.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.quality_check.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.quality_check.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.similarity_checker.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.similarity_checker.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
+import org.apache.log4j.Logger;
+import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.IntensityNormalizer;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.impl.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.quality_check.QualityChecker;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.quality_check.impl.SignalToNoiseChecker;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.similarity_checker.SimilarityChecker;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.similarity_checker.impl.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class FrankEtAlClustering implements SpectraClustering {
     /**
@@ -282,7 +286,7 @@ public class FrankEtAlClustering implements SpectraClustering {
                 return del < 0 ? -1 : 1;
             }
 
-           // as the m/z ranges are the same check the quality
+            // as the m/z ranges are the same check the quality
             double quality1 = qualityChecker.assessQuality(spec1.getPeaklist());
             double quality2 = qualityChecker.assessQuality(spec2.getPeaklist());
 

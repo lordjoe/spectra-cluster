@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.PeakIntensityComparator;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.PeakMzComparator;
@@ -144,15 +143,14 @@ public class FrankEtAlConsensusSpectrumBuilder implements
                 // if the consensus spectrum doesn't contain the peak yet, simply add it
                 if (!consensusSpectrum.containsKey(peak.getMz())) {
                     consensusSpectrum.put(peak.getMz(), peak);
-                }
-                else {
+                } else {
                     // if the peak already exists, sum it up
                     final double mz = peak.getMz();
                     final Peak peak1 = consensusSpectrum.get(peak.getMz());
                     consensusSpectrum.put(mz, new Peak(
-                            mz,
-                            peak1.getIntensity() + peak.getIntensity(),
-                            peak1.getCount() + peak.getCount())
+                                    mz,
+                                    peak1.getIntensity() + peak.getIntensity(),
+                                    peak1.getCount() + peak.getCount())
                     );
                 }
             }
@@ -195,7 +193,6 @@ public class FrankEtAlConsensusSpectrumBuilder implements
 
 
                     double weightedMz = (nextPeakFraction * nextMz) + (currentPeakFraction * currentMz);
-
 
 
                     final int count = current.getCount() + next.getCount();

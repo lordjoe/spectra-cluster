@@ -1,23 +1,27 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CompareTo;
+import com.lordjoe.algorithms.CountedString;
+import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
-import java.io.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
  * @author Rui Wang
  * @version $Id$
- *  * NOTE extend WatchedClass to look for possible memory leaks
+ *          * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectralCluster /* extends WatchedClass */implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster /* extends WatchedClass */ implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
 
 
     private String id;
@@ -68,6 +72,7 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
 
     /**
      * make a one line report
+     *
      * @param out
      */
     @Override
@@ -98,15 +103,14 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
      */
     @Override
     public Set<String> getSpectralIds() {
-        if(this.spectraIds.isEmpty())    {
+        if (this.spectraIds.isEmpty()) {
             List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
             for (ISpectrum iSpectrum : clusteredSpectra1) {
-               spectraIds.add(iSpectrum.getId());
+                spectraIds.add(iSpectrum.getId());
             }
         }
-         return Collections.unmodifiableSet(spectraIds);
+        return Collections.unmodifiableSet(spectraIds);
     }
-
 
 
     /**
@@ -158,9 +162,9 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
         // in unstable clusters use id of the highest quality spectrum
         if (id == null) {
             id = getSpectralId();
-          //   ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
-        //    if (highestQualitySpectrum != null)
-         //       return highestQualitySpectrum.getId();
+            //   ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
+            //    if (highestQualitySpectrum != null)
+            //       return highestQualitySpectrum.getId();
         }
         return id;
     }
@@ -168,12 +172,12 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
     @Override
     public String getSpectralId() {
         StringBuilder sb = new StringBuilder();
-        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        List<String> spectralIds = new ArrayList<String>(getSpectralIds());
         Collections.sort(spectralIds);
-        sb.append(spectralIds.get(0)) ;
+        sb.append(spectralIds.get(0));
         for (int i = 1; i < spectralIds.size(); i++) {
-            sb.append(",") ;
-            sb.append(spectralIds.get(i)) ;
+            sb.append(",");
+            sb.append(spectralIds.get(i));
         }
         return sb.toString();
     }
@@ -216,22 +220,22 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
     }
 
 
-
-
     /**
      * get peptides with statistics
+     *
      * @return list ordered bu purity
      */
-    public @Nonnull
+    public
+    @Nonnull
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
         buildPeptidePurities(dd);
-       return byPurity;
+        return byPurity;
 
     }
 
 
     protected void buildPeptidePurities(IDecoyDiscriminator dd) {
-        if(byPurity.size() > 0)
+        if (byPurity.size() > 0)
             return;
         byPurity.clear();
         double numberSpectra = getClusteredSpectraCount();
@@ -243,17 +247,16 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
             boolean decoy = false;
             for (int j = 0; j < peptides.length; j++) {
                 String peptide = peptides[j];
-                if(peptide != null && dd != null)
+                if (peptide != null && dd != null)
                     decoy |= dd.isDecoy(peptide);
                 else
                     decoy = false; // break here
             }
 
-            ClusterPeptideFraction e = new ClusterPeptideFraction(peptides[0], item.getCount() / numberSpectra,decoy);
+            ClusterPeptideFraction e = new ClusterPeptideFraction(peptides[0], item.getCount() / numberSpectra, decoy);
             byPurity.add(e);
         }
-     }
-
+    }
 
 
     @Override
@@ -365,14 +368,14 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
             boolean spectrumAdded = false;
-             for (ISpectrum spectrumToMerge : merged) {
-                 spectraIds.add(spectrumToMerge.getId());
+            for (ISpectrum spectrumToMerge : merged) {
+                spectraIds.add(spectrumToMerge.getId());
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
                     spectrumAdded = true;
                     clusteredSpectra.add(spectrumToMerge);
                 }
             }
-            if(spectrumAdded)
+            if (spectrumAdded)
                 notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
         }
     }
@@ -385,7 +388,7 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
      */
     @Override
     public boolean isRemoveSupported() {
-       // return !isStable();
+        // return !isStable();
         return true;
     }
 
@@ -406,7 +409,7 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
     @Override
     public boolean isSemiStable() {
         return ClusterUtilities.isClusterSemiStable(this);
-     }
+    }
 
     @Override
     public void removeSpectra(ISpectrum... removed) {
@@ -435,12 +438,12 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
         if (o == this)
             return 0;
         try {
-            int ret = CompareTo.compare(getPrecursorMz() ,o.getPrecursorMz());
-            if(ret != 0)
+            int ret = CompareTo.compare(getPrecursorMz(), o.getPrecursorMz());
+            if (ret != 0)
                 return ret;
             if (getPrecursorCharge() != o.getPrecursorCharge()) {
-              return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
-          }
+                return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
+            }
             if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
                 return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
             }
@@ -588,7 +591,7 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
             out.append("\n");
 
             List<ISpectrum> spectra = clusteredSpectra1;
-            Collections.sort(spectra,ISpectrum.ID_COMAPRATOR);   // sort by id
+            Collections.sort(spectra, ISpectrum.ID_COMAPRATOR);   // sort by id
             for (ISpectrum spec : spectra) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");
@@ -677,8 +680,6 @@ public class SpectralCluster /* extends WatchedClass */implements ISpectralClust
         }
 
     }
-
-
 
 
 }

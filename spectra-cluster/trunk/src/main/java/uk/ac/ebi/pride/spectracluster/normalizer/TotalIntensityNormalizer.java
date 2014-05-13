@@ -1,9 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.normalizer;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Normalizes a spectrum's intensities so that

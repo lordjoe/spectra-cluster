@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.*;
+import com.lordjoe.algorithms.Equivalent;
 
 /**
  * uk.ac.ebi.pride.spectracluster.IPeak
@@ -35,7 +35,7 @@ public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
     /**
      * Set peak intensity
      */
- //   public void setIntensity(double intensity);
+    //   public void setIntensity(double intensity);
 
     /**
      * number associated spectra

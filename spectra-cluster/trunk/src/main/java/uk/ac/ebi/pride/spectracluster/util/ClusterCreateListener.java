@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener
@@ -21,7 +21,7 @@ public interface ClusterCreateListener {
      *
      * @param cluster
      */
-    public void onClusterCreate(ISpectralCluster cluster,Object... otherData);
+    public void onClusterCreate(ISpectralCluster cluster, Object... otherData);
 
     /**
      * do something when a cluster when the last cluster is read -

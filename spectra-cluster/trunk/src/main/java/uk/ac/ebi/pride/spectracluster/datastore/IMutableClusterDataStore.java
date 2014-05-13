@@ -23,6 +23,7 @@ public interface IMutableClusterDataStore extends IClusterDataStore {
 
     /**
      * store one cluster in the database
+     *
      * @param clusterToStore
      */
     public void storeCluster(ISpectralCluster clusterToStore);

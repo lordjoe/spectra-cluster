@@ -1,14 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 
 /**
- *  class representing the mean ans standard deviation of
- *  a cluster - sorts low to high standard deviation
+ * class representing the mean ans standard deviation of
+ * a cluster - sorts low to high standard deviation
  */
 public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 
@@ -23,26 +22,26 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
         }
     };
     @SuppressWarnings("UnusedDeclaration")
-     public Comparable<ClusterMZSpread> BY_RANGE = new Comparable<ClusterMZSpread>() {
-         @Override
-         public int compareTo(@Nonnull final ClusterMZSpread o) {
-             int ret = CompareTo.compare(getRange(), o.getRange());
-             if (ret == 0)
-                 return CompareTo.compare(getMean(), o.getMean());
-             return -ret;
-         }
-     };
+    public Comparable<ClusterMZSpread> BY_RANGE = new Comparable<ClusterMZSpread>() {
+        @Override
+        public int compareTo(@Nonnull final ClusterMZSpread o) {
+            int ret = CompareTo.compare(getRange(), o.getRange());
+            if (ret == 0)
+                return CompareTo.compare(getMean(), o.getMean());
+            return -ret;
+        }
+    };
 
     @SuppressWarnings("UnusedDeclaration")
-     public Comparable<ClusterMZSpread> TOP_FIRST = new Comparable<ClusterMZSpread>() {
-         @Override
-         public int compareTo(@Nonnull final ClusterMZSpread o) {
-             int ret = CompareTo.compare(getStandardDeviation(), o.getStandardDeviation());
-             if (ret == 0)
-                 return CompareTo.compare(getMean(), o.getMean());
-             return -ret;
-         }
-     };
+    public Comparable<ClusterMZSpread> TOP_FIRST = new Comparable<ClusterMZSpread>() {
+        @Override
+        public int compareTo(@Nonnull final ClusterMZSpread o) {
+            int ret = CompareTo.compare(getStandardDeviation(), o.getStandardDeviation());
+            if (ret == 0)
+                return CompareTo.compare(getMean(), o.getMean());
+            return -ret;
+        }
+    };
 
     private final double standardDeviation;
     private final double mean;
@@ -55,22 +54,23 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 
     public ClusterMZSpread(ISpectralCluster cluster) {
         double maxmz = Double.MIN_VALUE;
-        double minmz =  Double.MAX_VALUE;;
+        double minmz = Double.MAX_VALUE;
+        ;
         double sum = 0;
-         double sumsq = 0;
+        double sumsq = 0;
         int n = 0;
         clusterSize = cluster.getClusteredSpectraCount();
-        for (ISpectrum o : cluster.getClusteredSpectra()   ) {
-           double mz = o.getPrecursorMz();
+        for (ISpectrum o : cluster.getClusteredSpectra()) {
+            double mz = o.getPrecursorMz();
             sum += mz;
             sumsq += mz * mz;
-            maxmz = Math.max(maxmz,mz);
+            maxmz = Math.max(maxmz, mz);
             minmz = Math.min(minmz, mz);
             n++;
-         }
+        }
 
 
-        switch(n) {
+        switch (n) {
             case 0:
                 throw new UnsupportedOperationException("should never happen");
             case 1:
@@ -81,7 +81,7 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
                 mean = sum / n;
                 double variance = sumsq / n - mean * mean;
                 standardDeviation = Math.sqrt(variance);
-           }
+        }
         maxMz = maxmz;
         minMz = minmz;
         range = maxMz - minMz;
@@ -91,7 +91,7 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 //            cluster.appendClustering(System.out);
 //        }
 
-        if(n > 10 && range < 0.00001)
+        if (n > 10 && range < 0.00001)
             sum = 0; // break here
     }
 
@@ -122,21 +122,22 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 
     /**
      * sort least pure first
+     *
      * @param o other
      * @return
      */
     @Override
     public int compareTo(@Nonnull ClusterMZSpread o) {
-        int ret = CompareTo.compare(getRange(), o.getRange()) ;
-        if(ret != 0)
+        int ret = CompareTo.compare(getRange(), o.getRange());
+        if (ret != 0)
             return ret;
 
-        return CompareTo.compare(getMean(), o.getMean()) ;
+        return CompareTo.compare(getMean(), o.getMean());
     }
 
     @Override
     public String toString() {
         //noinspection ImplicitArrayToString
-        return  String.format("%8.1f", getMean()).trim() + ":" + String.format("%6.3f", getStandardDeviation()).trim() + ":" + getClusterSize();
+        return String.format("%8.1f", getMean()).trim() + ":" + String.format("%6.3f", getStandardDeviation()).trim() + ":" + getClusterSize();
     }
 }

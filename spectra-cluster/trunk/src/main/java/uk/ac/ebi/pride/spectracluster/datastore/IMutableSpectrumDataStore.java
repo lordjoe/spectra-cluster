@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.IMutableSpectrumDataStore
@@ -20,6 +20,7 @@ public interface IMutableSpectrumDataStore extends ISpectrumDataStore {
 
     /**
      * store one spectrum in the database
+     *
      * @param stored
      */
     public void storeSpectrum(ISpectrum stored);
@@ -35,7 +36,8 @@ public interface IMutableSpectrumDataStore extends ISpectrumDataStore {
 
     /**
      * add a spectrum
-     * @param removed  !null added
+     *
+     * @param removed !null added
      */
     public void removeSpectrum(ISpectrum removed);
 

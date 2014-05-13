@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -17,7 +17,7 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
     private final PrintWriter writer;
     private int count;
 
-    public SpectrumTSVFileSpectrumRetriever(File file){
+    public SpectrumTSVFileSpectrumRetriever(File file) {
         try {
             writer = new PrintWriter(new FileWriter(file));
         } catch (IOException e) {
@@ -44,9 +44,9 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
                 .append(spectrumMatch.getPeptide());
 
         writer.println(sb.toString());
-        if(count++ % 100 == 0)     {
+        if (count++ % 100 == 0) {
             System.out.print(".");
-            if(count > 10000 ) {
+            if (count > 10000) {
                 System.out.println();
                 writer.flush();
                 count = 0;

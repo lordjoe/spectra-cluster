@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
     }
 
     @Override
-    public void addStableCluster(ISpectralCluster  stableCluster) {
+    public void addStableCluster(ISpectralCluster stableCluster) {
         if (unStableClusterProcessed) {
             throw new IllegalStateException("Adding stable cluster after processing unstable clusters");
         }
@@ -38,9 +38,10 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
 
     /**
-     *  try to move spectra to the stable cluster
+     * try to move spectra to the stable cluster
+     *
      * @param unstableCluster
-     * @return  true if changed
+     * @return true if changed
      */
     @Override
     public boolean processUnStableCluster(ISpectralCluster unStableCluster) {
@@ -49,7 +50,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
         int startSpectraCount = unStableCluster.getClusteredSpectraCount();
         for (ISpectralCluster stableCluster : stableClusters) {
             boolean empty = mergeUnstableCluster(stableCluster, unStableCluster);
-            if(empty)
+            if (empty)
                 break;
         }
         return startSpectraCount != unStableCluster.getClusteredSpectraCount();

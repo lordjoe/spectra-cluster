@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import javax.annotation.*;
-import java.lang.reflect.*;
+import javax.annotation.Nonnull;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -19,8 +19,9 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
 
     /**
      * in this version requiresClass must implement comparable
+     *
      * @param requiresClass !null class
-     * @param maxSize maxsize
+     * @param maxSize       maxsize
      */
     public TreeSetLimitedList(Class<? extends T> requiresClass, int maxSize) {
         this.requiresClass = requiresClass;
@@ -33,6 +34,7 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
 
     /**
      * in this version a comparator is supplied
+     *
      * @param requiresClass
      * @param maxSize
      * @param sorter
@@ -65,10 +67,10 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
         return realSet.first();
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return realSet.isEmpty();
     }
+
     /**
      * return the last item - not null if the list is not empty
      *
@@ -98,8 +100,8 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
     @Override
     public List<T> toList() {
         List<T> ret = new ArrayList<T>(realSet);
-        if(sorter != null)
-            Collections.sort(ret,sorter);
+        if (sorter != null)
+            Collections.sort(ret, sorter);
         else {
             //noinspection UnnecessaryLocalVariable
             List decast = ret;   // $%&%$# need to cast away generic to sort
@@ -111,8 +113,9 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
 
     /**
      * add to list
+     *
      * @param added
-     * @return  true of added is now in the list
+     * @return true of added is now in the list
      */
     @Override
     public boolean add(@Nonnull T added) {
@@ -121,7 +124,7 @@ public class TreeSetLimitedList<T> implements LimitedList<T> {
         boolean ret = realSet.add(added);
         while (realSet.size() > getMaxSize()) {
             T last = realSet.last();
-            if(last == added)
+            if (last == added)
                 ret = false;
             realSet.remove(last);
         }

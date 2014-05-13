@@ -1,10 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import com.lordjoe.utilities.ElapsedTimer;
+import com.lordjoe.utilities.TypedVisitor;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterPeptidePurity;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.PSMClusterDecoyChart;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.*;
 import java.util.*;
@@ -20,7 +26,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
     private final Set<String> decoys = new HashSet<String>();
     private final Set<String> used_decoys = new HashSet<String>();
     private final List<IClusterSet> clusterings = new ArrayList<IClusterSet>();
-      //   private final SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
+    //   private final SimpleSpectrumRetriever spectra = new SimpleSpectrumRetriever();
 
     private final PSM_Holder psms = new PSM_Holder();
 
@@ -31,8 +37,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         try {
             properties.load(new FileReader(propertyFileName));
             handleProperties();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -67,12 +72,11 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         File aps = new File(analysisProperties);
         Properties devProps = new Properties();
         try {
-            devProps.load(new FileReader(aps) );
+            devProps.load(new FileReader(aps));
             properties.putAll(devProps);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
-         }
+        }
 
     }
 
@@ -187,7 +191,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
     public void showFDRCharts(String name) {
 
         PSMClusterDecoyChart.makeReliableIdentificationChart(name + " Reliable Identifications", this, false);
-        if(true)
+        if (true)
             return;
 
         PSMClusterDecoyChart.makeClusterRangeChart(name + " Cluster Ranges", this, false);
@@ -206,7 +210,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         long totalStableClusters = 0;
         Set<String> uniqueIds = new HashSet<String>();
         for (ISpectralCluster scs : pCs.getClusters()) {
-            for (ISpectrum spec  : scs.getClusteredSpectra()) {
+            for (ISpectrum spec : scs.getClusteredSpectra()) {
                 uniqueIds.add(spec.getId());
             }
             totalSpectra += scs.getClusteredSpectraCount();
@@ -220,7 +224,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             if (scs.getClusteredSpectraCount() >= stableClusterSize)
                 totalStableClusters++;
         }
-        System.out.println(pArg + "  Unique Spectra " + uniqueSpectra +" Number Spectra " + totalSpectra + " Number Stable Clusters " + totalStableClusters + " Stable Cluster Size " + stableClusterSize);
+        System.out.println(pArg + "  Unique Spectra " + uniqueSpectra + " Number Spectra " + totalSpectra + " Number Stable Clusters " + totalStableClusters + " Stable Cluster Size " + stableClusterSize);
     }
 
     public PSM_Holder getPsms() {
@@ -249,12 +253,12 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = PSMUtilities.readClusterSet(originalFile, arg + "SemiStableNew.clustering");
-             showClusterSizesAndCounts(arg, cs);
-
-
-               cs = cs.dropClustersLessThanSize(4); // drop the riff raff
             showClusterSizesAndCounts(arg, cs);
-               cs.setName(arg);
+
+
+            cs = cs.dropClustersLessThanSize(4); // drop the riff raff
+            showClusterSizesAndCounts(arg, cs);
+            cs.setName(arg);
             mainClass.addClustering(cs);
             // showChart(cs);
         }
@@ -267,7 +271,6 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         PSMUtilities.closeClusterSaver();
 
     }
-
 
 
 }

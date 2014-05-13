@@ -9,6 +9,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 public class SPTextClusterAppender implements IClusterAppender {
 
     public static final SPTextClusterAppender INSTANCE = new SPTextClusterAppender();
+
     private SPTextClusterAppender() {
     }
 
@@ -33,7 +34,7 @@ public class SPTextClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out , final Object... OtherData) {
+    public boolean appendStart(final Appendable out, final Object... OtherData) {
         return false;
     }
 
@@ -46,7 +47,7 @@ public class SPTextClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out , final Object... OtherData) {
+    public boolean appendEnd(final Appendable out, final Object... OtherData) {
         return false;
     }
 }

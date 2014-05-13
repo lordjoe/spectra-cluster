@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.TypedPredicate;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ClusterSizeFilter
@@ -17,12 +17,13 @@ public class ClusterSizeFilter implements TypedPredicate<ISpectralCluster> {
     private final int m_MaximumSize;
 
     public ClusterSizeFilter(final int pMinimumSize) {
-       this( pMinimumSize,Integer.MAX_VALUE); // no upper limit
+        this(pMinimumSize, Integer.MAX_VALUE); // no upper limit
     }
-    public ClusterSizeFilter(final int pMinimumSize,final int maxSize) {
+
+    public ClusterSizeFilter(final int pMinimumSize, final int maxSize) {
         m_MinimumSize = pMinimumSize;
         m_MaximumSize = maxSize;
-      }
+    }
 
     public int getMinimumSize() {
         return m_MinimumSize;
@@ -40,10 +41,10 @@ public class ClusterSizeFilter implements TypedPredicate<ISpectralCluster> {
     @Override
     public boolean apply(@Nonnull final ISpectralCluster pISpectralCluster, final Object... otherdata) {
         int clusteredSpectraCount = pISpectralCluster.getClusteredSpectraCount();
-        if(clusteredSpectraCount < getMinimumSize())
+        if (clusteredSpectraCount < getMinimumSize())
             return false;
         //noinspection RedundantIfStatement
-        if(clusteredSpectraCount > getMaximumSize())
+        if (clusteredSpectraCount > getMaximumSize())
             return false;
         return true;
     }

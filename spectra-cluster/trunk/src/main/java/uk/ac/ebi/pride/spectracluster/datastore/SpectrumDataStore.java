@@ -1,12 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.simple.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.sql.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.SQLDataStore
@@ -80,8 +83,8 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
     @Override
     public ISpectrum getSpectrumById(final String id) {
         String query = queryForDatabase(SpectrumMapper.SELECT_SPECTRUM_STATEMENT);
-               //noinspection UnnecessaryLocalVariable
-          ISpectrum ret = SpringJDBCUtilities.getItemWithId(getDatabase(), query, id, ISpectrum.class);
+        //noinspection UnnecessaryLocalVariable
+        ISpectrum ret = SpringJDBCUtilities.getItemWithId(getDatabase(), query, id, ISpectrum.class);
         return ret;
     }
 
@@ -93,7 +96,7 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
      */
     protected String queryForDatabase(String query) {
         final IWorkingClusterDatabase db = getDatabase();
-        return db.queryForDatabase(query,getDataBaseName()) ;
+        return db.queryForDatabase(query, getDataBaseName());
     }
 
     /**
@@ -107,7 +110,7 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
         final IWorkingClusterDatabase database1 = getDatabase();
         // make any changes in the query string
         query = database1.patchQueryString(query);
-          //noinspection UnnecessaryLocalVariable
+        //noinspection UnnecessaryLocalVariable
         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER);
         return ret;
     }
@@ -147,11 +150,11 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
 
         int len = encodedPeaks.length();
 
-       // System.out.println("Spectrum length = " + len);
+        // System.out.println("Spectrum length = " + len);
         //noinspection UnusedAssignment
         values[index++] = encodedPeaks;    // peaks     6
 
-        if(len > WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH)  {
+        if (len > WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH) {
             throw new UnsupportedOperationException("Fix This"); // ToDo   filter if too many peaks
         }
         template.update(query, values);
@@ -199,7 +202,7 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
     public Iterable<? extends ISpectrum> getByPeptide(final String peptide) {              // todo test
         String query = queryForDatabase(SpectrumMapper.SELECT_WITH_PEPTIDE);
         final IWorkingClusterDatabase database1 = getDatabase();
-          //noinspection UnnecessaryLocalVariable
+        //noinspection UnnecessaryLocalVariable
         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, peptide);
         return ret;
     }
@@ -214,7 +217,7 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
     public Iterable<? extends ISpectrum> getSpectrumByMz(final double minMz, final double mazMz) {       // todo test
         String query = queryForDatabase(SpectrumMapper.SELECT_WITH_MZ);
         final IWorkingClusterDatabase database1 = getDatabase();
-          //noinspection UnnecessaryLocalVariable
+        //noinspection UnnecessaryLocalVariable
         List<ISpectrum> ret = SpringJDBCUtilities.getObjectsSatisfying(database1, query, SpringJDBCUtilities.SPECTRUM_MAPPER, minMz, mazMz);
         return ret;
 

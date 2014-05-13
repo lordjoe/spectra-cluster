@@ -10,9 +10,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 public class ChainedClusterAppender implements IClusterAppender {
     private final IClusterAppender[] m_Clauses;
 
-     public ChainedClusterAppender(final IClusterAppender... pClauses) {
-         m_Clauses = pClauses;
-     }
+    public ChainedClusterAppender(final IClusterAppender... pClauses) {
+        m_Clauses = pClauses;
+    }
 
     /**
      * @param out       !null open appendale
@@ -23,13 +23,13 @@ public class ChainedClusterAppender implements IClusterAppender {
     @Override
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherdata) {
         boolean anyThingDone = false;
-      //noinspection ForLoopReplaceableByForEach
-         for (int i = 0; i < m_Clauses.length; i++) {
-             if(!m_Clauses[i].appendCluster(out,data,  otherdata))
-                 return false;
-           }
-         return anyThingDone;
-     }
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < m_Clauses.length; i++) {
+            if (!m_Clauses[i].appendCluster(out, data, otherdata))
+                return false;
+        }
+        return anyThingDone;
+    }
 
 
     /**
@@ -41,15 +41,15 @@ public class ChainedClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out,  final Object... otherdata) {
+    public boolean appendStart(final Appendable out, final Object... otherdata) {
         boolean anyThingDone = false;
-      //noinspection ForLoopReplaceableByForEach
-         for (int i = 0; i < m_Clauses.length; i++) {
-             if(!m_Clauses[i].appendStart(out, otherdata))
-                 return false;
-           }
-         return anyThingDone;
-     }
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < m_Clauses.length; i++) {
+            if (!m_Clauses[i].appendStart(out, otherdata))
+                return false;
+        }
+        return anyThingDone;
+    }
 
     /**
      * add whatever happens at the end
@@ -62,12 +62,12 @@ public class ChainedClusterAppender implements IClusterAppender {
     @Override
     public boolean appendEnd(final Appendable out, final Object... otherdata) {
         boolean anyThingDone = false;
-       //noinspection ForLoopReplaceableByForEach
-          for (int i = 0; i < m_Clauses.length; i++) {
-              if(!m_Clauses[i].appendEnd(out, otherdata))
-                  return false;
-            }
-          return anyThingDone;
-     }
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < m_Clauses.length; i++) {
+            if (!m_Clauses[i].appendEnd(out, otherdata))
+                return false;
+        }
+        return anyThingDone;
+    }
 
 }

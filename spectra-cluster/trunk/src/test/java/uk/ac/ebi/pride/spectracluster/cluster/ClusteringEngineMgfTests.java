@@ -1,11 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -19,8 +24,8 @@ public class ClusteringEngineMgfTests {
 //        List<String> spectrumIds = new ArrayList<String>(Arrays.asList("86434", "6777", "5", "291", "13480", "17877", "117146"));
         List<String> spectrumIds = new ArrayList<String>(Arrays.asList("6777", "291", "13480"));
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
-  //      IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator()) ;
+        //      IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
+        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
@@ -36,7 +41,7 @@ public class ClusteringEngineMgfTests {
             }
         }
 
-        List<ISpectralCluster> oldClusters =  (List<ISpectralCluster> )oldClusteringEngine.getClusters();
+        List<ISpectralCluster> oldClusters = (List<ISpectralCluster>) oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
     }
 }

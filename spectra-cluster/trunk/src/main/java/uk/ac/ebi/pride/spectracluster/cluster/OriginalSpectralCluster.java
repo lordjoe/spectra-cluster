@@ -1,13 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
-import java.io.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.OriginalSpectralCluster
@@ -35,12 +40,12 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     @Override
     public String getSpectralId() {
         StringBuilder sb = new StringBuilder();
-        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        List<String> spectralIds = new ArrayList<String>(getSpectralIds());
         Collections.sort(spectralIds);
-        sb.append(spectralIds.get(0)) ;
+        sb.append(spectralIds.get(0));
         for (int i = 1; i < spectralIds.size(); i++) {
-            sb.append(",") ;
-            sb.append(spectralIds.get(i)) ;
+            sb.append(",");
+            sb.append(spectralIds.get(i));
         }
         return sb.toString();
     }
@@ -75,7 +80,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     @Override
     public List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-     }
+    }
 
     @Override
     public ISpectrum getConsensusSpectrum() {
@@ -121,6 +126,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
 
     /**
      * make a one line report
+     *
      * @param out
      */
     @Override
@@ -160,8 +166,7 @@ public class OriginalSpectralCluster implements ISpectralCluster {
             appendSpectra(out);
             out.append("END CLUSTER");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -204,13 +209,11 @@ public class OriginalSpectralCluster implements ISpectralCluster {
                 out.append("\ttrue\n");
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
     }
-
 
 
     @Override
@@ -264,15 +267,14 @@ public class OriginalSpectralCluster implements ISpectralCluster {
     }
 
 
-
     @Override
     /**
      * Sort according to m/z.
      */
     public int compareTo(ISpectralCluster o) {
-         // debug inconsistent compare
+        // debug inconsistent compare
         return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
-       }
+    }
 
     /**
      * like equals but weaker - says other is equivalent to this

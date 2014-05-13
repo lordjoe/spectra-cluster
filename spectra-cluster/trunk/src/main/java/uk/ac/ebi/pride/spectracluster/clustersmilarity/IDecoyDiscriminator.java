@@ -1,8 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator
  * User: Steve

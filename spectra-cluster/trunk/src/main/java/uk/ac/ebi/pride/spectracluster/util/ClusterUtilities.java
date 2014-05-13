@@ -1,12 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import com.lordjoe.algorithms.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
+import com.lordjoe.algorithms.CountedString;
+import com.lordjoe.algorithms.LinearBinner;
+import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.*;
 
 
@@ -142,8 +147,7 @@ public class ClusterUtilities {
 
             ret.setCluster(clusters[0]);
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -342,8 +346,7 @@ public class ClusterUtilities {
                 for (ISpectrum spectrum : clusteredSpectra) {
                     asSingleSpectra.add(spectrum.asCluster()); // di not retain but return as one spectrum clusters
                 }
-            }
-            else {
+            } else {
                 retained.add(cluster); // large enough keep it
             }
         }
@@ -654,8 +657,7 @@ public class ClusterUtilities {
             }
             if (mergeWith == null) {
                 retained.add(cluster); // nothing to merge with so keep the cluster
-            }
-            else {  // merge with a close enough cluster
+            } else {  // merge with a close enough cluster
                 mergeWith.addSpectra(cluster.getClusteredSpectra());
             }
         }
@@ -702,8 +704,7 @@ public class ClusterUtilities {
             }
             if (mergeWith == null) {
                 retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
-            }
-            else {  // merge with a close enough cluster
+            } else {  // merge with a close enough cluster
                 // note this may disturb the order of the cluster list but should not stop
                 // the algorithm from working
                 mergeWith.addSpectra(cluster.getClusteredSpectra());
@@ -786,8 +787,7 @@ public class ClusterUtilities {
             out.append("description=" + name);
             out.append("\n");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

@@ -1,19 +1,21 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.springframework.jdbc.core.simple.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 /**
-* uk.ac.ebi.pride.spectracluster.datastore.ClusterMapper
-* User: Steve
-* Date: 7/15/13
-*/
+ * uk.ac.ebi.pride.spectracluster.datastore.ClusterMapper
+ * User: Steve
+ * Date: 7/15/13
+ */
 public class ClusterMapper implements ParameterizedRowMapper<ISpectralCluster> {
     ClusterMapper() {
     }
+
     public static final int MAX_ID_LENGTH = 16;
 
     public static final String TABLE_CREATE_STATEMENT =
@@ -21,7 +23,7 @@ public class ClusterMapper implements ParameterizedRowMapper<ISpectralCluster> {
                     "  `id` varchar(" + MAX_ID_LENGTH + ")   NOT NULL UNIQUE,\n" +
                     "  `precursor_charge` int(11) NOT NULL,\n" +
                     "  `precursor_mz` double NOT  NULL,\n" +
-                           ")";
+                    ")";
 
 
     @Override
@@ -37,5 +39,5 @@ public class ClusterMapper implements ParameterizedRowMapper<ISpectralCluster> {
 //
 //        ISpectrum ret = new PeptideSpectrumMatch(id, peptide, precursor_charge, precursor_mz, peaks);
 //        return ret;
-      }
+    }
 }

@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ConsensusSilimarityDistance
@@ -13,7 +13,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  */
 public class ConsensusSimilarityDistance implements IClusterDistance {
 
-     public static final String VERSION = "0.1";
+    public static final String VERSION = "0.1";
     public static final ConsensusSimilarityDistance INSTANCE = new ConsensusSimilarityDistance();
 
     private final SimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
@@ -26,10 +26,10 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
         ISpectrum sp2 = c2.getConsensusSpectrum();
         double d11 = sp1.getSelfDotProduct();
         double d22 = sp2.getSelfDotProduct();
-        double dist = similarity.assessSimilarity(sp1,sp2);
+        double dist = similarity.assessSimilarity(sp1, sp2);
 
         return 1.0 - (dist * dist) / (d11 * d22);
-      }
+    }
 
     /**
      * return a name which should not change
@@ -38,7 +38,7 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
      */
     @Override
     public String getName() {
-          return getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 
     /**
@@ -48,7 +48,7 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
      */
     @Override
     public String getCurrentVersion() {
-         return VERSION;
+        return VERSION;
     }
 
     /**

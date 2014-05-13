@@ -1,16 +1,23 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.tools.jmzreader.model.impl.ParamGroup;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.IntensityNormalizer;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.impl.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters
@@ -66,9 +73,9 @@ public class Adapters {
 
         ISpectrum ret = new PeptideSpectrumMatch(id,
                 peptide,
-                (int)(precursorCharge + 0.5),
-                (float)precursorMZ,
-                 newPeaks);
+                (int) (precursorCharge + 0.5),
+                (float) precursorMZ,
+                newPeaks);
 
         return ret;
     }
@@ -80,45 +87,45 @@ public class Adapters {
      * @return !null equivalent peak
      */
     public static IPeak fromPeak(Peak pk) {
-        IPeak ret = new uk.ac.ebi.pride.spectracluster.spectrum.Peak((float)pk.getMz(),(float) pk.getIntensity(), pk.getCount());
+        IPeak ret = new uk.ac.ebi.pride.spectracluster.spectrum.Peak((float) pk.getMz(), (float) pk.getIntensity(), pk.getCount());
         return ret;
     }
 
 
     /**
-      * convert old peak to new  peak
-      *
-      * @param pk !null peak list
-      * @return !null equivalent peak list
-      */
-     public static  List<IPeak>  fromPeaks(List<Peak> pks) {
-         List<IPeak> ret = new ArrayList<IPeak>();
-         for (Peak k : pks) {
-             if (k != null) {
+     * convert old peak to new  peak
+     *
+     * @param pk !null peak list
+     * @return !null equivalent peak list
+     */
+    public static List<IPeak> fromPeaks(List<Peak> pks) {
+        List<IPeak> ret = new ArrayList<IPeak>();
+        for (Peak k : pks) {
+            if (k != null) {
                 ret.add(fromPeak(k));
-             }
-         }
-         Collections.sort(ret)   ;
-         return ret;
-     }
+            }
+        }
+        Collections.sort(ret);
+        return ret;
+    }
 
     /**
-      * convert old peak to new  peak
-      *
-      * @param pk !null peak list
-      * @return !null equivalent peak list
-      */
-     public static  List<Peak>  fromIPeaks(List<IPeak> pks) {
-         Collections.sort(pks)   ;
-         List<Peak> ret = new ArrayList<Peak>();
-         for (IPeak k : pks) {
-              ret.add(fromPeak(k));
-         }
-          return ret;
-     }
+     * convert old peak to new  peak
+     *
+     * @param pk !null peak list
+     * @return !null equivalent peak list
+     */
+    public static List<Peak> fromIPeaks(List<IPeak> pks) {
+        Collections.sort(pks);
+        List<Peak> ret = new ArrayList<Peak>();
+        for (IPeak k : pks) {
+            ret.add(fromPeak(k));
+        }
+        return ret;
+    }
 
 
-     /**
+    /**
      * convert old  SpectraCluster to new
      *
      * @param inp !null cluster
@@ -126,7 +133,7 @@ public class Adapters {
      */
     public static SpectraCluster fromSpectraCluster(ISpectralCluster inp) {
         String id = "";
-        SpectraCluster ret = new SpectraCluster(consensusBuilder,normalizer);
+        SpectraCluster ret = new SpectraCluster(consensusBuilder, normalizer);
         final List<ISpectrum> spectra = inp.getClusteredSpectra();
 
         for (ISpectrum sc : spectra) {
@@ -162,8 +169,8 @@ public class Adapters {
                 (int) precursorCharge,
                 newPeaks);
 
-        if(inp instanceof IPeptideSpectrumMatch)  {
-            ret.setPeptide(((IPeptideSpectrumMatch)inp).getPeptide());
+        if (inp instanceof IPeptideSpectrumMatch) {
+            ret.setPeptide(((IPeptideSpectrumMatch) inp).getPeptide());
         }
         return ret;
     }
@@ -181,22 +188,21 @@ public class Adapters {
     }
 
 
-
     /**
      * operations that merge peaks in lists had better preserve the total count
      * useful in testing and debuggine
+     *
      * @param lst !null list of peaks
-     * @return   total count from all peaks
+     * @return total count from all peaks
      */
-    public static int getTotalCount(List<Peak> lst)    {
+    public static int getTotalCount(List<Peak> lst) {
         int total = 0;
         for (Peak pk : lst) {
-            if(pk != null)
-              total += pk.getCount();
+            if (pk != null)
+                total += pk.getCount();
         }
         return total;
     }
-
 
 
 }

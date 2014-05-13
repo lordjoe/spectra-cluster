@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarity

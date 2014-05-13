@@ -1,8 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.quality;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeakIntensityComparator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker
@@ -17,24 +22,25 @@ public class SignalToNoiseChecker implements QualityScorer {
 
 
     /**
-      * return a name which should not change
-      *
-      * @return !null name
-      */
-     @Override
-     public String getName() {
-         return getClass().getSimpleName();
-     }
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
-     /**
-      * return a version number - this may be updated over time
-      *
-      * @return !null version
-      */
-     @Override
-     public String getCurrentVersion() {
-         return VERSION;
-     }
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return VERSION;
+    }
+
     /**
      * Calculates a spectrum's signal-to-noise ratio
      * by taking the 2nd-6th highest peak's intensity
@@ -47,7 +53,7 @@ public class SignalToNoiseChecker implements QualityScorer {
     public double calculateQualityScore(ISpectrum spectrum) {
         IPeaksSpectrum highestNPeaks = spectrum.getHighestNPeaks(NUMBER_HIGH_PEAKS);
 
-         if (highestNPeaks.getPeaksCount() < NUMBER_HIGH_PEAKS)
+        if (highestNPeaks.getPeaksCount() < NUMBER_HIGH_PEAKS)
             return 0.0;
         double totalIntensity = highestNPeaks.getTotalIntensity();
         double highestPeak = 0;

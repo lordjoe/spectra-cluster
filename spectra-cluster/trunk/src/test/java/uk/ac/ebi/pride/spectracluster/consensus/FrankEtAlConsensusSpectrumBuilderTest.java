@@ -1,10 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,7 +24,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
         List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
 
         // iterate over all clusters
-                 //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
@@ -49,7 +53,6 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             index++; // track where we are
         }
     }
-
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -81,9 +84,9 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
     }
 
     private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
-                 //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double total1 = 0;
-                 //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double total2 = 0;
 
         // check the size of the peaks

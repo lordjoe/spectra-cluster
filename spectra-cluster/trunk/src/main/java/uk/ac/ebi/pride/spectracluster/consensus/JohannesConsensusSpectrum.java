@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.consensus.JohannesConsessusSpectrum
@@ -23,7 +26,6 @@ import java.util.*;
  * User: Steve
  * Date: 8/8/13
  * This is the code from Revision 103 put back as a new class to get unit tests of later versions workig
- *
  */
 public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
 
@@ -34,17 +36,17 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
     public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
         private ConsensusSpectrumFactory() {
         }
-        /**
-           * build a new instance of the cpectrum builder
-           *
-           * @return !null instance
-           */
-          @Override
-          public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-              return new JohannesConsensusSpectrum();
-          }
-      }
 
+        /**
+         * build a new instance of the cpectrum builder
+         *
+         * @return !null instance
+         */
+        @Override
+        public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+            return new JohannesConsensusSpectrum();
+        }
+    }
 
 
     private final String id;
@@ -76,7 +78,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * Rounding factor to use. 1000 means 3 positions after the comma.
      */
-     public final static boolean USE_ROUNDING = true;
+    public final static boolean USE_ROUNDING = true;
 
     /**
      * Holds all peaks from all added spectra. In case an exact m/z is found twice, the intensities are added.
@@ -98,10 +100,10 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
 
     /**
      * expose a normally private field for testing
+     *
      * @return
      */
-    protected  List<IPeak> getInternalPeaks()
-    {
+    protected List<IPeak> getInternalPeaks() {
         return consensusPeaks;
     }
 
@@ -165,7 +167,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = (float)ClusterUtilities.round(mzToRemove);
+                mzToRemove = (float) ClusterUtilities.round(mzToRemove);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -178,9 +180,9 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToRemove == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                            currentExistingPeak.getMz(),
-                            currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
-                            currentExistingPeak.getCount() - 1)
+                                    currentExistingPeak.getMz(),
+                                    currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
+                                    currentExistingPeak.getCount() - 1)
                     );
 
                     posAllPeaks = j;
@@ -226,7 +228,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = (float)ClusterUtilities.round(mzToAdd );
+                mzToAdd = (float) ClusterUtilities.round(mzToAdd);
 
             boolean wasAdded = false;
 
@@ -242,9 +244,9 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToAdd == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                            currentExistingPeak.getMz(),
-                            peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
-                            currentExistingPeak.getCount() + 1)
+                                    currentExistingPeak.getMz(),
+                                    peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
+                                    currentExistingPeak.getCount() + 1)
                     );
                     posAllPeaks = j;
                     wasAdded = true;
@@ -294,8 +296,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             averagePrecursorMz = sumPrecursorMz / nSpectra;
             averageCharge = sumCharge / nSpectra;
             averagePrecursorIntens = sumPrecursorIntens / nSpectra;
-        }
-        else {
+        } else {
             averagePrecursorMz = 0;
             averageCharge = 0;
             averagePrecursorIntens = 0;
@@ -353,8 +354,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             for (int i = lowerBound; i < consensusPeaks.size(); i++) {
                 if (consensusPeaks.get(i).getMz() <= endMz) {
                     peakBuffer.add(consensusPeaks.get(i));
-                }
-                else {
+                } else {
                     lowerBound = i;
                     break;
                 }
@@ -417,8 +417,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
                     );
 
                     consensusPeaks.set(i + 1, newPeak);
-                }
-                else {
+                } else {
                     // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
                     // list and are thereby removed from the consensusPeaks
                     newPeakList.add(consensusPeaks.get(i));

@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable
@@ -14,11 +14,10 @@ import java.util.*;
  */
 public class MGFSpectrumIterable implements Iterable<ISpectrum> {
 
-    protected static LineNumberReader fileToLineNumberReader(File f)    {
+    protected static LineNumberReader fileToLineNumberReader(File f) {
         try {
             return new LineNumberReader(new FileReader(f));
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -31,33 +30,37 @@ public class MGFSpectrumIterable implements Iterable<ISpectrum> {
 
     /**
      * build with an existing readable file
+     *
      * @param f !null existing non-directory mgf file
      */
     public MGFSpectrumIterable(File f) {
-        this(fileToLineNumberReader(f)) ;
+        this(fileToLineNumberReader(f));
     }
 
     /**
      * build with input stream
-     * @param rdr  !null open input stream
+     *
+     * @param rdr !null open input stream
      */
     public MGFSpectrumIterable(InputStream rdr) {
         this(new LineNumberReader(new InputStreamReader(rdr)));
     }
 
     /**
-      * build with reader
-      * @param rdr  !null open reader
-      */
+     * build with reader
+     *
+     * @param rdr !null open reader
+     */
     public MGFSpectrumIterable(Reader rdr) {
         this(new LineNumberReader(rdr));
     }
 
 
     /**
-      * build with LineNumberReader
-      * @param rdr  !null open LineNumberReader
-      */
+     * build with LineNumberReader
+     *
+     * @param rdr !null open LineNumberReader
+     */
     public MGFSpectrumIterable(LineNumberReader rdr) {
         reader = new LineNumberReader(rdr);
         nextSpectrum = ParserUtilities.readMGFScan(reader);
@@ -98,8 +101,7 @@ public class MGFSpectrumIterable implements Iterable<ISpectrum> {
          * Returns the next element in the iteration.
          *
          * @return the next element in the iteration.
-         * @throws java.util.NoSuchElementException
-         *          iteration has no more elements.
+         * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         @Override
         public ISpectrum next() {

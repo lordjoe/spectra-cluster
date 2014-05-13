@@ -1,11 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.io.*;
-import java.math.*;
-import java.util.*;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rui Wang
@@ -33,6 +35,7 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
 
     /**
      * set uret.setPeptide( from a tsv line
+     *
      * @param tsv
      * @return
      */
@@ -241,8 +244,7 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
             out.append("\t");
             out.append(getPeptide());
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

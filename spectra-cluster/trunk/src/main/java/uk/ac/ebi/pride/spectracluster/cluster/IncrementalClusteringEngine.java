@@ -1,12 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.IProgressHandler;
+import com.lordjoe.utilities.Util;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -153,7 +157,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
 
-
     /**
      * allow nonfitting spectra to leave and return a list of clusters to write out
      *
@@ -163,7 +166,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**
@@ -272,7 +275,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
         //  handle the case of subsets and almost subsets
-        if (handleFullContainment(clusterToAdd ))
+        if (handleFullContainment(clusterToAdd))
             return; // no need to add we are contained
 
 
@@ -331,10 +334,12 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     // with 1 we merge all true subclusters but not others
     public static final double MINIMUM_MERGE_SCORE = 1; // 0.5;
+
     /**
-     *   figure out is
+     * figure out is
+     *
      * @param clusterToAdd
-     * @return  true is we fully replace a cluster with a larger or find this fully contained
+     * @return true is we fully replace a cluster with a larger or find this fully contained
      */
     protected boolean handleFullContainment(final ISpectralCluster clusterToAdd) {
         final List<ISpectralCluster> myclusters = internalGetClusters();
@@ -342,15 +347,15 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         double bestSimilarity = Double.MIN_VALUE;
         for (ISpectralCluster myCluster : myclusters) {
             double score = ClusterSimilarityUtilities.clusterFullyContainsScore(myCluster, clusterToAdd);
-            if(score > bestSimilarity) {
+            if (score > bestSimilarity) {
                 bestSimilarity = score;
                 toReplace = myCluster;
-                if(score == 1)   // is full subset
+                if (score == 1)   // is full subset
                     break;
-              }
-         }
+            }
+        }
 
-        if (bestSimilarity >= MINIMUM_MERGE_SCORE ) {
+        if (bestSimilarity >= MINIMUM_MERGE_SCORE) {
             mergeIntoCluster(clusterToAdd, toReplace);
             return true; // done
         }

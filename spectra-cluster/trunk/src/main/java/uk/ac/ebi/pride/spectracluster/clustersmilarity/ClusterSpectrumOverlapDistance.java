@@ -14,7 +14,7 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
 
     public static final String VERSION = "1.0";
 
-      public static final ClusterSpectrumOverlapDistance INSTANCE = new ClusterSpectrumOverlapDistance();
+    public static final ClusterSpectrumOverlapDistance INSTANCE = new ClusterSpectrumOverlapDistance();
 
     private ClusterSpectrumOverlapDistance() {
     }
@@ -41,8 +41,8 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
 
 
         int together = c1Andc2.size();
-        together = Math.min(c1SpectralIds.size(),c2SpectralIds.size());
-        if(together == 0)
+        together = Math.min(c1SpectralIds.size(), c2SpectralIds.size());
+        if (together == 0)
             return 1;
         return 1 - (size / together);
     }

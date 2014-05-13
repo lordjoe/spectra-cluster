@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public boolean isDecoy() {
-        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId()) ;
+        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId());
         return psm.isDecoy();
     }
 
@@ -65,7 +65,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public double getSelfDotProduct() {
         if (selfDotProduct == null) {
-            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this,this);
+            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this, this);
         }
         return selfDotProduct;
     }
@@ -87,9 +87,9 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public boolean equivalent(ISpectrum other) {
-        if(!getId().equals(other.getId()))
+        if (!getId().equals(other.getId()))
             return false;
-          if(getRetriever() != null )
+        if (getRetriever() != null)
             return getInternalSpectrum().equivalent(other);
         else
             return true;
@@ -120,10 +120,10 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
      */
     @Override
     public String getPeptide() {
-        if(getRetriever() == null)
+        if (getRetriever() == null)
             return null;
         IPeptideSpectrumMatch internalSpectrum1 = getInternalSpectrum();
-        if(internalSpectrum1 == null)
+        if (internalSpectrum1 == null)
             return null;
         return internalSpectrum1.getPeptide();
     }
@@ -202,10 +202,9 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public void appendSPText(final Appendable out) {
         throw new UnsupportedOperationException("Fix This");
-     }
+    }
 
-    public String toString()
-    {
+    public String toString() {
         return getId();
     }
 
@@ -221,18 +220,17 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
             out.append("\t");
             out.append(Integer.toString(getPrecursorCharge()));
             out.append("\t");
-            String mzString = String.format("%10.2f",getPrecursorMz()).trim();
+            String mzString = String.format("%10.2f", getPrecursorMz()).trim();
             out.append(mzString);
             out.append("\t");
             out.append(getPeptide());
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
 
-      }
+    }
 
 
 }

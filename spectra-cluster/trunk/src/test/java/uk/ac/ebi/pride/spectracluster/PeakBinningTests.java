@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.PeakBinningTests
@@ -15,13 +18,12 @@ import java.util.*;
 public class PeakBinningTests {
 
 
-
     @Test
     public void testPeakBinning() throws Exception {
 
-        final List<ConsensusSpectraItems> consensusSpectraItems  = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
-        for (ConsensusSpectraItems csi : consensusSpectraItems ) {
-               for (ISpectrum sp : csi.getSpectra()) {
+        final List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
+        for (ConsensusSpectraItems csi : consensusSpectraItems) {
+            for (ISpectrum sp : csi.getSpectra()) {
                 testPeakBin(sp.getPeaks());
             }
         }

@@ -18,25 +18,24 @@ import java.util.List;
 public class ClusteringFileTest {
 
     @Test
-    public void testParseClusteringFile()
-    {
+    public void testParseClusteringFile() {
         LineNumberReader inp = ClusteringTestUtilities.getResourceClusteringReader();
         ISpectrumRetriever spectrumRetriever = null;
 
         ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(inp, spectrumRetriever);
 
-        Assert.assertEquals(48,clusters.length);
+        Assert.assertEquals(48, clusters.length);
 
-        LazyLoadedSpectralCluster firstCluster = (LazyLoadedSpectralCluster)clusters[0];
-        Assert.assertEquals(531.0,firstCluster.getPrecursorMz(), 0.001);
-        Assert.assertEquals(84,firstCluster.getClusteredSpectraCount());
+        LazyLoadedSpectralCluster firstCluster = (LazyLoadedSpectralCluster) clusters[0];
+        Assert.assertEquals(531.0, firstCluster.getPrecursorMz(), 0.001);
+        Assert.assertEquals(84, firstCluster.getClusteredSpectraCount());
         List<String> peptides = firstCluster.getPeptides();
         Assert.assertEquals("GTIEIVSDVK", peptides.get(0));
 
 
-        LazyLoadedSpectralCluster lastCluster = (LazyLoadedSpectralCluster)clusters[47];
+        LazyLoadedSpectralCluster lastCluster = (LazyLoadedSpectralCluster) clusters[47];
         Assert.assertEquals(531.977, lastCluster.getPrecursorMz(), 0.001);
-        Assert.assertEquals(19,lastCluster.getClusteredSpectraCount());
+        Assert.assertEquals(19, lastCluster.getClusteredSpectraCount());
         List<String> peptides1 = lastCluster.getPeptides();
         Assert.assertEquals("AEQVFQNVK", peptides1.get(0));
 

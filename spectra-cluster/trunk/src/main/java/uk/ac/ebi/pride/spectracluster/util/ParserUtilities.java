@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectrum;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -52,8 +55,7 @@ public class ParserUtilities {
     public static ISpectralCluster[] readSpectralCluster(File inp) {
         try {
             return readSpectralCluster(new LineNumberReader(new FileReader(inp)));
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -169,14 +171,13 @@ public class ParserUtilities {
                     ret.addSpectra(internal);
 
                 line = inp.readLine();
-                if(line == null)
+                if (line == null)
                     return null; // huh - not terminated well
 
                 if (line.startsWith(END_CLUSTER))
                     return ret;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return null; // nothing found or incloplete
@@ -219,8 +220,7 @@ public class ParserUtilities {
                 if (first != null)
                     holder.add(first);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         ret.setSpectra(holder);
@@ -288,8 +288,7 @@ public class ParserUtilities {
             );
             inp.reset();
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -320,8 +319,7 @@ public class ParserUtilities {
                         }
                     }
                     clusterContent.clear();
-                }
-                else {
+                } else {
                     clusterContent.add(line);
                 }
 
@@ -334,8 +332,7 @@ public class ParserUtilities {
                     holder.add(cluster);
                 }
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
@@ -351,7 +348,7 @@ public class ParserUtilities {
         String consensusMzLine = null;
         String consensusIntensityLine = null;
         for (String clusterLine : clusterLines) {
-            if(clusterLine.length() == 0)
+            if (clusterLine.length() == 0)
                 break;
             if (clusterLine.startsWith("name=")) {
                 break; // start of a new file
@@ -359,30 +356,24 @@ public class ParserUtilities {
             if (clusterLine.startsWith(AVERAGE_PRECURSOR_MZ)) {
                 float precursorMz = Float.parseFloat(clusterLine.replace(AVERAGE_PRECURSOR_MZ, ""));
                 cluster.setPrecursorMz(precursorMz);
-            }
-            else if (clusterLine.startsWith(CONSENSUS_MZ)) {
+            } else if (clusterLine.startsWith(CONSENSUS_MZ)) {
                 consensusMzLine = clusterLine.replace(CONSENSUS_MZ, "");
-            }
-            else if (clusterLine.startsWith(CONSENSUS_INTENSITY)) {
+            } else if (clusterLine.startsWith(CONSENSUS_INTENSITY)) {
                 consensusIntensityLine = clusterLine.replace(CONSENSUS_INTENSITY, "");
-            }
-            else if (clusterLine.startsWith(PEPTIDE_SEQUENCE)) {
+            } else if (clusterLine.startsWith(PEPTIDE_SEQUENCE)) {
                 String peptideSequence = clusterLine.replace(PEPTIDE_SEQUENCE, "");
                 peptideSequence = peptideSequence.replace("[", "").replace("]", "");
                 cluster.addPeptides(peptideSequence);
-            }
-            else if (clusterLine.startsWith(SPECTRUM_ID)) {
+            } else if (clusterLine.startsWith(SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
                 String id = parts[1];
-           //     IPeptideSpectrumMatch spectrum = PSMSpectrum.getSpectrum(id );
+                //     IPeptideSpectrumMatch spectrum = PSMSpectrum.getSpectrum(id );
                 LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
-                 cluster.addSpectra(spectrum);
-            }
-            else //noinspection StatementWithEmptyBody
+                cluster.addSpectra(spectrum);
+            } else //noinspection StatementWithEmptyBody
                 if (clusterLine.startsWith(AVERAGE_PRECURSOR_INTENSITY)) {
                     // do nothing here
-                }
-                else {
+                } else {
                     if (clusterLine.length() > 0) {
                         throw new IllegalArgumentException("cannot process line " + clusterLine);
                     }
@@ -413,8 +404,7 @@ public class ParserUtilities {
             }
             Collections.sort(holder);  // sort peaks by mz
             return holder;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return null;
         }
     }
@@ -503,8 +493,7 @@ public class ParserUtilities {
     public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
         try {
             return readMGFScans(new LineNumberReader(new FileReader(inp)));
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -656,8 +645,7 @@ public class ParserUtilities {
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
-                }
-                else {
+                } else {
                     line = line.replace("\t", " ");
                     String[] items = line.split(" ");
                     // not sure we should let other ceses go but this is safer
@@ -667,13 +655,11 @@ public class ParserUtilities {
                             float peakIntensity = Float.parseFloat(items[1].trim());
                             Peak added = new Peak(peakMass, peakIntensity);
                             holder.add(added);
-                        }
-                        catch (NumberFormatException e) {
+                        } catch (NumberFormatException e) {
                             // I am not happy but I guess we can forgive a little bad data
                             handleBadMGFData(line);
                         }
-                    }
-                    else {
+                    } else {
                         // I am not happy but I guess we can forgive a little bad data
                         handleBadMGFData(line);
                     }
@@ -682,8 +668,7 @@ public class ParserUtilities {
                 }
             }
             return null; // or should an exception be thrown - we did not hit an END IONS tag
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -720,8 +705,8 @@ public class ParserUtilities {
      * @return
      */
     public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp) {
-            return readSPTextScan(inp,null);
-      }
+        return readSPTextScan(inp, null);
+    }
 
     /**
      * @param inp  !null reader
@@ -793,8 +778,7 @@ public class ParserUtilities {
                     peaks.add(peak);
                     if (peaks.size() >= numberPeaks) {
                         break;
-                    }
-                    else {
+                    } else {
                         line = inp.readLine();
                         continue;
                     }
@@ -846,12 +830,12 @@ public class ParserUtilities {
                     continue;
                 }
                 textPart = getTextPart(line, NUM_PEAKS_START2);
-                 if (textPart != null) {
-                     numberPeaks = Integer.parseInt(textPart);
-                     line = inp.readLine();
-                     //noinspection UnnecessaryContinue
-                     continue;
-                 }
+                if (textPart != null) {
+                    numberPeaks = Integer.parseInt(textPart);
+                    line = inp.readLine();
+                    //noinspection UnnecessaryContinue
+                    continue;
+                }
                 throw new IllegalStateException("cannot understand line " + line);
 
             }
@@ -866,12 +850,11 @@ public class ParserUtilities {
                     commentLine // save title - sequence as annotation
             );
             for (String s : properties.keySet()) {
-                spectrum.setProperty(s,properties.get(s));
+                spectrum.setProperty(s, properties.get(s));
             }
             return spectrum;
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -881,59 +864,59 @@ public class ParserUtilities {
     protected static void handleCommentText(String textPart, Map<String, String> properties) {
         List<String> items = splitNameValueText(textPart);
         //noinspection ForLoopReplaceableByForEach
-        for ( String item : items) {
-             handleProperty(item, properties);
+        for (String item : items) {
+            handleProperty(item, properties);
         }
     }
 
-    protected static List<String>   splitNameValueText(String textPart ) {
+    protected static List<String> splitNameValueText(String textPart) {
         List<String> items = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
         textPart = textPart.trim();
 
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < textPart.length(); i++) {
-             char c = textPart.charAt(i);
-             switch(c)   {
-                 case ' ' :
-                     if(sb.length() > 0)  {
-                         items.add(sb.toString());
-                         sb.setLength(0);
-                     }
-                     break;
+            char c = textPart.charAt(i);
+            switch (c) {
+                case ' ':
+                    if (sb.length() > 0) {
+                        items.add(sb.toString());
+                        sb.setLength(0);
+                    }
+                    break;
 
-                 case '\"' :
-                      c = textPart.charAt(++i);
-                     while(c != '\"')  {
-                         sb.append(c);
-                         c = textPart.charAt(++i);
-                     }
-                     break;
-                 default:
-                     sb.append(c);
+                case '\"':
+                    c = textPart.charAt(++i);
+                    while (c != '\"') {
+                        sb.append(c);
+                        c = textPart.charAt(++i);
+                    }
+                    break;
+                default:
+                    sb.append(c);
 
-             }
-         }
-        if(sb.length() < 0)  {
-                items.add(sb.toString());
-                sb.setLength(0);
             }
+        }
+        if (sb.length() < 0) {
+            items.add(sb.toString());
+            sb.setLength(0);
+        }
         return items;
     }
 
     protected static void handleProperty(String protertyExpression, Map<String, String> properties) {
-        if(protertyExpression.contains("="))  {
+        if (protertyExpression.contains("=")) {
             String[] items = protertyExpression.split("=");
-           String key = items[0].trim();
-           String value = items[1].trim();
-           properties.put(key, value);
-           return;
+            String key = items[0].trim();
+            String value = items[1].trim();
+            properties.put(key, value);
+            return;
         }
 
         properties.put(protertyExpression, "true");
 
 
-     }
+    }
 
 
     protected static IPeak buildPeak(String textPart) {
@@ -945,8 +928,8 @@ public class ParserUtilities {
 
     protected static String getTextPart(String line, String prefix) {
         if (line.startsWith(prefix))
-            return new  String(line.substring(prefix.length()).trim());  // I am worried about small substrings of big strings
-            return null;
+            return new String(line.substring(prefix.length()).trim());  // I am worried about small substrings of big strings
+        return null;
     }
 
     /**
@@ -982,8 +965,7 @@ public class ParserUtilities {
     public static void guaranteeMGFParse(String filename) {
         try {
             guaranteeMGFParse(new FileInputStream(filename));
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -1026,7 +1008,7 @@ public class ParserUtilities {
         if (items.length > 1) {
             spectrumId = items[0].trim().substring("TITLE=id=".length());
         }
-        return new  String(spectrumId);  // I am worried about small substrings of big strings
+        return new String(spectrumId);  // I am worried about small substrings of big strings
     }
 
 
@@ -1058,8 +1040,7 @@ public class ParserUtilities {
             try {
                 Reader isr = new FileReader(f);
                 return new LineNumberReader(isr);
-            }
-            catch (FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 return null;
             }
 
@@ -1085,8 +1066,7 @@ public class ParserUtilities {
             ConsensusSpectraItems[] ret = new ConsensusSpectraItems[holder.size()];
             holder.toArray(ret);
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -1120,4 +1100,4 @@ public class ParserUtilities {
         }
     }
 
- }
+}

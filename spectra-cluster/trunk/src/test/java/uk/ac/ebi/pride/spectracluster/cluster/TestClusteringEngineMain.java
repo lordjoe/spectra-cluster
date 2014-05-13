@@ -1,12 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.PrideClusteringEngine;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.BinningClusteringMain
@@ -70,7 +74,7 @@ public class TestClusteringEngineMain {
             }
         }
 
-        final List<ISpectralCluster> clusters1 =  (List<ISpectralCluster> )engine.getClusters();
+        final List<ISpectralCluster> clusters1 = (List<ISpectralCluster>) engine.getClusters();
 
 
         saveClusters(clusters1, inputFile);

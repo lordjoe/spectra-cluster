@@ -22,6 +22,7 @@ public enum ClusterSimilarityEnum {
 
     /**
      * true if the relationship is a true or close subset and not equality
+     *
      * @return
      */
     public boolean isSubset() {

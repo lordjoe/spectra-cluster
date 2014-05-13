@@ -1,10 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.DatastoreTests
@@ -48,11 +50,11 @@ public class InMemoryDatastoreTests {
             ds.removeSpectrum(spectrum);
         }
         holder.clear();
-         // should be none left
+        // should be none left
         for (ISpectrum spectrum : ds.getAllSpectra()) {
             holder.add(spectrum);
         }
-        Assert.assertEquals(0,holder.size() );
+        Assert.assertEquals(0, holder.size());
 
     }
 
@@ -71,11 +73,11 @@ public class InMemoryDatastoreTests {
 
         ds.clearAllData();
         holder.clear();
-         // should be none left
+        // should be none left
         for (ISpectrum spectrum : ds.getAllSpectra()) {
             holder.add(spectrum);
         }
-        Assert.assertEquals(0,holder.size() );
+        Assert.assertEquals(0, holder.size());
 
     }
 

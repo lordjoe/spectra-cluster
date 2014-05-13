@@ -1,13 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 
-import uk.ac.ebi.pride.spectracluster.datastore.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.datastore.ISpectrumDataStore;
+import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
+import uk.ac.ebi.pride.spectracluster.spectrum.SpectrumClusteringData;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.sql.*;
-import java.io.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.DatabaseReadMain
@@ -79,15 +85,15 @@ public class DatabaseReadMain {
             start = System.currentTimeMillis();
             while (itr.hasNext()) {
                 final ISpectrum next = itr.next();
-                if(next instanceof  IPeptideSpectrumMatch) {
-                    spectraData.add(new SpectrumClusteringData((IPeptideSpectrumMatch)next)) ;
+                if (next instanceof IPeptideSpectrumMatch) {
+                    spectraData.add(new SpectrumClusteringData((IPeptideSpectrumMatch) next));
                 }
-               }
+            }
             end = System.currentTimeMillis();
             long del = end - start;
             addReadTimeMillisec(del);
             readTime += del;
-          }
+        }
 
 
         seconds = (readTime / 1000);
@@ -136,6 +142,7 @@ public class DatabaseReadMain {
 
     /**
      * try to see if a medium suzed 200K spectrum can be characterized in memory
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -153,8 +160,8 @@ public class DatabaseReadMain {
         final ISpectrumDataStore db = mainClusterer.getDatabase();
 
         int nSpectra = 0;
-        for( ISpectrum spc : db.getAllSpectra() ) {
-            SpectrumClusteringData clus = new SpectrumClusteringData((IPeptideSpectrumMatch)spc);
+        for (ISpectrum spc : db.getAllSpectra()) {
+            SpectrumClusteringData clus = new SpectrumClusteringData((IPeptideSpectrumMatch) spc);
             mainClusterer.internalGetSpectraData().add(clus);
             nSpectra++;
         }

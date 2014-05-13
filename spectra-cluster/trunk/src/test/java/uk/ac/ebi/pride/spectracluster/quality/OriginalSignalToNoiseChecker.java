@@ -10,9 +10,9 @@ import java.util.Collections;
  * Assesses a spectrum's signal-to-noise
  * ratio as a measure of the spectrum's
  * quality. The method used is taken from
- * Lam et al. (2008), Nat Methods 5(10):873-875 
- * @author jg
+ * Lam et al. (2008), Nat Methods 5(10):873-875
  *
+ * @author jg
  */
 public class OriginalSignalToNoiseChecker implements QualityScorer {
     public static final String VERSION = "1.0";
@@ -20,35 +20,34 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
     public static final int NUMBER_SPECTRA_TO_CHECK = 6;
 
 
+    /**
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
     /**
-       * return a name which should not change
-       *
-       * @return !null name
-       */
-      @Override
-      public String getName() {
-          return getClass().getSimpleName();
-      }
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return VERSION;
+    }
 
-      /**
-       * return a version number - this may be updated over time
-       *
-       * @return !null version
-       */
-      @Override
-      public String getCurrentVersion() {
-          return VERSION;
-      }
-
-	/**
-	 * Calculates a spectrum's signal-to-noise ratio
-	 * by taking the 2nd-6th highest peak's intensity
-	 * and dividing it by the median intensity of all
-	 * peaks.
-	 * This method should only be used on normalized
-	 * spectra.
-	 */
+    /**
+     * Calculates a spectrum's signal-to-noise ratio
+     * by taking the 2nd-6th highest peak's intensity
+     * and dividing it by the median intensity of all
+     * peaks.
+     * This method should only be used on normalized
+     * spectra.
+     */
     @Override
     public double calculateQualityScore(ISpectrum spectrum) {
         // get the intensities
@@ -61,7 +60,7 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
         // get the total intensity of the 2nd-6th highest peak
         double highestPeakIntensity = 0.0;
 
-          if (intensities.size() < NUMBER_SPECTRA_TO_CHECK)
+        if (intensities.size() < NUMBER_SPECTRA_TO_CHECK)
             return 0.0;
 
         for (int n = intensities.size() - NUMBER_SPECTRA_TO_CHECK; n < intensities.size() - 1; n++)
@@ -74,14 +73,13 @@ public class OriginalSignalToNoiseChecker implements QualityScorer {
         double median = 0.0;
 
         // check if there's an even number of peaks
-        if (nPeaks %2 == 0) {
+        if (nPeaks % 2 == 0) {
             int index1 = (int) nPeaks / 2 - 1;
             Float intensity1 = intensities.get(index1);
             int index2 = (int) nPeaks / 2;
             Float intensity2 = intensities.get(index2);
             median = (intensity1 + intensity2) / 2;
-        }
-        else    {
+        } else {
             int index = (int) nPeaks / 2;
             median = intensities.get(index);
         }

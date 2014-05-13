@@ -1,29 +1,30 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.CommonSpectrumClusterMatch
- *    Comparison is based on the number of spectra in common
-  * @author Steve Lewis
+ * Comparison is based on the number of spectra in common
+ *
+ * @author Steve Lewis
  * @date 05/11/13
  */
 public class CommonSpectrumClusterMatch extends AbstractClusterMatch {
 
-    private final Set<ISpectralCluster>  allSpectra = new HashSet<ISpectralCluster>();
-    private final Set<ISpectralCluster>  commonSpectra = new HashSet<ISpectralCluster>();
+    private final Set<ISpectralCluster> allSpectra = new HashSet<ISpectralCluster>();
+    private final Set<ISpectralCluster> commonSpectra = new HashSet<ISpectralCluster>();
 
     public CommonSpectrumClusterMatch(ISpectralCluster source, ISpectralCluster target) {
         super(source, target);
 
     }
 
-    public double fractionInCommon()
-    {
+    public double fractionInCommon() {
         int total = allSpectra.size();
-        if(total == 0)
+        if (total == 0)
             return 0;
         double common = commonSpectra.size();
         return common / total;
@@ -42,7 +43,7 @@ public class CommonSpectrumClusterMatch extends AbstractClusterMatch {
      */
     @Override
     public double getDistance() {
-         return fractionInCommon();
+        return fractionInCommon();
     }
 
 }

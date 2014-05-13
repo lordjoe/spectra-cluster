@@ -54,9 +54,9 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
     @Override
     public IPeptideSpectrumMatch retrieve(String spectrumId) {
         IPeptideSpectrumMatch iPeptideSpectrumMatch = spectraById.get(spectrumId);
-        if(iPeptideSpectrumMatch != null)
+        if (iPeptideSpectrumMatch != null)
             return iPeptideSpectrumMatch;
-      //  System.out.println("Cannot find " + spectrumId);
+        //  System.out.println("Cannot find " + spectrumId);
         return null;
     }
 
@@ -73,15 +73,14 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
 
 
     @Override
-    public List<IPeptideSpectrumMatch> retrieveAll( ) {
-         List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>(spectraById.values());
-          Collections.sort(holder);
-         return holder;
-     }
+    public List<IPeptideSpectrumMatch> retrieveAll() {
+        List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>(spectraById.values());
+        Collections.sort(holder);
+        return holder;
+    }
 
 
-    public int getSpectraCount()
-    {
+    public int getSpectraCount() {
         return spectraById.size();
     }
 }

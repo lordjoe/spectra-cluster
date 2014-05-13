@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import java.math.*;
-import java.util.*;
+import java.math.BigInteger;
+import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
@@ -13,10 +13,10 @@ import java.util.*;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksHolder {
+public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaksHolder {
 
     // if true only  MAX_PEAKS_TO_KEEP are usedI know
-    public static final boolean  USE_HIGHEST_PEAKS = false;
+    public static final boolean USE_HIGHEST_PEAKS = false;
     /**
      * after this many peaks we can drop the rest
      */
@@ -24,12 +24,13 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksH
     /**
      * sort spectra by ID
      */
-    public static final Comparator<ISpectrum>   ID_COMAPRATOR = new Comparator<ISpectrum>() {
-          @Override
+    public static final Comparator<ISpectrum> ID_COMAPRATOR = new Comparator<ISpectrum>() {
+        @Override
         public int compare(ISpectrum o1, ISpectrum o2) {
-           return o1.getId().compareTo(o2.getId());
+            return o1.getId().compareTo(o2.getId());
         }
     };
+
     /**
      * make a cluster contaiming a single spectrum - this
      *
@@ -55,26 +56,30 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality,IMajorPeaksH
     /**
      * an optimization to return a Biginteger representing bits at the mz values where the
      * majors (top MAJOR_PEAK_NUMBER are
-     * @return  !null value - lazily built
+     *
+     * @return !null value - lazily built
      */
     public BigInteger asMajorPeakBits();
 
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
      * @return
      */
-     public IPeaksSpectrum asMajorPeaks();
+    public IPeaksSpectrum asMajorPeaks();
 
     /**
-      * does the concensus spectrum contin this is a major peak
-      * @param mz   peak as int
-      * @return  true if so
-      */
-     public boolean containsMajorPeak(int mz);
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    public boolean containsMajorPeak(int mz);
 
     /**
      * an optimization for computing distance based on dot product
+     *
      * @return number > 0
      */
     public double getSelfDotProduct();

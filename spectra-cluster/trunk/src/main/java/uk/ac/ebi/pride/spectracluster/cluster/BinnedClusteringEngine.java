@@ -1,12 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.BinnedClusteringEngine
@@ -22,7 +23,7 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     private String name;
 
 
-    public BinnedClusteringEngine(final IWideBinner pBinner, final int pMainBin ) {
+    public BinnedClusteringEngine(final IWideBinner pBinner, final int pMainBin) {
         binner = pBinner;
         mainBin = pMainBin;
         engine = Defaults.INSTANCE.getDefaultClusteringEngine();   // need a new engine every time
@@ -91,7 +92,7 @@ public class BinnedClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**

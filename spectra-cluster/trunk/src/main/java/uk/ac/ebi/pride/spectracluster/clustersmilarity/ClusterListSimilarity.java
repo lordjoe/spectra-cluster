@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
 
@@ -83,8 +83,7 @@ public class ClusterListSimilarity {
                     matched2.add(sc2);
                     alreadyMatched.add(sc1);
                     alreadyMatched.add(sc2);
-                }
-                else {
+                } else {
                     boolean equivalent = sc1.equivalent(sc2);
                     if (equivalent) {
                         distance = dm.distance(sc1, sc2);  // break here
@@ -103,25 +102,21 @@ public class ClusterListSimilarity {
                         e++;
                         alreadyMatched.remove(sc2);
                     }
-                }
-                else {
+                } else {
                     if (lastIsT) {
                         e++;
                         lastIsT = false;
-                    }
-                    else {
+                    } else {
                         t++;
                         lastIsT = true;
                     }
 
                 }
-            }
-            else {
+            } else {
                 if (mass_difference < 0) {
                     alreadyMatched.clear();
                     e++;
-                }
-                else {
+                } else {
                     alreadyMatched.clear();
                     t++;
                 }

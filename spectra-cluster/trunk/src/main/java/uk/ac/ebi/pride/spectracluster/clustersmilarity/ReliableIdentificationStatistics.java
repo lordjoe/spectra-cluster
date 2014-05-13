@@ -1,9 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ReliableIdentificationStatistics
@@ -30,57 +34,57 @@ public class ReliableIdentificationStatistics {
         Map<ISpectralCluster, ClusterPeptidePurity> purities = ClusterPeptidePurity.getPuritiesMap(clusters);
         for (ISpectrum s : idToMap.keySet()) {
             total_spectra++;
-            HashSet<ISpectralCluster>  spectrunClusters = idToMap.get(s);
+            HashSet<ISpectralCluster> spectrunClusters = idToMap.get(s);
             ISpectralCluster usedCluster = getBiggestCluster(spectrunClusters);
             double purity = handleClusterPurity(purities, s, usedCluster);
             addPurity(purity);
         }
-     }
+    }
 
     public double handleClusterPurity(final Map<ISpectralCluster, ClusterPeptidePurity> pPurities, final ISpectrum s, final ISpectralCluster pUsedCluster) {
         ClusterPeptidePurity purity = pPurities.get(pUsedCluster);
-        if(purity.getNumberSpectra() < mimumumClusterSize)  {
+        if (purity.getNumberSpectra() < mimumumClusterSize) {
             totalClusterTooSmall++;
             return 0;
         }
-           if(s instanceof IPeptideSpectrumMatch)  {
+        if (s instanceof IPeptideSpectrumMatch) {
             String peptide = ((IPeptideSpectrumMatch) s).getPeptide();
-            if(peptide == null)  {
+            if (peptide == null) {
                 totalNoPeptide++;
                 return 0;
             }
-            if(!peptide.equals(purity.getMostCommonPeptide()))  {
+            if (!peptide.equals(purity.getMostCommonPeptide())) {
                 totalWrongPeptide++;
                 return 0;
             }
-            return  purity.getFractionMostCommon();
+            return purity.getFractionMostCommon();
         }
         throw new IllegalArgumentException("should always be a IPeptideSpectrumMatch");
     }
 
 
-    protected   ISpectralCluster getBiggestCluster(Collection<ISpectralCluster> clusters)   {
+    protected ISpectralCluster getBiggestCluster(Collection<ISpectralCluster> clusters) {
         ISpectralCluster ret = null;
-        for ( ISpectralCluster cluster : clusters) {
-            if(ret == null)  {
+        for (ISpectralCluster cluster : clusters) {
+            if (ret == null) {
                 ret = cluster;
                 continue;
             }
-            if( ret.getClusteredSpectraCount() < cluster.getClusteredSpectraCount())
+            if (ret.getClusteredSpectraCount() < cluster.getClusteredSpectraCount())
                 ret = cluster;
         }
         return ret;
     }
 
-    protected void addPurity(double purity)   {
+    protected void addPurity(double purity) {
 
         for (int i = 0; i < reverse_cummulativePurityPoints.length; i++) {
-             double rcp = reverse_cummulativePurityPoints[i];
-             if(purity >= rcp)  {
-                 count_by_purity[i]++;
-                 return;
-             }
-         }
+            double rcp = reverse_cummulativePurityPoints[i];
+            if (purity >= rcp) {
+                count_by_purity[i]++;
+                return;
+            }
+        }
         throw new IllegalArgumentException("negative purities not allowed");
 
     }
@@ -102,15 +106,14 @@ public class ReliableIdentificationStatistics {
         return totalWrongPeptide;
     }
 
-    public double fractionWithPurity(double requiredPurity)
-    {
+    public double fractionWithPurity(double requiredPurity) {
         double sum = 0;
         for (int i = 0; i < reverse_cummulativePurityPoints.length; i++) {
             double rcp = reverse_cummulativePurityPoints[i];
-             if(rcp < requiredPurity)
-                 return sum /total_spectra;
+            if (rcp < requiredPurity)
+                return sum / total_spectra;
             sum += count_by_purity[i];
         }
-        return sum /total_spectra;   // todo  is this possible
+        return sum / total_spectra;   // todo  is this possible
     }
 }

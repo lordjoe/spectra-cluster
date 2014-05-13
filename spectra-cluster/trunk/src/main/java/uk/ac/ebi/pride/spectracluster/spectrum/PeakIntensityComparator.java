@@ -24,6 +24,7 @@ public final class PeakIntensityComparator implements Comparator<IPeak> {
 
     /**
      * this version of the comparator puts the highest intensity peaks at the top
+     *
      * @param o1
      * @param o2
      * @return

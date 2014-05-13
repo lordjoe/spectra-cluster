@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * Comparator to compare peaks by intensity first then mz rather than the
@@ -24,6 +24,7 @@ public final class InversePeakIntensityComparator implements Comparator<IPeak> {
 
     /**
      * this version of the comparator puts the highest intensity peaks at the top
+     *
      * @param o1
      * @param o2
      * @return

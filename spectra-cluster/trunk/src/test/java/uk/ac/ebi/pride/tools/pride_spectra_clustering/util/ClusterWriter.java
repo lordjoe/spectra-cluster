@@ -1,7 +1,13 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusterWriter
@@ -105,7 +111,7 @@ public class ClusterWriter {
 
     public static void dumpCluster(SpectraCluster spectraCluster, PrintWriter out) {
         List<ClusteringSpectrum> spectrumsX = spectraCluster.getSpectra();
-        if(spectrumsX.size() == 5)
+        if (spectrumsX.size() == 5)
             spectrumsX = spectraCluster.getSpectra();
         String id = Integer.toString(gClusterId++);
         int charge = (int) (0.5 + spectraCluster.getAverageCharge());
@@ -116,9 +122,9 @@ public class ClusterWriter {
         out.append("\n");
         List<Peak> consensusSpectrum = spectraCluster.consensusSpectrum;
 
-        dumpSpectrum(id, mz,charge,consensusSpectrum, out);
+        dumpSpectrum(id, mz, charge, consensusSpectrum, out);
 
-           // defensive copy
+        // defensive copy
         List<ClusteringSpectrum> spectrums = new ArrayList<ClusteringSpectrum>(spectrumsX);
         Collections.sort(spectrums, BY_SPECTRUM_MZ);
 
@@ -133,7 +139,7 @@ public class ClusterWriter {
     }
 
 
-    public static void dumpSpectrum(String id, double mz, double charge,List<Peak> peaklistX, PrintWriter out) {
+    public static void dumpSpectrum(String id, double mz, double charge, List<Peak> peaklistX, PrintWriter out) {
         out.append("BEGIN IONS");
         out.append("\n");
 
@@ -150,7 +156,7 @@ public class ClusterWriter {
             out.append("+");
         out.append("\n");
 
-         dumpPeaks(  peaklistX,out);
+        dumpPeaks(peaklistX, out);
 
 
         out.append("END IONS");
@@ -165,7 +171,7 @@ public class ClusterWriter {
         out.append("\n");
 
         out.append("TITLE=" + sp.getId());
-          out.append("\n");
+        out.append("\n");
 
 
         out.append("PEPMASS=" + sp.getPrecursorMZ());
@@ -178,7 +184,7 @@ public class ClusterWriter {
         out.append("\n");
 
         List<Peak> peaklistX = sp.getPeaklist();
-        dumpPeaks(  peaklistX,out);
+        dumpPeaks(peaklistX, out);
 
 
         out.append("END IONS");
@@ -187,7 +193,7 @@ public class ClusterWriter {
 
     }
 
-    public static void dumpPeaks(List<Peak> peaklistX ,PrintWriter out) {
+    public static void dumpPeaks(List<Peak> peaklistX, PrintWriter out) {
         // defensive copy
         List<Peak> peaklist = new ArrayList<Peak>(peaklistX);
         Collections.sort(peaklist, BY_MZ);
@@ -207,7 +213,7 @@ public class ClusterWriter {
     }
 
 
-    public static void dumpPeaks(List<Peak> peaklistX ,PrintStream out) {
+    public static void dumpPeaks(List<Peak> peaklistX, PrintStream out) {
         // defensive copy
         List<Peak> peaklist = new ArrayList<Peak>(peaklistX);
         Collections.sort(peaklist, BY_MZ);

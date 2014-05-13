@@ -20,9 +20,9 @@ public class OriginalClusterComparator implements Comparator<ISpectralCluster> {
     @Override
     public int compare(ISpectralCluster cluster1, ISpectralCluster cluster2) {
         // first check whether the precursor m/z is different
-        if (cluster1.getPrecursorMz() - PRECURSOR_RANGE> cluster2.getPrecursorMz())
+        if (cluster1.getPrecursorMz() - PRECURSOR_RANGE > cluster2.getPrecursorMz())
             return -1;
-        if (cluster1.getPrecursorMz() + PRECURSOR_RANGE< cluster2.getPrecursorMz())
+        if (cluster1.getPrecursorMz() + PRECURSOR_RANGE < cluster2.getPrecursorMz())
             return 1;
 
         // as the m/z ranges are the same check the quality

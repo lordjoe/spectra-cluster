@@ -2,8 +2,9 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import junit.framework.*;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -60,24 +61,24 @@ public class ClosestPeaksTest {
                 if (!INTERESTING_ID_SET.contains(id2))
                     continue; // not an interesting case
 
-        //        System.out.println("Comparing " + id1 + " " + id2);
+                //        System.out.println("Comparing " + id1 + " " + id2);
 
                 StringBuilder usedPeaksTester = new StringBuilder();
                 Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
 
 
-                  double dotOrg = checker.assessSimilarity(psm1, psm2);
+                double dotOrg = checker.assessSimilarity(psm1, psm2);
 
-       //         System.out.println("Peaks compared original Frank Et Al (when the code is written)");
+                //         System.out.println("Peaks compared original Frank Et Al (when the code is written)");
                 // print usage
-        //        System.out.println(usedPeaksTester.toString());
+                //        System.out.println(usedPeaksTester.toString());
 
                 usedPeaksTester.setLength(0);  // clear debug output
                 double dotNew = currentChecker.assessSimilarity(psm1, psm2);
 
                 // print usage
-      //          System.out.println("Peaks compared current Frank Et Al ");
-      //          System.out.println(usedPeaksTester.toString());
+                //          System.out.println("Peaks compared current Frank Et Al ");
+                //          System.out.println(usedPeaksTester.toString());
 
 
             }
@@ -88,7 +89,7 @@ public class ClosestPeaksTest {
     /**
      * test that latest and refactored dot products give the same answer
      */
-   // @Test  not sure this always works todo
+    // @Test  not sure this always works todo
     public void testDifferentDotProducts() {
         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
@@ -125,9 +126,9 @@ public class ClosestPeaksTest {
                     interestingIds.add(id1);
                     interestingIds.add(id2);
 
-   //                 System.out.println(usedPeaksTester.toString());
+                    //                 System.out.println(usedPeaksTester.toString());
                     Defaults.INSTANCE.setDebugOutput(null);
-   //                 System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
+                    //                 System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
                 }
                 total++;
 
@@ -137,13 +138,13 @@ public class ClosestPeaksTest {
 
         List<String> sorted = new ArrayList<String>(interestingIds);
         Collections.sort(sorted);
-  //      System.out.println("Interesting Ids");
+        //      System.out.println("Interesting Ids");
         for (String s : sorted) {
-   //         System.out.println(s);
+            //         System.out.println(s);
         }
 
 
-        TestCase.assertEquals(0, different );
+        TestCase.assertEquals(0, different);
     }
 
     /**
@@ -174,7 +175,7 @@ public class ClosestPeaksTest {
                 if (dotOrg - 0.01 > dotNew || dotOrg + 0.01 < dotNew) {
                     different++;
                     StringBuilder usedPeaksTester = new StringBuilder();
-                        Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
+                    Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
                     // these are the really interesting cases
                     dotOrg = checker.assessSimilarity(psm1, psm2);
 
@@ -185,9 +186,9 @@ public class ClosestPeaksTest {
                     interestingIds.add(id1);
                     interestingIds.add(id2);
 
- //                   System.out.println(usedPeaksTester.toString());
-                         Defaults.INSTANCE.setDebugOutput(null);
-  //                  System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
+                    //                   System.out.println(usedPeaksTester.toString());
+                    Defaults.INSTANCE.setDebugOutput(null);
+                    //                  System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
                 }
                 total++;
 
@@ -197,13 +198,13 @@ public class ClosestPeaksTest {
 
         List<String> sorted = new ArrayList<String>(interestingIds);
         Collections.sort(sorted);
-   //     System.out.println("Interesting Ids");
+        //     System.out.println("Interesting Ids");
         for (String s : sorted) {
-   //         System.out.println(s);
+            //         System.out.println(s);
         }
 
 
-        TestCase.assertEquals(0, different );
+        TestCase.assertEquals(0, different);
     }
 
 }

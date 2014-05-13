@@ -42,7 +42,7 @@ public class MgfSpectrumDatastoreLoader {
 
     /**
      * Find all the mgf files
-     *
+     * <p/>
      * If it is a directory, it will only look for mgf files at the root level
      */
     private Collection<File> findMGFFiles(File mgfResource) throws IllegalAccessException {
