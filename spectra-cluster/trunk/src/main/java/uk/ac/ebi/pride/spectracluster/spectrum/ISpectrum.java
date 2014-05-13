@@ -81,11 +81,7 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
      *
      * @return number > 0
      */
+    @Deprecated
     public double getSelfDotProduct();
-
-    /**
-     * Get the quality measure of a spectrum
-     */
-    public double getQualityScore();
 
 }

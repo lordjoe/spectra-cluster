@@ -5,9 +5,9 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * @version $Id$
  */
 @Deprecated
-public interface ISpectrumQuality extends IPeaksSpectrum {
+public interface ISpectrumQuality {
 
-    public static final int BAD_QUALITY_MEASURE = -1;
+//    public static final int BAD_QUALITY_MEASURE = -1;
 
     /**
      * Get the quality measure of a spectrum
