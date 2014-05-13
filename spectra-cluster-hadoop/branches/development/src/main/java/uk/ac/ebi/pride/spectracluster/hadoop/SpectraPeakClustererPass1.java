@@ -10,9 +10,9 @@ import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
-import org.systemsbiology.xtandem.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 
 import java.io.*;
 import java.util.*;
@@ -90,7 +90,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
             // GenericOptionsParser stops after the first non-argument
-            otherArgs = XTandemHadoopUtilities.handleGenericInputs(conf, otherArgs);
+            otherArgs = HadoopUtilities.handleGenericInputs(conf, otherArgs);
 
 
 //        if (otherArgs.length != 2) {
@@ -103,7 +103,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             conf = job.getConfiguration(); // NOTE JOB Copies the configuraton
 
             // make default settings
-            XTandemHadoopUtilities.setDefaultConfigurationArguments(conf);
+            HadoopUtilities.setDefaultConfigurationArguments(conf);
 
             // sincs reducers are writing to hdfs we do NOT want speculative execution
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
@@ -138,7 +138,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
 
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
-                XTandemHadoopUtilities.setInputPath(job, otherArg);
+                HadoopUtilities.setInputPath(job, otherArg);
                 System.err.println("Input path mass finder " + otherArg);
             }
 
@@ -153,7 +153,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             Path outputDir = new Path(athString);
 
             FileSystem fileSystem = outputDir.getFileSystem(conf);
-            XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
+            HadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
@@ -161,20 +161,20 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             boolean ans = job.waitForCompletion(true);
             int ret = ans ? 0 : 1;
             if (ans)
-                XTandemHadoopUtilities.saveCounters(fileSystem, XTandemHadoopUtilities.buildCounterFileName(this, conf), job);
+                HadoopUtilities.saveCounters(fileSystem, HadoopUtilities.buildCounterFileName(this, conf), job);
             else
                 throw new IllegalStateException("Job Failed");
 
             return ret;
         } catch (IOException e) {
-            ExceptionUtilities.printCausalStacks(e);
+            ExceptionUtilities.printUltimateCause(e);
             throw new RuntimeException(e);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
         } catch (ClassNotFoundException e) {
-            ExceptionUtilities.printCausalStacks(e);
+            ExceptionUtilities.printUltimateCause(e);
             throw new RuntimeException(e);
 
         }

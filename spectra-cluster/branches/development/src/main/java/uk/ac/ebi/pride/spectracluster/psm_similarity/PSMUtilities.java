@@ -30,9 +30,7 @@ public class PSMUtilities {
     public static final int MAX_PROCESSED_FILES_DEBUG_ONLY = Integer.MAX_VALUE; // 4;
 
     public static void appendFileClusters(Appendable out, String clusterDirectory, IFileSystem fs, TypedPredicate<String>... tests) {
-        SimpleClusterSet cst = new SimpleClusterSet();
         TypedVisitor<ISpectralCluster> visitor = new AppendClusterings(out);
-        cst.setName(clusterDirectory);
         int numberProcessed = 0;
         if (fs.isDirectory(clusterDirectory)) {
             final String[] files = fs.ls(clusterDirectory);
@@ -45,17 +43,22 @@ public class PSMUtilities {
                     use &= tests[j].apply(file);
                 }
                 if (use) {
+                    SimpleClusterSet cst = new SimpleClusterSet();
+                    cst.setName(clusterDirectory);
                     readClusterSet(clusterDirectory + "/" + file, fs, cst);
                     System.out.println("Read File " + file);
                     if (numberProcessed++ > MAX_PROCESSED_FILES_DEBUG_ONLY)
                         break;
+                    cst.visitClusters(visitor);
                 }
             }
         }
         else {
+            SimpleClusterSet cst = new SimpleClusterSet();
+            cst.setName(clusterDirectory);
             readClusterSet(clusterDirectory, fs, cst);
+            cst.visitClusters(visitor);
         }
-        cst.visitClusters(visitor);
     }
 
     public static class AppendClusterings implements TypedVisitor<ISpectralCluster> {

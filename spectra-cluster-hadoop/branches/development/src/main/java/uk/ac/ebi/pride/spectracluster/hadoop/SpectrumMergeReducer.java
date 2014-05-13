@@ -4,6 +4,7 @@ import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -227,7 +228,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 //        //noinspection UnusedDeclaration
 //        String taskStr = tid.getTaskID().toString();
 //        String paramsFile = application.getDatabaseName() + ".params";
-//        Path dd = XTandemHadoopUtilities.getRelativePath(paramsFile);
+//        Path dd = HadoopUtilities.getRelativePath(paramsFile);
 //
 //        FileSystem fs = FileSystem.get(cfg);
 //

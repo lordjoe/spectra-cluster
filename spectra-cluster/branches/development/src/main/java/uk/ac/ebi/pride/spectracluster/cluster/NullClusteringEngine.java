@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.utilities.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -71,6 +72,19 @@ public class NullClusteringEngine implements IClusteringEngine {
           return new ArrayList<ISpectralCluster>() ;
        }
 
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+    }
 
     /**
      * add code to monitor progress

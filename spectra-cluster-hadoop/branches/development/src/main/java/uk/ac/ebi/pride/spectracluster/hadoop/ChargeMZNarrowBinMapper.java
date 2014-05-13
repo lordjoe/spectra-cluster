@@ -5,6 +5,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;

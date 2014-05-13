@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -297,6 +298,20 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
 
         return noneFittingSpectra;
     }
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+    }
+
 
     /**
      * add code to monitor progress

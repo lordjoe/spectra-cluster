@@ -4,6 +4,7 @@ import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -115,6 +116,20 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
         return  getSomeEngine().findNoneFittingSpectra(cluster);
     }
+
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,getSomeEngine());
+    }
+
 
     /**
      * clusters are merged in the internal collection

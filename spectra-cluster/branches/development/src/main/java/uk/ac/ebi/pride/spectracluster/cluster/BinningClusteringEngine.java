@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 /**
@@ -78,6 +79,18 @@ public class BinningClusteringEngine implements IClusteringEngine {
          return getSomeEngine().findNoneFittingSpectra(cluster);
       }
 
+
+    /**
+     * allow nonfitting spectra to leave and return a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    @Override
+    public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
+        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+    }
 
     /**
      * find the engine for a bin creating one as needed

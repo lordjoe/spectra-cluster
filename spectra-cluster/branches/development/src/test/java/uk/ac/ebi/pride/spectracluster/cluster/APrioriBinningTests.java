@@ -25,6 +25,7 @@ public class APrioriBinningTests {
          int index = 0;
         for (MarkedNumber<String> markedNumber : markedNumbers) {
             String current = markedNumber.getMark();
+            current = current.substring(2); // drop MZ
             double daltons = ClusterUtilities.asDaltons(current);
             int bin = binning.getBin(daltons);
             bins[index++] = bin;
@@ -33,7 +34,7 @@ public class APrioriBinningTests {
         }
         for (int i = 0; i < bins.length; i++) {
             int bin = bins[i];
-            System.out.println(" " + bin + " " + values[bin]);
+  //          System.out.println(" " + bin + " " + values[bin]);
         }
     }
 

@@ -10,9 +10,8 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
-import org.systemsbiology.remotecontrol.*;
-import org.systemsbiology.xtandem.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
@@ -69,7 +68,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
 
             // GenericOptionsParser stops after the first non-argument
-            otherArgs = XTandemHadoopUtilities.handleGenericInputs(conf, otherArgs);
+            otherArgs = HadoopUtilities.handleGenericInputs(conf, otherArgs);
 
 
 //        if (otherArgs.length != 2) {
@@ -83,7 +82,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
 
             // make default settings
-            XTandemHadoopUtilities.setDefaultConfigurationArguments(conf);
+            HadoopUtilities.setDefaultConfigurationArguments(conf);
 
             // sincs reducers are writing to hdfs we do NOT want speculative execution
             // conf.set("mapred.reduce.tasks.speculative.execution", "false");
@@ -115,14 +114,14 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             // Do not set reduce tasks - ue whatever cores are available
             // this does not work just set a number for now
-            // XTandemHadoopUtilities.setRecommendedMaxReducers(job);
+            // HadoopUtilities.setRecommendedMaxReducers(job);
             job.setNumReduceTasks(NUMBER_REDUCE_JOBS);  //  this should scale well enough
 
 
             Path outPath = null;
             if (otherArgs.length > 1) {
                 String otherArg = otherArgs[0];
-                Path inputPath = XTandemHadoopUtilities.setInputPath(job, otherArg);
+                Path inputPath = HadoopUtilities.setInputPath(job, otherArg);
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
@@ -148,7 +147,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
 
             FileSystem fileSystem = outputDir.getFileSystem(conf);
             fileSystem.delete(outputDir,true); // drop prior contents
-         //   XTandemHadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
+         //   HadoopUtilities.expunge(outputDir, fileSystem);    // make sure thia does not exist
             FileOutputFormat.setOutputPath(job, outputDir);
             System.err.println("Output path mass finder " + outputDir);
 
@@ -156,10 +155,10 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
             boolean ans = job.waitForCompletion(true);
             int ret = ans ? 0 : 1;
             if (ans) {
-                String fileName = XTandemHadoopUtilities.buildCounterFileName(this, conf);
-                XTandemHadoopUtilities.saveCounters(fileSystem, fileName, job);
+                String fileName = HadoopUtilities.buildCounterFileName(this, conf);
+                HadoopUtilities.saveCounters(fileSystem, fileName, job);
 
-                XTandemHadoopUtilities.deleteTmpFiles(outPath, conf);
+                HadoopUtilities.deleteTmpFiles(outPath, conf);
             } else
                 throw new IllegalStateException("Job Failed");
 

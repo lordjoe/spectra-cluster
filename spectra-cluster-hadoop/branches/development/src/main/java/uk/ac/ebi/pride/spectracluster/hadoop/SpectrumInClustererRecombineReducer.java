@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
