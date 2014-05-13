@@ -1,11 +1,11 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.cluster.IPeaksHolder
+ * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksHolder
  * User: Steve
  * Date: 7/10/13
  */
