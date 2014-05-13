@@ -5,7 +5,6 @@ import com.lordjoe.algorithms.Equivalent;
 import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
@@ -20,7 +19,8 @@ import java.util.Set;
  * @author Rui Wang
  * @date 10/05/13
  */
-public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
+// TODO JG: remove the functions of the former IPeaksHolder from the implementations
+public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
 
 
     /**

@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import com.lordjoe.algorithms.Equivalent;
 
+import java.util.List;
+
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
  * used by Spectra like get hightest peaks which are incomplete
@@ -9,7 +11,7 @@ import com.lordjoe.algorithms.Equivalent;
  * User: Steve
  * Date: 6/20/13
  */
-public interface IPeaksSpectrum extends Equivalent<ISpectrum>, IPeaksHolder, Comparable<ISpectrum> {
+public interface IPeaksSpectrum extends Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
     /**
      * globally unique id
@@ -37,4 +39,18 @@ public interface IPeaksSpectrum extends Equivalent<ISpectrum>, IPeaksHolder, Com
      * return the sum  Square of all intensities
      */
     public double getSumSquareIntensity();
+
+    /**
+     * return unmodifiable peaks sorted by MZ
+     *
+     * @return !null array of peaks
+     */
+    public List<IPeak> getPeaks();
+
+    /**
+     * return number of peaks
+     *
+     * @return count
+     */
+    public int getPeaksCount();
 }
