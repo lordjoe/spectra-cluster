@@ -5,6 +5,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * User: Steve
  * Date: 6/20/13
  */
+@Deprecated
 public interface INormalizedSpectrum extends ISpectrum {
 
     /**
