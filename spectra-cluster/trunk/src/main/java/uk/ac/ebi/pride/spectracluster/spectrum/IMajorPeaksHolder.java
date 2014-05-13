@@ -7,6 +7,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
  * User: Steve
  * Date: 7/5/13
  */
+@Deprecated
 public interface IMajorPeaksHolder {
 
     /**

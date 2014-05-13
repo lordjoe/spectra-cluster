@@ -12,6 +12,7 @@ import java.math.BigInteger;
  * @author Rui Wang
  * @date 10/05/13
  */
+@Deprecated
 public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaksHolder {
 
     //todo: move constants out of this interface
@@ -33,14 +34,6 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
     // todo: provide either util or constructor implmementation of this
     @Deprecated
     public ISpectralCluster asCluster();
-
-    /**
-     * get the highest intensity peaks sorted by MZ - this value may be cached
-     *
-     * @param numberRequested number peaks requested
-     * @return Peaks spectrum
-     */
-    public IPeaksSpectrum getHighestNPeaks(int numberRequested);
 
     /**
      * return a spectrum normalized to the specific total intensity
