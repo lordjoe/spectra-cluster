@@ -3,9 +3,10 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Rui Wang
@@ -70,8 +71,8 @@ public class ClusterDistanceSetTest {
     public void testManyAdds() throws Exception {
         ClusterDistanceSet cds = buildTestSet(baseCluster, 1000);
         List<ClusterDistanceItem> bestMatches = clusterDistanceSetx.getBestMatches(baseCluster);
-           Assert.assertEquals(3, bestMatches.size());
-     }
+        Assert.assertEquals(3, bestMatches.size());
+    }
 
 
     public ClusterDistanceSet buildTestSet(ISpectralCluster base, int size) {

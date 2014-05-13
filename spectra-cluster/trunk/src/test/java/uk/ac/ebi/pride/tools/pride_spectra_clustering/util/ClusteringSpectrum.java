@@ -1,17 +1,16 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.util;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.impl.*;
-import uk.ac.ebi.pride.tools.mgf_parser.model.*;
+import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
+import uk.ac.ebi.pride.tools.jmzreader.model.impl.ParamGroup;
+import uk.ac.ebi.pride.tools.jmzreader.model.impl.SpectrumImplementation;
+import uk.ac.ebi.pride.tools.mgf_parser.model.Ms2Query;
 
 import java.util.*;
 
 /**
  * NOTE extend WatchedClass to look for possible memory leaks
-
  */
-public class ClusteringSpectrum /* extends WatchedClass */  {
+public class ClusteringSpectrum /* extends WatchedClass */ {
     private String id;
     private String peptide;
     private Double precursorMZ;
@@ -29,7 +28,7 @@ public class ClusteringSpectrum /* extends WatchedClass */  {
             int index = id.indexOf(",sequence=");
             if (index > -1) {
                 peptide = id.substring(index + ",sequence=".length()).trim();
-                id = id.substring(0,index).replace("id=","");
+                id = id.substring(0, index).replace("id=", "");
             }
         }
 

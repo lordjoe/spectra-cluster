@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersimilarity.SimilarityTests
@@ -16,7 +19,7 @@ public class SimilarityTests {
 
     public static final Random RND = new Random();
 
-    private IClusterDistance distanceMeasure  = ConcensusSpectrumDistance.INSTANCE;
+    private IClusterDistance distanceMeasure = ConcensusSpectrumDistance.INSTANCE;
     private IClusterDistance distanceMeasure2 = ClusterSpectrumOverlapDistance.INSTANCE;
     private IClusterDistance distanceMeasure3 = ClusterContentDistance.INSTANCE;
     private IClusterDistance distanceMeasure4 = ConsensusSimilarityDistance.INSTANCE;
@@ -43,7 +46,8 @@ public class SimilarityTests {
 
     public static final double MINIMUM_NON_SELF_DISTANCE = 0.01;
     public static final double MAXIMUM_SELF_DISTANCE = 0.0001;
-     @Test
+
+    @Test
     public void testSelfSimilarity() throws Exception {
         List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
 

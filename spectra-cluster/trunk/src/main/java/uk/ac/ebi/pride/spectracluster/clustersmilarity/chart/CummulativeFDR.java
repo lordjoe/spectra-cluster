@@ -1,11 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
+import com.lordjoe.utilities.TypedVisitor;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDataType;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleSpectrumRetriever;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR
@@ -170,10 +177,10 @@ public class CummulativeFDR {
         private final List<ClusterMZSpread> data;
         private final int minimumClusterSize;
 
-        public AccumulateClusterMZRangeVisitor(final List<ClusterMZSpread> pData, int pminimumClusterSize ) {
+        public AccumulateClusterMZRangeVisitor(final List<ClusterMZSpread> pData, int pminimumClusterSize) {
             data = pData;
             minimumClusterSize = pminimumClusterSize;
-         }
+        }
 
         /**
          * @param pISpectralCluster interface implemented by the visitor pattern
@@ -182,7 +189,7 @@ public class CummulativeFDR {
         public void visit(@Nonnull final ISpectralCluster cluster) {
             if (cluster.getClusteredSpectraCount() < minimumClusterSize)
                 return;
-             data.add(new ClusterMZSpread(cluster));
+            data.add(new ClusterMZSpread(cluster));
         }
 
     }

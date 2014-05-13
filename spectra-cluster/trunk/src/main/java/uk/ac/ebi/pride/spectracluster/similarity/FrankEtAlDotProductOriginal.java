@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -18,8 +21,9 @@ import java.util.*;
  * peptide mass. Furthermore, the vectors for the
  * dot-product are filled with the 1+ln(I) where I
  * is the peak's normalized intensity.
- *
+ * <p/>
  * uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct
+ *
  * @author jg
  *         <p/>
  *         todo: this class needs to be reviewed
@@ -148,16 +152,15 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
 
                 // print the peaks if a debugOutput is supplied
-                if(debugOutput != null)   {
-                      String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
+                if (debugOutput != null) {
+                    String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
                     try {
                         debugOutput.append(fmt);
-                    }
-                    catch (IOException e1) {
+                    } catch (IOException e1) {
                         throw new RuntimeException(e1);
 
                     }
-                 }
+                }
 
                 MatchingProducts++;
                 dotProduct += match1 * match2;
@@ -166,17 +169,14 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
                 if (lastIsT) {
                     e++;
                     lastIsT = false;
-                }
-                else {
+                } else {
                     t++;
                     lastIsT = true;
                 }
-            }
-            else {
+            } else {
                 if (mass_difference < 0) {
                     e++;
-                }
-                else {
+                } else {
                     t++;
                 }
             }
@@ -188,7 +188,7 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
             return 0;
         double normalizedDotProduct = dotProduct / denom;
 
-        if(normalizedDotProduct >= 1)
+        if (normalizedDotProduct >= 1)
             return normalizedDotProduct;  // todo look st this case
 
         return normalizedDotProduct;
@@ -225,16 +225,18 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
                                Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-            return  Defaults.getNumberComparedPeaks();;
+            return Defaults.getNumberComparedPeaks();
+        ;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
         int largeBinningRegion = Defaults.getLargeBinningRegion();
-        int k =  Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
+        int k = Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
 
         if (peptideMass % largeBinningRegion > 0)
-            k +=  Defaults.getNumberComparedPeaks();;
+            k += Defaults.getNumberComparedPeaks();
+        ;
 
         return k;
     }
@@ -262,7 +264,7 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
     }
 
     public AlgorithmVersion getVersion() {
-        return version ;
+        return version;
     }
 
     public void setMzRange(double mzRange) {

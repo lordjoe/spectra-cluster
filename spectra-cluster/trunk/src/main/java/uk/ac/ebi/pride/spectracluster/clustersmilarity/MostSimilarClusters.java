@@ -1,9 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.util.LimitedList;
+import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -19,11 +22,10 @@ public class MostSimilarClusters {
     private double bestDistance;
 
 
-
     public MostSimilarClusters(ISpectralCluster baseCluster, IClusterDistance clusterDistance) {
         this.baseCluster = baseCluster;
         this.clusterDistance = clusterDistance;
-        this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS );
+        this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS);
         bestDistance = Double.MAX_VALUE;
     }
 
@@ -38,11 +40,11 @@ public class MostSimilarClusters {
     }
 
     public ClusterDistanceItem getBestMatch() {
-       // List<ClusterDistanceItem> clusters = mostSimilarClusters.toList();
-     //   Collections.sort(clusters);
-        if(mostSimilarClusters.isEmpty())
+        // List<ClusterDistanceItem> clusters = mostSimilarClusters.toList();
+        //   Collections.sort(clusters);
+        if (mostSimilarClusters.isEmpty())
             return null;
-         return mostSimilarClusters.first();
+        return mostSimilarClusters.first();
     }
 
     public List<ClusterDistanceItem> getBestMatches() {
@@ -59,20 +61,21 @@ public class MostSimilarClusters {
         Collections.sort(clusterDistanceItems);
         return clusterDistanceItems;
     }
-    public  ClusterDistanceItem  getNextBestMatches() {
+
+    public ClusterDistanceItem getNextBestMatches() {
         List<ClusterDistanceItem> clusterDistanceItems = mostSimilarClusters.toList();
-        if(clusterDistanceItems.size() < 2)
+        if (clusterDistanceItems.size() < 2)
             return null;
-          clusterDistanceItems.remove(getBestMatch());
-          Collections.sort(clusterDistanceItems);
-          return clusterDistanceItems.get(0);
-      }
+        clusterDistanceItems.remove(getBestMatch());
+        Collections.sort(clusterDistanceItems);
+        return clusterDistanceItems.get(0);
+    }
 
     public void addCluster(ISpectralCluster cluster) {
         double distance = clusterDistance.distance(baseCluster, cluster);
-        if(distance < bestDistance) {
+        if (distance < bestDistance) {
             bestDistance = distance;
-            if(bestDistance < 0.2)
+            if (bestDistance < 0.2)
                 distance = clusterDistance.distance(baseCluster, cluster); // break here
         }
         mostSimilarClusters.add(new ClusterDistanceItem(baseCluster, cluster, distance));
@@ -80,7 +83,7 @@ public class MostSimilarClusters {
 
     public void addClusters(Iterable<ISpectralCluster> clusters) {
         for (ISpectralCluster cluster : clusters) {
-            if(baseCluster == cluster)
+            if (baseCluster == cluster)
                 continue; // do not compare a cluster to itself
             addCluster(cluster);
         }

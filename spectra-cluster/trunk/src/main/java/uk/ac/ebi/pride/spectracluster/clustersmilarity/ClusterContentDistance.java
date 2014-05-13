@@ -1,9 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterContentDistance
@@ -23,24 +25,24 @@ public class ClusterContentDistance implements IClusterDistance {
     }
 
     /**
-       * return a name which should not change
-       *
-       * @return !null name
-       */
-      @Override
-      public String getName() {
-          return getClass().getSimpleName();
-      }
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
-      /**
-       * return a version number - this may be updated over time
-       *
-       * @return !null version
-       */
-      @Override
-      public String getCurrentVersion() {
-          return VERSION;
-      }
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return VERSION;
+    }
 
 
     /**

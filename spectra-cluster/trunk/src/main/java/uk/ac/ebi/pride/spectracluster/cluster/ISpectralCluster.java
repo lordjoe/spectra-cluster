@@ -1,12 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import com.lordjoe.algorithms.CompareTo;
+import com.lordjoe.algorithms.Equivalent;
+import com.lordjoe.utilities.TypedPredicate;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster
@@ -123,7 +127,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public @Nonnull List<String> getPeptides();
+    public
+    @Nonnull
+    List<String> getPeptides();
 
     /**
      * Get the single most common peptide sequence
@@ -137,7 +143,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return list ordered bu purity
      */
-    public @Nonnull List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
+    public
+    @Nonnull
+    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
 
 
     /**
@@ -156,12 +164,16 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
     /**
      * all internally spectrum
      */
-    public @Nonnull List<ISpectrum> getHighestQualitySpectra();
+    public
+    @Nonnull
+    List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
-    public @Nonnull List<ISpectrum> getClusteredSpectra();
+    public
+    @Nonnull
+    List<ISpectrum> getClusteredSpectra();
 
 
     /**
@@ -181,7 +193,9 @@ public interface ISpectralCluster extends ISpectrumHolder, IPeaksHolder, Equival
      *
      * @return
      */
-    public @Nonnull Set<String> getSpectralIds();
+    public
+    @Nonnull
+    Set<String> getSpectralIds();
 
     /**
      * write out the data as a .cgf frago1nt

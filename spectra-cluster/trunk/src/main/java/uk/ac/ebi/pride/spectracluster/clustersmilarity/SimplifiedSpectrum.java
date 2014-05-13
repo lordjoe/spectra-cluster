@@ -1,16 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.io.*;
-import java.math.*;
-import java.util.*;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
 
 /**
  * A simple spectrum used when creating TSV files - this allows many spectra to be in memory without
  * growing it alot
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -25,7 +25,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
         peptide = copy.getPeptide();
         precursorCharge = copy.getPrecursorCharge();
         precursorMz = copy.getPrecursorMz();
-     }
+    }
 
 
     @Override
@@ -52,7 +52,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public boolean isDecoy() {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-      }
+    }
 
 
     @Override
@@ -78,7 +78,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public double getSumSquareIntensity() {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-     }
+    }
 
     @Override
     public boolean equivalent(ISpectrum other) {
@@ -88,7 +88,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public List<IPeak> getPeaks() {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-     }
+    }
 
     @Override
     public int getPeaksCount() {
@@ -103,14 +103,14 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public double getQualityScore() {
         throw new UnsupportedOperationException("Fix This"); // ToDo
-      }
+    }
 
     /**
      * return scored peptide - maybe null
      */
     @Override
     public String getPeptide() {
-          return peptide;
+        return peptide;
     }
 
     /**
@@ -125,7 +125,6 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     public int[] asMajorPeakMZs() {
         throw new UnsupportedOperationException("Fix This");
     }
-
 
 
     @Override
@@ -196,8 +195,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
             out.append("\t");
             out.append(getPeptide());
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

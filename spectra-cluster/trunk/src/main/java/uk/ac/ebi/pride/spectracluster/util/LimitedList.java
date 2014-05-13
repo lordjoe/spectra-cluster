@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.LimitedList
@@ -11,7 +11,7 @@ import java.util.*;
  */
 public interface LimitedList<T> {
 
-     /**
+    /**
      * return the maximum number of items
      *
      * @return
@@ -69,6 +69,7 @@ public interface LimitedList<T> {
 
     /**
      * like collection
+     *
      * @return
      */
     public boolean isEmpty();

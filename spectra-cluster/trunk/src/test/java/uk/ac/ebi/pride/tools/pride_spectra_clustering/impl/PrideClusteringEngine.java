@@ -1,15 +1,19 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
+import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implement a clustering Engine using the original johannes code
@@ -116,7 +120,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**

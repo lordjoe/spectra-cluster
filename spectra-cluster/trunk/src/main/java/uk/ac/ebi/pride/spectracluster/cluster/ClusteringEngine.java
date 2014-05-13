@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -172,8 +172,7 @@ public class ClusteringEngine implements IClusteringEngine {
             if (mostSimilarCluster != null) {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
-            }
-            else {
+            } else {
                 myClusters.add(new SpectralCluster(clusterToAdd));
             }
         }
@@ -265,12 +264,12 @@ public class ClusteringEngine implements IClusteringEngine {
                 }
 
                 ISpectrum[] spectraToRemove = holder.toArray(new ISpectrum[holder.size()]);
-                cluster.removeSpectra( spectraToRemove);
+                cluster.removeSpectra(spectraToRemove);
 
                 if (cluster.getClusteredSpectraCount() == 0) {
                     emptyClusters.add(cluster); // nothing left remember this cluster
                 }
-             }
+            }
         }
         if (!emptyClusters.isEmpty())    // any empty clusters
             clusters.removeAll(emptyClusters);   // drop them
@@ -313,7 +312,7 @@ public class ClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**
@@ -323,7 +322,7 @@ public class ClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addProgressMonitor(IProgressHandler handler) {
-       progressHandlers.add(handler);
+        progressHandlers.add(handler);
 
     }
 

@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.IPeaksHolder
@@ -20,6 +20,7 @@ public interface IPeaksHolder {
 
     /**
      * return number of peaks
+     *
      * @return count
      */
     public int getPeaksCount();

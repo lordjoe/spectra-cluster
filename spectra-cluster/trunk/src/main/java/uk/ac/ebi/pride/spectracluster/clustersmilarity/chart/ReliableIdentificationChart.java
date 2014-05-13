@@ -1,20 +1,30 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.xy.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.CountedMap;
+import com.lordjoe.utilities.ElapsedTimer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMComparisonMain;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -247,8 +257,7 @@ public class ReliableIdentificationChart {
                 if (cutPoint > maxCut)
                     break;
                 //              number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;
@@ -337,8 +346,7 @@ public class ReliableIdentificationChart {
         double maxRange = 0;
         try {
             maxRange = values.get(values.size() - 1).getRange();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
 
         }
@@ -367,8 +375,7 @@ public class ReliableIdentificationChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
         }
@@ -428,8 +435,7 @@ public class ReliableIdentificationChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;
@@ -492,8 +498,7 @@ public class ReliableIdentificationChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;

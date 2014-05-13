@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -28,13 +28,13 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     private String name = "PeakMatchClusteringEngineOriginal";
 
     public PeakMatchClusteringEngineOriginal() {
-        this(Defaults.INSTANCE.getDefaultSimilarityChecker(),Defaults.INSTANCE.getDefaultSpectrumComparator());
+        this(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
 
 
     public PeakMatchClusteringEngineOriginal(final Comparator<ISpectralCluster> spectrumComparator) {
-        this(Defaults.INSTANCE.getDefaultSimilarityChecker(),spectrumComparator);
-     }
+        this(Defaults.INSTANCE.getDefaultSimilarityChecker(), spectrumComparator);
+    }
 
 
     public PeakMatchClusteringEngineOriginal(final SimilarityChecker similarityChecker) {
@@ -45,10 +45,8 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     public PeakMatchClusteringEngineOriginal(final SimilarityChecker similarityChecker, final Comparator<ISpectralCluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
-        factory = ClusteringEngine.getClusteringEngineFactory(similarityChecker,spectrumComparator);
+        factory = ClusteringEngine.getClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
-
-
 
 
     /**
@@ -72,33 +70,32 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     }
 
 
-
-     /**
-      * find the engine for a bin creating one as needed
-      *
-      * @return
-      */
-     protected IClusteringEngine getSomeEngine( ) {
-         synchronized (engineForBin) {
-              if(engineForBin.isEmpty()) {
-                  return getEngine(0);
-              }
-             else {
-                  return engineForBin.entrySet().iterator().next().getValue();
-              }
-         }
-       }
+    /**
+     * find the engine for a bin creating one as needed
+     *
+     * @return
+     */
+    protected IClusteringEngine getSomeEngine() {
+        synchronized (engineForBin) {
+            if (engineForBin.isEmpty()) {
+                return getEngine(0);
+            } else {
+                return engineForBin.entrySet().iterator().next().getValue();
+            }
+        }
+    }
 
     /**
      * find the engine for a bin creating one as needed
+     *
      * @param pBin
      * @return
      */
     protected IClusteringEngine getEngine(final int pBin) {
-        synchronized (engineForBin)  {
+        synchronized (engineForBin) {
             IClusteringEngine ret = engineForBin.get(pBin);
-            if(ret == null)  {
-                ret = factory.getClusteringEngine() ;
+            if (ret == null) {
+                ret = factory.getClusteringEngine();
                 ret.setName("Peak " + pBin);
                 engineForBin.put(pBin, ret);
             }
@@ -114,7 +111,7 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
      */
     @Override
     public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
-        return  getSomeEngine().findNoneFittingSpectra(cluster);
+        return getSomeEngine().findNoneFittingSpectra(cluster);
     }
 
 
@@ -127,7 +124,7 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,getSomeEngine());
+        return ClusteringUtilities.asWritttenSpectra(cluster, getSomeEngine());
     }
 
 
@@ -141,11 +138,11 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
         boolean anythingDone = false;
         // todo use multiple threads
-         for (IClusteringEngine engine : engineForBin.values()) {
-             final Collection<ISpectralCluster> clusters = engine.getClusters();
-             anythingDone |= engine.processClusters();
-         }
-        return anythingDone ;
+        for (IClusteringEngine engine : engineForBin.values()) {
+            final Collection<ISpectralCluster> clusters = engine.getClusters();
+            anythingDone |= engine.processClusters();
+        }
+        return anythingDone;
     }
 
     /**
@@ -155,9 +152,9 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
      */
     @Override
     public void addProgressMonitor(IProgressHandler handler) {
-         // todo will this work as engines created dynamicallys
+        // todo will this work as engines created dynamicallys
         for (IClusteringEngine engine : engineForBin.values()) {
-              engine.addProgressMonitor(handler);
+            engine.addProgressMonitor(handler);
         }
 
     }
@@ -179,15 +176,17 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
 
     /**
-      * used to expose internals for overriding classes only
-      * @return
-      */
+     * used to expose internals for overriding classes only
+     *
+     * @return
+     */
     protected SimilarityChecker internalGetSimilarityChecker() {
         return similarityChecker;
     }
 
     /**
      * used to expose internals for overriding classes only
+     *
      * @return
      */
     protected Comparator<ISpectralCluster> internalGetSpectrumComparator() {
@@ -197,7 +196,8 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
     /**
      * nice for debugging to name an engine
-     * @return  possibly null name
+     *
+     * @return possibly null name
      */
     @Override
     public String getName() {
@@ -206,7 +206,8 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
 
     /**
      * nice for debugging to name an engine
-     * @param pName   possibly null name
+     *
+     * @param pName possibly null name
      */
     @Override
     public void setName(final String pName) {
@@ -214,29 +215,30 @@ public class PeakMatchClusteringEngineOriginal implements IClusteringEngine {
     }
 
     /**
-      * allow engines to be named
-      * @return
-      */
-     @Override
-     public String toString() {
-          if(name != null)
-              return name;
-         return super.toString();
-     }
+     * allow engines to be named
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        if (name != null)
+            return name;
+        return super.toString();
+    }
 
     /**
-      * total number of clusters including queued clustersToAdd
-      *
-      * @return
-      */
-     @Override
-     public int size() {
-         int n = 0;
-         // todo use multiple threads
-         for (IClusteringEngine engine : engineForBin.values()) {
-              n += engine.size();
-         }
-         return n;
-     }
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        int n = 0;
+        // todo use multiple threads
+        for (IClusteringEngine engine : engineForBin.values()) {
+            n += engine.size();
+        }
+        return n;
+    }
 
 }

@@ -45,12 +45,18 @@ package uk.ac.ebi.pride.spectracluster.similarity;
  *
  */
 
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.xy.*;
-import org.jfree.ui.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
 
 import java.awt.*;
 
@@ -58,14 +64,13 @@ import java.awt.*;
 /**
  * A simple demonstration application showing how to create a line chart using data from an
  * {@link XYDataset}.
- *
  */
-public class JFreeChartDemo  extends ApplicationFrame {
+public class JFreeChartDemo extends ApplicationFrame {
 
     /**
      * Creates a new demo.
      *
-     * @param title  the frame title.
+     * @param title the frame title.
      */
     public JFreeChartDemo(final String title) {
 
@@ -128,34 +133,33 @@ public class JFreeChartDemo  extends ApplicationFrame {
     /**
      * Creates a chart.
      *
-     * @param dataset  the data for the chart.
-     *
+     * @param dataset the data for the chart.
      * @return a chart.
      */
     private JFreeChart createChart(final XYDataset dataset) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-            "Line Chart Demo 6",      // chart title
-            "X",                      // x axis label
-            "Y",                      // y axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL,
-            true,                     // include legend
-            true,                     // tooltips
-            false                     // urls
+                "Line Chart Demo 6",      // chart title
+                "X",                      // x axis label
+                "Y",                      // y axis label
+                dataset,                  // data
+                PlotOrientation.VERTICAL,
+                true,                     // include legend
+                true,                     // tooltips
+                false                     // urls
         );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
         chart.setBackgroundPaint(Color.white);
 
 //        final StandardLegend legend = (StandardLegend) chart.getLegend();
-  //      legend.setDisplaySeriesShapes(true);
+        //      legend.setDisplaySeriesShapes(true);
 
         // get a reference to the plot for further customisation...
         final XYPlot plot = chart.getXYPlot();
         plot.setBackgroundPaint(Color.lightGray);
-    //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
+        //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
 
@@ -187,7 +191,7 @@ public class JFreeChartDemo  extends ApplicationFrame {
     /**
      * Starting point for the demonstration application.
      *
-     * @param args  ignored.
+     * @param args ignored.
      */
     public static void main(final String[] args) {
 

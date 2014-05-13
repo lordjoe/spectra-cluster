@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.simple.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import javax.sql.*;
+import javax.sql.DataSource;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.IWorkingClusterDatabase

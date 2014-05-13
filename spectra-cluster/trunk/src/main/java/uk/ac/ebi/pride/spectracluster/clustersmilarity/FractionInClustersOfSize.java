@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.FractionInClustersOfSize
@@ -12,19 +15,19 @@ import java.util.*;
  * Date: 1/16/14
  */
 public class FractionInClustersOfSize {
-    public static final int[] TEST_SIZES = { 0,2,8,30};
+    public static final int[] TEST_SIZES = {0, 2, 8, 30};
 
-    private final List<ISpectralCluster>  clusters = new ArrayList<ISpectralCluster>();
+    private final List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
 
-    public  int getNumberInClusterOfSize(int clusterSize)  {
+    public int getNumberInClusterOfSize(int clusterSize) {
         Set<String> clusterIds = new HashSet<String>();
         for (ISpectralCluster cluster : clusters) {
             List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
-            if(clusteredSpectra.size() < clusterSize)
-                 continue;
-             for (ISpectrum spc : clusteredSpectra) {
-                 clusterIds.add(spc.getId());
-             }
+            if (clusteredSpectra.size() < clusterSize)
+                continue;
+            for (ISpectrum spc : clusteredSpectra) {
+                clusterIds.add(spc.getId());
+            }
 
         }
         return clusterIds.size();
@@ -32,7 +35,7 @@ public class FractionInClustersOfSize {
 
 
     public void addCluster(@Nonnull ISpectralCluster pT) {
-        clusters.add(pT) ;
+        clusters.add(pT);
     }
 
 

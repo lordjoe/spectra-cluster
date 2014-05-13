@@ -1,11 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -21,7 +22,8 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
      * sort by size highest first
      */
     public static final Comparator<SpectrumInCluster> BY_SIZE = new Comparator<SpectrumInCluster>() {
-        @Override public int compare(final SpectrumInCluster o1, final SpectrumInCluster o2) {
+        @Override
+        public int compare(final SpectrumInCluster o1, final SpectrumInCluster o2) {
             ISpectralCluster cluster1 = o1.getCluster();
             ISpectralCluster cluster2 = o2.getCluster();
             int diff = cluster1.getClusteredSpectraCount() - cluster2.getClusteredSpectraCount();
@@ -140,17 +142,18 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
 
     /**
      * if we fins a cluster contained in a larger cluster drop it
+     *
      * @param pClusters
      */
-    public static  List<SpectrumInCluster>  dropContainedClusters(final List<SpectrumInCluster> pClusters) {
+    public static List<SpectrumInCluster> dropContainedClusters(final List<SpectrumInCluster> pClusters) {
         Set<SpectrumInCluster> toRemove = new HashSet<SpectrumInCluster>();
         List<SpectrumInCluster> bySize = new ArrayList<SpectrumInCluster>(pClusters);
         Collections.sort(bySize, SpectrumInCluster.BY_SIZE);
         for (int i = 0; i < bySize.size(); i++) {
             SpectrumInCluster test = pClusters.get(i);
-            if(toRemove.contains(test))
+            if (toRemove.contains(test))
                 continue;
-             Set<String> testIds = test.getCluster().getSpectralIds();
+            Set<String> testIds = test.getCluster().getSpectralIds();
             for (int j = i + 1; j < bySize.size(); j++) {
                 SpectrumInCluster test2 = pClusters.get(i);
                 Set<String> testIds2 = test2.getCluster().getSpectralIds();
@@ -159,13 +162,12 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             }
 
         }
-        if(!toRemove.isEmpty()) {
+        if (!toRemove.isEmpty()) {
             List<SpectrumInCluster> ret = new ArrayList<SpectrumInCluster>(pClusters);
             ret.removeAll(toRemove);
             return ret;
-        }
-        else {
-            return  pClusters;
+        } else {
+            return pClusters;
         }
     }
 
@@ -238,14 +240,14 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             getSpectrum().appendSPText(out);
             getCluster().appendClustering(out);
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
     }
 
-    @Override public boolean equivalent(final SpectrumInCluster o) {
+    @Override
+    public boolean equivalent(final SpectrumInCluster o) {
         if (isRemoveFromCluster() != o.isRemoveFromCluster())
             return false;
         if (isLeadSpectrum() != o.isLeadSpectrum())

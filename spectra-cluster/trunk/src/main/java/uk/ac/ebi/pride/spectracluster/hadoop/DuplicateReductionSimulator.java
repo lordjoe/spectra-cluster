@@ -1,13 +1,21 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.hadoop.*;
-import com.lordjoe.hadoopsimulator.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CountedMap;
+import com.lordjoe.hadoop.ITextMapper;
+import com.lordjoe.hadoop.ITextReducer;
+import com.lordjoe.hadoop.TextKeyValue;
+import com.lordjoe.hadoopsimulator.HadoopSimulatorJob;
+import com.lordjoe.utilities.ElapsedTimer;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -23,7 +31,8 @@ public class DuplicateReductionSimulator {
      * implementation to return the key and value as a TextKeyValue array
      */
     public static ITextMapper IDENTITY_MAPPER = new ITextMapper() {
-        @Override public TextKeyValue[] map(final String key, final String value, final Properties config) {
+        @Override
+        public TextKeyValue[] map(final String key, final String value, final Properties config) {
             TextKeyValue[] ret = new TextKeyValue[1];
             ret[0] = new TextKeyValue(key, value);
             return ret;
@@ -37,10 +46,11 @@ public class DuplicateReductionSimulator {
 
 
     /**
-     *  send each spectrum with its own id and all the clusters it is a member of
+     * send each spectrum with its own id and all the clusters it is a member of
      */
     public static class SpectrumInClusterBySpectrumMapper implements ITextMapper {
-        @SuppressWarnings("ConstantConditions") @Override
+        @SuppressWarnings("ConstantConditions")
+        @Override
         public TextKeyValue[] map(String key, String value, Properties config) {
             String label = key.toString();
             String text = value.toString();
@@ -118,7 +128,7 @@ public class DuplicateReductionSimulator {
             // Keep clusters but mark when the spectrum should be removed
             SpectrumInCluster.handleClusters(handler);
             int newSize = handler.size();
-            if(newSize != oldSize)
+            if (newSize != oldSize)
                 newSize = handler.size(); // brak here
 
             List<TextKeyValue> holder = new ArrayList<TextKeyValue>();
@@ -175,8 +185,7 @@ public class DuplicateReductionSimulator {
                 String id = spectrum.getId();
                 if (!sci2.isRemoveFromCluster()) {
                     sc.addSpectra(spectrum);
-                }
-                else {
+                } else {
                     // handle spectra kicked out
                     if (!processedSpectrunIds.contains(id)) {
                         ISpectralCluster cluster = spectrum.asCluster();
@@ -184,8 +193,7 @@ public class DuplicateReductionSimulator {
                         cluster = spectrum.asCluster();
                         TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
                         holder.add(sumCount); // send as a singleton
-                    }
-                    else {
+                    } else {
                         System.out.println("duplicate id " + id);
                     }
 
@@ -305,9 +313,9 @@ public class DuplicateReductionSimulator {
             timer.showElapsed("processed " + arg);
             timer.reset();
             CountedMap<String> countedMap2 = ClusterSimilarityUtilities.getCountedMap(cs2);
-            System.out.println(countedMap2 );
+            System.out.println(countedMap2);
             CountedMap<String> countedMap3 = countedMap.getDifferences(countedMap2);
-            System.out.println(countedMap3 );
+            System.out.println(countedMap3);
 
             try {
                 PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
@@ -315,8 +323,7 @@ public class DuplicateReductionSimulator {
                     sc.appendClustering(out);
                 }
                 out.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             timer.showElapsed("written " + arg);

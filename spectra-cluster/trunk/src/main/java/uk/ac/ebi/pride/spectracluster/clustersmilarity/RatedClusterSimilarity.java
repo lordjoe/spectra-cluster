@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import static uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityEnum.*;
@@ -51,7 +51,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             return CloseSubset;
         }
 
-        int testSize =  m1.getSmallerClusterSize();
+        int testSize = m1.getSmallerClusterSize();
         double frac = m1.getCommonFraction();
 
 
@@ -60,15 +60,15 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             problems.add(ClusterSimilarityProblem.HighDotProduct);
         }
 
-        if(frac > 0.7 && testSize > 10)
+        if (frac > 0.7 && testSize > 10)
             return Good;
 
-        if(false)    {  // ignore this it is OK
+        if (false) {  // ignore this it is OK
             ClusterDistanceItem m2 = clusters.getNextBestMatches();
-              double d2 = m2.getDistance();
-              if (d2 < MEDIUM_DISTANCE) {
-                  problems.add(ClusterSimilarityProblem.CloseSecondCluster);
-              }
+            double d2 = m2.getDistance();
+            if (d2 < MEDIUM_DISTANCE) {
+                problems.add(ClusterSimilarityProblem.CloseSecondCluster);
+            }
 
         }
 
@@ -84,8 +84,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
         double min = Math.min(targetCount, sourceCount);
         if (min == 0) {
             problems.add(ClusterSimilarityProblem.NoSpectra);
-        }
-        else {
+        } else {
             double farcDifference = del / min;
             if (farcDifference > 0.20) {
                 problems.add(ClusterSimilarityProblem.UnevenSize);
@@ -106,7 +105,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             return Good;
         for (ClusterSimilarityProblem problem : problems) {
             String prob = problem.toString();
-            prob  = null;
+            prob = null;
         }
         return Medium;
     }
@@ -181,8 +180,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
 
             appendable.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -215,8 +213,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             appendable.append("\n");
 
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -264,8 +261,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 //                        }
 //                    }
             appendable.append("============================================\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -8,17 +8,16 @@ import java.util.Map;
  * @version $Id$
  */
 public class PeptideUseId {
-    private final Map<String,Integer> peptideUseCount = new HashMap<String, Integer>();
+    private final Map<String, Integer> peptideUseCount = new HashMap<String, Integer>();
 
-    public String getPeptideId(String peptide)
-    {
+    public String getPeptideId(String peptide) {
         Integer count = peptideUseCount.get(peptide);
         int ret = 1;
-        if(count != null)     {
-             ret =  count + 1;
+        if (count != null) {
+            ret = count + 1;
 
         }
-         peptideUseCount.put(peptide,ret);
+        peptideUseCount.put(peptide, ret);
         return peptide + "-" + ret;
     }
 }

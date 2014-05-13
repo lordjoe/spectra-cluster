@@ -1,12 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.net.URL;
+import java.util.List;
 
 
 /**
@@ -22,7 +23,7 @@ public class MultiSimillarityTest {
     @Before
     public void setUp() throws Exception {
         // load a file contains a list of clusters
-       // URL url = MultiSimillarityTest.class.getClassLoader().getResource ("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
+        // URL url = MultiSimillarityTest.class.getClassLoader().getResource ("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
         URL url = MultiSimillarityTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
@@ -56,7 +57,7 @@ public class MultiSimillarityTest {
             //Assert.assertEquals(oldDP, newDP, 0.001 * (oldDP + newDP));
             //Assert.assertTrue(Math.abs(oldDP - newDP) < SIMILAR_THRESHOLD);
 
-            for (int index1 =  0; index1 < spectra.size(); index1++ ) {
+            for (int index1 = 0; index1 < spectra.size(); index1++) {
                 for (int index2 = index1 + 1; index2 < spectra.size(); index2++) {
 
                     double oldDotP;

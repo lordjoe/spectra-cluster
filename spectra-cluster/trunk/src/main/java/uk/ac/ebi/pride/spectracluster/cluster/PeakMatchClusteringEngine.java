@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -15,7 +15,7 @@ import java.util.*;
  * - the this version tracks spectra already clustered
  * Original code in  PeakMatchClusteringEngineOriginal
  * and attempts to combine clusters
- *
+ * <p/>
  * User: Steve
  * Date: 6/28/13
  */
@@ -84,8 +84,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public boolean processClusters() {
         if (currentClusters.isEmpty()) {
             return clusterUsingPeaks();
-        }
-        else {
+        } else {
             return mergeAndCombineClusters();
         }
     }
@@ -124,7 +123,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public static final double MAXIMUM_SINGLE_SPECTRUM_MERGE_MZ_DIFFERENCE = 0.6;
 
     /**
-     *
      * @param mergedClusters
      * @param singleSpectra
      * @return
@@ -279,6 +277,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     /**
      * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
      * usually is called on removed clusters
+     *
      * @return !null Cluster
      */
     public List<ISpectralCluster> findNoneFittingSpectra(ISpectralCluster cluster) {
@@ -309,7 +308,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
 

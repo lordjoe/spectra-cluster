@@ -1,9 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.IProgressHandler;
 
-import javax.annotation.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.NullClusteringEngine
@@ -62,16 +65,15 @@ public class NullClusteringEngine implements IClusteringEngine {
     }
 
     /**
-       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-       * usually is called on removed clusters
-       *
-       * @return !null Cluster
-       */
-      @Override
-      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
-          return new ArrayList<ISpectralCluster>() ;
-       }
-
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        return new ArrayList<ISpectralCluster>();
+    }
 
 
     /**
@@ -83,7 +85,7 @@ public class NullClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**

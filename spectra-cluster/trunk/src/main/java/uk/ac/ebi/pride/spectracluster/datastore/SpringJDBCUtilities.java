@@ -1,14 +1,20 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.apache.commons.dbcp.*;
-import org.springframework.jdbc.*;
-import org.springframework.jdbc.core.simple.*;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import javax.sql.*;
+import javax.sql.DataSource;
 import java.io.*;
-import java.sql.*;
-import java.util.*;
-import java.util.prefs.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCUtilities
@@ -18,7 +24,7 @@ import java.util.prefs.*;
 public class SpringJDBCUtilities {
     public static final ParameterizedRowMapper<String> STRING_MAPPER = new StringMapper();
     public static final SpectrumMapper SPECTRUM_MAPPER = new SpectrumMapper();
-   // public static final ParameterizedRowMapper<ISpectralCluster> CLUSTER_MAPPER = new ClusterMapper();
+    // public static final ParameterizedRowMapper<ISpectralCluster> CLUSTER_MAPPER = new ClusterMapper();
     //    public static final ParameterizedRowMapper<IModifiedPeptide> MODIFIED_PEPTIDE_MAPPER = new ModifiedClusterMapper();
     public static final ParameterizedRowMapper<FieldDescription> FIELD_MAPPER = new FieldDescriptionMapper();
 
@@ -72,15 +78,14 @@ public class SpringJDBCUtilities {
      * @param tableName !null table name
      * @param creator   !null statement to create table
      */
-    public static void guaranteeTable(SimpleJdbcTemplate template,    String tableName, String creator) {
+    public static void guaranteeTable(SimpleJdbcTemplate template, String tableName, String creator) {
         try {
-            List<SpringJDBCUtilities.FieldDescription> fields = template.query( "describe " + tableName, SpringJDBCUtilities.FIELD_MAPPER);
+            List<SpringJDBCUtilities.FieldDescription> fields = template.query("describe " + tableName, SpringJDBCUtilities.FIELD_MAPPER);
             if (fields.size() > 0)
                 return;
 
-               template.update(creator);
-        }
-        catch (BadSqlGrammarException ex) {
+            template.update(creator);
+        } catch (BadSqlGrammarException ex) {
             template.update(creator);
         }
 
@@ -267,8 +272,7 @@ public class SpringJDBCUtilities {
         try {
             Connection connection = ret.getConnection();
             connection.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new CannotAccessDatabaseException("cannot use connection " + connString + " as user " + user);
 
         }
@@ -465,8 +469,7 @@ public class SpringJDBCUtilities {
         if (filename.length() < MAX_SINGLE_LOAD) {
             String adjFileName = filename.getAbsolutePath().replace("\\", "/");
             db.update("LOAD Data LOCAL INFILE \'" + adjFileName + "\' into table " + table);
-        }
-        else {
+        } else {
             File[] split = splitFile(filename, (long) (MAX_SINGLE_LOAD * 0.8));
             //       ElapsedTimer et = new ElapsedTimer();
             db.update("ALTER TABLE " + table + " DISABLE KEYS;");
@@ -536,8 +539,7 @@ public class SpringJDBCUtilities {
             File[] ret = new File[holder.size()];
             holder.toArray(ret);
             return ret;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

@@ -1,9 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rui Wang

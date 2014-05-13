@@ -1,14 +1,15 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.tools.pride_spectra_clustering.AdapterTests

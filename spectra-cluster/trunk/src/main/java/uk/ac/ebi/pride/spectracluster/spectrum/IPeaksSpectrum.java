@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeaksHolder;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
  * User: Steve
  * Date: 6/20/13
  */
-public interface IPeaksSpectrum extends  Equivalent<ISpectrum>,IPeaksHolder, Comparable<ISpectrum> {
+public interface IPeaksSpectrum extends Equivalent<ISpectrum>, IPeaksHolder, Comparable<ISpectrum> {
 
     /**
      * globally unique id
@@ -31,18 +31,21 @@ public interface IPeaksSpectrum extends  Equivalent<ISpectrum>,IPeaksHolder, Com
 
     /**
      * write as MGF
+     *
      * @param out
      */
     public void appendMGF(Appendable out);
 
     /**
      * write as MGF
+     *
      * @param out
      */
     public void appendMSF(Appendable out);
 
     /**
      * write as MGF
+     *
      * @param out
      */
     public void appendSPText(Appendable out);

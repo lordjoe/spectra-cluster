@@ -1,15 +1,23 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CountedMap;
+import com.lordjoe.utilities.ElapsedTimer;
+import uk.ac.ebi.pride.spectracluster.ClusterSetListener;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
@@ -30,7 +38,9 @@ public class ClusterSimilarityUtilities {
      * @param c2 cluster
      * @return non-null if we can use the return as an enclosing cluster
      */
-    public static @Nullable ISpectralCluster clusterFullyContains(@Nonnull ISpectralCluster c1, @Nonnull ISpectralCluster c2) {
+    public static
+    @Nullable
+    ISpectralCluster clusterFullyContains(@Nonnull ISpectralCluster c1, @Nonnull ISpectralCluster c2) {
         int size1 = c1.getClusteredSpectraCount();
         int size2 = c1.getClusteredSpectraCount();
         if (size1 == size2) {
@@ -144,8 +154,7 @@ public class ClusterSimilarityUtilities {
 
                 simpleClusterSet.addClusters(clusterSet.getClusters());
             }
-        }
-        else
+        } else
 
         {
             if (file.getName().endsWith(".clustering")) {
@@ -160,8 +169,7 @@ public class ClusterSimilarityUtilities {
 
                     ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
                     simpleClusterSet.addClusters(Arrays.asList(clusters));
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -171,8 +179,7 @@ public class ClusterSimilarityUtilities {
 
                     ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
                     simpleClusterSet.addClusters(Arrays.asList(clusters));
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -189,16 +196,14 @@ public class ClusterSimilarityUtilities {
             for (File file1 : files) {
                 buildFromMgfFile(file1, spectrumRetriever);
             }
-        }
-        else if (file.getName().endsWith(".mgf")) {
+        } else if (file.getName().endsWith(".mgf")) {
             try {
                 System.out.println(file.getName());
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
                 IPeptideSpectrumMatch[] spectra = ParserUtilities.readMGFScans(lineNumberReader);
                 spectrumRetriever.addSpectra(spectra);
                 lineNumberReader.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -229,8 +234,7 @@ public class ClusterSimilarityUtilities {
                     createClusteringSetFromCGF(subfile, lstn);
                 }
             }
-        }
-        else {
+        } else {
             String name = pF.getName();
             if (name.toLowerCase().endsWith(ClusterUtilities.CGF_EXTENSION)) {
                 try {
@@ -238,8 +242,7 @@ public class ClusterSimilarityUtilities {
                     String clusteringName = name.substring(0, name.length() - ClusterUtilities.CGF_EXTENSION.length()) + ClusterUtilities.CLUSTERING_EXTENSION;
                     File outFile = new File(pF.getParent(), clusteringName);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstn);
-                }
-                catch (FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
 
                 }
@@ -264,8 +267,7 @@ public class ClusterSimilarityUtilities {
             for (File file1 : files) {
                 buildLazyLoadedFromMgfFile(file1, spectrumRetriever);
             }
-        }
-        else if (file.getName().endsWith(".mgf")) {
+        } else if (file.getName().endsWith(".mgf")) {
             try {
                 System.out.println(file.getName());
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
@@ -275,8 +277,7 @@ public class ClusterSimilarityUtilities {
                     spectrumRetriever.addSpectra(ll);
                 }
                 lineNumberReader.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -290,8 +291,7 @@ public class ClusterSimilarityUtilities {
             for (File file1 : files) {
                 buildFromTSVFile(file1, spectrumRetriever);
             }
-        }
-        else if (file.getName().endsWith(".tsv")) {
+        } else if (file.getName().endsWith(".tsv")) {
             try {
 
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
@@ -302,8 +302,7 @@ public class ClusterSimilarityUtilities {
                 }
 
 
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -318,8 +317,7 @@ public class ClusterSimilarityUtilities {
             for (File file1 : files) {
                 buildFromTSVFile(file1, spectrumRetriever);
             }
-        }
-        else if (file.getName().endsWith(".tsv")) {
+        } else if (file.getName().endsWith(".tsv")) {
             try {
 
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
@@ -336,8 +334,7 @@ public class ClusterSimilarityUtilities {
                         spectrumRetriever.addPSMSpectrum(psm);
                     }
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -359,8 +356,7 @@ public class ClusterSimilarityUtilities {
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
@@ -386,8 +382,7 @@ public class ClusterSimilarityUtilities {
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
@@ -454,7 +449,8 @@ public class ClusterSimilarityUtilities {
      * @return set of common ids
      */
     public static
-    @Nonnull Set<String> getSpectraOverlap(@Nonnull final ISpectralCluster c1, @Nonnull final ISpectralCluster c2) {
+    @Nonnull
+    Set<String> getSpectraOverlap(@Nonnull final ISpectralCluster c1, @Nonnull final ISpectralCluster c2) {
         Set<String> ret = new HashSet<String>(c1.getSpectralIds());
         ret.retainAll(c2.getSpectralIds());
         return ret;
@@ -468,7 +464,8 @@ public class ClusterSimilarityUtilities {
      * @return set of common ids
      */
     public static
-    @Nonnull Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ISpectralCluster c2) {
+    @Nonnull
+    Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ISpectralCluster c2) {
         Set<String> ret = new HashSet<String>(firstIds);
         ret.retainAll(c2.getSpectralIds());
         return ret;
@@ -579,8 +576,7 @@ public class ClusterSimilarityUtilities {
                 Number_Lines_read++;
             }
             timer.showElapsed("Finished PSM Decoy Read");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -745,8 +741,7 @@ public class ClusterSimilarityUtilities {
                 decoys.add(line.trim());
                 line = rdr.readLine();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }

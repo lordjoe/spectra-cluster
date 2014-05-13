@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ConcensusSpectraItems

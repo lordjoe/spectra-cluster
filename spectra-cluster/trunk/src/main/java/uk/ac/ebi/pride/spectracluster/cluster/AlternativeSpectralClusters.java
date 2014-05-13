@@ -1,15 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
-import java.io.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -128,7 +130,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
 
-
     protected void guaranteeClean() {
         // do nothing but keep code more compatable with SpectraCluster
     }
@@ -147,12 +148,12 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     @Override
     public String getSpectralId() {
         StringBuilder sb = new StringBuilder();
-        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        List<String> spectralIds = new ArrayList<String>(getSpectralIds());
         Collections.sort(spectralIds);
-        sb.append(spectralIds.get(0)) ;
+        sb.append(spectralIds.get(0));
         for (int i = 1; i < spectralIds.size(); i++) {
-            sb.append(",") ;
-            sb.append(spectralIds.get(i)) ;
+            sb.append(",");
+            sb.append(spectralIds.get(i));
         }
         return sb.toString();
     }
@@ -481,6 +482,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
 
     /**
      * make a one line report
+     *
      * @param out
      */
     @Override

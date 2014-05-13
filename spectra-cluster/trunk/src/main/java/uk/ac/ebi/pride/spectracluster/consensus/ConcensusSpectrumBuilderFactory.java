@@ -9,7 +9,8 @@ public interface ConcensusSpectrumBuilderFactory {
 
     /**
      * build a new instance of the cpectrum builder
-     * @return  !null instance
+     *
+     * @return !null instance
      */
     public IConsensusSpectrumBuilder getConsensusSpectrumBuilder();
 

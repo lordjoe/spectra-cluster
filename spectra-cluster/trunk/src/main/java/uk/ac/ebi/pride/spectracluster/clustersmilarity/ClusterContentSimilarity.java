@@ -1,9 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.AlternativeSpectralClusters;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.QualityClusterComparator;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterListSimilarity
@@ -14,11 +18,11 @@ public class ClusterContentSimilarity {
 
     private final IClusterDistance distanceMeasure;
 
-    public ClusterContentSimilarity( IClusterDistance dist) {
+    public ClusterContentSimilarity(IClusterDistance dist) {
         distanceMeasure = dist;
     }
 
-    public ClusterContentSimilarity( ) {
+    public ClusterContentSimilarity() {
         this(ClusterContentDistance.INSTANCE);
     }
 
@@ -34,9 +38,9 @@ public class ClusterContentSimilarity {
     public List<ISpectralCluster> identicalClusters(List<ISpectralCluster> s1, List<ISpectralCluster> s2) {
         IClusterDistance dm = getDistanceMeasure();
 
-         Collections.sort(s1,QualityClusterComparator.INSTANCE); // sort by hishest quality
+        Collections.sort(s1, QualityClusterComparator.INSTANCE); // sort by hishest quality
 
-         Collections.sort(s2,QualityClusterComparator.INSTANCE); // sort by hishest quality
+        Collections.sort(s2, QualityClusterComparator.INSTANCE); // sort by hishest quality
 
 
         List<ISpectralCluster> identical = new ArrayList<ISpectralCluster>();
@@ -61,17 +65,16 @@ public class ClusterContentSimilarity {
 
             double quality_difference = q1.getQualityScore() - q2.getQualityScore();
 
-              if (q1 == q2) {
-                  double requiredDistance = 0;
-                  if(Math.min(sc1.getClusteredSpectraCount(),sc2.getClusteredSpectraCount()) > 2)
-                      requiredDistance = 0.4;
-                  final double distance = dm.distance(sc1, sc2);
-                  if (distance <= requiredDistance) {
-                    identical.add(new AlternativeSpectralClusters(sc1,sc2));
+            if (q1 == q2) {
+                double requiredDistance = 0;
+                if (Math.min(sc1.getClusteredSpectraCount(), sc2.getClusteredSpectraCount()) > 2)
+                    requiredDistance = 0.4;
+                final double distance = dm.distance(sc1, sc2);
+                if (distance <= requiredDistance) {
+                    identical.add(new AlternativeSpectralClusters(sc1, sc2));
                     matched1.add(sc1);
                     matched2.add(sc2);
-                }
-                else {
+                } else {
                     quality_difference = q1.getQualityScore() - q2.getQualityScore();     // break here
                 }
             }
@@ -79,17 +82,14 @@ public class ClusterContentSimilarity {
                 if (lastIsT) {
                     e++;
                     lastIsT = false;
-                }
-                else {
+                } else {
                     t++;
                     lastIsT = true;
                 }
-            }
-            else {
+            } else {
                 if (quality_difference < 0) {
                     e++;
-                }
-                else {
+                } else {
                     t++;
                 }
             }

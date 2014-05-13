@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.algorithms.LinearWideBinner;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.BinningClusteringMain

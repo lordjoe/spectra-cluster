@@ -1,15 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.algorithms.LinearWideBinner;
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterContentSimilarity;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.PrideClusteringEngine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -21,6 +25,7 @@ public class BinningClusteringEngineTests {
 
     /**
      * test new clustering engine as binning vs non-binning
+     *
      * @throws Exception
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
@@ -43,7 +48,7 @@ public class BinningClusteringEngineTests {
         }
 
         //noinspection UnusedDeclaration
-        List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
+        List<ISpectralCluster> newClusters = (List<ISpectralCluster>) clusteringEngine.getClusters();
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
             return; // todo FIX!!!
@@ -52,6 +57,7 @@ public class BinningClusteringEngineTests {
 
     /**
      * test new clustering engine as binning vs non-binning
+     *
      * @throws Exception
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
@@ -71,7 +77,7 @@ public class BinningClusteringEngineTests {
             clusteringEngine.addClusters(sc);
             binningEngine.addClusters(sc);
         }
-      //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
@@ -81,7 +87,7 @@ public class BinningClusteringEngineTests {
             }
         }
         long endNewEngine = System.currentTimeMillis();
-           //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!binningEngine.processClusters()) {
@@ -89,19 +95,19 @@ public class BinningClusteringEngineTests {
             }
         }
         long endOldEngine = System.currentTimeMillis();
-           //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
 
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
+        List<ISpectralCluster> newClusters = (List<ISpectralCluster>) clusteringEngine.getClusters();
 
-        List<ISpectralCluster> binningEngineClusters =  (List<ISpectralCluster> )binningEngine.getClusters();
+        List<ISpectralCluster> binningEngineClusters = (List<ISpectralCluster>) binningEngine.getClusters();
 
-            //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int numberEngineClusters = newClusters.size();
-            //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int numberBinningEngineClusters = binningEngineClusters.size();
 
         ClusterContentSimilarity sim = new ClusterContentSimilarity();
@@ -110,7 +116,7 @@ public class BinningClusteringEngineTests {
         List<ISpectralCluster> unmatchedOld = new ArrayList<ISpectralCluster>(newClusters);
         List<ISpectralCluster> unmatchedBinning = new ArrayList<ISpectralCluster>(binningEngineClusters);
 
-             //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         final List<ISpectralCluster> identical = sim.identicalClusters(unmatchedOld, unmatchedBinning);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
@@ -124,6 +130,7 @@ public class BinningClusteringEngineTests {
 
     /**
      * test new clustering engine as binning vs non-binning
+     *
      * @throws Exception
      */
     @SuppressWarnings("UnnecessaryReturnStatement")
@@ -139,13 +146,12 @@ public class BinningClusteringEngineTests {
         IClusteringEngine binningEngine = new BinningClusteringEngine(binner);
 
 
-
         for (ISpectrum originalSpectrum : originalSpectra) {
             final ISpectralCluster sc = originalSpectrum.asCluster();
             clusteringEngine.addClusters(sc);
             binningEngine.addClusters(sc);
         }
-            //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
@@ -155,7 +161,7 @@ public class BinningClusteringEngineTests {
             }
         }
         long endNewEngine = System.currentTimeMillis();
-            //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double delSec = (endNewEngine - start) / 1000.0;
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!binningEngine.processClusters()) {
@@ -163,19 +169,19 @@ public class BinningClusteringEngineTests {
             }
         }
         long endOldEngine = System.currentTimeMillis();
-          //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
 
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
+        List<ISpectralCluster> newClusters = (List<ISpectralCluster>) clusteringEngine.getClusters();
 
-        List<ISpectralCluster> binningEngineClusters =  (List<ISpectralCluster> )binningEngine.getClusters();
+        List<ISpectralCluster> binningEngineClusters = (List<ISpectralCluster>) binningEngine.getClusters();
 
-          //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int numberEngineClusters = newClusters.size();
-           //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int numberBinningEngineClusters = binningEngineClusters.size();
 
         ClusterContentSimilarity sim = new ClusterContentSimilarity();
@@ -183,8 +189,8 @@ public class BinningClusteringEngineTests {
 
         List<ISpectralCluster> unmatchedOld = new ArrayList<ISpectralCluster>(newClusters);
         List<ISpectralCluster> unmatchedBinning = new ArrayList<ISpectralCluster>(binningEngineClusters);
-              //noinspection UnusedDeclaration
-          final List<ISpectralCluster> identical = sim.identicalClusters(unmatchedOld, unmatchedBinning);
+        //noinspection UnusedDeclaration
+        final List<ISpectralCluster> identical = sim.identicalClusters(unmatchedOld, unmatchedBinning);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
             return; // todo FIX!!!

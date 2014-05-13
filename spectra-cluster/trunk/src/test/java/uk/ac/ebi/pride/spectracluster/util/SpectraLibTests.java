@@ -1,10 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.io.*;
-import java.util.*;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.SpectraLibTests
@@ -43,7 +47,7 @@ public class SpectraLibTests {
 
         LineNumberReader inp2 = new LineNumberReader(new StringReader(sb.toString()));
         List<ISpectrum> scs2 = readMSPCluster(inp2);
-        Assert.assertEquals(scs.size(),scs2.size());
+        Assert.assertEquals(scs.size(), scs2.size());
 
         for (int i = 0; i < scs2.size(); i++) {
             ISpectrum spc = scs.get(i);
@@ -77,7 +81,7 @@ public class SpectraLibTests {
         String string = sb.toString();
         LineNumberReader inp2 = new LineNumberReader(new StringReader(string));
         List<ISpectrum> scs2 = readMSPCluster(inp2);
-        Assert.assertEquals(scs.size(),scs2.size());
+        Assert.assertEquals(scs.size(), scs2.size());
 
         for (int i = 0; i < scs2.size(); i++) {
             ISpectrum spc = scs.get(i);
@@ -85,8 +89,6 @@ public class SpectraLibTests {
             Assert.assertTrue(spc.equivalent(spc2));
 
         }
-
-
 
 
     }

@@ -11,13 +11,15 @@ public interface IAlgorithm {
 
     /**
      * return a name which should not change
-     * @return  !null name
+     *
+     * @return !null name
      */
     public String getName();
 
     /**
      * return a version number - this may be updated over time
-     * @return   !null version
+     *
+     * @return !null version
      */
     public String getCurrentVersion();
 

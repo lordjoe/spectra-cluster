@@ -3,7 +3,8 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,7 @@ public class StableClusteringEngineTest {
         for (ISpectralCluster sc : originalSpectralClusters) {
             ce.addClusters(sc);
         }
-        originalSpectralClusters = (List<ISpectralCluster> )ce.getClusters();
+        originalSpectralClusters = (List<ISpectralCluster>) ce.getClusters();
 
         clusteringEngine = new StableClusteringEngine();
         unstableClusters = new ArrayList<ISpectralCluster>();

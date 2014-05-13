@@ -2,10 +2,17 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.MostSimilarClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleSpectrumRetriever;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 

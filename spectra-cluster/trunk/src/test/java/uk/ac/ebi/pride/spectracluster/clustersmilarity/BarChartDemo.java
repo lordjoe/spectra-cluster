@@ -49,25 +49,31 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
  *
  */
 
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.*;
-import org.jfree.data.category.*;
-import org.jfree.ui.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
 
 import java.awt.*;
 
 /**
  * A simple demonstration application showing how to create a bar chart.
- *
  */
 public class BarChartDemo extends ApplicationFrame {
 
     /**
      * Creates a new demo instance.
      *
-     * @param title  the frame title.
+     * @param title the frame title.
      */
     public BarChartDemo(final String title) {
 
@@ -128,22 +134,21 @@ public class BarChartDemo extends ApplicationFrame {
     /**
      * Creates a sample chart.
      *
-     * @param dataset  the dataset.
-     *
+     * @param dataset the dataset.
      * @return The chart.
      */
     private JFreeChart createChart(final CategoryDataset dataset) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createBarChart(
-            "Bar Chart Demo",         // chart title
-            "Category",               // domain axis label
-            "Value",                  // range axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL, // orientation
-            true,                     // include legend
-            true,                     // tooltips?
-            false                     // URLs?
+                "Bar Chart Demo",         // chart title
+                "Category",               // domain axis label
+                "Value",                  // range axis label
+                dataset,                  // data
+                PlotOrientation.VERTICAL, // orientation
+                true,                     // include legend
+                true,                     // tooltips?
+                false                     // URLs?
         );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
@@ -167,16 +172,16 @@ public class BarChartDemo extends ApplicationFrame {
 
         // set up gradient paints for series...
         final GradientPaint gp0 = new GradientPaint(
-            0.0f, 0.0f, Color.blue,
-            0.0f, 0.0f, Color.lightGray
+                0.0f, 0.0f, Color.blue,
+                0.0f, 0.0f, Color.lightGray
         );
         final GradientPaint gp1 = new GradientPaint(
-            0.0f, 0.0f, Color.green,
-            0.0f, 0.0f, Color.lightGray
+                0.0f, 0.0f, Color.green,
+                0.0f, 0.0f, Color.lightGray
         );
         final GradientPaint gp2 = new GradientPaint(
-            0.0f, 0.0f, Color.red,
-            0.0f, 0.0f, Color.lightGray
+                0.0f, 0.0f, Color.red,
+                0.0f, 0.0f, Color.lightGray
         );
         renderer.setSeriesPaint(0, gp0);
         renderer.setSeriesPaint(1, gp1);
@@ -184,7 +189,7 @@ public class BarChartDemo extends ApplicationFrame {
 
         final CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setCategoryLabelPositions(
-            CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0)
+                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0)
         );
         // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -206,7 +211,7 @@ public class BarChartDemo extends ApplicationFrame {
     /**
      * Starting point for the demonstration application.
      *
-     * @param args  ignored.
+     * @param args ignored.
      */
     public static void main(final String[] args) {
 

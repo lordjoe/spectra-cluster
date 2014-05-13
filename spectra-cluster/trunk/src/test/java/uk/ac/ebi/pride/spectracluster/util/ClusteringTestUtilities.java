@@ -2,18 +2,26 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
+import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.tools.jmzreader.*;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
-import uk.ac.ebi.pride.tools.mgf_parser.*;
-import uk.ac.ebi.pride.tools.mgf_parser.model.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.*;
+import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
+import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
+import uk.ac.ebi.pride.tools.mgf_parser.MgfFile;
+import uk.ac.ebi.pride.tools.mgf_parser.model.Ms2Query;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.LineNumberReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -32,19 +40,20 @@ public class ClusteringTestUtilities {
 
     /**
      * fial an assertion of all clusters om the set are not equivalent
+     *
      * @param pScs
      * @param pScs2
      */
     public static void assertEquivalentClusters(final List<ISpectralCluster> pScs, final List<ISpectralCluster> pScs2) {
-        Collections.sort(pScs,ISpectralCluster.BY_CLUSTER_CONTENTS);
-        Collections.sort(pScs2,ISpectralCluster.BY_CLUSTER_CONTENTS);
+        Collections.sort(pScs, ISpectralCluster.BY_CLUSTER_CONTENTS);
+        Collections.sort(pScs2, ISpectralCluster.BY_CLUSTER_CONTENTS);
         Assert.assertEquals(pScs.size(), pScs2.size());
         for (int i = 0; i < pScs.size(); i++) {
-            ISpectralCluster cl1 = pScs.get(i) ;
-            ISpectralCluster cl2 = pScs2.get(i) ;
+            ISpectralCluster cl1 = pScs.get(i);
+            ISpectralCluster cl2 = pScs2.get(i);
             boolean equivalent = cl1.equivalent(cl2);
-            if(!equivalent)
-                     Assert.assertTrue(equivalent );
+            if (!equivalent)
+                Assert.assertTrue(equivalent);
 
         }
     }
@@ -73,7 +82,7 @@ public class ClusteringTestUtilities {
     }
 
     public static File getSpectrumFile() {
-        return  getSpectrumFile(SAMPLE_MGF_FILE);
+        return getSpectrumFile(SAMPLE_MGF_FILE);
     }
 
     public static File getSpectrumFile(String resName) {
@@ -86,8 +95,7 @@ public class ClusteringTestUtilities {
         File inputFile;
         try {
             inputFile = new File(url.toURI());
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
 
         }
@@ -144,13 +152,11 @@ public class ClusteringTestUtilities {
     }
 
 
-    public static LineNumberReader getResourceClusteringReader()
-    {
+    public static LineNumberReader getResourceClusteringReader() {
         return getResourceClusteringReader(SAMPLE_CLUSTERING_FILE);
     }
 
-    public static LineNumberReader getResourceClusteringReader(String resName)
-    {
+    public static LineNumberReader getResourceClusteringReader(String resName) {
         URL testFile = ClusteringTestUtilities.class.getClassLoader().getResource(resName);
 
         assert testFile != null;
@@ -250,11 +256,10 @@ public class ClusteringTestUtilities {
             File inputFile = new File(url.toURI());
 
             //noinspection UnusedDeclaration,UnnecessaryLocalVariable
-           List<ConsensusSpectraItems> consensusSpectraItems = Arrays.asList(ParserUtilities.readClusters(inputFile));
+            List<ConsensusSpectraItems> consensusSpectraItems = Arrays.asList(ParserUtilities.readClusters(inputFile));
             return consensusSpectraItems;
 
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
 
         }
@@ -337,11 +342,11 @@ public class ClusteringTestUtilities {
         // dot product
         double similarity = checker.assessSimilarity(sp1, sp2);
         // certainly in the same cluster
-         double defaultThreshold = checker.getDefaultThreshold();  // 0.6 - 0.7
-         //noinspection UnusedDeclaration
-         double highThreshold = 1.0 - ((1.0 - defaultThreshold) / 2); // 0.8 - 0.85
+        double defaultThreshold = checker.getDefaultThreshold();  // 0.6 - 0.7
+        //noinspection UnusedDeclaration
+        double highThreshold = 1.0 - ((1.0 - defaultThreshold) / 2); // 0.8 - 0.85
         //noinspection RedundantIfStatement
-        if ( similarity < defaultThreshold)     // similarity better be 0.95
+        if (similarity < defaultThreshold)     // similarity better be 0.95
             return false;  // dot producta not close enough
 
         return true;
@@ -422,22 +427,17 @@ public class ClusteringTestUtilities {
             if (count1 != count2) {
                 System.out.println(" <-- count differs!");
                 isEqual = false;
-            }
-
-            else if (ClusterUtilities.round(p1.getMz()) != ClusterUtilities.round(p2.getMz())) {
+            } else if (ClusterUtilities.round(p1.getMz()) != ClusterUtilities.round(p2.getMz())) {
                 System.out.println(" <-- m/z differ!");
                 isEqual = false;
-            }
-            else if (ClusterUtilities.round(p1.getIntensity(), 100) != ClusterUtilities.round(p2.getIntensity(), 100)) {
+            } else if (ClusterUtilities.round(p1.getIntensity(), 100) != ClusterUtilities.round(p2.getIntensity(), 100)) {
                 if (Math.abs(p1.getIntensity() - p2.getIntensity()) >= 2 || p1.getIntensity() < 100000) {
                     System.out.println(" <-- intensity differ!");
                     isEqual = false;
-                }
-                else {
+                } else {
                     System.out.println("");
                 }
-            }
-            else {
+            } else {
                 System.out.println("");
             }
         }
@@ -461,17 +461,13 @@ public class ClusteringTestUtilities {
             if (p1.getCount() != p2.getCount()) {
                 if (print) System.out.println(" <-- count differs!");
                 isEqual = false;
-            }
-
-            else if (p1.getMz() != p2.getMz()) {
+            } else if (p1.getMz() != p2.getMz()) {
                 if (print) System.out.println(" <-- m/z differ!");
                 isEqual = false;
-            }
-            else if (p1.getIntensity() != p2.getIntensity()) {
+            } else if (p1.getIntensity() != p2.getIntensity()) {
                 if (print) System.out.println(" <-- intensity differ!");
                 isEqual = false;
-            }
-            else {
+            } else {
                 if (print) System.out.println("");
             }
         }
@@ -479,29 +475,29 @@ public class ClusteringTestUtilities {
     }
 
     /**
-      * create a list of consensusSpectra from a list of clusters
-      * @param pClusters  !null cluster list
-      * @param factory   !null  ConcensusSpectrumBuilderFactory
-      * @return   !null list of  consensusSpectra
-      */
-     public static List<ISpectrum> buildConsessusSpectra(final List<ISpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
-         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-         for (ISpectralCluster cluster : pClusters) {
-             final IConsensusSpectrumBuilder olderCode =   factory.getConsensusSpectrumBuilder();
+     * create a list of consensusSpectra from a list of clusters
+     *
+     * @param pClusters !null cluster list
+     * @param factory   !null  ConcensusSpectrumBuilderFactory
+     * @return !null list of  consensusSpectra
+     */
+    public static List<ISpectrum> buildConsessusSpectra(final List<ISpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        for (ISpectralCluster cluster : pClusters) {
+            final IConsensusSpectrumBuilder olderCode = factory.getConsensusSpectrumBuilder();
 
-             final List<ISpectrum> css = cluster.getClusteredSpectra();
-             for (ISpectrum cs : css) {
-                 olderCode.addSpectra(cs);
-             }
+            final List<ISpectrum> css = cluster.getClusteredSpectra();
+            for (ISpectrum cs : css) {
+                olderCode.addSpectra(cs);
+            }
 
-             final ISpectrum oldSpec = olderCode.getConsensusSpectrum();
-             holder.add(oldSpec);
-         }
+            final ISpectrum oldSpec = olderCode.getConsensusSpectrum();
+            holder.add(oldSpec);
+        }
 
 
-         return holder;
-     }
-
+        return holder;
+    }
 
 
 }

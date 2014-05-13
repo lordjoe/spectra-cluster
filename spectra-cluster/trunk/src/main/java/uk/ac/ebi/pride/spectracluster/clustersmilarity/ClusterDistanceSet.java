@@ -1,9 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.util.LimitedList;
+import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDistanceSet
@@ -22,7 +26,7 @@ public class ClusterDistanceSet {
         LimitedList<ClusterDistanceItem> items = bestMatches.get(cluster);
         if (items == null)
             //noinspection unchecked
-            return (List<ClusterDistanceItem>)Collections.EMPTY_LIST;
+            return (List<ClusterDistanceItem>) Collections.EMPTY_LIST;
         else
             return items.toList();
     }

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.TypedPredicate;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.FilteredClusterAppender
@@ -10,13 +10,13 @@ import com.lordjoe.utilities.*;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class FilteredClusterAppender implements IClusterAppender {
-    private final IClusterAppender  m_Appender;
-    private final TypedPredicate<ISpectralCluster>  m_AppendIf;
+    private final IClusterAppender m_Appender;
+    private final TypedPredicate<ISpectralCluster> m_AppendIf;
 
-     public FilteredClusterAppender(final IClusterAppender wrapped,TypedPredicate<ISpectralCluster> appendIf) {
-         m_Appender = wrapped;
-         m_AppendIf = appendIf;
-     }
+    public FilteredClusterAppender(final IClusterAppender wrapped, TypedPredicate<ISpectralCluster> appendIf) {
+        m_Appender = wrapped;
+        m_AppendIf = appendIf;
+    }
 
     /**
      * @param out       !null open appendale
@@ -28,13 +28,12 @@ public class FilteredClusterAppender implements IClusterAppender {
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherdata) {
         boolean anyThingDone = false;
         //noinspection  SimplifiableIfStatement
-        if(m_AppendIf.apply(data,otherdata)) {
-            return  m_Appender.appendCluster(out,     data,   otherdata);
-        }
-        else {
+        if (m_AppendIf.apply(data, otherdata)) {
+            return m_Appender.appendCluster(out, data, otherdata);
+        } else {
             return false; // not appended
         }
-     }
+    }
 
     /**
      * add whatever happens at the start
@@ -45,9 +44,9 @@ public class FilteredClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out,  final Object... otherdata) {
-        return  m_Appender.appendStart(out,      otherdata);
-     }
+    public boolean appendStart(final Appendable out, final Object... otherdata) {
+        return m_Appender.appendStart(out, otherdata);
+    }
 
     /**
      * add whatever happens at the end
@@ -58,7 +57,7 @@ public class FilteredClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out,   final Object... otherdata) {
-        return  m_Appender.appendEnd(out,     otherdata);
-     }
+    public boolean appendEnd(final Appendable out, final Object... otherdata) {
+        return m_Appender.appendEnd(out, otherdata);
+    }
 }

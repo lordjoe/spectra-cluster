@@ -1,9 +1,13 @@
 package uk.ac.ebi.pride.spectracluster;
 
-import java.util.*;
-
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * uk.ac.ebi.pride.spectracluster.SpectrumPeakTests
@@ -35,12 +39,12 @@ public class SpectrumPeakTests {
     public void sortTest() {
         IPeak[] pks = buildPeaks();
         Assert.assertEquals(MAX_PEAKS, pks.length);
-        double last =  Double.MAX_VALUE;
+        double last = Double.MAX_VALUE;
         // we built them in inverted order
         for (int i = 0; i < pks.length; i++) {
             IPeak pk = pks[i];
             Assert.assertTrue(pk.getMz() < last);
-            last =   pk.getMz();
+            last = pk.getMz();
         }
         Arrays.sort(pks);
         last = Double.MIN_VALUE;
@@ -48,7 +52,7 @@ public class SpectrumPeakTests {
         for (int i = 0; i < pks.length; i++) {
             IPeak pk = pks[i];
             Assert.assertTrue(pk.getMz() > last);
-            last =   pk.getMz();
+            last = pk.getMz();
         }
     }
 

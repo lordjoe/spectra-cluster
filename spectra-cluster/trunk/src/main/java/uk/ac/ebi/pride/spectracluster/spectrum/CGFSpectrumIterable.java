@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable
@@ -16,11 +16,10 @@ import java.util.*;
  */
 public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
 
-    protected static LineNumberReader fileToLineNumberReader(File f)    {
+    protected static LineNumberReader fileToLineNumberReader(File f) {
         try {
             return new LineNumberReader(new FileReader(f));
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
         }
@@ -33,38 +32,42 @@ public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
 
     /**
      * build with an existing readable file
+     *
      * @param f !null existing non-directory mgf file
      */
     public CGFSpectrumIterable(File f) {
-        this(fileToLineNumberReader(f)) ;
+        this(fileToLineNumberReader(f));
     }
 
     /**
      * build with input stream
-     * @param rdr  !null open input stream
+     *
+     * @param rdr !null open input stream
      */
     public CGFSpectrumIterable(InputStream rdr) {
         this(new LineNumberReader(new InputStreamReader(rdr)));
     }
 
     /**
-      * build with reader
-      * @param rdr  !null open reader
-      */
+     * build with reader
+     *
+     * @param rdr !null open reader
+     */
     public CGFSpectrumIterable(Reader rdr) {
         this(new LineNumberReader(rdr));
     }
 
 
     /**
-      * build with LineNumberReader
-      * @param rdr  !null open LineNumberReader
-      */
+     * build with LineNumberReader
+     *
+     * @param rdr !null open LineNumberReader
+     */
     public CGFSpectrumIterable(LineNumberReader rdr) {
         reader = new LineNumberReader(rdr);
-        nextCluster = ParserUtilities.readSpectralCluster(reader,null);
+        nextCluster = ParserUtilities.readSpectralCluster(reader, null);
         one_time_iterator = new MGFSpectrumIterator();
-     }
+    }
 
     protected LineNumberReader getReader() {
         return reader;
@@ -99,13 +102,12 @@ public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
          * Returns the next element in the iteration.
          *
          * @return the next element in the iteration.
-         * @throws java.util.NoSuchElementException
-         *          iteration has no more elements.
+         * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         @Override
         public ISpectralCluster next() {
             ISpectralCluster ret = nextCluster;
-            nextCluster = ParserUtilities.readSpectralCluster(reader,null);
+            nextCluster = ParserUtilities.readSpectralCluster(reader, null);
             return ret;
         }
 

@@ -1,13 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CountedString;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import javax.annotation.*;
-import java.io.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -83,8 +88,8 @@ public class PSMSpectralCluster implements ISpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
-            String peptide =sc1.getPeptide();
-               boolean decoy = sc1.isDecoy();
+            String peptide = sc1.getPeptide();
+            boolean decoy = sc1.isDecoy();
             if (peptides.contains(";")) {
                 MultipleSpectraCount++;
                 throw new UnsupportedOperationException("Should never happen");
@@ -102,7 +107,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
             byPurity.add(new ClusterPeptideFraction(peptide, purity, decoy));
 
         }
-          // show bad decoys
+        // show bad decoys
 //        if (pureDecoy != null) {
 //            System.out.println(pureDecoy + " " + purityStr);
 //        }
@@ -118,12 +123,12 @@ public class PSMSpectralCluster implements ISpectralCluster {
     @Override
     public String getSpectralId() {
         StringBuilder sb = new StringBuilder();
-        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        List<String> spectralIds = new ArrayList<String>(getSpectralIds());
         Collections.sort(spectralIds);
-        sb.append(spectralIds.get(0)) ;
+        sb.append(spectralIds.get(0));
         for (int i = 1; i < spectralIds.size(); i++) {
-            sb.append(",") ;
-            sb.append(spectralIds.get(i)) ;
+            sb.append(",");
+            sb.append(spectralIds.get(i));
         }
         return sb.toString();
     }
@@ -175,8 +180,8 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
             String s = peptideStrings.get(0);
             int index = s.indexOf(":");
-            if(index > -1)       // drop things like AERERTRYTE:9
-                return s.substring(0,index);
+            if (index > -1)       // drop things like AERERTRYTE:9
+                return s.substring(0, index);
             return s;
         }
         return null;
@@ -189,7 +194,9 @@ public class PSMSpectralCluster implements ISpectralCluster {
      * @return list ordered bu purity
      */
     @Override
-    public @Nonnull  List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
+    public
+    @Nonnull
+    List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
         if (byPurity.size() == 0)
             buildPeptidePurities();
         return byPurity;
@@ -197,17 +204,14 @@ public class PSMSpectralCluster implements ISpectralCluster {
     }
 
 
-
-
     public void addPeptides(String peptides) {
         String[] parts = peptides.split(",");
-        if(parts[0].contains((":")))
+        if (parts[0].contains((":")))
             parts = dropPeptideCounts(parts);
         addPeptide(parts);
     }
 
-    public String[] dropPeptideCounts(String[] countedPeptides)
-    {
+    public String[] dropPeptideCounts(String[] countedPeptides) {
         String[] ret = new String[countedPeptides.length];
         for (int i = 0; i < countedPeptides.length; i++) {
             ret[i] = dropPeptideCount(countedPeptides[i]);
@@ -216,11 +220,11 @@ public class PSMSpectralCluster implements ISpectralCluster {
         return ret;
     }
 
-    protected  String dropPeptideCount(final String p) {
-        int index = p.indexOf(":") ;
-        if(index < 0)
+    protected String dropPeptideCount(final String p) {
+        int index = p.indexOf(":");
+        if (index < 0)
             return p;
-        return p.substring(0,index);
+        return p.substring(0, index);
     }
 
     public void addPeptide(String... peptides) {
@@ -282,8 +286,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
             out.append("\t");
 
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
@@ -315,8 +318,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
             //            }
             out.append("END CLUSTER");
             out.append("\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -341,23 +343,22 @@ public class PSMSpectralCluster implements ISpectralCluster {
             out.append("\n");
 
             final List<String> peptides1 = getPeptides();
-            if(peptides1.isEmpty())  {
+            if (peptides1.isEmpty()) {
                 out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
-             }
-            else {
+            } else {
                 out.append("sequence=[");
                 boolean first = true;
                 for (String s : peptides1) {
-                  if(first)
-                      first = !first;
+                    if (first)
+                        first = !first;
                     else
-                      out.append(",") ;
+                        out.append(",");
                     out.append(s);
                 }
                 out.append("]");
             }
 
-             out.append("\n");
+            out.append("\n");
 
             out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
             out.append("\n");
@@ -376,8 +377,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
                 out.append(csq);
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -430,7 +430,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
     @Override
     public int compareTo(ISpectralCluster o) {
         return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
-       }
+    }
 
     @Override
     public boolean equivalent(ISpectralCluster o) {
@@ -468,8 +468,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
                     return false;
             }
             return true; // just one spectrum so check peaks
-        }
-        else {
+        } else {
             if (spc1.size() != spc2.size())
                 return false;
 

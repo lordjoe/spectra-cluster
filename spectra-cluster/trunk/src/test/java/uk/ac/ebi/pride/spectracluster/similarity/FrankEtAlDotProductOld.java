@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.InversePeakIntensityComparator;
 
 import java.util.*;
 
@@ -73,6 +75,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
     public String getCurrentVersion() {
         return version.toString();
     }
+
     /**
      * erturn the default similarity Threshold
      *
@@ -80,7 +83,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      */
     @Override
     public double getDefaultThreshold() {
-        return  DEFAULT_SIMILARITY_THRESHOLD;
+        return DEFAULT_SIMILARITY_THRESHOLD;
     }
 
     /**
@@ -218,11 +221,11 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
 
         // normalize the dot product
         double denom = Math.sqrt(sumSquareIntensity1 * sumSquareIntensity2);
-        if(denom == 0)
+        if (denom == 0)
             return 0;
         double normalizedDotProduct = dotProduct / denom;
 
-   //     System.out.println("Old Spectrum matched " + numberMatches );
+        //     System.out.println("Old Spectrum matched " + numberMatches );
         return normalizedDotProduct;
     }
 

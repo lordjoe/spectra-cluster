@@ -1,9 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.algorithms.LinearWideBinner;
+import com.lordjoe.utilities.IProgressHandler;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -69,15 +70,15 @@ public class BinningClusteringEngine implements IClusteringEngine {
     }
 
     /**
-      * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-      * usually is called on removed clusters
-      *
-      * @return !null Cluster
-      */
-     @Override
-     public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
-         return getSomeEngine().findNoneFittingSpectra(cluster);
-      }
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        return getSomeEngine().findNoneFittingSpectra(cluster);
+    }
 
 
     /**
@@ -89,21 +90,21 @@ public class BinningClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**
      * find the engine for a bin creating one as needed
-      * @return
+     *
+     * @return
      */
-    protected IClusteringEngine getSomeEngine( ) {
+    protected IClusteringEngine getSomeEngine() {
         synchronized (engineForBin) {
-             if(engineForBin.isEmpty()) {
-                 return getEngine(0);
-             }
-            else {
-                 return engineForBin.entrySet().iterator().next().getValue();
-             }
+            if (engineForBin.isEmpty()) {
+                return getEngine(0);
+            } else {
+                return engineForBin.entrySet().iterator().next().getValue();
+            }
         }
     }
 
@@ -118,7 +119,7 @@ public class BinningClusteringEngine implements IClusteringEngine {
             IClusteringEngine ret = engineForBin.get(pBin);
             if (ret == null) {
                 ret = new BinnedClusteringEngine(binner, pBin);
-                 engineForBin.put(pBin, ret);
+                engineForBin.put(pBin, ret);
             }
             return ret;
         }
@@ -149,16 +150,17 @@ public class BinningClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addProgressMonitor(IProgressHandler handler) {
-         // todo will this work as engines created dynamicallys
+        // todo will this work as engines created dynamicallys
         for (IClusteringEngine engine : engineForBin.values()) {
-              engine.addProgressMonitor(handler);
+            engine.addProgressMonitor(handler);
         }
 
     }
 
     /**
      * nice for debugging to name an engine
-     * @return  possibly null name
+     *
+     * @return possibly null name
      */
     @Override
     public String getName() {
@@ -167,7 +169,8 @@ public class BinningClusteringEngine implements IClusteringEngine {
 
     /**
      * nice for debugging to name an engine
-     * @param pName   possibly null name
+     *
+     * @param pName possibly null name
      */
     @Override
     public void setName(final String pName) {
@@ -175,29 +178,30 @@ public class BinningClusteringEngine implements IClusteringEngine {
     }
 
     /**
-      * allow engines to be named
-      * @return
-      */
-     @Override
-     public String toString() {
-          if(name != null)
-              return name;
-         return super.toString();
-     }
+     * allow engines to be named
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        if (name != null)
+            return name;
+        return super.toString();
+    }
 
     /**
-      * total number of clusters including queued clustersToAdd
-      *
-      * @return
-      */
-     @Override
-     public int size() {
-         int n = 0;
-         // todo use multiple threads
-         for (IClusteringEngine engine : engineForBin.values()) {
-              n += engine.size();
-         }
-         return n;
-     }
+     * total number of clusters including queued clustersToAdd
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        int n = 0;
+        // todo use multiple threads
+        for (IClusteringEngine engine : engineForBin.values()) {
+            n += engine.size();
+        }
+        return n;
+    }
 
 }

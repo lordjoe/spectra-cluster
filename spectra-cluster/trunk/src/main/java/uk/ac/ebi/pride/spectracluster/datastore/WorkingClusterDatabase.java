@@ -1,11 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import org.springframework.dao.*;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.simple.*;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import javax.sql.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.WorkingClusterDatabase

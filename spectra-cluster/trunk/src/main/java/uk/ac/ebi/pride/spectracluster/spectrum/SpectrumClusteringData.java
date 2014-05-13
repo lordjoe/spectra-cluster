@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.SpectrumClusteringData

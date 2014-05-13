@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
-
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch
  *
@@ -19,18 +18,20 @@ public interface IPeptideSpectrumMatch extends ISpectrum {
 
 
     /**
-      * return text in the id not peptide or id
-      */
-     public String getAnnotation();
+     * return text in the id not peptide or id
+     */
+    public String getAnnotation();
 
     /**
      * write basic data as TSV
+     *
      * @param out
      */
     public void appendTSV(Appendable out);
 
     /**
      * true if we know this is a decoy
+     *
      * @return
      */
     public boolean isDecoy();

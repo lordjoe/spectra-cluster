@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.SpectralQualityHolder
@@ -21,7 +23,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
     private boolean dirty;
 
     public SpectralQualityHolder() {
-     }
+    }
 
 
     public boolean isDirty() {
@@ -50,8 +52,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
             highestQualitySpectra.add(inserted);
             setLowestClusteredQuality(Math.min(getLowestClusteredQuality(), quality));
             setDirty(true);
-        }
-        else {
+        } else {
             if (quality <= getLowestClusteredQuality())
                 return; // worse than  the lowest
             setDirty(true);
@@ -145,5 +146,5 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
             ISpectrum rem = removed[i];
             handleQualityRemove(rem);
         }
-     }
+    }
 }

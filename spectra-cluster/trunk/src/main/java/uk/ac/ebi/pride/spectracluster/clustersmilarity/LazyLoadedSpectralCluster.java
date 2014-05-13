@@ -1,12 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CountedString;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import javax.annotation.*;
-import java.io.*;
+import javax.annotation.Nonnull;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.*;
 
 /**
@@ -90,7 +97,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     }
 
     protected void guaranteeCachedRead() {
-        if (precursorMz == null ) {
+        if (precursorMz == null) {
             guaranteeCachedData();
             DataFromDatabase dbf = cachedData.get(getId());
             if (dbf != null) {
@@ -154,7 +161,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             AllSpectraCount++;
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String value = sc1.getPeptide();
-            if(value == null)
+            if (value == null)
                 continue;
             String[] peptides = value.split(";");
             boolean decoy = false;
@@ -182,7 +189,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             String peptide = sc1.getPeptide();
-            if(peptide == null)
+            if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
             if (sc1.isDecoy())
@@ -212,7 +219,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
             IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
             boolean decoy = sc1.isDecoy();
             String peptide = sc1.getPeptide();
-            if(peptide == null)
+            if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
@@ -241,12 +248,12 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     @Override
     public String getSpectralId() {
         StringBuilder sb = new StringBuilder();
-        List<String> spectralIds = new ArrayList<String>( getSpectralIds());
+        List<String> spectralIds = new ArrayList<String>(getSpectralIds());
         Collections.sort(spectralIds);
-        sb.append(spectralIds.get(0)) ;
+        sb.append(spectralIds.get(0));
         for (int i = 1; i < spectralIds.size(); i++) {
-            sb.append(",") ;
-            sb.append(spectralIds.get(i)) ;
+            sb.append(",");
+            sb.append(spectralIds.get(i));
         }
         return sb.toString();
     }

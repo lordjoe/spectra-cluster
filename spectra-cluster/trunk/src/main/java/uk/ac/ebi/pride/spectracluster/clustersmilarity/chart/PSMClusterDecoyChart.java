@@ -1,22 +1,36 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.*;
-import org.jfree.chart.renderer.xy.*;
-import org.jfree.data.category.*;
-import org.jfree.data.xy.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.CountedMap;
+import com.lordjoe.utilities.ElapsedTimer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMComparisonMain;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,28 +114,28 @@ public class PSMClusterDecoyChart {
             ReliableIdentificationStatistics statistics = new ReliableIdentificationStatistics(cst, minimumClusterSize);
 
             double v = statistics.fractionWithPurity(1.0);
-            dataset.addValue(v, name, "Purity 1.0" );
+            dataset.addValue(v, name, "Purity 1.0");
 
             v = statistics.fractionWithPurity(0.95);
-            dataset.addValue(v,  name,  "Purity 0.95" );
+            dataset.addValue(v, name, "Purity 0.95");
 
             v = statistics.fractionWithPurity(0.9);
-            dataset.addValue(v,  name,  "Purity 0.9" );
+            dataset.addValue(v, name, "Purity 0.9");
 
             v = statistics.fractionWithPurity(0.8);
-            dataset.addValue(v, name,  "Purity 0.8" );
+            dataset.addValue(v, name, "Purity 0.8");
 
             v = statistics.fractionWithPurity(0.7);
-            dataset.addValue(v, name,  "Purity 0.7" );
+            dataset.addValue(v, name, "Purity 0.7");
 
             double total_spectra = statistics.getTotal_spectra();
             int totalClusterTooSmall = statistics.getTotalClusterTooSmall();
             v = totalClusterTooSmall / total_spectra;
-            dataset.addValue(v, name,  "Cluster Too Small" );
+            dataset.addValue(v, name, "Cluster Too Small");
 
             int wrongPeptide = statistics.getTotalWrongPeptide();
             v = wrongPeptide / total_spectra;
-            dataset.addValue(v,  name, "Not Major Peptide" );
+            dataset.addValue(v, name, "Not Major Peptide");
 
         }
     }
@@ -310,8 +324,7 @@ public class PSMClusterDecoyChart {
                 if (cutPoint > maxCut)
                     break;
                 //              number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;
@@ -400,8 +413,7 @@ public class PSMClusterDecoyChart {
         double maxRange = 0;
         try {
             maxRange = values.get(values.size() - 1).getRange();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
 
         }
@@ -430,8 +442,7 @@ public class PSMClusterDecoyChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
         }
@@ -491,8 +502,7 @@ public class PSMClusterDecoyChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;
@@ -555,8 +565,7 @@ public class PSMClusterDecoyChart {
                     number_cummulative = 0;
                 }
                 number_cummulative = 0;
-            }
-            else {
+            } else {
                 number_cummulative++;
             }
             number_total++;
@@ -884,7 +893,7 @@ public class PSMClusterDecoyChart {
         // set the range axis to display integers only...
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
-        rangeAxis.setRange(0,1);
+        rangeAxis.setRange(0, 1);
 
         // disable bar outlines...
         final BarRenderer renderer = (BarRenderer) plot.getRenderer();

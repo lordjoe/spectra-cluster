@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
+import com.lordjoe.algorithms.CompareTo;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 
 /**
  * @author Rui Wang
@@ -39,11 +39,11 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
 
         peptide = pPeptide;
         decoy = pDecoy;
-        if(!pDecoy)
+        if (!pDecoy)
             return;
-        if (pPurity > 0.8 ) {
+        if (pPurity > 0.8) {
             {
-                  number_pure_decoy++;
+                number_pure_decoy++;
             }
         }
     }
@@ -100,13 +100,14 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
 
     /**
      * sort least pure first
+     *
      * @param o other
      * @return
      */
     @Override
     public int compareTo(@Nonnull ClusterPeptideFraction o) {
-        int ret = CompareTo.compare(getPurity(), o.getPurity()) ;
-        if(ret != 0)
+        int ret = CompareTo.compare(getPurity(), o.getPurity());
+        if (ret != 0)
             return ret;
 //        double del = getMean() - o.getMean();
 //        if (Math.abs(del) > 0.0001) {

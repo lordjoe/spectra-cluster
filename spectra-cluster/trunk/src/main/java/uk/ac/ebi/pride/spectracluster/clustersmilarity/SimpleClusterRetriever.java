@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return clusterById.size();
     }
 
-      public int getNumberDuplicateClusters() {
+    public int getNumberDuplicateClusters() {
         return numberDuplicateClusters;
     }
 
@@ -42,8 +43,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
             sortedClusters.addAll(clusters);
             try {
                 Collections.sort(sortedClusters);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Throwable t = e;
                 while (t.getCause() != null && t.getCause() != t)
                     t = t.getCause();
@@ -57,8 +57,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
     public void addCluster(ISpectralCluster cluster) {
         try {
             guaranteeClusterId(cluster);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             guaranteeClusterId(cluster);
             throw new RuntimeException(e);
 
@@ -66,8 +65,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         String id = cluster.getSpectralId();
         if (!clusterById.containsKey(id)) {
             clusterById.put(id, cluster);
-        }
-        else {
+        } else {
             numberDuplicateClusters++;
         }
         sortedClusters.clear();

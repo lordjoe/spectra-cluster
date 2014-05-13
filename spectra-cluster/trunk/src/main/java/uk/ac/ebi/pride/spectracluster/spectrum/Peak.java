@@ -1,14 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 /**
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
  */
-public class Peak implements IPeak{
+public class Peak implements IPeak {
 
     private final float massChargeRatio;
     private final float intensity;
@@ -24,12 +24,13 @@ public class Peak implements IPeak{
         this.count = count;
 
         // debugging code to track down a few bad cases
-        if(count > 1 && ClusterUtilities.isMZInteresting(massChargeRatio))
+        if (count > 1 && ClusterUtilities.isMZInteresting(massChargeRatio))
             ClusterUtilities.breakHere();
     }
 
     /**
      * copy constructor
+     *
      * @param copied
      */
     public Peak(IPeak copied) {
@@ -56,7 +57,7 @@ public class Peak implements IPeak{
     public int compareTo(IPeak o) {
         if (Math.abs(getMz() - o.getMz()) > SMALL_MZ_DIFFERENCE)
             return CompareTo.compare(getMz(), o.getMz());
-        if (Math.abs(getIntensity()- o.getIntensity()) > SMALL_INTENSITY_DIFFERENCE)
+        if (Math.abs(getIntensity() - o.getIntensity()) > SMALL_INTENSITY_DIFFERENCE)
             return Double.compare(getIntensity(), o.getIntensity());
         return 0;
     }
@@ -69,7 +70,7 @@ public class Peak implements IPeak{
      */
     @Override
     public boolean equivalent(IPeak other) {
-         return compareTo(other) == 0;
+        return compareTo(other) == 0;
     }
 
     /**
@@ -81,7 +82,7 @@ public class Peak implements IPeak{
     public String toString() {
         String mz = String.format("%10.5f", getMz()).trim();
         String intensity = String.format("%8.2f", getIntensity()).trim();
-        return "m/z = "+ mz + ", intensity = " + intensity + ", count = " + getCount();
+        return "m/z = " + mz + ", intensity = " + intensity + ", count = " + getCount();
     }
 
     @Override

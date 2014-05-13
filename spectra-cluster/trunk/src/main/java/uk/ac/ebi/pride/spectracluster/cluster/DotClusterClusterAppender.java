@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.DotClusterClusterAppender
@@ -11,8 +11,9 @@ import uk.ac.ebi.pride.spectracluster.util.*;
 public class DotClusterClusterAppender implements IClusterAppender {
 
     public static final DotClusterClusterAppender INSTANCE = new DotClusterClusterAppender();
-     private DotClusterClusterAppender() {
-     }
+
+    private DotClusterClusterAppender() {
+    }
 
 
     /**
@@ -37,11 +38,11 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out,  final Object... otherdata) {
-        String name = (String)otherdata[0];
+    public boolean appendStart(final Appendable out, final Object... otherdata) {
+        String name = (String) otherdata[0];
         ClusterUtilities.appendDotClusterHeader(out, name);
-        return  true;
-     }
+        return true;
+    }
 
     /**
      * add whatever happens at the end
@@ -52,7 +53,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out,  final Object... otherdata) {
-        return  false;
-     }
+    public boolean appendEnd(final Appendable out, final Object... otherdata) {
+        return false;
+    }
 }

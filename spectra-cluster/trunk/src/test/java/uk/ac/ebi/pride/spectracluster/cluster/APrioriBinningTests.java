@@ -1,10 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.*;
+import com.lordjoe.algorithms.MarkedNumber;
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.APrioriBinningTests
@@ -17,12 +18,12 @@ public class APrioriBinningTests {
 
     @Test
     public void testDefaultBinning() {
-        APrioriBinning<String> binning = new APrioriBinning(NUMBER_BINS,Defaults.DEFAULT_WIDE_MZ_BINNER);
+        APrioriBinning<String> binning = new APrioriBinning(NUMBER_BINS, Defaults.DEFAULT_WIDE_MZ_BINNER);
         List<MarkedNumber<String>> markedNumbers = APrioriBinning.readFromResource();
         markedNumbers = MarkedNumber.normalize(markedNumbers);
-        double[] values = new double[NUMBER_BINS] ;
-        int[] bins = new int[markedNumbers.size()] ;
-         int index = 0;
+        double[] values = new double[NUMBER_BINS];
+        int[] bins = new int[markedNumbers.size()];
+        int index = 0;
         for (MarkedNumber<String> markedNumber : markedNumbers) {
             String current = markedNumber.getMark();
             current = current.substring(2); // drop MZ
@@ -30,11 +31,11 @@ public class APrioriBinningTests {
             int bin = binning.getBin(daltons);
             bins[index++] = bin;
             double value = markedNumber.getValue();
-            values[bin]  += value;
+            values[bin] += value;
         }
         for (int i = 0; i < bins.length; i++) {
             int bin = bins[i];
-  //          System.out.println(" " + bin + " " + values[bin]);
+            //          System.out.println(" " + bin + " " + values[bin]);
         }
     }
 

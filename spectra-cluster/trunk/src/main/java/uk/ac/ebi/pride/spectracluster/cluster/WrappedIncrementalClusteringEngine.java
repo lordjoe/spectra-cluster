@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -26,10 +26,10 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     }
 
     protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
-          private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
+        private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
 
         public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ISpectralCluster> pSpectrumComparator) {
-                incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
+            incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
         }
 
         /**
@@ -39,10 +39,10 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
          */
         @Override
         public IClusteringEngine getClusteringEngine(Object... otherdata) {
-            if(otherdata.length < 1)
+            if (otherdata.length < 1)
                 throw new IllegalArgumentException("WrappedClusteringEngine needs a Double as WindowSize"); //
             double windowSize = (Double) otherdata[0];
-            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine( windowSize));
+            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine(windowSize));
         }
     }
 
@@ -69,10 +69,11 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
 
     /**
      * simple get of raw clusters array for internal use
+     *
      * @return
      */
-      protected List<ISpectralCluster> internalGetClusters() {
-           return clusters;
+    protected List<ISpectralCluster> internalGetClusters() {
+        return clusters;
     }
 
     /**
@@ -83,12 +84,12 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Override
     public List<ISpectralCluster> getClusters() {
         final List<ISpectralCluster> internalClusters = internalGetClusters();
-        Set<ISpectralCluster> internalSet = new HashSet<ISpectralCluster>(internalClusters) ;
-        IIncrementalClusteringEngine engine = getRealEngine() ;
+        Set<ISpectralCluster> internalSet = new HashSet<ISpectralCluster>(internalClusters);
+        IIncrementalClusteringEngine engine = getRealEngine();
         final Collection<ISpectralCluster> lastClusters = engine.getClusters();
         internalSet.addAll(lastClusters);
         List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(internalSet);
-         Collections.sort(ret);
+        Collections.sort(ret);
         return ret;
     }
 
@@ -98,12 +99,12 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Override
     public void addClusters(final ISpectralCluster... cluster) {
         final List<ISpectralCluster> internalClusters = internalGetClusters();
-        IIncrementalClusteringEngine engine = getRealEngine() ;
+        IIncrementalClusteringEngine engine = getRealEngine();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cluster.length; i++) {
             ISpectralCluster added = cluster[i];
             final Collection<ISpectralCluster> finalClusters = engine.addClusterIncremental(added);
-            if(!finalClusters.isEmpty())
+            if (!finalClusters.isEmpty())
                 internalClusters.addAll(finalClusters);
         }
         setDirty(true);
@@ -111,7 +112,8 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
 
     /**
      * clusters are merged in the internal collection
-     *   processing is incremental
+     * processing is incremental
+     *
      * @return true is  anything happened
      */
     @Override
@@ -119,18 +121,18 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         boolean wasDirty = isDirty();
         setDirty(false);
         return wasDirty;
-     }
+    }
 
     /**
-       * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-       * usually is called on removed clusters
-       *
-       * @return !null Cluster
-       */
-      @Override
-      public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
-          return realEngine.findNoneFittingSpectra(  cluster);
-      }
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    @Override
+    public List<ISpectralCluster> findNoneFittingSpectra(final ISpectralCluster cluster) {
+        return realEngine.findNoneFittingSpectra(cluster);
+    }
 
 
     /**
@@ -142,7 +144,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,realEngine);
+        return ClusteringUtilities.asWritttenSpectra(cluster, realEngine);
     }
 
 
@@ -153,7 +155,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      */
     @Override
     public void addProgressMonitor(IProgressHandler handler) {
-       realEngine.addProgressMonitor(handler);
+        realEngine.addProgressMonitor(handler);
 
     }
 

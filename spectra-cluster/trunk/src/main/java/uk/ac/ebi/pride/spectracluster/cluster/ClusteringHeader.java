@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader
@@ -43,20 +43,19 @@ public class ClusteringHeader {
         return similarity_method;
     }
 
-    public void appendHeader(Appendable out)  {
+    public void appendHeader(Appendable out) {
         try {
             out.append("name=" + getName() + "\n");
             out.append("similarity_method=" + getSimilarity_method() + "\n");
             out.append("threshold=" + getThreshold() + "\n");
             out.append("fdr=" + getFdr() + "\n");
             out.append("description=" + getDescription() + "\n");
-         } catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
-    
-    public String toString()
-    {
+
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         appendHeader(sb);
         return sb.toString();

@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -18,18 +21,19 @@ import java.util.*;
  * peptide mass. Furthermore, the vectors for the
  * dot-product are filled with the 1+ln(I) where I
  * is the peak's normalized intensity.
- *
+ * <p/>
  * uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct
+ *
  * @author jg
  *         <p/>
-  */
+ */
 @Deprecated
 public class FrankEtAlDotProductJohannes implements SimilarityChecker {
     /**
      * This is for debugging purposes only! Do not turn this to false in productive mode.
      * If this boolean is set to false, the algorithm does not check whether there is
      * a better matching peak in spectrum 1 than the current one.
-     *
+     * <p/>
      * TODO: this should be removed once testing is complete
      */
     public static boolean CHECK_BEST_PEAK_SPEC1 = true;
@@ -150,11 +154,11 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
                 // also calculate the difference for the next t and e peaks
                 double mass_difference_nextT = 100;
                 if (t + 1 < peaks1.length) {
-                    mass_difference_nextT = mz2 - peaks1[t+1].getMz();
+                    mass_difference_nextT = mz2 - peaks1[t + 1].getMz();
                 }
                 double mass_difference_nextE = 100;
                 if (e + 1 < peaks2.length) {
-                    mass_difference_nextE = peaks2[e+1].getMz() - mz1;
+                    mass_difference_nextE = peaks2[e + 1].getMz() - mz1;
                 }
                 double mass_difference_nextTE = 100;
                 if (t + 1 < peaks1.length && e + 1 < peaks2.length) {
@@ -186,16 +190,15 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
                 double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
 
                 // print the peaks if a debugOutput is supplied
-                if(debugOutput != null)   {
-                      String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
+                if (debugOutput != null) {
+                    String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
                     try {
                         debugOutput.append(fmt);
-                    }
-                    catch (IOException e1) {
+                    } catch (IOException e1) {
                         throw new RuntimeException(e1);
 
                     }
-                 }
+                }
 
                 dotProduct += match1 * match2;
 
@@ -208,17 +211,14 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
                 if (lastIsT) {
                     e++;
                     lastIsT = false;
-                }
-                else {
+                } else {
                     t++;
                     lastIsT = true;
                 }
-            }
-            else {
+            } else {
                 if (mass_difference < 0) {
                     e++;
-                }
-                else {
+                } else {
                     t++;
                 }
             }
@@ -230,7 +230,7 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
             return 0;
         double normalizedDotProduct = dotProduct / denom;
 
-        if(normalizedDotProduct >= 1)
+        if (normalizedDotProduct >= 1)
             return normalizedDotProduct;  // todo look st this case
 
         return normalizedDotProduct;
@@ -267,16 +267,18 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
                                Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-            return  Defaults.getNumberComparedPeaks();;
+            return Defaults.getNumberComparedPeaks();
+        ;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
         int largeBinningRegion = Defaults.getLargeBinningRegion();
-        int k =  Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
+        int k = Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
 
         if (peptideMass % largeBinningRegion > 0)
-            k +=  Defaults.getNumberComparedPeaks();;
+            k += Defaults.getNumberComparedPeaks();
+        ;
 
         return k;
     }
@@ -304,7 +306,7 @@ public class FrankEtAlDotProductJohannes implements SimilarityChecker {
     }
 
     public AlgorithmVersion getVersion() {
-        return version ;
+        return version;
     }
 
     public void setMzRange(double mzRange) {

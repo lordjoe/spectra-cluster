@@ -1,13 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 
-import uk.ac.ebi.pride.spectracluster.datastore.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.datastore.IMutableSpectrumDataStore;
+import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.sql.*;
-import java.io.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.DatabaseLoadMain
@@ -106,7 +110,7 @@ public class DatabaseLoadMain {
         }
 
 
-      }
+    }
 
 
     /**

@@ -1,13 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.CollectionUtilities;
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.sql.*;
-import java.sql.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCTests
@@ -32,7 +38,7 @@ public class SpringJDBCTests {
      */
     @Test
     public void testDbAccessSetup() throws Exception {
-        if(SKIP_DATABASE_TESTS)
+        if (SKIP_DATABASE_TESTS)
             return;
         // run once with the right password - the machine will remember
         //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
@@ -44,7 +50,7 @@ public class SpringJDBCTests {
         while (resultSet.next()) {
             //noinspection UnusedDeclaration
             final String field = resultSet.getString("field");
-              //noinspection UnusedDeclaration
+            //noinspection UnusedDeclaration
             final String type = resultSet.getString("type");
         }
         connection.close();
@@ -61,8 +67,8 @@ public class SpringJDBCTests {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Test
     public void testDbLoad() throws Exception {
-        if(SKIP_DATABASE_TESTS)
-             return;
+        if (SKIP_DATABASE_TESTS)
+            return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
@@ -109,8 +115,8 @@ public class SpringJDBCTests {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Test
     public void testMultipleDbLoad() throws Exception {
-        if(SKIP_DATABASE_TESTS)
-             return;
+        if (SKIP_DATABASE_TESTS)
+            return;
 
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
@@ -154,8 +160,8 @@ public class SpringJDBCTests {
 
     @Test
     public void testDbAccess() throws Exception {
-        if(SKIP_DATABASE_TESTS)
-             return;
+        if (SKIP_DATABASE_TESTS)
+            return;
         DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
 
         SpectrumDataStore db = new SpectrumDataStore("test", ds);

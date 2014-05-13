@@ -2,11 +2,15 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -15,8 +19,6 @@ import java.util.*;
 public class ClusteringEngineTests {
 
     private static final boolean TEST_KNOWN_TO_FAIL = true; // todo take out when things work
-
-
 
 
     @Test
@@ -50,16 +52,16 @@ public class ClusteringEngineTests {
             }
         }
         long endOldEngine = System.currentTimeMillis();
-          //noinspection UnusedAssignment,UnusedDeclaration
-          double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
+        //noinspection UnusedAssignment,UnusedDeclaration
+        double delOldSec = (endOldEngine - endNewEngine) / 1000.0;
 
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters =  (List<ISpectralCluster> )clusteringEngine.getClusters();
+        List<ISpectralCluster> newClusters = (List<ISpectralCluster>) clusteringEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<ISpectralCluster> oldClusters =  (List<ISpectralCluster> )oldClusteringEngine.getClusters();
+        List<ISpectralCluster> oldClusters = (List<ISpectralCluster>) oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass

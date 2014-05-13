@@ -9,6 +9,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 public interface IClusteringEngineFactory {
     /**
      * make a copy of the clustering engine
+     *
      * @return
      */
     public IClusteringEngine getClusteringEngine(Object... other);

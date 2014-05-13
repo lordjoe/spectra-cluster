@@ -1,11 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.*;
+import com.lordjoe.algorithms.CountedMap;
+import com.lordjoe.utilities.TypedVisitor;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterMZSpread;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.ClusterDecoyChart;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.*;
 
 /**
@@ -29,8 +35,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         try {
             properties.load(new FileReader(propertyFileName));
             handleProperties();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -55,8 +60,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
                 decoys.add(line.trim());
                 line = rdr.readLine();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -68,7 +72,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     }
 
 
-     @Override
+    @Override
     public boolean isDecoy(String peptideSequence) {
         boolean contains = decoys.contains(peptideSequence);
         if (contains) {
@@ -99,11 +103,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     }
 
 
-
-
-    public static List<ClusterPeptideFraction> getDistributionData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize,ClusterDataType type) {
+    public static List<ClusterPeptideFraction> getDistributionData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize, ClusterDataType type) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys,minimumSize,  type);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize, type);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -111,9 +113,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     }
 
 
-    public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
+    public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys,  minimumSize);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -121,10 +123,9 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     }
 
 
-
-    public static List<ClusterMZSpread> getClusterRangeData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
+    public static List<ClusterMZSpread> getClusterRangeData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterMZSpread> ranges = new ArrayList<ClusterMZSpread>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterMZRangeVisitor(ranges,  minimumSize);
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterMZRangeVisitor(ranges, minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(ranges);
@@ -132,19 +133,18 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     }
 
 
-
-    public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs,IDecoyDiscriminator discriminator,  int minimumSize) {
+    public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys,  minimumSize,discriminator );
+        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
         return decoys;
     }
 
-    public static List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs,IDecoyDiscriminator discriminator, int minimumSize) {
+    public static List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize,discriminator);
+        TypedVisitor<ISpectralCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv2);
         Collections.sort(targets);
@@ -204,7 +204,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
         ClusterDecoyChart.makeDecoyChart(INSTANCE, pCs, pCs.getName());
     }
 
-    public void showFDRCharts( ) {
+    public void showFDRCharts() {
 
         ClusterDecoyChart.makeFDRChart("FDR", this);
         ClusterDecoyChart.makeCummulativeTotalChart("Total PSMS", this);
@@ -213,11 +213,11 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
     public void compareClusters() {
         SimpleSpectrumRetriever spectra1 = getSpectra();
         List<IClusterSet> clst = getClusterings();
-        if(clst.size() < 2)
+        if (clst.size() < 2)
             return;
         IClusterSet cs1 = clst.get(0);
         IClusterSet cs2 = clst.get(1);
-        MostSimilarClusterSet.compareClusterSets(  spectra1, cs1,cs2) ;
+        MostSimilarClusterSet.compareClusterSets(spectra1, cs1, cs2);
 
     }
 
@@ -234,20 +234,20 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             String arg = args[i];
             File originalFile = new File(arg);
             IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile);
-       //      cs = cs.dropClustersLessThanSize(4);
+            //      cs = cs.dropClustersLessThanSize(4);
             for (ISpectralCluster sc : cs.getClusters()) {
                 sc.getPeptidePurity(INSTANCE);
             }
             cs.setName(arg);
             CountedMap<String> countedMap = ClusterSimilarityUtilities.getCountedMap(cs);
-              System.out.println("duplicates " + countedMap.getDuplicates() + " total " + countedMap.getTotal());
+            System.out.println("duplicates " + countedMap.getDuplicates() + " total " + countedMap.getTotal());
             INSTANCE.addClustering(cs);
-           // showChart(cs);
+            // showChart(cs);
         }
         INSTANCE.showFDRCharts();
         INSTANCE.compareClusters();
         INSTANCE.generateReports();
-      }
+    }
 
 
 }

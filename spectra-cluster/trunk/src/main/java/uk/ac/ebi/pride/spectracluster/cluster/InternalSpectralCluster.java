@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster

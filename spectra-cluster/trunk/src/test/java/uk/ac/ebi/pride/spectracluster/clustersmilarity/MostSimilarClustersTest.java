@@ -14,9 +14,10 @@ import java.util.List;
 public class MostSimilarClustersTest {
     /**
      * This will not work - no overlap
+     *
      * @throws Exception
      */
-  //  @Test
+    //  @Test
     public void testMostSimilarClusters() throws Exception {
 
         List<ISpectralCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
@@ -27,7 +28,7 @@ public class MostSimilarClustersTest {
 
         ISpectralCluster bestMatch = mostSimilarClusters.getBestMatchingCluster();
         ISpectralCluster baseCluster = mostSimilarClusters.getBaseCluster();
-        if(!baseCluster.equals(bestMatch)) {
+        if (!baseCluster.equals(bestMatch)) {
             bestMatch = mostSimilarClusters.getBestMatchingCluster();// repeat test
             Assert.assertEquals(baseCluster, bestMatch);   // allow us to look at the bad case
         }
@@ -50,7 +51,7 @@ public class MostSimilarClustersTest {
         double distance = -1000;
         for (ClusterDistanceItem bestMatch : bestMatches) {
             double bestMatchDistance = bestMatch.getDistance();
-            Assert.assertTrue( distance <= bestMatchDistance);
+            Assert.assertTrue(distance <= bestMatchDistance);
             distance = bestMatchDistance;
         }
 

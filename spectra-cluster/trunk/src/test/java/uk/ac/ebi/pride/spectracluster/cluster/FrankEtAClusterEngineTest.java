@@ -1,11 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,13 +24,13 @@ public class FrankEtAClusterEngineTest {
     public void testBuildConsensusSpectrum() throws Exception {
         final List<ConsensusSpectraItems> consensusSpectraItems = ClusteringTestUtilities.readConsensusSpectraItemsFromResource();
         // iterate over all clusters
-             //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         int index = 0;
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
-            IConsensusSpectrumBuilder consensusSpectrumBuilder =  ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
-            consensusSpectrumBuilder.onSpectraAdd(consensusSpectrumBuilder,spectra.toArray(new ISpectrum[spectra.size()]));
+            IConsensusSpectrumBuilder consensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+            consensusSpectrumBuilder.onSpectraAdd(consensusSpectrumBuilder, spectra.toArray(new ISpectrum[spectra.size()]));
 
             // make a concensus in bulk
 //            List<IPeak> jpeaks;
@@ -37,7 +41,7 @@ public class FrankEtAClusterEngineTest {
 //             jpeaks = totalIntensityNormalizer.normalizePeaks(jpeaks);
 
 
-            ISpectrum newConsensusSpectrum =  consensusSpectrumBuilder.getConsensusSpectrum();
+            ISpectrum newConsensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
 
             if (!areConsensusSpectraSimilar(consensusSpectrum, newConsensusSpectrum)) {
                 // repeat and debug failures - if you are here it will fail
@@ -48,7 +52,6 @@ public class FrankEtAClusterEngineTest {
             index++; // track where we are
         }
     }
-
 
 
     @SuppressWarnings("UnusedDeclaration")
@@ -79,12 +82,12 @@ public class FrankEtAClusterEngineTest {
     }
 
     private boolean arePeaksSimilar(List<IPeak> peaks1, List<IPeak> peaks2) {
-          // check the size of the peaks
+        // check the size of the peaks
         if (peaks1.size() != peaks2.size())
             return false;
-             //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double total1 = 0;
-           //noinspection UnusedDeclaration
+        //noinspection UnusedDeclaration
         double total2 = 0;
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);
@@ -98,7 +101,7 @@ public class FrankEtAClusterEngineTest {
         // 2 we should compare without failing so we can look hard at the differenece
 
 
-           double del ;
+        double del;
         // only look at MZ
         for (int i = 0; i < peaks1.size(); i++) {
             IPeak peak1 = peaks1.get(i);

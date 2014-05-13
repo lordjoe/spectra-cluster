@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDistanceItem
@@ -147,8 +147,7 @@ public class ClusterDistanceItem implements IClusterMatch {
             Set<String> allPeptides = ClusterSimilarityUtilities.allPeptides(source, target);
             String all = ClusterSimilarityUtilities.idsToString(allPeptides);
             sb.append(" All peptide " + all);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             new RuntimeException(e);
         }
     }

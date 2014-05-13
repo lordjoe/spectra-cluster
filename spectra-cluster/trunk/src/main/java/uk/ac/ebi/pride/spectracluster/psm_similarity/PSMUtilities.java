@@ -1,17 +1,25 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import com.lordjoe.utilities.*;
-import org.systemsbiology.common.*;
-import org.systemsbiology.hadoop.*;
-import org.systemsbiology.remotecontrol.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.TypedPredicate;
+import com.lordjoe.utilities.TypedVisitor;
+import org.systemsbiology.common.IFileSystem;
+import org.systemsbiology.hadoop.HDFSAccessor;
+import org.systemsbiology.remotecontrol.LocalMachineFileSystem;
+import org.systemsbiology.remotecontrol.RemoteUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumToCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.psm_similarity.PSMUtilities
@@ -52,8 +60,7 @@ public class PSMUtilities {
                     cst.visitClusters(visitor);
                 }
             }
-        }
-        else {
+        } else {
             SimpleClusterSet cst = new SimpleClusterSet();
             cst.setName(clusterDirectory);
             readClusterSet(clusterDirectory, fs, cst);
@@ -92,20 +99,19 @@ public class PSMUtilities {
     }
 
     public static void closeClusterSaver() {
-         if (getClusterSaver() != null) {
-             Appendable out = getClusterSaver().getOut();
-             if (out instanceof PrintWriter)
-                 ((PrintWriter) out).close();
-         }
-     }
+        if (getClusterSaver() != null) {
+            Appendable out = getClusterSaver().getOut();
+            if (out instanceof PrintWriter)
+                ((PrintWriter) out).close();
+        }
+    }
 
 
     public static void readClusterSet(String clusterDirectory, IFileSystem fs, SimpleClusterSet simpleClusterSet) {
 
         if (fs.isDirectory(clusterDirectory)) {
             throw new UnsupportedOperationException("Fix This"); // ToDo
-        }
-        else {
+        } else {
             String contents = fs.readFromFileSystem(clusterDirectory);
             LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(contents));
 
@@ -138,8 +144,7 @@ public class PSMUtilities {
 
                 simpleClusterSet.addClusters(clusterSet.getClusters());
             }
-        }
-        else if (file.getName().endsWith(".clustering")) {
+        } else if (file.getName().endsWith(".clustering")) {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 
@@ -153,17 +158,16 @@ public class PSMUtilities {
                 List<ISpectralCluster> clusters1 = Arrays.asList(clusters);
                 stc.addClusters(clusters1);
                 simpleClusterSet.addClusters(clusters1);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        if(false)  {
+        if (false) {
             int[] duplicatedOfSize = stc.getDuplicatedOfSize();
             for (int i = 1; i < duplicatedOfSize.length; i++) {
                 int dups = duplicatedOfSize[i];
-     //           System.out.println("duplicates " + i + " " + dups);
+                //           System.out.println("duplicates " + i + " " + dups);
             }
             StringBuilder sb = new StringBuilder();
             stc.appendDuplicatedSpectra(sb);
@@ -198,8 +202,7 @@ public class PSMUtilities {
                         }
                     }
                     clusterContent.clear();
-                }
-                else {
+                } else {
                     clusterContent.add(line);
                 }
 
@@ -212,8 +215,7 @@ public class PSMUtilities {
                     holder.add(cluster);
                 }
             }
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
@@ -237,28 +239,22 @@ public class PSMUtilities {
             if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_MZ)) {
                 float precursorMz = Float.parseFloat(clusterLine.replace(ParserUtilities.AVERAGE_PRECURSOR_MZ, ""));
                 cluster.setPrecursorMz(precursorMz);
-            }
-            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
+            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_MZ)) {
                 consensusMzLine = clusterLine.replace(ParserUtilities.CONSENSUS_MZ, "");
-            }
-            else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
+            } else if (clusterLine.startsWith(ParserUtilities.CONSENSUS_INTENSITY)) {
                 consensusIntensityLine = clusterLine.replace(ParserUtilities.CONSENSUS_INTENSITY, "");
-            }
-            else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
+            } else if (clusterLine.startsWith(ParserUtilities.PEPTIDE_SEQUENCE)) {
                 String peptideSequence = clusterLine.replace(ParserUtilities.PEPTIDE_SEQUENCE, "");
                 peptideSequence = peptideSequence.replace("[", "").replace("]", "");
                 cluster.addPeptides(peptideSequence);
-            }
-            else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
+            } else if (clusterLine.startsWith(ParserUtilities.SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
                 spectrum = PSMSpectrum.getSpectrum(parts[1]);
                 cluster.addSpectra(spectrum);
-            }
-            else //noinspection StatementWithEmptyBody
+            } else //noinspection StatementWithEmptyBody
                 if (clusterLine.startsWith(ParserUtilities.AVERAGE_PRECURSOR_INTENSITY)) {
                     // do nothing here
-                }
-                else {
+                } else {
                     if (clusterLine.length() > 0) {
                         throw new IllegalArgumentException("cannot process line " + clusterLine);
                     }
@@ -307,8 +303,7 @@ public class PSMUtilities {
         };
         try {
             appendFileClusters(out, args[0], fs, test);
-        }
-        finally {
+        } finally {
             out.close();
         }
     }
@@ -333,8 +328,7 @@ public class PSMUtilities {
         };
         try {
             appendFileClusters(out, args[0], fs, test);
-        }
-        finally {
+        } finally {
             out.close();
         }
     }

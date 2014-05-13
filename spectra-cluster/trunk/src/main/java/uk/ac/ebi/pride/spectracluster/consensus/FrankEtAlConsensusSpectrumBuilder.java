@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ import java.util.*;
  * by Frank etl al. (2008) JPR.
  *
  * @author jg
- * Debrecated - use ConsensusSpectrum
+ *         Debrecated - use ConsensusSpectrum
  */
 @Deprecated
 @SuppressWarnings({"Deprecated", "deprecation", "UnusedDeclaration"})
@@ -29,7 +29,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
      * The final m/z threshold to use to combine
      * peaks as identical.
      */
-   private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
+    private final static double DEFAULT_FINAL_MZ_THRESHOLD = 0.4;
     /**
      * The step size to use when iteratively
      * merging identical peaks. This is not
@@ -62,24 +62,24 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
 
 
     /**
-       * return a name which should not change
-       *
-       * @return !null name
-       */
-      @Override
-      public String getName() {
-          return getClass().getSimpleName();
-      }
+     * return a name which should not change
+     *
+     * @return !null name
+     */
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
-      /**
-       * return a version number - this may be updated over time
-       *
-       * @return !null version
-       */
-      @Override
-      public String getCurrentVersion() {
-          return VERSION;
-      }
+    /**
+     * return a version number - this may be updated over time
+     *
+     * @return !null version
+     */
+    @Override
+    public String getCurrentVersion() {
+        return VERSION;
+    }
 
 
     /**
@@ -92,8 +92,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
     @Override
     public ISpectrum buildConsensusSpectrum(ISpectralCluster cluster, Object... otherData) {
         final List<ISpectrum> clusteredSpectra = cluster.getHighestQualitySpectra();     // concensus only on highest quality
-   //     final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
-         return buildConsensusSpectrum(clusteredSpectra);
+        //     final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        return buildConsensusSpectrum(clusteredSpectra);
     }
 
 
@@ -118,7 +118,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
             return null;
 
         if (spectra.size() == 1)
-             return spectra.get(0);   // ok 1 is a concensus
+            return spectra.get(0);   // ok 1 is a concensus
 
         // add the peaks from all spectra to the consensus spectrum
         List<IPeak> allPeaks = addAllPeaks(spectra);
@@ -254,8 +254,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
                 int count = start.getCount() + allPeak.getCount();
                 float mz = start.getMz();
                 start = new Peak(mz, intensity, count);
-            }
-            else {
+            } else {
                 returnedPeaks.add(start); // not merging
                 start = allPeak;  //  start is next peak
             }

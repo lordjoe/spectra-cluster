@@ -47,7 +47,7 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     @Override
     public void storeCluster(ISpectralCluster clusterToStore) {
         String sql = "INSERT INTO " + tableName +
-                     " (id,precursor_charge,precursor_mz,peaks,spectrum_ids) VALUES (:clusterId, :precursorCharge, :precursorMz, :peaks, :spectrumIds)";
+                " (id,precursor_charge,precursor_mz,peaks,spectrum_ids) VALUES (:clusterId, :precursorCharge, :precursorMz, :peaks, :spectrumIds)";
 
         sql = queryFormatter.format(sql);
 

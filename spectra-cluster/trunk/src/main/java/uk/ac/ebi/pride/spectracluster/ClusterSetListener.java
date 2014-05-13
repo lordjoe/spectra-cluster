@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 
 /**
  * uk.ac.ebi.pride.spectracluster.ClusterSetListener
@@ -22,7 +22,8 @@ public class ClusterSetListener implements ClusterCreateListener {
      *
      * @param otherData
      */
-    @Override public void onClusterStarted(final Object... otherData) {
+    @Override
+    public void onClusterStarted(final Object... otherData) {
     }
 
     /**
@@ -35,13 +36,14 @@ public class ClusterSetListener implements ClusterCreateListener {
     public static final int DOT_PER = 50;
     public static final int DOT_PER_LINE = 40;
 
-    @Override public void onClusterCreate(final ISpectralCluster cluster, final Object... otherData) {
+    @Override
+    public void onClusterCreate(final ISpectralCluster cluster, final Object... otherData) {
         set.addCluster(cluster);
         // show progress
         int size = set.getClusterCount();
-        if(size > 0 && (size % DOT_PER) == 0)  {
+        if (size > 0 && (size % DOT_PER) == 0) {
             System.out.print(".");
-            if((size % (DOT_PER_LINE * DOT_PER)) == 0)
+            if ((size % (DOT_PER_LINE * DOT_PER)) == 0)
                 System.out.println();
         }
     }
@@ -52,6 +54,7 @@ public class ClusterSetListener implements ClusterCreateListener {
      *
      * @param otherData
      */
-    @Override public void onClusterCreateFinished(final Object... otherData) {
+    @Override
+    public void onClusterCreateFinished(final Object... otherData) {
     }
 }

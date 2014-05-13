@@ -3,11 +3,11 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import junit.framework.Assert;
 import org.junit.*;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.quality.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.quality.OriginalSignalToNoiseChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Rui Wang
@@ -24,7 +24,7 @@ public class ClusterComparatorTests {
         clusterComparator = new ClusterComparator();
         originalClusterComparator = new OriginalClusterComparator(new OriginalSignalToNoiseChecker());
 
-         peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
+        peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
     }
 
     @Test

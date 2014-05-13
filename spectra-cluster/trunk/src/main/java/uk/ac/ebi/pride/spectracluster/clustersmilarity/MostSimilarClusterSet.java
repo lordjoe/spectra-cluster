@@ -1,7 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import com.lordjoe.utilities.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.utilities.ElapsedTimer;
+import com.lordjoe.utilities.FileUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.io.*;
 import java.util.*;
@@ -146,8 +147,7 @@ public class MostSimilarClusterSet {
 
                 //            }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -164,8 +164,7 @@ public class MostSimilarClusterSet {
             File tsvFile = new File(tsvFileName);
             ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, simpleSpectrumRetriever);
             return simpleSpectrumRetriever;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -179,7 +178,7 @@ public class MostSimilarClusterSet {
 
         File originalFile = new File(args1[0]);
 
-        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile );
+        IClusterSet originalClusterSet = readClusterSet(simpleSpectrumRetriever, originalFile);
         timer.showElapsed("Read Original set");
         timer.reset(); // back to 0
 
@@ -189,7 +188,7 @@ public class MostSimilarClusterSet {
         System.out.println(report);
 
         File newFile = new File(args1[1]);
-        IClusterSet newClusterSet = readClusterSet(simpleSpectrumRetriever, newFile );
+        IClusterSet newClusterSet = readClusterSet(simpleSpectrumRetriever, newFile);
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
@@ -207,25 +206,25 @@ public class MostSimilarClusterSet {
 
         Appendable out = System.out;
         if (args1.length > 2)
-             out = new PrintWriter(new FileWriter(new File(args1[2])));
-         if (!USE_TSV)
-             out.append("Algorithm " + ClusterContentDistance.INSTANCE.getName()).append("\n");
-        showClusterComparison(  originalClusterSet, newClusterSet,out);
+            out = new PrintWriter(new FileWriter(new File(args1[2])));
+        if (!USE_TSV)
+            out.append("Algorithm " + ClusterContentDistance.INSTANCE.getName()).append("\n");
+        showClusterComparison(originalClusterSet, newClusterSet, out);
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
 
-        showClusterComparison( newClusterSet,originalClusterSet,  out);
+        showClusterComparison(newClusterSet, originalClusterSet, out);
         timer.showElapsed("Build comparison");
         timer.reset(); // back to 0
         // writer.close();  // bad idea to close system .out
     }
 
-    protected static void showClusterComparison( final IClusterSet pOriginalClusterSet, final IClusterSet pNewClusterSet,Appendable out) throws IOException {
+    protected static void showClusterComparison(final IClusterSet pOriginalClusterSet, final IClusterSet pNewClusterSet, Appendable out) throws IOException {
         MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(pNewClusterSet, ConcensusSpectrumDistance.INSTANCE);
         mostSimilarClusterSet.addOtherSet(pOriginalClusterSet);
 
 
-         mostSimilarClusterSet.appendReport(out);
+        mostSimilarClusterSet.appendReport(out);
     }
 
 
@@ -269,8 +268,7 @@ public class MostSimilarClusterSet {
 
 
             mostSimilarClusterSet.appendReport(out);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -303,8 +301,7 @@ public class MostSimilarClusterSet {
                 }
                 count++;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
@@ -371,10 +368,10 @@ public class MostSimilarClusterSet {
     }
 
 
-    public static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile ) {
+    public static IClusterSet readClusterSet(SimpleSpectrumRetriever simpleSpectrumRetriever, File newFile) {
         IClusterSet newClusterSet = ClusterSimilarityUtilities.buildFromClusteringFile(newFile, simpleSpectrumRetriever);
         newClusterSet.setName(newFile.getName());
-         //      if (newFile.isDirectory())
+        //      if (newFile.isDirectory())
         //         ClusterSimilarityUtilities.saveSemiStableClusters(newClusterSet, new File(saveName));
         return newClusterSet;
     }

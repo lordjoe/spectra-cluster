@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author Rui Wang

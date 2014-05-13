@@ -15,22 +15,25 @@
  */
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
 
 /**
  * IConsensusSpectrum is the default interface for objects used to
  * build consensus spectra more efficiently. The consensus spectrum
  * is made available just like a normal spectrum. It is generated through
  * adding and / or removing spectra from the consensus spectrum.
+ *
  * @author jg
  */
-public interface IConsensusSpectrumBuilder extends  ISpectrumHolder,SpectrumHolderListener,IAlgorithm {
+public interface IConsensusSpectrumBuilder extends ISpectrumHolder, SpectrumHolderListener, IAlgorithm {
 
     /**
      * return the current spectrum represented as the data in the stored spectra
-     * @return  !null Spectrum
+     *
+     * @return !null Spectrum
      */
     public ISpectrum getConsensusSpectrum();
 
@@ -41,6 +44,7 @@ public interface IConsensusSpectrumBuilder extends  ISpectrumHolder,SpectrumHold
 
     /**
      * Returns the number of spectra making up the consensus spectrum.
+     *
      * @return
      */
     public int getSpectraCount();

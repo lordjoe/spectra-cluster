@@ -1,11 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.BinningClusteringMain
@@ -20,6 +24,7 @@ public class ClusteringEngineMain {
 
 
     private long readTimeMillisec;
+
     public ClusteringEngineMain() {
     }
 
@@ -33,10 +38,11 @@ public class ClusteringEngineMain {
 
     /**
      * do the work of clustering one MGF file
-     * @param inputFile  !null existing readable mgf file
+     *
+     * @param inputFile !null existing readable mgf file
      */
     protected void processFile(final File inputFile) {
-        if(!inputFile.getName().toLowerCase().endsWith(".mgf"))
+        if (!inputFile.getName().toLowerCase().endsWith(".mgf"))
             return; // not an mgf
 
         long start = System.currentTimeMillis();
@@ -45,9 +51,9 @@ public class ClusteringEngineMain {
         /**
          * Add your favorite clustering engine here
          */
-         PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
-   //     IClusteringEngine engine = new PRideC();
-         long end = System.currentTimeMillis();
+        PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
+        //     IClusteringEngine engine = new PRideC();
+        long end = System.currentTimeMillis();
         final long readTIme = end - start;
         addReadTimeMillisec(readTIme);
         double seconds = (readTIme / 1000);
@@ -72,14 +78,14 @@ public class ClusteringEngineMain {
             if (!engine.processClusters()) {
                 break;
             }
-             pass2 = engine.getClusters();  // look at results
+            pass2 = engine.getClusters();  // look at results
         }
 
         List<ISpectralCluster> clusters1 = engine.getClusters();     // get results
 
 
-        saveClusters(clusters1,inputFile);
-        saveClustersAsClusterings(clusters1,inputFile);
+        saveClusters(clusters1, inputFile);
+        saveClustersAsClusterings(clusters1, inputFile);
 
 
         end = System.currentTimeMillis();
@@ -90,43 +96,44 @@ public class ClusteringEngineMain {
 
     /**
      * write clusters to a file in the default directory with the extension .cgf
-     * @param pClusters1  !null list of clusters
-     * @param pInputFile  !null input file
+     *
+     * @param pClusters1 !null list of clusters
+     * @param pInputFile !null input file
      */
     protected void saveClusters(final List<ISpectralCluster> pClusters1, final File pInputFile) {
 
-        if(pClusters1.size() == 0)
+        if (pClusters1.size() == 0)
             return;
-        String outName = pInputFile.getName().replace(".mgf","") + ".cgf";
-        PrintWriter out =  null;
+        String outName = pInputFile.getName().replace(".mgf", "") + ".cgf";
+        PrintWriter out = null;
         try {
-              out = new PrintWriter(new FileWriter(outName)) ;
+            out = new PrintWriter(new FileWriter(outName));
             for (ISpectralCluster iSpectralCluster : pClusters1) {
                 iSpectralCluster.append(out);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        finally {
-            if(out != null)
+        } finally {
+            if (out != null)
                 out.close();
         }
     }
+
     /**
      * write clusters to a file in the default directory with the extension .cgf
-     * @param pClusters1  !null list of clusters
-     * @param pInputFile  !null input file
+     *
+     * @param pClusters1 !null list of clusters
+     * @param pInputFile !null input file
      */
     protected void saveClustersAsClusterings(final List<ISpectralCluster> pClusters1, final File pInputFile) {
 
-        if(pClusters1.size() == 0)
+        if (pClusters1.size() == 0)
             return;
-        String outName = pInputFile.getName()  + ".clustering";
-        PrintWriter out =  null;
+        String outName = pInputFile.getName() + ".clustering";
+        PrintWriter out = null;
         try {
-           out = new PrintWriter(new FileWriter(outName)) ;
+            out = new PrintWriter(new FileWriter(outName));
 
             appendClusteringHeaders(out);
 
@@ -134,20 +141,19 @@ public class ClusteringEngineMain {
             for (ISpectralCluster iSpectralCluster : pClusters1) {
                 iSpectralCluster.appendClustering(out);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
 
-        }
-        finally {
-            if(out != null)
+        } finally {
+            if (out != null)
                 out.close();
         }
     }
 
     /**
      * add the headers needed by a clustering file
-     * @param pOut  !null output
+     *
+     * @param pOut !null output
      */
     protected void appendClusteringHeaders(final PrintWriter pOut) {
         pOut.append("name=" + name + "\n");
@@ -155,19 +161,20 @@ public class ClusteringEngineMain {
         pOut.append("similarity_method=" + defaultSimilarityChecker.getClass().getSimpleName() + "\n");
         pOut.append("threshold=" + defaultSimilarityChecker.getDefaultThreshold() + "\n");
         pOut.append("fdr=" + "-1" + "\n"); // todo what is this?
-        pOut.append("description=" +  description + "\n");
+        pOut.append("description=" + description + "\n");
         Defaults.appendAnalysisParameters(pOut);
         pOut.append("\n");
     }
 
     /**
      * process every file in a directory containing mgf files
-     * @param pF     !null existing directory
+     *
+     * @param pF !null existing directory
      */
     protected void processDirectory(final File pF) {
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
-        double min ;
+        double min;
         final File[] files = pF.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
@@ -212,10 +219,10 @@ public class ClusteringEngineMain {
             int seconds = (int) ((end - start) / 1000);
             min = seconds / 60;
         }
-        double readMin = mainClusterer.getReadTimeMillisec()  / (60 * 1000 );
+        double readMin = mainClusterer.getReadTimeMillisec() / (60 * 1000);
         System.out.println("read in " + String.format("%10.2f", readMin) + " min");
         System.out.println("Processed in " + String.format("%10.2f", min - readMin) + " min");
-        System.out.println("Total " + String.format("%10.2f", min  ) + " min");
+        System.out.println("Total " + String.format("%10.2f", min) + " min");
     }
 
 

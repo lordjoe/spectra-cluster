@@ -1,11 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
-import java.io.*;
-import java.util.*;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.SpectrumInClusterTests
@@ -204,21 +209,21 @@ public class SpectrumInClusterTests {
         Map<String, List<String>> byClusterIdSerialized = SpectrumInCluster.serializeSpectrumInCluster(byClusterId);
 
         // can we rebuild the clusters
-        List<ISpectralCluster> scs2 = rebuildClusters(byClusterId,false);  // rebuild all
+        List<ISpectralCluster> scs2 = rebuildClusters(byClusterId, false);  // rebuild all
         ClusteringTestUtilities.assertEquivalentClusters(scs, scs2);
 
-   // can we serialize rebuild the clusters
+        // can we serialize rebuild the clusters
         List<ISpectralCluster> scs3 = rebuildClustersFromSerialization(byClusterIdSerialized, false);  // rebuild all
-         ClusteringTestUtilities.assertEquivalentClusters(scs, scs3);
+        ClusteringTestUtilities.assertEquivalentClusters(scs, scs3);
 
     }
 
-    public static List<ISpectralCluster> rebuildClustersFromSerialization(final Map<String, List<String>> pByClusterId,boolean discardNotOnCLuster) {
+    public static List<ISpectralCluster> rebuildClustersFromSerialization(final Map<String, List<String>> pByClusterId, boolean discardNotOnCLuster) {
         List<String> keys = new ArrayList<String>(pByClusterId.keySet());
         Collections.sort(keys);
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (String key : keys) {
-            holder.add(rebuildSerializedCluster(pByClusterId.get(key),discardNotOnCLuster ));
+            holder.add(rebuildSerializedCluster(pByClusterId.get(key), discardNotOnCLuster));
         }
 
 
@@ -228,27 +233,27 @@ public class SpectrumInClusterTests {
 
     /**
      * rebuild a cluster from a list of SpectrumInCluster
+     *
      * @param ccs
      * @return
      */
-    public static ISpectralCluster rebuildSerializedCluster(final List<String> ccs,boolean discardNotOnCLuster) {
+    public static ISpectralCluster rebuildSerializedCluster(final List<String> ccs, boolean discardNotOnCLuster) {
         SpectralCluster ret = new SpectralCluster();
         for (String ccStr : ccs) {
             SpectrumInCluster cc = ClusterUtilities.readSpectrumInCluster(ccStr);
-            if(!discardNotOnCLuster || !cc.isRemoveFromCluster())
+            if (!discardNotOnCLuster || !cc.isRemoveFromCluster())
                 ret.addSpectra(cc.getSpectrum());
         }
         return ret;
     }
 
 
-
-    public static List<ISpectralCluster> rebuildClusters(final Map<String, List<SpectrumInCluster>> pByClusterId,boolean discardNotOnCLuster) {
+    public static List<ISpectralCluster> rebuildClusters(final Map<String, List<SpectrumInCluster>> pByClusterId, boolean discardNotOnCLuster) {
         List<String> keys = new ArrayList<String>(pByClusterId.keySet());
         Collections.sort(keys);
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (String key : keys) {
-            holder.add(rebuildCluster(pByClusterId.get(key),discardNotOnCLuster ));
+            holder.add(rebuildCluster(pByClusterId.get(key), discardNotOnCLuster));
         }
 
 
@@ -257,13 +262,14 @@ public class SpectrumInClusterTests {
 
     /**
      * rebuild a cluster from a list of SpectrumInCluster
+     *
      * @param ccs
      * @return
      */
-    public static ISpectralCluster rebuildCluster(final List<SpectrumInCluster> ccs,boolean discardNotOnCLuster) {
+    public static ISpectralCluster rebuildCluster(final List<SpectrumInCluster> ccs, boolean discardNotOnCLuster) {
         SpectralCluster ret = new SpectralCluster();
         for (SpectrumInCluster cc : ccs) {
-            if(!discardNotOnCLuster || !cc.isRemoveFromCluster())
+            if (!discardNotOnCLuster || !cc.isRemoveFromCluster())
                 ret.addSpectra(cc.getSpectrum());
         }
         return ret;

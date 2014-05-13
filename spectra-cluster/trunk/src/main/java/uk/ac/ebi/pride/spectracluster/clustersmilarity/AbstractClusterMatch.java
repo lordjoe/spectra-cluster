@@ -1,11 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.AbstractClusterMatch
- *    base class for Cluster matches concrete subclasses need to supply
- *      getDistance fpr comparison
+ * base class for Cluster matches concrete subclasses need to supply
+ * getDistance fpr comparison
+ *
  * @author Steve Lewis
  * @date 05/11/13
  */
@@ -39,14 +40,14 @@ public abstract class AbstractClusterMatch implements IClusterMatch {
 
     @Override
     public int compareTo(IClusterMatch o) {
-        if(o == this)
+        if (o == this)
             return 0;
-         double mine = getDistance();
-        double his  = o.getDistance();
-        if(mine != his)
+        double mine = getDistance();
+        double his = o.getDistance();
+        if (mine != his)
             return mine > his ? -1 : 1; // sort decreasing match
         // just be consistent
         return System.identityHashCode(this) < System.identityHashCode(o) ? -1 : 1;
 
     }
- }
+}

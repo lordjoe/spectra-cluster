@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.utilities.*;
+import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -36,7 +36,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      * @param added !null cluster to add
      * @return !null list of clusters not far enough away they will no longer change
      */
-    @Override public Collection<ISpectralCluster> addClusterIncremental(final ISpectralCluster added) {
+    @Override
+    public Collection<ISpectralCluster> addClusterIncremental(final ISpectralCluster added) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
@@ -45,7 +46,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @param cluster
      */
-    @Override public void addClusters(final ISpectralCluster... cluster) {
+    @Override
+    public void addClusters(final ISpectralCluster... cluster) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
@@ -54,7 +56,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @return true is  anything happened
      */
-    @Override public boolean processClusters() {
+    @Override
+    public boolean processClusters() {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
@@ -63,7 +66,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @return possibly null name
      */
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return "StableClusteringEngine";
     }
 
@@ -72,16 +76,18 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @param pName possibly null name
      */
-    @Override public void setName(final String pName) {
+    @Override
+    public void setName(final String pName) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
-     }
+    }
 
     /**
      * total number of clusters including queued clustersToAdd
      *
      * @return
      */
-    @Override public int size() {
+    @Override
+    public int size() {
         return unstableClusters.size();
     }
 
@@ -90,7 +96,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @param handler !null monitor
      */
-    @Override public void addProgressMonitor(final IProgressHandler handler) {
+    @Override
+    public void addProgressMonitor(final IProgressHandler handler) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
 
     }
@@ -99,7 +106,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     public void addUnstableCluster(ISpectralCluster unstableCluster) {
         if (stableClusterProcessed) {
             // let this slide
-           // throw new IllegalStateException("Adding unstable cluster after processing stable clusters");
+            // throw new IllegalStateException("Adding unstable cluster after processing stable clusters");
         }
 
         unstableClusters.add(unstableCluster);
@@ -180,7 +187,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     @Nonnull
     @Override
     public List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster,this);
+        return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
     public int getNumberOfUnstableSpectra() {
