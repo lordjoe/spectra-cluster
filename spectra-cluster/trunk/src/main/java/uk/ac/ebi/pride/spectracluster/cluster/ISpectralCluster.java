@@ -128,12 +128,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     public int getClusteredSpectraCount();
 
 
-    public void appendData(Appendable out);
-
-
-    public void append(Appendable out);
-
-
     /**
      * return a set of all ids
      *
@@ -142,20 +136,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     public
     @Nonnull
     Set<String> getSpectralIds();
-
-    /**
-     * write out the data as a .cgf frago1nt
-     *
-     * @param out place to append   // todo move out of SpectralCLustering
-     */
-    public void appendSpectra(Appendable out);
-
-    /**
-     * write out the data as a .clustering frago1nt
-     *
-     * @param out place to append     // todo move out of SpectralCLustering
-     */
-    public void appendClustering(Appendable out);
 
 //    /**
 //     * needed so copy constructors work with the interface
@@ -170,6 +150,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @param mz peak as int
      * @return true if so
      */
+    @Deprecated
     public boolean containsMajorPeak(int mz);
 
 
