@@ -5,7 +5,6 @@ import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -48,6 +47,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return
      */
+    @Deprecated
     public String getSpectralId();
 
 
@@ -137,13 +137,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     @Nonnull
     Set<String> getSpectralIds();
 
-//    /**
-//     * needed so copy constructors work with the interface
-//     *
-//     * @return
-//     */
-//    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder();
-
     /**
      * does the concensus spectrum contin this is a major peak
      *
@@ -157,7 +150,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Add a list of spectrum to cluster
      */
-    public void addSpectra(List<ISpectrum> added);
+    public void addSpectra(List<IPeaksSpectrum> added);
 
     /**
      * if true the cluster is stable and will not allow removal
@@ -172,13 +165,5 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @return
      */
     public boolean isSemiStable();
-
-//    /**
-//     * if true the cluster is stable and will not allow removal
-//     * @param stable as
-//       */
-//    @SuppressWarnings("UnusedDeclaration")
-//    public void setStable(boolean stable);
-
 
 }
