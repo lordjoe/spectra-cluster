@@ -5,7 +5,8 @@ import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
 import org.systemsbiology.hadoop.IParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterComparator;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
@@ -21,7 +22,6 @@ import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
@@ -136,17 +136,17 @@ public class Defaults {
 
 
     private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
-            IPeak.HIGHEST_USABLE_MZ,
+            Constants.HIGHEST_USABLE_MZ,
             NARRROW_BIN_WIDTH,
-            IPeak.LOWEST_USABLE_MZ,
+            Constants.LOWEST_USABLE_MZ,
             NARRROW_BIN_OVERLAP);
 
 
     @java.lang.SuppressWarnings("UnusedDeclaration")
     private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
-            IPeak.HIGHEST_USABLE_MZ,
+            Constants.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
-            IPeak.LOWEST_USABLE_MZ,
+            Constants.LOWEST_USABLE_MZ,
             WIDE_BIN_OVERLAP);
 
 

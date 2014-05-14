@@ -1,19 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import com.lordjoe.algorithms.Equivalent;
 
-import java.math.BigInteger;
+import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
- * interface implemented bny a spectrum which may or mat not be a cluster
+ * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
+ * used by Spectra like get hightest peaks which are incomplete
+ * spectra
+ * User: Steve
+ * Date: 6/20/13
  *
- * @author Steve Lewis
- * @author Rui Wang
- * @date 10/05/13
+ * todo: Replace all the ISpectrum with IPeaksSpectrum, then rename IPeaksSpectrum to ISpectrum
  */
-@Deprecated
-public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaksHolder {
+public interface ISpectrum extends Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
     //todo: move constants out of this interface
     // if true only  MAX_PEAKS_TO_KEEP are usedI know
@@ -25,57 +25,52 @@ public interface ISpectrum extends IPeaksSpectrum, ISpectrumQuality, IMajorPeaks
 
 //    public static final int BAD_QUALITY_MEASURE = -1;
 
+    /**
+     * globally unique id
+     *
+     * @return !null id
+     */
+    public String getId();
 
     /**
-     * make a cluster containing a single spectrum - this
-     *
-     * @return
+     * get precursor m/z
      */
-    // todo: provide either util or constructor implmementation of this
-    @Deprecated
-    public ISpectralCluster asCluster();
+    public float getPrecursorMz();
 
     /**
-     * return a spectrum normalized to the specific total intensity
-     *
-     * @return !null spectrum - might be this
+     * get charge - mixed charge
      */
-    @Deprecated
-    public INormalizedSpectrum asNormalizedTo(double totalIntensity);
+    public int getPrecursorCharge();
 
     /**
-     * an optimization to return a Biginteger representing bits at the mz values where the
-     * majors (top MAJOR_PEAK_NUMBER are
-     *
-     * @return !null value - lazily built
+     * return the sum of all intensities
      */
-    @Deprecated
-    public BigInteger asMajorPeakBits();
+    public double getTotalIntensity();
 
     /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
-     * @return
+     * return the sum  Square of all intensities
      */
-    @Deprecated
-    public IPeaksSpectrum asMajorPeaks();
+    public double getSumSquareIntensity();
 
     /**
-     * does the concensus spectrum contain this is a major peak
+     * return unmodifiable peaks sorted by MZ
      *
-     * @param mz peak as int
-     * @return true if so
+     * @return !null array of peaks
      */
-    @Deprecated
-    public boolean containsMajorPeak(int mz);
+    public List<IPeak> getPeaks();
 
     /**
-     * an optimization for computing distance based on dot product
+     * return number of peaks
      *
-     * @return number > 0
+     * @return count
      */
-    @Deprecated
-    public double getSelfDotProduct();
+    public int getPeaksCount();
 
+    /**
+     * get the highest intensity peaks sorted by MZ - this value may be cached
+     *
+     * @param numberRequested number peaks requested
+     * @return Peaks spectrum
+     */
+    public ISpectrum getHighestNPeaks(int numberRequested);
 }

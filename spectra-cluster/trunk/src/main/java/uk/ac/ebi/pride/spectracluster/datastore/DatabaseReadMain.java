@@ -1,10 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
-import uk.ac.ebi.pride.spectracluster.spectrum.SpectrumClusteringData;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.sql.DataSource;

@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
 import java.util.ArrayList;

@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -591,7 +592,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
             out.append("\n");
 
             List<ISpectrum> spectra = clusteredSpectra1;
-            Collections.sort(spectra, ISpectrum.ID_COMAPRATOR);   // sort by id
+            Collections.sort(spectra, new SpectrumIDComparator());   // sort by id
             for (ISpectrum spec : spectra) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster;
 
-import org.junit.*;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

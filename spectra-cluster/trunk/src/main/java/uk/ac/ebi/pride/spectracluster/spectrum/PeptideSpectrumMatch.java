@@ -27,7 +27,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     private final Map<String, String> properties = new HashMap<String, String>();
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
-    private final Map<Integer, IPeaksSpectrum> highestPeaks = new HashMap<Integer, IPeaksSpectrum>();
+    private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
     private double qualityMeasure = BAD_QUALITY_MEASURE;
     private BigInteger majorBits;
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
@@ -127,7 +127,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      */
     protected BigInteger buildMajorBits() {
         BigInteger ret = BigInteger.ZERO;
-        final IPeaksSpectrum highestNPeaks = asMajorPeaks();
+        final ISpectrum highestNPeaks = asMajorPeaks();
         final List<IPeak> iPeaks = ((PeaksSpectrum) highestNPeaks).internalGetPeaks();
         for (IPeak pk : iPeaks) {
             ret = ret.setBit((int) pk.getMz());
@@ -142,7 +142,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      * @return
      */
     @Override
-    public IPeaksSpectrum asMajorPeaks() {
+    public ISpectrum asMajorPeaks() {
         return getHighestNPeaks(MAJOR_PEAK_NUMBER);
     }
 
@@ -167,7 +167,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     protected void guaranteeMajorPeaks() {
         if (majorPeakMZ.isEmpty()) {
-            IPeaksSpectrum peaks = asMajorPeaks();
+            ISpectrum peaks = asMajorPeaks();
             for (IPeak peak : peaks.getPeaks()) {
                 majorPeakMZ.add((int) peak.getMz());
             }
@@ -267,9 +267,9 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      * @return list of no more than  numberRequested peaks in Mz order
      */
     @Override
-    public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
+    public ISpectrum getHighestNPeaks(int numberRequested) {
         //  guaranteeClean();
-        IPeaksSpectrum ret = highestPeaks.get(numberRequested);
+        ISpectrum ret = highestPeaks.get(numberRequested);
         if (ret == null) {
             ret = buildHighestPeaks(numberRequested);
             int numberPeaks = ret.getPeaksCount();
@@ -365,7 +365,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     @Override
     protected void appendPeaks(final Appendable out) {
         try {
-            IPeaksSpectrum highestNPeaks = this;
+            ISpectrum highestNPeaks = this;
             if (ISpectrum.USE_HIGHEST_PEAKS)
                 highestNPeaks = getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP);
             for (IPeak peak : highestNPeaks.getPeaks()) {

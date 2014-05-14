@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -79,7 +79,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Get consensus spectrum
      */
-    public IPeaksSpectrum getConsensusSpectrum();
+    public ISpectrum getConsensusSpectrum();
 
     /**
      * real spectrum with the highest quality - this is a
@@ -87,21 +87,21 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return !null spectrum
      */
-    public IPeaksSpectrum getHighestQualitySpectrum();
+    public ISpectrum getHighestQualitySpectrum();
 
     /**
      * all internally spectrum
      */
     public
     @Nonnull
-    List<IPeaksSpectrum> getHighestQualitySpectra();
+    List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
     public
     @Nonnull
-    List<IPeaksSpectrum> getClusteredSpectra();
+    List<ISpectrum> getClusteredSpectra();
 
 
     /**
@@ -132,7 +132,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Add a list of spectrum to cluster
      */
-    public void addSpectra(List<IPeaksSpectrum> added);
+    public void addSpectra(List<ISpectrum> added);
 
     /**
      * if true the cluster is stable and will not allow removal

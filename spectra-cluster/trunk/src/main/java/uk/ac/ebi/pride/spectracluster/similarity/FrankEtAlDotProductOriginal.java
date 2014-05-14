@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -118,13 +117,13 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
         // get the k highest peaks1 from every spectrum
-        IPeaksSpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
+        ISpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
         List<IPeak> kHighestPeaks1 = highestPeaksSpectrum1.getPeaks();
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
-        IPeaksSpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
+        ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         List<IPeak> kHighestPeaks2 = highestPeaksSpectrum2.getPeaks();
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
