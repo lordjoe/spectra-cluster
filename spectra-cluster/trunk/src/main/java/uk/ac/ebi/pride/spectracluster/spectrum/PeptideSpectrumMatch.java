@@ -106,21 +106,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         return new HashMap<String, String>(properties);
     }
 
-
-    /**
-     * an optimization to return a Biginteger representing bits at the mz values where the
-     * majors (top MAJOR_PEAK_NUMBER are
-     *
-     * @return !null value - lazily built
-     */
-    @Override
-    public BigInteger asMajorPeakBits() {
-        if (majorBits == null) {
-            majorBits = buildMajorBits();
-        }
-        return majorBits;
-    }
-
     /**
      * set bits numbered by the highest MAJOR_PEAK_NUMBER(6) peaks
      *
