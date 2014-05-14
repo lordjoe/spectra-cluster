@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class NormailzedPeptideSpectrumMatch extends PeptideSpectrumMatch impleme
      */
     @Override
     public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
-        if (Math.abs(getRequiredTotalIntensity() - totalIntensity) < IPeak.SMALL_MZ_DIFFERENCE)
+        if (Math.abs(getRequiredTotalIntensity() - totalIntensity) < Constants.SMALL_MZ_DIFFERENCE)
             return this;
         return super.asNormalizedTo(totalIntensity);    //To change body of overridden methods use File | Settings | File Templates.
     }

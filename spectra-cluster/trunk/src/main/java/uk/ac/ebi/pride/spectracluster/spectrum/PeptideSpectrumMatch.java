@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
@@ -28,7 +29,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     // Dot products always get the highest peaks of a specific intensity -
     // this caches thoes and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
-    private double qualityMeasure = BAD_QUALITY_MEASURE;
+    private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
     private BigInteger majorBits;
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
     private Double selfDotProduct;
@@ -188,7 +189,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     protected void makeAdvancedCalculations() {
         highestPeaks.clear(); // highest peaks may have changed
-        qualityMeasure = BAD_QUALITY_MEASURE;  // be laze here
+        qualityMeasure = Constants.BAD_QUALITY_MEASURE;  // be laze here
     }
 
 
@@ -240,7 +241,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     public double getQualityScore() {
         //   guaranteeClean();
-        if (qualityMeasure == BAD_QUALITY_MEASURE) {
+        if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {
             qualityMeasure = buildQualityMeasure();
         }
         return qualityMeasure;
@@ -366,8 +367,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     protected void appendPeaks(final Appendable out) {
         try {
             ISpectrum highestNPeaks = this;
-            if (ISpectrum.USE_HIGHEST_PEAKS)
-                highestNPeaks = getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP);
+            if (Constants.USE_HIGHEST_PEAKS)
+                highestNPeaks = getHighestNPeaks(Constants.MAX_PEAKS_TO_KEEP);
             for (IPeak peak : highestNPeaks.getPeaks()) {
                 String line = String.format("%10.3f", peak.getMz()).trim() + "\t" +
                         String.format("%10.3f", peak.getIntensity()).trim();

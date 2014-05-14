@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 /**
  * @author Steve Lewis
@@ -55,9 +56,9 @@ public class Peak implements IPeak {
 
     @Override
     public int compareTo(IPeak o) {
-        if (Math.abs(getMz() - o.getMz()) > SMALL_MZ_DIFFERENCE)
+        if (Math.abs(getMz() - o.getMz()) > Constants.SMALL_MZ_DIFFERENCE)
             return CompareTo.compare(getMz(), o.getMz());
-        if (Math.abs(getIntensity() - o.getIntensity()) > SMALL_INTENSITY_DIFFERENCE)
+        if (Math.abs(getIntensity() - o.getIntensity()) > Constants.SMALL_INTENSITY_DIFFERENCE)
             return Double.compare(getIntensity(), o.getIntensity());
         return 0;
     }

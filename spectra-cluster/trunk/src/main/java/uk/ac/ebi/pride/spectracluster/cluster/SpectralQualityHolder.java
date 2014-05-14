@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.comparator.QualitySpectrumComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;

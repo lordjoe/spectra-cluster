@@ -6,6 +6,7 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.quality.OriginalSignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import java.util.List;
 
@@ -16,12 +17,12 @@ import java.util.List;
 public class ClusterComparatorTests {
 
     private List<ISpectrum> peptideSpectrumMatches;
-    private ClusterComparator clusterComparator;
+    private DefaultClusterComparator defaultClusterComparator;
     private OriginalClusterComparator originalClusterComparator;
 
     @Before
     public void setUp() throws Exception {
-        clusterComparator = new ClusterComparator();
+        defaultClusterComparator = new DefaultClusterComparator();
         originalClusterComparator = new OriginalClusterComparator(new OriginalSignalToNoiseChecker());
 
         peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();
@@ -30,7 +31,7 @@ public class ClusterComparatorTests {
     @Test
     public void testClusterComparator() throws Exception {
         final ISpectralCluster cluster1 = peptideSpectrumMatches.get(0).asCluster();
-        int result = clusterComparator.compare(cluster1, peptideSpectrumMatches.get(1).asCluster());
+        int result = defaultClusterComparator.compare(cluster1, peptideSpectrumMatches.get(1).asCluster());
         int originalResult = originalClusterComparator.compare(cluster1, peptideSpectrumMatches.get(1).asCluster());
         Assert.assertEquals(result, originalResult);
     }

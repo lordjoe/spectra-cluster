@@ -1,5 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.util.comparator;
 
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Comparator;
@@ -8,7 +9,7 @@ import java.util.Comparator;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusterComparator implements Comparator<ISpectralCluster> {
+public class DefaultClusterComparator implements Comparator<ISpectralCluster> {
     /**
      * compare with high quailty at the top
      *
