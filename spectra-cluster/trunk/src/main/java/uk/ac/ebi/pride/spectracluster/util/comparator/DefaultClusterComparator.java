@@ -10,6 +10,11 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class DefaultClusterComparator implements Comparator<ISpectralCluster> {
+    public static final Comparator<ISpectralCluster> INSTANCE = new DefaultClusterComparator();
+
+    private DefaultClusterComparator() {
+    }
+
     /**
      * compare with high quailty at the top
      *

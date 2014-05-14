@@ -592,7 +592,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
             out.append("\n");
 
             List<ISpectrum> spectra = clusteredSpectra1;
-            Collections.sort(spectra, new SpectrumIDComparator());   // sort by id
+            Collections.sort(spectra, SpectrumIDComparator.INSTANCE);   // sort by id
             for (ISpectrum spec : spectra) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");

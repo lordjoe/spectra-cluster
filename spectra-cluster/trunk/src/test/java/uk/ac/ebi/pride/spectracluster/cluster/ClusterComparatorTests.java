@@ -22,7 +22,7 @@ public class ClusterComparatorTests {
 
     @Before
     public void setUp() throws Exception {
-        defaultClusterComparator = new DefaultClusterComparator();
+        defaultClusterComparator = (DefaultClusterComparator)DefaultClusterComparator.INSTANCE;
         originalClusterComparator = new OriginalClusterComparator(new OriginalSignalToNoiseChecker());
 
         peptideSpectrumMatches = ClusteringTestUtilities.readConsensusSpectralItems();

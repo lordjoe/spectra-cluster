@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.spectracluster.util.comparator;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
 
+import java.util.Comparator;
+
 /**
  * Compare spectrum ids in addition to ClusterComparator
  *
@@ -10,6 +12,11 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
  * @version $Id$
  */
 public class ClusterContentComparator extends ClusterComparator {
+    public static final Comparator<ISpectralCluster> INSTANCE = new ClusterContentComparator();
+
+    private ClusterContentComparator() {
+    }
+
     @Override
     public int compare(ISpectralCluster o1, ISpectralCluster o2) {
         String s1 = SpectrumInCluster.listClusterIds(o1);

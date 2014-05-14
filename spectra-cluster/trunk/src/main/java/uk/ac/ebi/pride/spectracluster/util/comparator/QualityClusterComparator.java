@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.util.comparator;
 
 import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrumQuality;
 
 import java.util.Comparator;
@@ -25,8 +26,8 @@ public class QualityClusterComparator implements Comparator<ISpectralCluster> {
         // first check whether the precursor m/z is different
 
         // as the m/z ranges are the same check the quality
-        ISpectrumQuality q1 = cluster1.getHighestQualitySpectrum();
-        ISpectrumQuality q2 = cluster2.getHighestQualitySpectrum();
+        ISpectrum q1 = cluster1.getHighestQualitySpectrum();
+        ISpectrum q2 = cluster2.getHighestQualitySpectrum();
         // handle a nasty and possibly non existent case
         if (q1 == null) {
             if (q2 == null)
