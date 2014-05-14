@@ -157,11 +157,6 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public ISpectrum asMajorPeaks() {
-        return getInternalSpectrum().asMajorPeaks();
-    }
-
-    @Override
     public boolean containsMajorPeak(int mz) {
         return getInternalSpectrum().containsMajorPeak(mz);
     }

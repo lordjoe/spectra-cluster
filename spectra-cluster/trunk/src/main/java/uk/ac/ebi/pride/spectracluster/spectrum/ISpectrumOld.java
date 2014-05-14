@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import java.math.BigInteger;
-
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum
  * interface implemented bny a spectrum which may or mat not be a cluster
@@ -32,14 +30,6 @@ public interface ISpectrumOld extends ISpectrum, ISpectrumQuality, IMajorPeaksHo
     @Deprecated
     public INormalizedSpectrum asNormalizedTo(double totalIntensity);
 
-    /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
-     * @return
-     */
-    @Deprecated
-    public ISpectrum asMajorPeaks();
 
     /**
      * does the concensus spectrum contain this is a major peak
