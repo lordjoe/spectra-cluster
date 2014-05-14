@@ -18,8 +18,6 @@ import java.util.List;
  * User: Steve
  * Date: 7/5/13
  */
-//todo: move to test
-@Deprecated
 public class ClusteringEngineMain {
 
     private static String name = "PeakMatchClustering";
