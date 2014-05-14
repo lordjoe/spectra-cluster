@@ -16,7 +16,6 @@ import java.util.*;
  * uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine
  * performs clustering by looking at major peaks then merging clusters
  * - the this version tracks spectra already clustered
- * Original code in  PeakMatchClusteringEngineOriginal
  * and attempts to combine clusters
  * <p/>
  * User: Steve
