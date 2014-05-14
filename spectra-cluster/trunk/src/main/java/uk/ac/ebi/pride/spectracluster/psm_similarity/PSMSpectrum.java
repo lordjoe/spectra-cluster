@@ -174,11 +174,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public ISpectrum asMajorPeaks() {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
     public boolean containsMajorPeak(int mz) {
         throw new UnsupportedOperationException("Fix This");
     }
