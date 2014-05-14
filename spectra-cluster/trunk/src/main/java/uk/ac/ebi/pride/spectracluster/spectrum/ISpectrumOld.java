@@ -33,15 +33,6 @@ public interface ISpectrumOld extends ISpectrum, ISpectrumQuality, IMajorPeaksHo
     public INormalizedSpectrum asNormalizedTo(double totalIntensity);
 
     /**
-     * an optimization to return a Biginteger representing bits at the mz values where the
-     * majors (top MAJOR_PEAK_NUMBER are
-     *
-     * @return !null value - lazily built
-     */
-    @Deprecated
-    public BigInteger asMajorPeakBits();
-
-    /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
      *

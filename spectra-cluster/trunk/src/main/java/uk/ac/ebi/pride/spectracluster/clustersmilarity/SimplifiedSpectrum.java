@@ -129,11 +129,6 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public BigInteger asMajorPeakBits() {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
     public ISpectrum asMajorPeaks() {
         throw new UnsupportedOperationException("Fix This");
     }
