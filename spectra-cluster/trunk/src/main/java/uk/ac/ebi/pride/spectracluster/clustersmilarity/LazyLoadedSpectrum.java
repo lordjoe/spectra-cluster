@@ -160,7 +160,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
+    public ISpectrum getHighestNPeaks(int numberRequested) {
         return getInternalSpectrum().getHighestNPeaks(numberRequested);
     }
 
@@ -175,7 +175,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public IPeaksSpectrum asMajorPeaks() {
+    public ISpectrum asMajorPeaks() {
         return getInternalSpectrum().asMajorPeaks();
     }
 

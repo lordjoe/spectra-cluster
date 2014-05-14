@@ -134,7 +134,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public IPeaksSpectrum getHighestNPeaks(int numberRequested) {
+    public ISpectrum getHighestNPeaks(int numberRequested) {
         throw new UnsupportedOperationException("Fix This");
     }
 
@@ -149,7 +149,7 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public IPeaksSpectrum asMajorPeaks() {
+    public ISpectrum asMajorPeaks() {
         throw new UnsupportedOperationException("Fix This");
     }
 

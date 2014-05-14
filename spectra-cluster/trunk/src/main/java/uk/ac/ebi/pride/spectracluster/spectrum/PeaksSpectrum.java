@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 6/20/13
  * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class PeaksSpectrum /* extends WatchedClass */ implements IPeaksSpectrum {
+public class PeaksSpectrum /* extends WatchedClass */ implements ISpectrum {
 
     /**
      * who knows why Johannes does this but we can as well

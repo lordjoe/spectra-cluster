@@ -126,7 +126,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
         // get the k highest peaks1 from every spectrum
-        IPeaksSpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
+        ISpectrum highestPeaksSpectrum1 = spectrum1.getHighestNPeaks(numberCompared);
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
         // the collection is immutable we need to build a new one
@@ -134,7 +134,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
         kHighestPeaks1.add(LAST_PEAK); //add a peak we will not use
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
-        IPeaksSpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
+        ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         // the collection is immutable we need to build a new one
         List<IPeak> kHighestPeaks2 = new ArrayList(highestPeaksSpectrum2.getPeaks());

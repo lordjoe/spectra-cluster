@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.IOException;

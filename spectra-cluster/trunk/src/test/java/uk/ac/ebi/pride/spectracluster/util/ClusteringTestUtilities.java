@@ -315,8 +315,8 @@ public class ClusteringTestUtilities {
 
 
         // well we better agree on the highest peaks
-        final IPeaksSpectrum hp1 = sp1.getHighestNPeaks(NUMBER_HIGH_MATCHES);
-        final IPeaksSpectrum hp2 = sp2.getHighestNPeaks(NUMBER_HIGH_MATCHES);
+        final ISpectrum hp1 = sp1.getHighestNPeaks(NUMBER_HIGH_MATCHES);
+        final ISpectrum hp2 = sp2.getHighestNPeaks(NUMBER_HIGH_MATCHES);
         l1 = hp1.getPeaks();
         l2 = hp2.getPeaks();
         for (int i = 0; i < l1.size(); i++) {

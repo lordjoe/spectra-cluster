@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.quality;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeakIntensityComparator;
 
@@ -51,7 +50,7 @@ public class SignalToNoiseChecker implements QualityScorer {
      */
     @Override
     public double calculateQualityScore(ISpectrum spectrum) {
-        IPeaksSpectrum highestNPeaks = spectrum.getHighestNPeaks(NUMBER_HIGH_PEAKS);
+        ISpectrum highestNPeaks = spectrum.getHighestNPeaks(NUMBER_HIGH_PEAKS);
 
         if (highestNPeaks.getPeaksCount() < NUMBER_HIGH_PEAKS)
             return 0.0;
