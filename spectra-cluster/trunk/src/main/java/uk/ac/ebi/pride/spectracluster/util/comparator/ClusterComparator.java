@@ -17,6 +17,8 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusterComparator implements Comparator<ISpectralCluster> {
+    public static final Comparator<ISpectralCluster> INSTANCE = new ClusterComparator();
+
     @Override
     public int compare(ISpectralCluster o1, ISpectralCluster o2) {
         int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());

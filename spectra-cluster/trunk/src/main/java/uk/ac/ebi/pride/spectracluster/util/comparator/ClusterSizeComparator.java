@@ -11,6 +11,10 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusterSizeComparator implements Comparator<ISpectralCluster> {
+    public static final Comparator<ISpectralCluster> INSTANCE = new ClusterSizeComparator();
+
+    private ClusterSizeComparator() {
+    }
 
     @Override
     public int compare(ISpectralCluster o1, ISpectralCluster o2) {
