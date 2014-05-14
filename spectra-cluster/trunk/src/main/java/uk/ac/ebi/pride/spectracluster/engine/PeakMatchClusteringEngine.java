@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.QualityClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;

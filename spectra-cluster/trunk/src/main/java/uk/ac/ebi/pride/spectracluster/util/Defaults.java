@@ -5,7 +5,7 @@ import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
 import org.systemsbiology.hadoop.IParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
@@ -161,7 +161,7 @@ public class Defaults {
 
     private QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
-    private ClusterComparator defaultSpectrumComparator = new ClusterComparator();
+    private DefaultClusterComparator defaultSpectrumComparator = new DefaultClusterComparator();
 
     private IntensityNormalizer normalizer = new TotalIntensityNormalizer();
 
@@ -276,7 +276,7 @@ public class Defaults {
         defaultQualityScorer = pDefaultQualityScorer;
     }
 
-    public void setDefaultSpectrumComparator(final ClusterComparator pDefaultSpectrumComparator) {
+    public void setDefaultSpectrumComparator(final DefaultClusterComparator pDefaultSpectrumComparator) {
         defaultSpectrumComparator = pDefaultSpectrumComparator;
     }
 

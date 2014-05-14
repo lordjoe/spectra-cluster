@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
+import uk.ac.ebi.pride.spectracluster.util.Constants;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +12,8 @@ import java.util.List;
  * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
  * User: Steve
  * Date: 6/20/13
- * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class PeaksSpectrum /* extends WatchedClass */ implements ISpectrum {
+public class PeaksSpectrum implements ISpectrum {
 
     /**
      * who knows why Johannes does this but we can as well
@@ -332,7 +333,7 @@ public class PeaksSpectrum /* extends WatchedClass */ implements ISpectrum {
         if (o == this)
             return true;
         //   guaranteeClean();
-        if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > IPeak.SMALL_MZ_DIFFERENCE) {
+        if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
         final List<IPeak> iPeaks = internalGetPeaks();
