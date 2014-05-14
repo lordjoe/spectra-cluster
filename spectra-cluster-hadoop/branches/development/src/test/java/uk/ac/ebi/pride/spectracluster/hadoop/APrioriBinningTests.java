@@ -1,7 +1,7 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.MarkedNumber;
-import org.junit.*;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 

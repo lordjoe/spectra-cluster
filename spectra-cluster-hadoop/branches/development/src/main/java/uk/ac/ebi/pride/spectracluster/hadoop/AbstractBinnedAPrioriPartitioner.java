@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import com.lordjoe.algorithms.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 
 /**
