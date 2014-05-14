@@ -895,7 +895,7 @@ public class ReliableIdentificationChart {
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
-        List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
+        List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
         newClusterSet = new SimpleClusterSet(stableClusters);
         System.out.println("=======New ste duplicates =======================================");
         newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
@@ -904,7 +904,7 @@ public class ReliableIdentificationChart {
         System.out.println("==============================================================");
 
 
-        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.SEMI_STABLE_PREDICATE);
+        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
         System.out.println("==========original set duplicates ==========================");

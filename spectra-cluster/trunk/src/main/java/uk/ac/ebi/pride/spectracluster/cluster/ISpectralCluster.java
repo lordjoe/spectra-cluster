@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.Equivalent;
-import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum;
@@ -19,23 +18,6 @@ import java.util.Set;
  */
 // TODO JG: remove the functions of the former IPeaksHolder from the implementations
 public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
-
-
-    @Deprecated
-    public static final TypedPredicate<ISpectralCluster> STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
-        @Override
-        public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
-            return pT.isStable();
-        }
-    };
-
-    @Deprecated
-    public static final TypedPredicate<ISpectralCluster> SEMI_STABLE_PREDICATE = new TypedPredicate<ISpectralCluster>() {
-        @Override
-        public boolean apply(@Nonnull ISpectralCluster pT, Object... otherdata) {
-            return pT.isSemiStable();
-        }
-    };
 
     /**
      * Get cluster id
