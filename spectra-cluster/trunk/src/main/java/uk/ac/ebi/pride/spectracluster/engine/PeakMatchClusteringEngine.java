@@ -292,7 +292,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum.asCluster());
+                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
             }
         }

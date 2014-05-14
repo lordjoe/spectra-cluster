@@ -119,11 +119,6 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
 
 
     @Override
-    public ISpectralCluster asCluster() {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
     public ISpectrum getHighestNPeaks(int numberRequested) {
         throw new UnsupportedOperationException("Fix This");
     }

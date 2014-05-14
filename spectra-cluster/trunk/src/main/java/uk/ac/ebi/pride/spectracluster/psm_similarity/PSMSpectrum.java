@@ -163,13 +163,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
         throw new UnsupportedOperationException("Fix This");
     }
 
-
-    @Override
-    public ISpectralCluster asCluster() {
-        throw new UnsupportedOperationException("Fix This");
-
-    }
-
     @Override
     public ISpectrum getHighestNPeaks(int numberRequested) {
         throw new UnsupportedOperationException("Fix This");

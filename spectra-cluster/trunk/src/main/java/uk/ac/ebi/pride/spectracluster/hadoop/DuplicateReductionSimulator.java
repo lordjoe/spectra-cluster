@@ -188,9 +188,9 @@ public class DuplicateReductionSimulator {
                 } else {
                     // handle spectra kicked out
                     if (!processedSpectrunIds.contains(id)) {
-                        ISpectralCluster cluster = spectrum.asCluster();
+                        ISpectralCluster cluster = ClusterUtilities.asCluster(spectrum);
                         StringBuffer sb = new StringBuffer();
-                        cluster = spectrum.asCluster();
+                        cluster = ClusterUtilities.asCluster(spectrum);
                         TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
                         holder.add(sumCount); // send as a singleton
                     } else {

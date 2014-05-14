@@ -4,6 +4,7 @@ import com.lordjoe.algorithms.CountedString;
 import com.lordjoe.algorithms.LinearBinner;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -344,7 +345,7 @@ public class ClusterUtilities {
             if (cluster.getClusteredSpectraCount() <= size) {
                 final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                 for (ISpectrum spectrum : clusteredSpectra) {
-                    asSingleSpectra.add(spectrum.asCluster()); // di not retain but return as one spectrum clusters
+                    asSingleSpectra.add(ClusterUtilities.asCluster(spectrum)); // di not retain but return as one spectrum clusters
                 }
             } else {
                 retained.add(cluster); // large enough keep it
@@ -512,6 +513,17 @@ public class ClusterUtilities {
         return ret;
     }
 
+    /**
+     * convert a spectrum into cluster
+     * @param spectrum  given spectrum
+     * @return  a spectral cluster
+     */
+    public static ISpectralCluster asCluster(ISpectrum spectrum) {
+        SpectralCluster ret = new SpectralCluster();
+        ret.addSpectra(spectrum);
+        return ret;
+    }
+
 
     /**
      * return a list of all spectra in the list of spectra sorted by charge then mz
@@ -522,7 +534,7 @@ public class ClusterUtilities {
     public static List<ISpectralCluster> asClusters(List<ISpectrum> spectra) {
         List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
         for (ISpectrum spectrum : spectra) {
-            holder.add(spectrum.asCluster());
+            holder.add(asCluster(spectrum));
         }
         Collections.sort(holder);
         return holder;
