@@ -352,7 +352,7 @@ public class ClusterSimilarityUtilities {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(outFile));
             //noinspection unchecked
-            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, ISpectralCluster.STABLE_PREDICATE);
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new StableClusterPredicate());
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();
@@ -378,7 +378,7 @@ public class ClusterSimilarityUtilities {
                 writer.append("\n");
             }
             //noinspection unchecked
-            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, ISpectralCluster.SEMI_STABLE_PREDICATE);
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new SemiStableClusterPredicate());
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();

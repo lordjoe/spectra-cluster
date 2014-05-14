@@ -198,10 +198,10 @@ public class MostSimilarClusterSet {
         System.out.println(report);
 
 
-        List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
+        List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
         newClusterSet = new SimpleClusterSet(stableClusters);
 
-        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.SEMI_STABLE_PREDICATE);
+        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
         Appendable out = System.out;
@@ -257,10 +257,10 @@ public class MostSimilarClusterSet {
 
             System.out.println("==============================================================");
 
-            List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
+            List<ISpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
             newClusterSet = new SimpleClusterSet(stableClusters);
 
-            List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.SEMI_STABLE_PREDICATE);
+            List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
             originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
             MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(newClusterSet, ConcensusSpectrumDistance.INSTANCE);
@@ -323,7 +323,7 @@ public class MostSimilarClusterSet {
 
 
         System.out.println("Number Clusters " + originalClusterSet.getClusterCount());
-        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.SEMI_STABLE_PREDICATE);
+        List<ISpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
         System.out.println("Number SemiStable Clusters " + originalClusterSet.getClusterCount());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
@@ -338,7 +338,7 @@ public class MostSimilarClusterSet {
 
         System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
 
-        List<ISpectralCluster> stableClusters = originalClusterSet.getMatchingClusters(ISpectralCluster.STABLE_PREDICATE);
+        List<ISpectralCluster> stableClusters = originalClusterSet.getMatchingClusters(new StableClusterPredicate());
         IClusterSet newClusterSet = new SimpleClusterSet(stableClusters);
 
 
