@@ -253,36 +253,6 @@ public class ClusterSimilarityUtilities {
     }
 
 
-    /**
-     * build a retriever saving only essentials
-     *
-     * @param file
-     * @param spectrumRetriever
-     */
-    public static void buildLazyLoadedFromMgfFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files == null)
-                return;
-            for (File file1 : files) {
-                buildLazyLoadedFromMgfFile(file1, spectrumRetriever);
-            }
-        } else if (file.getName().endsWith(".mgf")) {
-            try {
-                System.out.println(file.getName());
-                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
-                IPeptideSpectrumMatch[] spectra = ParserUtilities.readMGFScans(lineNumberReader);
-                for (IPeptideSpectrumMatch pm : spectra) {
-                    SimplifiedSpectrum ll = new SimplifiedSpectrum(pm);
-                    spectrumRetriever.addSpectra(ll);
-                }
-                lineNumberReader.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     public static void buildFromTSVFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
