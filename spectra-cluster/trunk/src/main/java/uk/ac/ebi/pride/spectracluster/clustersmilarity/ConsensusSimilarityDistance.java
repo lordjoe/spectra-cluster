@@ -24,8 +24,8 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
     public double distance(ISpectralCluster c1, ISpectralCluster c2) {
         ISpectrum sp1 = c1.getConsensusSpectrum();
         ISpectrum sp2 = c2.getConsensusSpectrum();
-        double d11 = sp1.getSelfDotProduct();
-        double d22 = sp2.getSelfDotProduct();
+        double d11 = similarity.assessSimilarity(sp1, sp1);
+        double d22 = similarity.assessSimilarity(sp2, sp2);
         double dist = similarity.assessSimilarity(sp1, sp2);
 
         return 1.0 - (dist * dist) / (d11 * d22);

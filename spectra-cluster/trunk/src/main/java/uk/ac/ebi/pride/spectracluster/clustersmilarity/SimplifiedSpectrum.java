@@ -61,16 +61,6 @@ public class SimplifiedSpectrum implements IPeptideSpectrumMatch {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
-    /**
-     * an optimization for computing distance based on dot product
-     *
-     * @return number > 0
-     */
-    @Override
-    public double getSelfDotProduct() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
     @Override
     public double getTotalIntensity() {
         throw new UnsupportedOperationException("Fix This"); // ToDo

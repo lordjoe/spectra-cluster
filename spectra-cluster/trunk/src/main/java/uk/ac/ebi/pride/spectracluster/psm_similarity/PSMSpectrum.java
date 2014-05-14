@@ -102,16 +102,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
         decoy = pDecoy;
     }
 
-    /**
-     * an optimization for computing distance based on dot product
-     *
-     * @return number > 0
-     */
-    @Override
-    public double getSelfDotProduct() {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
     @Override
     public void appendMGF(Appendable out) {
         throw new UnsupportedOperationException("Fix This");
