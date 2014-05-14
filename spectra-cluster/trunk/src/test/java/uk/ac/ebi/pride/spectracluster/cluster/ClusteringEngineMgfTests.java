@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -34,7 +35,7 @@ public class ClusteringEngineMgfTests {
         for (ISpectrum originalSpectrum : originalSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
 //                clusteringEngine.addClusters(originalSpectrum.asCluster());
-                oldClusteringEngine.addClusters(originalSpectrum.asCluster());
+                oldClusteringEngine.addClusters(ClusterUtilities.asCluster(originalSpectrum));
             }
         }
 

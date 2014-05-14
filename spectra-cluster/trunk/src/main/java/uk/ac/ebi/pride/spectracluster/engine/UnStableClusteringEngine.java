@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
@@ -100,7 +101,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
                 final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = similarityChecker.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum.asCluster());
+                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
             }
         }

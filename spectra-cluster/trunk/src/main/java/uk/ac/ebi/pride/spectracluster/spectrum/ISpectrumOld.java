@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-
 import java.math.BigInteger;
 
 /**
@@ -25,15 +23,6 @@ public interface ISpectrumOld extends ISpectrum, ISpectrumQuality, IMajorPeaksHo
 
 //    public static final int BAD_QUALITY_MEASURE = -1;
 
-
-    /**
-     * make a cluster containing a single spectrum - this
-     *
-     * @return
-     */
-    // todo: provide either util or constructor implmementation of this
-    @Deprecated
-    public ISpectralCluster asCluster();
 
     /**
      * return a spectrum normalized to the specific total intensity

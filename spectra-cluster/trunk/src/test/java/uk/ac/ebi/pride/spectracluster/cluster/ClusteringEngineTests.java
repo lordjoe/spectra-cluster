@@ -34,8 +34,8 @@ public class ClusteringEngineTests {
         IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
-            clusteringEngine.addClusters(originalSpectrum.asCluster());
-            oldClusteringEngine.addClusters(originalSpectrum.asCluster());
+            clusteringEngine.addClusters(ClusterUtilities.asCluster(originalSpectrum));
+            oldClusteringEngine.addClusters(ClusterUtilities.asCluster(originalSpectrum));
         }
         //noinspection UnusedAssignment
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();

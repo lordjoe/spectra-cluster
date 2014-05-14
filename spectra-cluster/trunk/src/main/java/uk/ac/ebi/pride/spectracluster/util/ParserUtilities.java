@@ -510,7 +510,7 @@ public class ParserUtilities {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < scans.length; i++) {
             IPeptideSpectrumMatch scan = scans[i];
-            final ISpectralCluster e = scan.asCluster();
+            final ISpectralCluster e = ClusterUtilities.asCluster(scan);
             holder.add(e);
         }
 

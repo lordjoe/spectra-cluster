@@ -239,13 +239,13 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return
      */
-    public ISpectralCluster asCluster() {
-        //   guaranteeClean();
-        // id will be spectrum id
-        SpectralCluster ret = new SpectralCluster();
-        ret.addSpectra(this);
-        return ret;
-    }
+//    public ISpectralCluster asCluster() {
+//        //   guaranteeClean();
+//        // id will be spectrum id
+//        SpectralCluster ret = new SpectralCluster();
+//        ret.addSpectra(this);
+//        return ret;
+//    }
 
     /**
      * get the highest intensity peaks sorted by MZ - this value may be cached

@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
@@ -101,7 +102,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
                 final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum.asCluster());
+                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
             }
         }

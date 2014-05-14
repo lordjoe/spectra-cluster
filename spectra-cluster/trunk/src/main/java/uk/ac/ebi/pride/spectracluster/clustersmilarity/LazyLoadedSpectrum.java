@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.IOException;
@@ -142,7 +143,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public ISpectralCluster asCluster() {
-        return getInternalSpectrum().asCluster();
+        return ClusterUtilities.asCluster(getInternalSpectrum());
     }
 
     @Override

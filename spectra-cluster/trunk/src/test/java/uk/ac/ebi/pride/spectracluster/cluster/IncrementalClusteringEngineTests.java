@@ -116,7 +116,7 @@ public class IncrementalClusteringEngineTests {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final ISpectralCluster spectralCluster = originalSpectrum.asCluster();
+            final ISpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
             final Collection<ISpectralCluster> removed = ce.addClusterIncremental(spectralCluster);
             if (!removed.isEmpty())
                 clusters.addAll(removed);
@@ -155,7 +155,7 @@ public class IncrementalClusteringEngineTests {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final ISpectralCluster spectralCluster = originalSpectrum.asCluster();
+            final ISpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
             incrementalEngine.addClusters(spectralCluster);
             oldClusteringEngine.addClusters(spectralCluster);
         }

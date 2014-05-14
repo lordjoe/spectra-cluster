@@ -7,9 +7,8 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -149,7 +148,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
                 final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(spectrum.asCluster());
+                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
 
                 if (compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
