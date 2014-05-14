@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.algorithms.MarkedNumber;
@@ -16,8 +16,7 @@ import java.util.Map;
  * used by Hadoop to bin based on known bin sizes
  * User: Steve
  * Date: 4/22/2014
- */                // todo move to Hadoop package
-@Deprecated
+ */
 public class APrioriBinning<T> {
 
     public static final String DEFAULT_RESOURCE = "/PrideBinning.tsv";
