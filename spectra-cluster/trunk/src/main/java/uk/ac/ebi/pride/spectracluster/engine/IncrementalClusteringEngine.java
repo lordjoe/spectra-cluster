@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.annotation.Nonnull;
@@ -93,7 +94,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         if (getCurrentMZ() > test) {  // all ow roundoff error but not much
             double del = getCurrentMZ() - test;  // difference
 
-            if (Math.abs(del) > ClusterUtilities.MZ_RESOLUTION * IPeak.SMALL_MZ_DIFFERENCE) {
+            if (Math.abs(del) > ClusterUtilities.MZ_RESOLUTION * Constants.SMALL_MZ_DIFFERENCE) {
                 throw new IllegalStateException("mz values MUST be added in order - was "
                         + Util.formatDouble(getCurrentMZ(), 3) + " new " +
                         Util.formatDouble(pCurrentMZ, 3) + " del  " +

@@ -1,14 +1,12 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.io.IClusterAppender;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
  * User: Steve
  * Date: 9/25/13
  */
-//todo: delete
-@Deprecated
 public class CGFClusterAppender implements IClusterAppender {
 
     public static final CGFClusterAppender INSTANCE = new CGFClusterAppender();
