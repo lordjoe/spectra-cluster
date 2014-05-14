@@ -70,12 +70,4 @@ public interface ISpectrumOld extends ISpectrum, ISpectrumQuality, IMajorPeaksHo
     @Deprecated
     public boolean containsMajorPeak(int mz);
 
-    /**
-     * an optimization for computing distance based on dot product
-     *
-     * @return number > 0
-     */
-    @Deprecated
-    public double getSelfDotProduct();
-
 }

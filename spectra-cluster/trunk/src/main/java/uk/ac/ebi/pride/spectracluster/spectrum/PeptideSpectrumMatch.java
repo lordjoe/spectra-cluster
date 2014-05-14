@@ -225,20 +225,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     }
 
-
-    /**
-     * an optimization for computing distance based on dot product
-     *
-     * @return number > 0
-     */
-    @Override
-    public double getSelfDotProduct() {
-        if (selfDotProduct == null) {
-            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this, this);
-        }
-        return selfDotProduct;
-    }
-
     public double getQualityScore() {
         //   guaranteeClean();
         if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {

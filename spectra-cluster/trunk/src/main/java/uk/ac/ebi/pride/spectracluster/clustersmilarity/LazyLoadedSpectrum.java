@@ -56,20 +56,6 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
         return getInternalSpectrum().getPrecursorCharge();
     }
 
-
-    /**
-     * an optimization for computing distance based on dot product
-     *
-     * @return number > 0
-     */
-    @Override
-    public double getSelfDotProduct() {
-        if (selfDotProduct == null) {
-            selfDotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(this, this);
-        }
-        return selfDotProduct;
-    }
-
     @Override
     public void appendMGF(Appendable out) {
         getInternalSpectrum().appendMGF(out);
