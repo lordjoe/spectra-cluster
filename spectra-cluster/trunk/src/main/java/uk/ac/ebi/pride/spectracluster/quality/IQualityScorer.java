@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
  * @author Rui Wang
  * @version $Id$
  */
-public interface QualityScorer extends IAlgorithm {
+public interface IQualityScorer extends IAlgorithm {
     /**
      * return the quality of the spectrum
      *

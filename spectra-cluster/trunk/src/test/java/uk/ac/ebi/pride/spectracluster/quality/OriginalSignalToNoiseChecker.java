@@ -14,7 +14,7 @@ import java.util.Collections;
  *
  * @author jg
  */
-public class OriginalSignalToNoiseChecker implements QualityScorer {
+public class OriginalSignalToNoiseChecker implements IQualityScorer {
     public static final String VERSION = "1.0";
 
     public static final int NUMBER_SPECTRA_TO_CHECK = 6;

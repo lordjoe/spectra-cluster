@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class SignalToNoiseQualityCheckerTests {
     private List<ISpectrum> peptideSpectrumMatches;
-    private QualityScorer originalQualityScorer;
-    private QualityScorer qualityScorer;
+    private IQualityScorer originalQualityScorer;
+    private IQualityScorer qualityScorer;
 
 
     @Before

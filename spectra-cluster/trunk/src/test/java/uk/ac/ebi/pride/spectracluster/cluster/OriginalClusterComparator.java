@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 
 import java.util.Comparator;
 
@@ -11,9 +11,9 @@ import java.util.Comparator;
 public class OriginalClusterComparator implements Comparator<ISpectralCluster> {
     private static final double PRECURSOR_RANGE = 2;
 
-    private QualityScorer qualityScorer;
+    private IQualityScorer qualityScorer;
 
-    public OriginalClusterComparator(QualityScorer qualityScorer) {
+    public OriginalClusterComparator(IQualityScorer qualityScorer) {
         this.qualityScorer = qualityScorer;
     }
 
