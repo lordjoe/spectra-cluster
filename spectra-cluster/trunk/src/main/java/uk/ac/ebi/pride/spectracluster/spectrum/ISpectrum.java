@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 6/20/13
  *
  */
-public interface ISpectrum extends Equivalent<ISpectrum>, Comparable<ISpectrum> {
+public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
     /**
      * globally unique id

@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,6 @@ public class PeaksSpectrum implements ISpectrum {
     }
 
 
-    public static final PeaksSpectrum[] EMPTY_ARRAY = {};
     private final String id;
     private final int precursorCharge;
     private final float precursorMz;
@@ -78,7 +76,7 @@ public class PeaksSpectrum implements ISpectrum {
      * copy with different peaks
      *
      * @param spectrum base used for charge, mz
-     * @param peaks    new peaks
+     * @param inpeaks    new peaks
      */
     public PeaksSpectrum(ISpectrum spectrum, List<IPeak> inpeaks) {
 

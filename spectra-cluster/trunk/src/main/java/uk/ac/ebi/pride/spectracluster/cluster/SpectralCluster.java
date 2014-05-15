@@ -477,8 +477,8 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
         }
         if (spc1.size() <= 1) {
 
-            List<IPeak> peaks = getPeaks();
-            List<IPeak> peaks1 = o.getPeaks();
+            List<IPeak> peaks = getConsensusSpectrum().getPeaks();
+            List<IPeak> peaks1 = o.getConsensusSpectrum().getPeaks();
             if (peaks.size() != peaks1.size()) {
                 return false;
             }
