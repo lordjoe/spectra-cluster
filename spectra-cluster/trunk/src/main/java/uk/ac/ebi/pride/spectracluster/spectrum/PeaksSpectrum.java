@@ -2,18 +2,20 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
  * User: Steve
  * Date: 6/20/13
  */
-public abstract class PeaksSpectrum implements ISpectrum {
+public class PeaksSpectrum implements ISpectrum {
+
+    public static final int MAJOR_PEAK_NUMBER = 6; // Frank et al does 5 we do 1 more
 
     private final String id;
     private final int precursorCharge;
@@ -21,6 +23,11 @@ public abstract class PeaksSpectrum implements ISpectrum {
     private final List<IPeak> peaks = new ArrayList<IPeak>();
     private double totalIntensity;
     private double sumSquareIntensity;
+    // Dot products always get the highest peaks of a specific intensity -
+    // this caches those and returns a list sorted by MZ
+    private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
+    private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
+    private Set<Integer> majorPeakMZ = new HashSet<Integer>();
 
 
     public PeaksSpectrum(final String pId,
@@ -118,7 +125,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
 
     /**
      * return an unmodifiable version of the internal list
-     * ??? should this be a copy
      *
      * @return as above
      */
@@ -143,6 +149,106 @@ public abstract class PeaksSpectrum implements ISpectrum {
      */
     public int getPeaksCount() {
         return peaks.size();
+    }
+
+    /**
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Override
+    public boolean containsMajorPeak(final int mz) {
+        guaranteeMajorPeaks();
+        return majorPeakMZ.contains(mz);
+    }
+
+    /**
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     *
+     * @return
+     */
+    @Override
+    public int[] asMajorPeakMZs() {
+        guaranteeMajorPeaks();
+        final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
+        Arrays.sort(peaks);
+        int[] ret = new int[peaks.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = peaks[i];
+
+        }
+        return ret;
+    }
+
+    private void guaranteeMajorPeaks() {
+        if (majorPeakMZ.isEmpty()) {
+            ISpectrum peaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
+            for (IPeak peak : peaks.getPeaks()) {
+                majorPeakMZ.add((int) peak.getMz());
+            }
+        }
+    }
+
+    /**
+     * return a spectrum normalized to the specific total intensity
+     *
+     * @return !null spectrum - might be this
+     */
+    @Deprecated
+    public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
+        return new NormailzedPeptideSpectrumMatch(this, totalIntensity);   // build a new normalized intensity
+    }
+
+    public double getQualityScore() {
+        if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {
+            qualityMeasure = Defaults.INSTANCE.getDefaultQualityScorer().calculateQualityScore(this);
+        }
+
+        return qualityMeasure;
+    }
+
+    /**
+     * get the highest intensity peaks sorted by MZ - this value may be cached
+     *
+     * @param numberRequested number peaks requested
+     * @return list of no more than  numberRequested peaks in Mz order
+     */
+    @Override
+    public ISpectrum getHighestNPeaks(int numberRequested) {
+        //  guaranteeClean();
+        ISpectrum ret = highestPeaks.get(numberRequested);
+        if (ret == null) {
+            ret = buildHighestPeaks(numberRequested);
+            int numberPeaks = ret.getPeaksCount();
+            // remember the result and if less than requested remember for all
+            // requests above or equal to the size
+            for (int i = numberRequested; i >= numberPeaks; i--) {
+                highestPeaks.put(i, ret);  // todo fix
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * return a list of the highest peaks sorted by intensity
+     *
+     * @param numberRequested number peaks requested
+     * @return !null array of size <= numberRequested;
+     */
+    protected ISpectrum buildHighestPeaks(int numberRequested) {
+        List<IPeak> byIntensity = new ArrayList<IPeak>(getPeaks());
+        Collections.sort(byIntensity, PeakIntensityComparator.INSTANCE); // sort by intensity
+        List<IPeak> holder = new ArrayList<IPeak>();
+        for (IPeak iPeak : byIntensity) {
+            holder.add(iPeak);
+            if (holder.size() >= numberRequested)
+                break;
+        }
+        //noinspection UnnecessaryLocalVariable
+        PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this, holder);
+        return ret;
     }
 
     @Override

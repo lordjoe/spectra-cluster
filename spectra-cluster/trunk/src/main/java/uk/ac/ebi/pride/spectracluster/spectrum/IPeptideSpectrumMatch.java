@@ -10,8 +10,6 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 @Deprecated
 public interface IPeptideSpectrumMatch extends ISpectrum {
 
-    public static final int MAJOR_PEAK_NUMBER = 6; // Frank et al does 5 we do 1 more
-
     /**
      * return scored peptide - maybe null
      */
