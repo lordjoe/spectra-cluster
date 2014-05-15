@@ -164,6 +164,11 @@ public class PeaksSpectrum implements ISpectrum {
         return peaks.size();
     }
 
+    @Override
+    public ISpectrum getHighestNPeaks(int numberRequested) {
+        return null;
+    }
+
 
     @Override
     public String toString() {
@@ -271,5 +276,10 @@ public class PeaksSpectrum implements ISpectrum {
         }
 
         return result;
+    }
+
+    @Override
+    public double getQualityScore() {
+        return 0;
     }
 }
