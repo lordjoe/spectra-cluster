@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 import java.util.List;
@@ -50,7 +51,6 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
 
     }
 
-
     public PeptideSpectrumMatch(String id,
                                 String peptide,
                                 int precursorCharge,
@@ -58,6 +58,19 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
                                 List<IPeak> peaks,
                                 String pAnnotation) {
         super(id, precursorCharge, precursorMz, peaks);
+        this.peptide = peptide;
+        this.annotation = pAnnotation;
+    }
+
+
+    public PeptideSpectrumMatch(String id,
+                                String peptide,
+                                int precursorCharge,
+                                float precursorMz,
+                                List<IPeak> peaks,
+                                IQualityScorer qualityScorer,
+                                String pAnnotation) {
+        super(id, precursorCharge, precursorMz, qualityScorer, peaks);
         this.peptide = peptide;
         this.annotation = pAnnotation;
     }
