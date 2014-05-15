@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -22,7 +21,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
 
     private final String peptide;
     private final String annotation;
-    private final Map<String, String> properties = new HashMap<String, String>();
     // Dot products always get the highest peaks of a specific intensity -
     // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
@@ -60,7 +58,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             peptide = null;
             annotation = null;
         }
-        makeAdvancedCalculations();
     }
 
 
@@ -78,54 +75,10 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                                 int precursorCharge,
                                 float precursorMz,
                                 List<IPeak> peaks,
-                                String pAnnotation
-    ) {
+                                String pAnnotation) {
         super(id, precursorCharge, precursorMz, peaks);
         this.peptide = peptide;
         this.annotation = pAnnotation;
-
-        makeAdvancedCalculations();
-
-    }
-
-    public String getProperty(String name) {
-        return properties.get(name);
-    }
-
-    public void setProperty(String name, String value) {
-        properties.put(name, value);
-    }
-
-
-    public Map<String, String> getProperties() {
-        return new HashMap<String, String>(properties);
-    }
-
-    /**
-     * set bits numbered by the highest MAJOR_PEAK_NUMBER(6) peaks
-     *
-     * @return constructed BigInteger
-     */
-    @Deprecated
-    private BigInteger buildMajorBits() {
-        BigInteger ret = BigInteger.ZERO;
-        final ISpectrum highestNPeaks = asMajorPeaks();
-        final List<IPeak> iPeaks = ((PeaksSpectrum) highestNPeaks).internalGetPeaks();
-        for (IPeak pk : iPeaks) {
-            ret = ret.setBit((int) pk.getMz());
-        }
-        return ret;
-    }
-
-    /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
-     * @return
-     */
-    @Deprecated
-    private ISpectrum asMajorPeaks() {
-        return getHighestNPeaks(MAJOR_PEAK_NUMBER);
     }
 
     /**
@@ -168,11 +121,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         }
     }
 
-    protected void makeAdvancedCalculations() {
-        highestPeaks.clear(); // highest peaks may have changed
-        qualityMeasure = Constants.BAD_QUALITY_MEASURE;  // be laze here
-    }
-
 
     /**
      * return scored peptide - maybe null
@@ -213,20 +161,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         }
         return qualityMeasure;
     }
-
-
-    /**
-     * make a cluster contaiming a single spectrum - this
-     *
-     * @return
-     */
-//    public ISpectralCluster asCluster() {
-//        //   guaranteeClean();
-//        // id will be spectrum id
-//        SpectralCluster ret = new SpectralCluster();
-//        ret.addSpectra(this);
-//        return ret;
-//    }
 
     /**
      * get the highest intensity peaks sorted by MZ - this value may be cached
@@ -298,15 +232,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
             String peptide2 = realO.getPeptide();
             if (!ClusterUtilities.equalObject(peptide1, peptide2))
                 return false;
-
-
-            for (String key : properties.keySet()) {
-                String me = getProperty(key);
-                String them = realO.getProperty(key);
-                if (!me.equals(them))
-                    return false;
-            }
-
         }
 
         return true;
