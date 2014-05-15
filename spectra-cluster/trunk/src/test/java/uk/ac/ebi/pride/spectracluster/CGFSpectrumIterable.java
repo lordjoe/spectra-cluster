@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
