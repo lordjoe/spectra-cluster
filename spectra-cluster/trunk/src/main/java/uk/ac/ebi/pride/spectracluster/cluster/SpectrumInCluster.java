@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.IOException;
 import java.util.*;
@@ -237,10 +238,104 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             out.append("=SpectrumInCluster=\n");
             out.append("removeFromCluster=" + isRemoveFromCluster() + "\n");
             out.append("distance=" + getDistance() + "\n");
+            out.append("NumPeaks: " + getSpectrum().getPeaks().size() + "\n");
             getSpectrum().appendSPText(out);
             getCluster().appendClustering(out);
 
         } catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    public void appendSPText(final Appendable out) {
+        try {
+            appendMSFStart(out);
+            appendMSFComment(out);
+            appendSPTextPeaks(out);
+            out.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    protected void appendMSFStart(final Appendable out) {
+        String peptide = getPeptide();
+        try {
+            out.append(ParserUtilities.NAME_START + " " + peptide + "/" + getPrecursorCharge());
+            out.append("\n");
+            String id = getId();
+            if (id != null) {
+                out.append(ParserUtilities.LIBID_START + " " + getId());
+                out.append("\n");
+
+            }
+            //        out.append(ParserUtilities.MW_START + String.format("%10.3f", getPrecursorMz() * getPrecursorCharge()).trim());
+            //        out.append("\n");
+            out.append(ParserUtilities.PRECURSORMZ_START + " " + String.format("%10.3f", getPrecursorMz()).trim());
+            out.append("\n");
+
+            String prop = getProperty("Status");
+            if (prop != null) {
+                out.append(ParserUtilities.STATUS_START + prop);
+                out.append("\n");
+            }
+            prop = getProperty("molecularWeight");
+            if (prop != null) {
+                out.append(ParserUtilities.MW_START + prop);
+                out.append("\n");
+            }
+            prop = getProperty("FullName");
+            if (prop != null) {
+                out.append(ParserUtilities.FULL_NAME_START + prop);
+                out.append("\n");
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    protected void appendMSFComment(final Appendable pOut) {
+        List<String> strings = new ArrayList<String>(properties.keySet());
+        Collections.sort(strings);
+        boolean first = true;
+        try {
+            pOut.append(ParserUtilities.COMMENT_START + " ");
+            for (String string : strings) {
+                if (!first) {
+                    pOut.append(" ");
+                    first = false;
+                }
+                else {
+                    first = false;
+                }
+                pOut.append(string);
+                pOut.append("=");
+                String value = properties.get(string);
+                if(value.contains(" "))    {
+                    value = "\"" + value + "\"";
+                }
+                pOut.append(value);
+            }
+            pOut.append("\n");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    protected void appendSPTextPeaks(final Appendable out) {
+        try {
+            out.append("NumPeaks: " + internalGetPeaks().size() + "\n");
+            appendPeaks(out);
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
 
         }

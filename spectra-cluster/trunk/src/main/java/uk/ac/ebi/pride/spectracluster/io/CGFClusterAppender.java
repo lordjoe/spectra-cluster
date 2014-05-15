@@ -1,6 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
@@ -9,44 +13,62 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
  */
 public class CGFClusterAppender implements IClusterAppender {
 
-    public static final CGFClusterAppender INSTANCE = new CGFClusterAppender();
 
-    private CGFClusterAppender() {
+    private MGFSpectrumAppender spectrumAppender;
+
+    public CGFClusterAppender(MGFSpectrumAppender spectrumAppender) {
+        this.spectrumAppender = spectrumAppender;
     }
 
     /**
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
-     * @return true if anything was appended otherwise false
+     * @param cluster   !null cluster
+     * @param otherData any other cluster - implementation specific and usually blank
      */
     @Override
-    public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.append(out);
-        return true;
+    public void appendCluster(final Appendable out, final ISpectralCluster cluster, final Object... otherData) {
+        try {
+            out.append("BEGIN CLUSTER");
+            out.append(" Id=").append(cluster.getId());
+            out.append(" Charge=").append(String.valueOf(cluster.getPrecursorCharge()));
+
+            out.append("\n");
+
+            appendSpectra(out, cluster);
+
+            out.append("END CLUSTER");
+            out.append("\n");
+        } catch (IOException e) {
+            throw new AppenderException(e);
+        }
     }
+
+    private void appendSpectra(final Appendable out, final ISpectralCluster cluster) {
+        List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        for (ISpectrum cs : clusteredSpectra) {
+            spectrumAppender.appendSpectrum(out, cs);  // single spectrum become mgfs
+
+        }
+    }
+
 
     /**
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param OtherData any other data - implementation specific and usually blank
-     * @return true if anything was appended otherwise false
+     * @param otherData any other data - implementation specific and usually blank
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... OtherData) {
-        return false;
+    public void appendStart(final Appendable out, final Object... otherData) {
     }
 
     /**
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param OtherData any other data - implementation specific and usually blank
-     * @return true if anything was appended otherwise false
+     * @param otherData any other data - implementation specific and usually blank
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... OtherData) {
-        return false;
+    public void appendEnd(final Appendable out, final Object... otherData) {
     }
 }

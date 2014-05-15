@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.utilities.TypedPredicate;
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.util.OrPredicate;
 
 import javax.annotation.Nonnull;
@@ -23,7 +24,7 @@ public class AbstractClusterWriter implements TypedVisitor<ISpectralCluster> {
     @Override
     public void visit(@Nonnull ISpectralCluster pT) {
         if (tests.apply(pT))
-            pT.appendClustering(writer);
+            new DotClusterClusterAppender().appendCluster(writer, pT);
     }
 
     public Appendable getWriter() {

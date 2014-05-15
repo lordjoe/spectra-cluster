@@ -11,30 +11,28 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
  */
 public interface IClusterAppender {
     /**
-     * @param out       !null open appendale
+     * @param out       !null open appendable
      * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendCluster(Appendable out, ISpectralCluster data, Object... OtherData);
+    void appendCluster(Appendable out, ISpectralCluster data, Object... otherData) throws AppenderException;
 
     /**
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendStart(Appendable out, Object... OtherData);
+    void appendStart(Appendable out, Object... otherData) throws AppenderException;
 
     /**
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    public boolean appendEnd(Appendable out, Object... OtherData);
+    void appendEnd(Appendable out, Object... otherData) throws AppenderException;
 }

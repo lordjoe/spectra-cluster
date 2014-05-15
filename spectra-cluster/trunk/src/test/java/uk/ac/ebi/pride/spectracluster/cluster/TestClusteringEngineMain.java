@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -102,8 +104,9 @@ public class TestClusteringEngineMain {
         try {
             System.out.println(new File(outName).getCanonicalPath());
             out = new PrintWriter(new FileWriter(outName));
+            final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
             for (ISpectralCluster iSpectralCluster : pClusters1) {
-                iSpectralCluster.append(out);
+                clusterAppender.appendCluster(out, iSpectralCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

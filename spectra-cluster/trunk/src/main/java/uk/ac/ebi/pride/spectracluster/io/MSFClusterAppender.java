@@ -10,44 +10,42 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 public class MSFClusterAppender implements IClusterAppender {
 
-    public static final MSFClusterAppender INSTANCE = new MSFClusterAppender();
+    private final MSFSpectrumAppender spectrumAppender;
 
-    private MSFClusterAppender() {
+    public MSFClusterAppender(MSFSpectrumAppender spectrumAppender) {
+        this.spectrumAppender = spectrumAppender;
     }
 
     /**
      * @param out       !null open appendale
      * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        SpectrumMSFAppender.INSTANCE.appendSpectrum(out, data.getConsensusSpectrum());
-        return true;
+    public void appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherData) {
+        spectrumAppender.appendSpectrum(out, data.getConsensusSpectrum());
     }
 
     /**
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... OtherData) {
-        return false;
+    public void appendStart(final Appendable out, final Object... otherData) {
     }
 
     /**
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... OtherData) {
-        return false;
+    public void appendEnd(final Appendable out, final Object... otherData) {
     }
 }

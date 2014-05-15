@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -83,7 +84,7 @@ public class PSMUtilities {
          */
         @Override
         public void visit(@Nonnull final ISpectralCluster sc) {
-            sc.appendClustering(out);
+            new DotClusterClusterAppender().appendCluster(out, sc);
         }
     }
 

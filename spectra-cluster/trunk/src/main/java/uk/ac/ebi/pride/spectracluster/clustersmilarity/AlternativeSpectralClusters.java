@@ -3,14 +3,12 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.io.SpectrumTopPeaksMGFAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -411,7 +409,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
-        if (abs > IPeak.SMALL_MZ_DIFFERENCE) {
+        if (abs > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
         List<ISpectrum> spc1 = getClusteredSpectra();
@@ -449,116 +447,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         }
     }
 
-    /**
-     * write out the data as an MGF file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void append(Appendable out) {
-
-        try {
-            out.append("BEGIN CLUSTER");
-            out.append(" Id=" + getId());
-            //noinspection StringConcatenationInsideStringBufferAppend
-            out.append(" Charge=" + getPrecursorCharge());
-
-            out.append("\n");
-
-            appendSpectra(out);
-            //            ISpecClusterPeak[] peaks = getPeaks();
-            //            for (int i = 0; i < peaks.length; i++) {
-            //                ISpecClusterPeak peak = peaks[i];
-            //                out.append(peak.toString());
-            //                out.append("\n");
-            //            }
-            out.append("END CLUSTER");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-    /**
-     * make a one line report
-     *
-     * @param out
-     */
-    @Override
-    public void appendData(Appendable out) {
-        try {
-            out.append(getId());
-            out.append("\t");
-
-            String mz = String.format("%f8.2", getPrecursorMz());
-            out.append(mz);
-            out.append("\t");
-
-            out.append(Integer.toString(getPrecursorCharge()));
-            out.append("\t");
-
-
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
-
-    }
-
-    /**
-     * write out the data as a .clustering file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void appendClustering(Appendable out) {
-        //noinspection UnnecessaryLocalVariable,UnusedDeclaration
-        int indent = 0;
-
-        try {
-            out.append("=Cluster=\n");
-            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
-            out.append("\n");
-            out.append("av_precursor_intens=" + String.format("%10.3f", getPrecursorMz()).trim());
-            out.append("\n");
-
-
-            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
-            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
-            out.append("sequence=[" + s + "]");
-            out.append("\n");
-
-            for (ISpectrum spec : clusteredSpectra1) {
-                out.append("SPEC\t");
-                out.append(spec.getId());
-                out.append("\ttrue\n");
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
-    /**
-     * do not add begin and end cluster - useful for rebuilding a mgf
-     *
-     * @param out
-     */
-    @Override
-    public void appendSpectra(Appendable out) {
-        List<ISpectrum> clusteredSpectra = getClusteredSpectra();
-        for (ISpectrum cs : clusteredSpectra) {
-            SpectrumTopPeaksMGFAppender.INSTANCE.appendSpectrum(out, cs);  // single spectgra become mgfs
-
-        }
-    }
 
     @Override
     public String toString() {
@@ -569,46 +457,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
             sb.append(constitutingCluster);
         }
         return sb.toString();
-
-    }
-
-    /**
-     * write out the data as an MGF file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("UnusedDeclaration , StringConcatenationInsideStringBufferAppend")
-    public void appendMGF(Appendable out) {
-
-        try {
-            out.append("BEGIN IONS");
-            out.append("\n");
-
-            out.append("TITLE=" + getId());
-            out.append("\n");
-
-            double precursorCharge = getPrecursorCharge();
-            double massChargeRatio = getPrecursorMz();
-
-            //noinspection StringConcatenationInsideStringBufferAppend
-            out.append("PEPMASS=" + massChargeRatio);
-            out.append("\n");
-
-            out.append("CHARGE=" + precursorCharge);
-            if (precursorCharge > 0)
-                out.append("+");
-            out.append("\n");
-
-            for (IPeak peak : getPeaks()) {
-                out.append(peak.toString());
-                out.append("\n");
-            }
-            out.append("END IONS");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
 
     }
 
