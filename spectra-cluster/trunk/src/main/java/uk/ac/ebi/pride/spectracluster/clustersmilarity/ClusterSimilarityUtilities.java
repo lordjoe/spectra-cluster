@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.ElapsedTimer;
-import uk.ac.ebi.pride.spectracluster.ClusterSetListener;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;

@@ -1,7 +1,6 @@
-package uk.ac.ebi.pride.spectracluster;
+package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 
 /**
