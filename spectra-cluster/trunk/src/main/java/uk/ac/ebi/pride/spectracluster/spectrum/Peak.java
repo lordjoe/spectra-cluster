@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 /**
@@ -23,10 +22,6 @@ public class Peak implements IPeak {
         this.massChargeRatio = massChargeRatio;
         this.intensity = intensity;
         this.count = count;
-
-        // debugging code to track down a few bad cases
-        if (count > 1 && ClusterUtilities.isMZInteresting(massChargeRatio))
-            ClusterUtilities.breakHere();
     }
 
     /**
