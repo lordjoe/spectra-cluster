@@ -103,11 +103,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public void appendMGF(Appendable out) {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
     public double getTotalIntensity() {
         throw new UnsupportedOperationException("Fix This");
     }
@@ -176,52 +171,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
     @Override
     public boolean containsMajorPeak(int mz) {
         throw new UnsupportedOperationException("Fix This");
-    }
-
-    /**
-     * write as MGF
-     *
-     * @param out
-     */
-    @Override
-    public void appendMSF(final Appendable out) {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    /**
-     * write as MGF
-     *
-     * @param out
-     */
-    @Override
-    public void appendSPText(final Appendable out) {
-        throw new UnsupportedOperationException("Fix This");
-
-
-    }
-
-    /**
-     * write basic data as TSV
-     *
-     * @param out
-     */
-    @Override
-    public void appendTSV(final Appendable out) {
-        try {
-            out.append(getId());
-            out.append("\t");
-            out.append(Integer.toString(getPrecursorCharge()));
-            out.append("\t");
-            String mzString = String.format("%10.2f", getPrecursorMz()).trim();
-            out.append(mzString);
-            out.append("\t");
-            out.append(getPeptide());
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
     }
 
 

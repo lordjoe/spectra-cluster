@@ -23,7 +23,7 @@ public class MSFClusterAppender implements IClusterAppender {
      */
     @Override
     public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.getConsensusSpectrum().appendMSF(out);
+        SpectrumMSFAppender.INSTANCE.appendSpectrum(out, data.getConsensusSpectrum());
         return true;
     }
 
@@ -31,7 +31,6 @@ public class MSFClusterAppender implements IClusterAppender {
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
@@ -44,7 +43,6 @@ public class MSFClusterAppender implements IClusterAppender {
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */

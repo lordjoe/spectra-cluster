@@ -30,7 +30,6 @@ public class CGFClusterAppender implements IClusterAppender {
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
@@ -43,7 +42,6 @@ public class CGFClusterAppender implements IClusterAppender {
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
      * @param OtherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
