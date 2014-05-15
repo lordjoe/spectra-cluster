@@ -12,8 +12,6 @@ import java.util.List;
  * Date: 7/8/13
  */
 public interface InternalSpectralCluster {
-    public static final InternalSpectralCluster[] EMPTY_ARRAY = {};
-
 
     /**
      * this should be protected but it needs to be used by spectral clustering so that
@@ -21,7 +19,7 @@ public interface InternalSpectralCluster {
      *
      * @return
      */
-    public List<ISpectrum> internalGetClusteredSpectra();
+    List<ISpectrum> internalGetClusteredSpectra();
 
     /**
      * this should be protected but it needs to be used by spectral clustering so that
@@ -29,6 +27,6 @@ public interface InternalSpectralCluster {
      *
      * @return exactly the current concensus spectrum
      */
-    public ISpectrum internalGetConcensusSpectrum();
+    ISpectrum internalGetConcensusSpectrum();
 
 }
