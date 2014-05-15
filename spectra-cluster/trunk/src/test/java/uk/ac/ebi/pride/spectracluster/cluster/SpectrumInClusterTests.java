@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;

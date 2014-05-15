@@ -8,7 +8,6 @@ import com.lordjoe.hadoopsimulator.HadoopSimulatorJob;
 import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
