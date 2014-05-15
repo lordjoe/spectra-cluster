@@ -1,4 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster.util.comparator;
+
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 import java.util.Comparator;
 
@@ -14,12 +16,7 @@ public final class PeakIntensityComparator implements Comparator<IPeak> {
 
     public static final PeakIntensityComparator INSTANCE = new PeakIntensityComparator();
 
-    public PeakIntensityComparator() {
-
-    }
-
-    public static PeakIntensityComparator getInstance() {
-        return INSTANCE;
+    private PeakIntensityComparator() {
     }
 
     /**

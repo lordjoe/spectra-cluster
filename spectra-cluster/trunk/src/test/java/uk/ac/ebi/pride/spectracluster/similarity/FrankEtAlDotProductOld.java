@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.InversePeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.InversePeakIntensityComparator;
 
 import java.util.*;
 
@@ -238,7 +238,7 @@ public class FrankEtAlDotProductOld implements SimilarityChecker {
      * @return
      */
     private List<IPeak> getHighestPeaks(List<IPeak> peakList, int k) {
-        Collections.sort(peakList, InversePeakIntensityComparator.getInstance());
+        Collections.sort(peakList, InversePeakIntensityComparator.INSTANCE);
 
         List<IPeak> highestPeaks = new ArrayList<IPeak>(k);
 

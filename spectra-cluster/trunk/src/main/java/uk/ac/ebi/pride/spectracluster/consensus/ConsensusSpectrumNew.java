@@ -5,6 +5,8 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -279,7 +281,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         // add all new peaks
         allPeaks.addAll(newPeaks);
-        Collections.sort(allPeaks, PeakMzComparator.getInstance());
+        Collections.sort(allPeaks, PeakMzComparator.INSTANCE);
     }
 
     /**
@@ -388,14 +390,14 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
             if (peakBuffer.size() < 1)
                 continue;
 
-            Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
+            Collections.sort(peakBuffer, PeakIntensityComparator.INSTANCE);
 
             List<IPeak> fivePeaks = new ArrayList<IPeak>(NUMBER_BUFFER_PEAKS);
 
             for (int i = 0; i < NUMBER_BUFFER_PEAKS && i < peakBuffer.size(); i++)
                 fivePeaks.add(peakBuffer.get(i));
 
-            Collections.sort(fivePeaks, PeakMzComparator.getInstance());
+            Collections.sort(fivePeaks, PeakMzComparator.INSTANCE);
             filteredSpectrum.addAll(fivePeaks);
         }
 

@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.quality;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
