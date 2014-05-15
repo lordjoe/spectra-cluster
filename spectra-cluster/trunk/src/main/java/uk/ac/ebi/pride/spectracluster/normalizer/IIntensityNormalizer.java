@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Rui Wang
  */
-public interface IntensityNormalizer extends IAlgorithm {
+public interface IIntensityNormalizer extends IAlgorithm {
 
     /**
      * return the value normalized to - especial;ly useful for total intensity normalization where

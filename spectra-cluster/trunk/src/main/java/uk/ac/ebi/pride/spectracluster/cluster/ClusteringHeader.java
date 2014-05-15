@@ -15,7 +15,11 @@ public class ClusteringHeader {
     private final String fdr; // =0.02
     private final String description; // =310.0 +-10.0 m
 
-    public ClusteringHeader(String name, String similarity_method, String threshold, String fdr, String description) {
+    public ClusteringHeader(String name,
+                            String similarity_method,
+                            String threshold,
+                            String fdr,
+                            String description) {
         this.name = name;
         this.similarity_method = similarity_method;
         this.threshold = threshold;

@@ -5,6 +5,8 @@ import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
 import org.systemsbiology.hadoop.IParameterHolder;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
@@ -16,9 +18,7 @@ import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
-import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.quality.QualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -159,11 +159,11 @@ public class Defaults {
 
     private SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
 
-    private QualityScorer defaultQualityScorer = new SignalToNoiseChecker();
+    private IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
     private DefaultClusterComparator defaultSpectrumComparator = (DefaultClusterComparator)DefaultClusterComparator.INSTANCE;
 
-    private IntensityNormalizer normalizer = new TotalIntensityNormalizer();
+    private IIntensityNormalizer normalizer = new TotalIntensityNormalizer();
 
     private IClusteringEngineFactory defaultClusteringEngineFactory;
 
@@ -222,7 +222,7 @@ public class Defaults {
         numberReclusteringPasses = pNumberReclusteringPasses;
     }
 
-    public IntensityNormalizer getNormalizer() {
+    public IIntensityNormalizer getNormalizer() {
         return normalizer;
     }
 
@@ -253,11 +253,11 @@ public class Defaults {
         numberReclusteringPasses = pNumberReclusteringPasses;
     }
 
-    public IntensityNormalizer getDefaultIntensityNormalizer() {
+    public IIntensityNormalizer getDefaultIntensityNormalizer() {
         return normalizer;
     }
 
-    public void setNormalizer(final IntensityNormalizer pNormalizer) {
+    public void setNormalizer(final IIntensityNormalizer pNormalizer) {
         normalizer = pNormalizer;
     }
 
@@ -272,7 +272,7 @@ public class Defaults {
         defaultSimilarityChecker = pDefaultSimilarityChecker;
     }
 
-    public void setDefaultQualityScorer(final QualityScorer pDefaultQualityScorer) {
+    public void setDefaultQualityScorer(final IQualityScorer pDefaultQualityScorer) {
         defaultQualityScorer = pDefaultQualityScorer;
     }
 
@@ -293,7 +293,7 @@ public class Defaults {
     }
 
 
-    public QualityScorer getDefaultQualityScorer() {
+    public IQualityScorer getDefaultQualityScorer() {
         return defaultQualityScorer;
     }
 

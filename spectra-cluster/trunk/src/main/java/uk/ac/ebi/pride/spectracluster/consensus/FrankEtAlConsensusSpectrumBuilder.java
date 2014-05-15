@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -43,7 +43,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
      */
     private final static double DEFUALT_MZ_THRESHOLD_STEP = 0.1;
 
-    private IntensityNormalizer intensityNormalizer;
+    private IIntensityNormalizer intensityNormalizer;
 
 
     /**
@@ -55,12 +55,12 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
         throw new UnsupportedOperationException("Deprecated");
     }
 
-    public FrankEtAlConsensusSpectrumBuilder(IntensityNormalizer intensityNormalizer) {
+    public FrankEtAlConsensusSpectrumBuilder(IIntensityNormalizer intensityNormalizer) {
         this.intensityNormalizer = intensityNormalizer;
         throw new UnsupportedOperationException("Deprecated");
     }
 
-    public void setIntensityNormalizer(IntensityNormalizer intensityNormalizer) {
+    public void setIntensityNormalizer(IIntensityNormalizer intensityNormalizer) {
         this.intensityNormalizer = intensityNormalizer;
     }
 

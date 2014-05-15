@@ -16,12 +16,14 @@ import java.util.Set;
  * @date 10/05/13
  */
 // TODO JG: remove the functions of the former IPeaksHolder from the implementations
-public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>{
+public interface ISpectralCluster extends ISpectrumHolder,
+                                          Equivalent<ISpectralCluster>,
+                                          Comparable<ISpectralCluster>{
 
     /**
      * Get cluster id
      */
-    public String getId();
+    String getId();
 
     /**
      * build an id from spectral ids
@@ -29,7 +31,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @return
      */
     @Deprecated
-    public String getSpectralId();
+    String getSpectralId();
 
 
     /**
@@ -37,14 +39,14 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return
      */
-    public float getPrecursorMz();
+    float getPrecursorMz();
 
     /**
      * concensus spectrum Charge
      *
      * @return
      */
-    public int getPrecursorCharge();
+    int getPrecursorCharge();
 
     /**
      * Get a list of peptide sequences
@@ -52,7 +54,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @return
      */
     @Deprecated
-    public
     @Nonnull
     List<String> getPeptides();
 
@@ -62,7 +63,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @return
      */
     @Deprecated
-    public String getMostCommonPeptide();
+    String getMostCommonPeptide();
 
     /**
      * get peptides with statistics
@@ -70,7 +71,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      * @return list ordered bu purity
      */
     @Deprecated
-    public
     @Nonnull
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd);
 
@@ -78,7 +78,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Get consensus spectrum
      */
-    public ISpectrum getConsensusSpectrum();
+    ISpectrum getConsensusSpectrum();
 
     /**
      * real spectrum with the highest quality - this is a
@@ -86,19 +86,17 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return !null spectrum
      */
-    public ISpectrum getHighestQualitySpectrum();
+    ISpectrum getHighestQualitySpectrum();
 
     /**
      * all internally spectrum
      */
-    public
     @Nonnull
     List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
-    public
     @Nonnull
     List<ISpectrum> getClusteredSpectra();
 
@@ -106,7 +104,7 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * count of internal spectrum
      */
-    public int getClusteredSpectraCount();
+    int getClusteredSpectraCount();
 
 
     /**
@@ -114,7 +112,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
      *
      * @return
      */
-    public
     @Nonnull
     Set<String> getSpectralIds();
 
@@ -122,20 +119,20 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     /**
      * Add a list of spectrum to cluster
      */
-    public void addSpectra(List<ISpectrum> added);
+    void addSpectra(List<ISpectrum> added);
 
     /**
      * if true the cluster is stable and will not allow removal
      *
      * @return
      */
-    public boolean isStable();
+    boolean isStable();
 
     /**
      * if true the cluster is stable and will not allow removal
      *
      * @return
      */
-    public boolean isSemiStable();
+    boolean isSemiStable();
 
 }
