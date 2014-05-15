@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -92,6 +93,11 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     @Override
     public double getQualityScore() {
         return getInternalSpectrum().getQualityScore();
+    }
+
+    @Override
+    public IQualityScorer getQualityScorer() {
+        return getInternalSpectrum().getQualityScorer();
     }
 
     /**

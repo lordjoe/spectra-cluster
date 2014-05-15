@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -16,6 +17,8 @@ import java.util.*;
  */
 public class Spectrum implements ISpectrum {
 
+    public final static IQualityScorer DEFAULT_QUALITY_SCORER = new SignalToNoiseChecker();
+
     // Frank et al does 5 we do 1 more
     public static final int MAJOR_PEAK_NUMBER = 6;
 
@@ -27,10 +30,12 @@ public class Spectrum implements ISpectrum {
     private double totalIntensity;
     private double sumSquareIntensity;
 
+    private final IQualityScorer qualityScorer;
+    private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
+
     // Dot products always get the highest peaks of a specific intensity -
     // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
-    private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
 
 
@@ -38,9 +43,19 @@ public class Spectrum implements ISpectrum {
                     final int pPrecursorCharge,
                     final float pPrecursorMz,
                     final List<IPeak> inpeaks) {
-        id = pId;
-        precursorCharge = pPrecursorCharge;
-        precursorMz = pPrecursorMz;
+        this(pId, pPrecursorCharge, pPrecursorMz, DEFAULT_QUALITY_SCORER, inpeaks);
+    }
+
+
+    public Spectrum(final String pId,
+                    final int pPrecursorCharge,
+                    final float pPrecursorMz,
+                    final IQualityScorer qualityScorer,
+                    final List<IPeak> inpeaks) {
+        this.id = pId;
+        this.precursorCharge = pPrecursorCharge;
+        this.precursorMz = pPrecursorMz;
+        this.qualityScorer = qualityScorer;
 
         this.peaks.clear();
         Collections.sort(inpeaks);
@@ -71,6 +86,7 @@ public class Spectrum implements ISpectrum {
         this.id = spectrum.getId();
         this.precursorCharge = spectrum.getPrecursorCharge();
         this.precursorMz = spectrum.getPrecursorMz();
+        this.qualityScorer = spectrum.getQualityScorer();
 
         peaks.clear();
         peaks.addAll(inpeaks);
@@ -195,13 +211,17 @@ public class Spectrum implements ISpectrum {
         }
     }
 
-    //todo @rw: not the best implementation, need review
     public double getQualityScore() {
         if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {
-            qualityMeasure = Defaults.INSTANCE.getDefaultQualityScorer().calculateQualityScore(this);
+            qualityMeasure = qualityScorer.calculateQualityScore(this);
         }
 
         return qualityMeasure;
+    }
+
+    @Override
+    public IQualityScorer getQualityScorer() {
+        return qualityScorer;
     }
 
     /**

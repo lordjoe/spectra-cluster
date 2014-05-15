@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -133,6 +134,11 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public double getQualityScore() {
+        throw new UnsupportedOperationException("Fix This");
+    }
+
+    @Override
+    public IQualityScorer getQualityScorer() {
         throw new UnsupportedOperationException("Fix This");
     }
 
