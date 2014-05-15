@@ -676,7 +676,7 @@ public class ParserUtilities {
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected static void handleTitleLine(PeaksSpectrum spectrum, String titleLine) {
+    protected static void handleTitleLine(Spectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
         //noinspection ForLoopReplaceableByForEach
