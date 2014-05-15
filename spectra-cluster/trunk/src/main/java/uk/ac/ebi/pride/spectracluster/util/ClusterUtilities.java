@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -575,7 +576,7 @@ public class ClusterUtilities {
                 // saves the highest intensity peaks up to  maxPerBin
                 // because the comparison is on intensity
                 hightestInBin = new PriorityQueue<IPeak>(maxPerBin,
-                        PeakIntensityComparator.getInstance());
+                        PeakIntensityComparator.INSTANCE);
                 higheseEachBin[bin] = hightestInBin;
             }
 

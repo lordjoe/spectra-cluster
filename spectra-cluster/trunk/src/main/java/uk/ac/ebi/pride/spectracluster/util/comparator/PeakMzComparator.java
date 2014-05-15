@@ -1,4 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster.util.comparator;
+
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 
 import java.util.Comparator;
 
@@ -11,11 +13,6 @@ public class PeakMzComparator implements Comparator<IPeak> {
     public final static PeakMzComparator INSTANCE = new PeakMzComparator();
 
     private PeakMzComparator() {
-
-    }
-
-    public static PeakMzComparator getInstance() {
-        return INSTANCE;
     }
 
     public int compare(IPeak o1, IPeak o2) {

@@ -5,6 +5,8 @@ import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.*;
 
@@ -192,7 +194,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
             }
 
             // sort the buffer
-            Collections.sort(peakBuffer, PeakIntensityComparator.getInstance());
+            Collections.sort(peakBuffer, PeakIntensityComparator.INSTANCE);
 
             // take the 5 highest peaks
             for (int i = 0; i < Math.min(SLIDING_WINDOW_RETAINED_HIGHEST_PEAKS, peakBuffer.size()); i++) {
@@ -238,7 +240,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
             return allPeaks;
 
         // sort by m/z allPeaks
-        Collections.sort(allPeaks, PeakMzComparator.getInstance());
+        Collections.sort(allPeaks, PeakMzComparator.INSTANCE);
         List<IPeak> returnedPeaks = new ArrayList<IPeak>();
         IPeak start = null;
         int index = 0;

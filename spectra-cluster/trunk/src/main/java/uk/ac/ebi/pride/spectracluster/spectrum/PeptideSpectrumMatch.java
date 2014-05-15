@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.math.BigInteger;
 import java.util.*;

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public abstract class PeaksSpectrum implements ISpectrum {
         this.peaks.clear();
         Collections.sort(peaks);
         this.peaks.addAll(peaks);
-        Collections.sort(this.peaks, PeakMzComparator.getInstance());
+        Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
         double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
         for (IPeak peak : peaks) {
@@ -87,7 +88,7 @@ public abstract class PeaksSpectrum implements ISpectrum {
         peaks.clear();
         peaks.addAll(inpeaks);
 
-        Collections.sort(this.peaks, PeakMzComparator.getInstance());
+        Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
         double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
         for (IPeak peak : peaks) {

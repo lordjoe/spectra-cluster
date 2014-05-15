@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
@@ -80,7 +81,7 @@ public class NewConsensusSpectrumTests {
         long durationUpdate = durationNew - durationAdding;
 
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         //     System.out.println("Benchmark: old = " + durationOrig + ", new = " + durationNew + " (adding = " + durationAdding + ", update = " + durationUpdate + ")");
@@ -145,11 +146,11 @@ public class NewConsensusSpectrumTests {
 
         // sort peaks in the same order (intensity ascending)
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         List<IPeak> newConsensusPeaksBeforeAdd = new ArrayList<IPeak>(newConsensusSpectrumBeforeAdd.getPeaks());
-        Collections.sort(newConsensusPeaksBeforeAdd, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaksBeforeAdd, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaksBeforeAdd);
 
         // print stats
@@ -201,7 +202,7 @@ public class NewConsensusSpectrumTests {
 
         // convert to peak list
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         // make sure the results are identical
@@ -239,7 +240,7 @@ public class NewConsensusSpectrumTests {
 
         // convert to peak list
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         // make sure the results are identical
@@ -271,7 +272,7 @@ public class NewConsensusSpectrumTests {
 
         // convert to peak list
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         // make sure the results are identical
@@ -290,7 +291,7 @@ public class NewConsensusSpectrumTests {
 
         // convert to peak list
         List<IPeak> newConsensusPeaks = new ArrayList<IPeak>(newConsensusSpectrum.getPeaks());
-        Collections.sort(newConsensusPeaks, PeakIntensityComparator.getInstance());
+        Collections.sort(newConsensusPeaks, PeakIntensityComparator.INSTANCE);
         Collections.reverse(newConsensusPeaks);
 
         // compare the two
