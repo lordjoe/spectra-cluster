@@ -15,14 +15,14 @@ public interface SpectrumHolderListener {
      * @param holder !null holder
      * @param added  added spectra
      */
-    public void onSpectraAdd(ISpectrumHolder holder, ISpectrum... added);
+    void onSpectraAdd(ISpectrumHolder holder, ISpectrum... added);
 
     /**
      * handle notification of removing spectra
      *
      * @param holder !null holder
-     * @param added  removed spectra
+     * @param removed  removed spectra
      */
-    public void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed);
+    void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed);
 
 }
