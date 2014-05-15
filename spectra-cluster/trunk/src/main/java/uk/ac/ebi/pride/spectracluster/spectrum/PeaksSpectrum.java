@@ -12,7 +12,7 @@ import java.util.List;
  * User: Steve
  * Date: 6/20/13
  */
-public class PeaksSpectrum implements ISpectrum {
+public abstract class PeaksSpectrum implements ISpectrum {
 
     /**
      * who knows why Johannes does this but we can as well
@@ -165,12 +165,6 @@ public class PeaksSpectrum implements ISpectrum {
     }
 
     @Override
-    public ISpectrum getHighestNPeaks(int numberRequested) {
-        return null;
-    }
-
-
-    @Override
     public String toString() {
         return getId();
     }
@@ -276,10 +270,5 @@ public class PeaksSpectrum implements ISpectrum {
         }
 
         return result;
-    }
-
-    @Override
-    public double getQualityScore() {
-        return 0;
     }
 }

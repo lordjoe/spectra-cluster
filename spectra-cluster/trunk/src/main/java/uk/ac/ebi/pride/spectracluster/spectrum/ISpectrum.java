@@ -19,41 +19,41 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      *
      * @return !null id
      */
-    public String getId();
+    String getId();
 
     /**
      * get precursor m/z
      */
-    public float getPrecursorMz();
+    float getPrecursorMz();
 
     /**
      * get charge - mixed charge
      */
-    public int getPrecursorCharge();
+    int getPrecursorCharge();
 
     /**
      * return the sum of all intensities
      */
-    public double getTotalIntensity();
+    double getTotalIntensity();
 
     /**
      * return the sum  Square of all intensities
      */
-    public double getSumSquareIntensity();
+    double getSumSquareIntensity();
 
     /**
      * return unmodifiable peaks sorted by MZ
      *
      * @return !null array of peaks
      */
-    public List<IPeak> getPeaks();
+    List<IPeak> getPeaks();
 
     /**
      * return number of peaks
      *
      * @return count
      */
-    public int getPeaksCount();
+    int getPeaksCount();
 
     /**
      * get the highest intensity peaks sorted by MZ - this value may be cached
@@ -61,5 +61,13 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      * @param numberRequested number peaks requested
      * @return Peaks spectrum
      */
-    public ISpectrum getHighestNPeaks(int numberRequested);
+    ISpectrum getHighestNPeaks(int numberRequested);
+
+
+    /**
+     * Get the peaks with highest intensity sort by MZ
+     *
+     * @return  array of major peak mz
+     */
+    int[] asMajorPeakMZs();
 }
