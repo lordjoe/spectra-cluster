@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;

@@ -1,4 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster.util;
+
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.List;
 
@@ -9,8 +11,6 @@ import java.util.List;
  * @date 19/05/13
  */
 public class ConsensusSpectraItems {
-    public static ConsensusSpectraItems[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = ConsensusSpectraItems.class;
 
     private ISpectrum concensus;
     private List<ISpectrum> spectra;
