@@ -71,4 +71,13 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      */
     @Deprecated
     int[] asMajorPeakMZs();
+
+    /**
+     * does the spectrum contain this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Deprecated
+    boolean containsMajorPeak(final int mz);
 }

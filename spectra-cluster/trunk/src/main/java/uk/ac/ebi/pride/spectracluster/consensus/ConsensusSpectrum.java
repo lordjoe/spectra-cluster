@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 import java.util.*;
 
@@ -127,7 +128,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             return;
 
         for (ISpectrum spectrum : merged) {
-            List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(ISpectrum.MAX_PEAKS_TO_KEEP).getPeaks();
+            List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(Constants.MAX_PEAKS_TO_KEEP).getPeaks();
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();
@@ -434,7 +435,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         int lowerBound = 0;
         // process the peaks using a sliding window of 100 m/z
-        for (double startMz = 0, endMz = NOISE_FILTER_INCREMENT; endMz <= IPeak.HIGHEST_USABLE_MZ; endMz += NOISE_FILTER_INCREMENT, startMz += NOISE_FILTER_INCREMENT) {
+        for (double startMz = 0, endMz = NOISE_FILTER_INCREMENT; endMz <= Constants.HIGHEST_USABLE_MZ; endMz += NOISE_FILTER_INCREMENT, startMz += NOISE_FILTER_INCREMENT) {
             List<IPeak> peakBuffer = new ArrayList<IPeak>();
 
             // set the lower bound

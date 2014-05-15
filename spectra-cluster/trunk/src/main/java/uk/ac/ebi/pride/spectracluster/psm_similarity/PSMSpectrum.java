@@ -1,10 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,11 +159,6 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
 
     @Override
     public ISpectrum getHighestNPeaks(int numberRequested) {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
-    public INormalizedSpectrum asNormalizedTo(double totalIntensity) {
         throw new UnsupportedOperationException("Fix This");
     }
 

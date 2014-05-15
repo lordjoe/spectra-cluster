@@ -269,11 +269,11 @@ public class PSMSpectralCluster implements ISpectralCluster {
     }
 
 
-    /**
-     * write out the data as a .clustering file
-     *
-     * @param out place to append
-     */
+//    /**
+//     * write out the data as a .clustering file
+//     *
+//     * @param out place to append
+//     */
 //    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
 //    @Override
 //    public void appendClustering(Appendable out) {
@@ -385,8 +385,8 @@ public class PSMSpectralCluster implements ISpectralCluster {
         }
         if (spc1.size() <= 1) {
 
-            List<IPeak> peaks = getPeaks();
-            List<IPeak> peaks1 = o.getPeaks();
+            List<IPeak> peaks = getConsensusSpectrum().getPeaks();
+            List<IPeak> peaks1 = o.getConsensusSpectrum().getPeaks();
             if (peaks.size() != peaks1.size()) {
                 return false;
             }
@@ -432,16 +432,6 @@ public class PSMSpectralCluster implements ISpectralCluster {
     @Override
     public int[] asMajorPeakMZs() {
         return getConsensusSpectrum().asMajorPeakMZs();
-    }
-
-    @Override
-    public List<IPeak> getPeaks() {
-        return getConsensusSpectrum().getPeaks();
-    }
-
-    @Override
-    public int getPeaksCount() {
-        return getConsensusSpectrum().getPeaksCount();
     }
 
     @Override

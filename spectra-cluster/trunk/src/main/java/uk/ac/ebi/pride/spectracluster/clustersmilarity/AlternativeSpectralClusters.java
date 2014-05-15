@@ -103,9 +103,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      * notify any state change listeners - probably should
      * be protected but is in the interface to form an event cluster
      *
-     * @param oldState
-     * @param newState
-     * @param commanded
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
         if (m_SpectrumHolderListeners.isEmpty())
@@ -215,20 +212,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     public List<ClusterPeptideFraction> getPeptidePurity(final IDecoyDiscriminator dd) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
-
-    @Override
-    public List<IPeak> getPeaks() {
-        guaranteeClean();
-        return getConsensusSpectrum().getPeaks();
-    }
-
-
-    @Override
-    public int getPeaksCount() {
-        guaranteeClean();
-        return getConsensusSpectrum().getPeaksCount();
-    }
-
 
     /**
      * real spectrum with the highest quality - this is a
@@ -419,8 +402,8 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         }
         if (spc1.size() <= 1) {
 
-            List<IPeak> peaks = getPeaks();
-            List<IPeak> peaks1 = o.getPeaks();
+            List<IPeak> peaks = getConsensusSpectrum().getPeaks();
+            List<IPeak> peaks1 = o.getConsensusSpectrum().getPeaks();
             if (peaks.size() != peaks1.size()) {
                 return false;
             }
