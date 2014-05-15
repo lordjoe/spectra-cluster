@@ -17,4 +17,9 @@ public final class Constants {
     public static final int LOWEST_USABLE_MZ = 50; // ignore peaks lower than this
 
     public static final int BAD_QUALITY_MEASURE = -1;
+
+    /**
+     * after this many peaks we can drop the rest
+     */
+    public static final int MAX_PEAKS_TO_KEEP = 100;
 }

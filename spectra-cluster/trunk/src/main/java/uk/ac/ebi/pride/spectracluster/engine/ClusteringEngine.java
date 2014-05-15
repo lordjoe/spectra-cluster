@@ -214,7 +214,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return true if clusters have been merged
      */
-    protected boolean mergeAllClusters() {
+    public boolean mergeAllClusters() {
         boolean modified = false;
         boolean toMerge = true;
         List<ISpectralCluster> myClusters = internalGetClusters();

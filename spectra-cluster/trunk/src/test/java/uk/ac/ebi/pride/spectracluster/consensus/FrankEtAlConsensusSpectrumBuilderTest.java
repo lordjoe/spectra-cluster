@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             IPeak peak2 = peaks2.get(i);
 
             del = Math.abs(peak1.getMz() - peak2.getMz());
-            if (del > IPeak.SMALL_MZ_DIFFERENCE)
+            if (del > Constants.SMALL_MZ_DIFFERENCE)
                 return false; // fail
         }
 
@@ -121,7 +122,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             IPeak peak2 = peaks2.get(i);
 
             del = Math.abs(peak1.getIntensity() - peak2.getIntensity());
-            if (del > IPeak.SMALL_INTENSITY_DIFFERENCE)
+            if (del > Constants.SMALL_INTENSITY_DIFFERENCE)
                 return false; // fail
             if (peak1.getCount() != peak2.getCount())
                 return false;   // fail

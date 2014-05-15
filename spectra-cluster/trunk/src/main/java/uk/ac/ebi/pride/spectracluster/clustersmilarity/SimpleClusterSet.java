@@ -6,6 +6,7 @@ import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.io.TSVClusterAppender;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -50,6 +51,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
         ISpectralCluster lastCluster = null;
         List<ISpectralCluster> toMerge = new ArrayList<ISpectralCluster>();
 
+        final TSVClusterAppender tsvClusterAppender = new TSVClusterAppender();
         for (ISpectralCluster cluster : clusters) {
             total++;
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
@@ -67,11 +69,11 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
                 if (!currentPeptide.equals(mostCommonPeptide)) {
                     if (toMerge.size() > 1) {
                         StringBuilder sb = new StringBuilder();
-                        lastCluster.appendData(sb);
+                        tsvClusterAppender.appendCluster(sb, lastCluster);
                         sb.append("\n");
                         for (ISpectralCluster sc : toMerge) {
                             if (sc != lastCluster) {
-                                sc.appendData(sb);
+                                tsvClusterAppender.appendCluster(sb, sc);
                                 sb.append("\n");
                                 lastCluster.addSpectra(sc.getClusteredSpectra());
                             }

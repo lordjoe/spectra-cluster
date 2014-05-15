@@ -11,7 +11,9 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -79,7 +81,6 @@ public class DuplicateReductionSimulator {
          * This guarantees that all clusters containing a spectrum go to one place
          *
          * @param cluster
-         * @param context
          */
         protected TextKeyValue[] handleCluster(ISpectralCluster cluster) {
             List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
@@ -204,7 +205,8 @@ public class DuplicateReductionSimulator {
                 return TextKeyValue.EMPTY_ARRAY;
             String id = sc.getSpectralId();
             StringBuffer sb = new StringBuffer();
-            sc.append(sb);
+            final CGFClusterAppender cgfClusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+            cgfClusterAppender.appendCluster(sb, sc);
             TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
             holder.add(sumCount);
             TextKeyValue[] ret = new TextKeyValue[holder.size()];
@@ -275,9 +277,10 @@ public class DuplicateReductionSimulator {
         List<TextKeyValue> input = new ArrayList<TextKeyValue>();
         List<ISpectralCluster> clusters = in.getClusters();
         int index = 0;
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
         for (ISpectralCluster cluster : clusters) {
             StringBuilder sb = new StringBuilder();
-            cluster.append(sb);
+            clusterAppender.appendCluster(sb, cluster);
             input.add(new TextKeyValue(Integer.toString(index++), sb.toString()));
         }
         return input;

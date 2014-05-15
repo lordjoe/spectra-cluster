@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterContentComparator;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.mgf_parser.MgfFile;
@@ -45,8 +46,8 @@ public class ClusteringTestUtilities {
      * @param pScs2
      */
     public static void assertEquivalentClusters(final List<ISpectralCluster> pScs, final List<ISpectralCluster> pScs2) {
-        Collections.sort(pScs, ISpectralCluster.BY_CLUSTER_CONTENTS);
-        Collections.sort(pScs2, ISpectralCluster.BY_CLUSTER_CONTENTS);
+        Collections.sort(pScs, ClusterContentComparator.INSTANCE);
+        Collections.sort(pScs2, ClusterContentComparator.INSTANCE);
         Assert.assertEquals(pScs.size(), pScs2.size());
         for (int i = 0; i < pScs.size(); i++) {
             ISpectralCluster cl1 = pScs.get(i);
@@ -290,7 +291,7 @@ public class ClusteringTestUtilities {
         //noinspection MismatchedQueryAndUpdateOfCollection
         List<IPeak> mismatched = new ArrayList<IPeak>();
         double diff = Math.abs(sp1.getPrecursorMz() - sp2.getPrecursorMz());
-        if (diff > IPeak.SMALL_MZ_DIFFERENCE)
+        if (diff > Constants.SMALL_MZ_DIFFERENCE)
             return false;
 
         if (sp1.getPeaksCount() != sp1.getPeaksCount())

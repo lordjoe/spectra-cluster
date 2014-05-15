@@ -130,6 +130,18 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
     /**
+     * does the concensus spectrum contin this is a major peak
+     *
+     * @param mz peak as int
+     * @return true if so
+     */
+    @Override
+    public boolean containsMajorPeak(final int mz) {
+        guaranteeMajorPeaks();
+        return majorPeakMZ.contains(mz);
+    }
+
+    /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
      *

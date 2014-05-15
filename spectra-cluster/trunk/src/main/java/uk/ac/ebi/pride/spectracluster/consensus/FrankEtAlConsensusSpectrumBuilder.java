@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.normalizer.IntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
@@ -177,7 +178,7 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
 
         int index = 0;
         // process the peaks using the sliding window
-        for (double startMz = 0, endMz = SLIDING_WINDOW_WIDTH; endMz <= IPeak.HIGHEST_USABLE_MZ; endMz += SLIDING_WINDOW_WIDTH, startMz += SLIDING_WINDOW_WIDTH) {
+        for (double startMz = 0, endMz = SLIDING_WINDOW_WIDTH; endMz <= Constants.HIGHEST_USABLE_MZ; endMz += SLIDING_WINDOW_WIDTH, startMz += SLIDING_WINDOW_WIDTH) {
             List<IPeak> peakBuffer = new ArrayList<IPeak>();
 
             // fill the peak buffer with all peaks within that range

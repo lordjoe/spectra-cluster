@@ -1,13 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -137,18 +134,8 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public ISpectralCluster asCluster() {
-        return ClusterUtilities.asCluster(getInternalSpectrum());
-    }
-
-    @Override
     public ISpectrum getHighestNPeaks(int numberRequested) {
         return getInternalSpectrum().getHighestNPeaks(numberRequested);
-    }
-
-    @Override
-    public INormalizedSpectrum asNormalizedTo(double totalIntensity) {
-        return getInternalSpectrum().asNormalizedTo(totalIntensity);
     }
 
     @Override
@@ -159,6 +146,5 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     public String toString() {
         return getId();
     }
-
 
 }

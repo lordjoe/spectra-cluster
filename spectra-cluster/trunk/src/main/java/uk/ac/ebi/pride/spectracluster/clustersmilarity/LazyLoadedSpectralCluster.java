@@ -5,10 +5,9 @@ import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
-import uk.ac.ebi.pride.spectracluster.io.TopPeaksMGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
@@ -489,8 +488,8 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
         }
         if (spc1.size() <= 1) {
 
-            List<IPeak> peaks = getPeaks();
-            List<IPeak> peaks1 = o.getPeaks();
+            List<IPeak> peaks = getConsensusSpectrum().getPeaks();
+            List<IPeak> peaks1 = o.getConsensusSpectrum().getPeaks();
             if (peaks.size() != peaks1.size()) {
                 return false;
             }
@@ -536,16 +535,6 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     @Override
     public int[] asMajorPeakMZs() {
         return getConsensusSpectrum().asMajorPeakMZs();
-    }
-
-    @Override
-    public List<IPeak> getPeaks() {
-        return getConsensusSpectrum().getPeaks();
-    }
-
-    @Override
-    public int getPeaksCount() {
-        return getConsensusSpectrum().getPeaksCount();
     }
 
     @Override
