@@ -11,13 +11,7 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumMGFAppender implements ISpectrumAppender {
-
-    public static final SpectrumMGFAppender INSTANCE = new SpectrumMGFAppender();
-
-    protected SpectrumMGFAppender() {
-    }
-
+public class MGFSpectrumAppender implements ISpectrumAppender {
 
     @Override
     public void appendSpectrum(Appendable out, ISpectrum spectrum, Object... otherData) {

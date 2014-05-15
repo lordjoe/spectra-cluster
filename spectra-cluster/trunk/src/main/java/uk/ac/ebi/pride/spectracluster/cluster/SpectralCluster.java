@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
@@ -68,33 +69,6 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
-    }
-
-
-    /**
-     * make a one line report
-     *
-     * @param out
-     */
-    @Override
-    public void appendData(Appendable out) {
-        try {
-            out.append(getId());
-            out.append("\t");
-
-            String mz = String.format("%f8.2", getPrecursorMz());
-            out.append(mz);
-            out.append("\t");
-
-            out.append(Integer.toString(getPrecursorCharge()));
-            out.append("\t");
-
-
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
-
     }
 
     /**
@@ -487,7 +461,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
-        if (abs > IPeak.SMALL_MZ_DIFFERENCE) {
+        if (abs > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
 
@@ -531,102 +505,6 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
         }
     }
 
-    /**
-     * write out the data as a CGF file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void append(Appendable out) {
-
-        try {
-            out.append("BEGIN CLUSTER");
-            out.append(" Id=" + getId());
-            out.append(" Charge=" + getPrecursorCharge());
-
-            out.append("\n");
-
-            appendSpectra(out);
-            //            ISpecClusterPeak[] peaks = getPeaks();
-            //            for (int i = 0; i < peaks.length; i++) {
-            //                ISpecClusterPeak peak = peaks[i];
-            //                out.append(peak.toString());
-            //                out.append("\n");
-            //            }
-            out.append("END CLUSTER");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
-    /**
-     * write out the data as a .clustering file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void appendClustering(Appendable out) {
-
-        try {
-            out.append("=Cluster=\n");
-            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
-            out.append("\n");
-            out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
-            out.append("\n");
-
-
-            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
-            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
-            out.append("sequence=[" + s + "]");
-            out.append("\n");
-
-            out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
-            out.append("\n");
-            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
-            out.append("\n");
-
-            List<ISpectrum> spectra = clusteredSpectra1;
-            Collections.sort(spectra, SpectrumIDComparator.INSTANCE);   // sort by id
-            for (ISpectrum spec : spectra) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("SPEC\t");
-                String id1 = spec.getId();
-                while (id1.startsWith("="))
-                    id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
-                sb.append(id1);
-                sb.append("\ttrue\n");  // changed to look at output
-                String csq = sb.toString();
-                out.append(csq);
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
-    /**
-     * do not add begin and end cluster - useful for rebuilding a mgf
-     *
-     * @param out
-     */
-    @Override
-    public void appendSpectra(Appendable out) {
-        List<ISpectrum> clusteredSpectra = getClusteredSpectra();
-        for (ISpectrum cs : clusteredSpectra) {
-            cs.appendMGF(out);  // single spectgra become mgfs
-
-        }
-    }
-
     @Override
     public String toString() {
         double precursorMZ = getPrecursorMz();
@@ -642,45 +520,4 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
         text = text.substring(0, text.length() - 1);
         return text;
     }
-
-    /**
-     * write out the data as an MGF file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings({"UnusedDeclaration", "StringConcatenationInsideStringBufferAppend"})
-    public void appendMGF(Appendable out) {
-
-        try {
-            out.append("BEGIN IONS");
-            out.append("\n");
-
-            out.append("TITLE=" + getId());
-            out.append("\n");
-
-            double precursorCharge = getPrecursorCharge();
-            double massChargeRatio = getPrecursorMz();
-
-            out.append("PEPMASS=" + massChargeRatio);
-            out.append("\n");
-
-            out.append("CHARGE=" + precursorCharge);
-            if (precursorCharge > 0)
-                out.append("+");
-            out.append("\n");
-
-            for (IPeak peak : getPeaks()) {
-                out.append(peak.toString());
-                out.append("\n");
-            }
-            out.append("END IONS");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
 }

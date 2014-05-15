@@ -2,6 +2,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 
 import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -109,8 +112,9 @@ public class ClusteringEngineMain {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new FileWriter(outName));
+            final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
             for (ISpectralCluster iSpectralCluster : pClusters1) {
-                iSpectralCluster.append(out);
+                clusterAppender.appendCluster(out, iSpectralCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -138,9 +142,9 @@ public class ClusteringEngineMain {
 
             appendClusteringHeaders(out);
 
-
+            final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
             for (ISpectralCluster iSpectralCluster : pClusters1) {
-                iSpectralCluster.appendClustering(out);
+                clusterAppender.appendCluster(out, iSpectralCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

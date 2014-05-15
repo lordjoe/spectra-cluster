@@ -9,30 +9,27 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
  * User: Steve
  * Date: 9/25/13
  */
-@SuppressWarnings("UnusedDeclaration")
 public class FilteredClusterAppender implements IClusterAppender {
-    private final IClusterAppender m_Appender;
+    private final IClusterAppender clusterAppender;
     private final TypedPredicate<ISpectralCluster> m_AppendIf;
 
     public FilteredClusterAppender(final IClusterAppender wrapped, TypedPredicate<ISpectralCluster> appendIf) {
-        m_Appender = wrapped;
+        clusterAppender = wrapped;
         m_AppendIf = appendIf;
     }
 
     /**
      * @param out       !null open appendale
      * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherdata) {
+    public void appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherData) {
         boolean anyThingDone = false;
         //noinspection  SimplifiableIfStatement
-        if (m_AppendIf.apply(data, otherdata)) {
-            return m_Appender.appendCluster(out, data, otherdata);
-        } else {
-            return false; // not appended
+        if (m_AppendIf.apply(data, otherData)) {
+            clusterAppender.appendCluster(out, data, otherData);
         }
     }
 
@@ -40,25 +37,23 @@ public class FilteredClusterAppender implements IClusterAppender {
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... otherdata) {
-        return m_Appender.appendStart(out, otherdata);
+    public void appendStart(final Appendable out, final Object... otherData) {
+        clusterAppender.appendStart(out, otherData);
     }
 
     /**
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... otherdata) {
-        return m_Appender.appendEnd(out, otherdata);
+    public void appendEnd(final Appendable out, final Object... otherData) {
+        clusterAppender.appendEnd(out, otherData);
     }
 }

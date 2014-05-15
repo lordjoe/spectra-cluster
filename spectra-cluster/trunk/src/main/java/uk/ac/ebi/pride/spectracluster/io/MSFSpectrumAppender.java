@@ -11,12 +11,7 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumMSFAppender implements ISpectrumAppender {
-
-    public static final SpectrumMSFAppender INSTANCE = new SpectrumMSFAppender();
-
-    private SpectrumMSFAppender() {
-    }
+public class MSFSpectrumAppender implements ISpectrumAppender {
 
     @Override
     public void appendSpectrum(Appendable out, ISpectrum spectrum, Object... otherData) {

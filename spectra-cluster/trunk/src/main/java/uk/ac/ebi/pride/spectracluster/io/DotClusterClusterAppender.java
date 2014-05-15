@@ -1,7 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender
@@ -11,22 +17,51 @@ import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
  */
 public class DotClusterClusterAppender implements IClusterAppender {
 
-    public static final DotClusterClusterAppender INSTANCE = new DotClusterClusterAppender();
-
-    private DotClusterClusterAppender() {
-    }
-
 
     /**
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param cluster      !null cluster
+     * @param otherData any other cluster - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendCluster(final Appendable out, final ISpectralCluster data, final Object... OtherData) {
-        data.appendClustering(out);
-        return true;
+    public void appendCluster(final Appendable out, final ISpectralCluster cluster, final Object... otherData) {
+        try {
+            out.append("=Cluster=\n");
+            out.append("av_precursor_mz=" + String.format("%10.3f", cluster.getPrecursorMz()).trim());
+            out.append("\n");
+            out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
+            out.append("\n");
+
+
+            List<ISpectrum> clusteredSpectra1 = cluster.getClusteredSpectra();
+//            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
+//            out.append("sequence=[" + s + "]");
+//            out.append("\n");
+
+            out.append("consensus_mz=" + ClusterUtilities.buildMZString(cluster.getConsensusSpectrum()));
+            out.append("\n");
+            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(cluster.getConsensusSpectrum()));
+            out.append("\n");
+
+            List<ISpectrum> spectra = clusteredSpectra1;
+            Collections.sort(spectra, SpectrumIDComparator.INSTANCE);   // sort by id
+            for (ISpectrum spec : spectra) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("SPEC\t");
+                String id1 = spec.getId();
+                while (id1.startsWith("="))
+                    id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
+                sb.append(id1);
+                sb.append("\ttrue\n");  // changed to look at output
+                String csq = sb.toString();
+                out.append(csq);
+
+            }
+        } catch (IOException e) {
+            throw new AppenderException(e);
+
+        }
     }
 
 
@@ -34,27 +69,23 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * add whatever happens at the start
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendStart(final Appendable out, final Object... otherdata) {
-        String name = (String) otherdata[0];
+    public void appendStart(final Appendable out, final Object... otherData) {
+        String name = (String) otherData[0];
         ClusterUtilities.appendDotClusterHeader(out, name);
-        return true;
     }
 
     /**
      * add whatever happens at the end
      *
      * @param out       !null open appendale
-     * @param data      !null cluster
-     * @param OtherData any other data - implementation specific and usually blank
+     * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
     @Override
-    public boolean appendEnd(final Appendable out, final Object... otherdata) {
-        return false;
+    public void appendEnd(final Appendable out, final Object... otherData) {
     }
 }

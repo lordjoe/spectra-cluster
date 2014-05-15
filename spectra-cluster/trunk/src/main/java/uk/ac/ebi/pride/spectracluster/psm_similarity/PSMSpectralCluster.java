@@ -6,14 +6,15 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
-import uk.ac.ebi.pride.spectracluster.io.SpectrumTopPeaksMGFAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -258,7 +259,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
     @Override
     public List<ISpectrum> getClusteredSpectra() {
         ArrayList<ISpectrum> iSpectrums = new ArrayList<ISpectrum>(clusteredSpectra);
-        Collections.sort(iSpectrums, ISpectrum.ID_COMAPRATOR); // sort by id
+        Collections.sort(iSpectrums, SpectrumIDComparator.INSTANCE); // sort by id
         return iSpectrums;
     }
 
@@ -269,136 +270,63 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
 
     /**
-     * make a one line report
-     *
-     * @param out
-     */
-    @Override
-    public void appendData(Appendable out) {
-        try {
-            out.append(getId());
-            out.append("\t");
-
-            String mz = String.format("%f8.2", getPrecursorMz());
-            out.append(mz);
-            out.append("\t");
-
-            out.append(Integer.toString(getPrecursorCharge()));
-            out.append("\t");
-
-
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
-
-    }
-
-    /**
-     * write out the data as a CGF file
-     *
-     * @param out place to append
-     */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void append(Appendable out) {
-
-        try {
-            out.append("BEGIN CLUSTER");
-            out.append(" Id=" + getId());
-            out.append(" Charge=" + getPrecursorCharge());
-
-            out.append("\n");
-
-            appendSpectra(out);
-            //            ISpecClusterPeak[] peaks = getPeaks();
-            //            for (int i = 0; i < peaks.length; i++) {
-            //                ISpecClusterPeak peak = peaks[i];
-            //                out.append(peak.toString());
-            //                out.append("\n");
-            //            }
-            out.append("END CLUSTER");
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
-    /**
      * write out the data as a .clustering file
      *
      * @param out place to append
      */
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    @Override
-    public void appendClustering(Appendable out) {
+//    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+//    @Override
+//    public void appendClustering(Appendable out) {
+//
+//        try {
+//            out.append("=Cluster=\n");
+//            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
+//            out.append("\n");
+//            out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
+//            out.append("\n");
+//
+//            final List<String> peptides1 = getPeptides();
+//            if (peptides1.isEmpty()) {
+//                out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
+//            } else {
+//                out.append("sequence=[");
+//                boolean first = true;
+//                for (String s : peptides1) {
+//                    if (first)
+//                        first = !first;
+//                    else
+//                        out.append(",");
+//                    out.append(s);
+//                }
+//                out.append("]");
+//            }
+//
+//            out.append("\n");
+//
+//            out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
+//            out.append("\n");
+//            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
+//            out.append("\n");
+//
+//            for (ISpectrum spec : getClusteredSpectra()) {
+//                StringBuilder sb = new StringBuilder();
+//                sb.append("SPEC\t");
+//                String id1 = spec.getId();
+//                while (id1.startsWith("="))
+//                    id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
+//                sb.append(id1);
+//                sb.append("\ttrue\n");  // changed to look at output
+//                String csq = sb.toString();
+//                out.append(csq);
+//
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//
+//        }
+//
+//    }
 
-        try {
-            out.append("=Cluster=\n");
-            out.append("av_precursor_mz=" + String.format("%10.3f", getPrecursorMz()).trim());
-            out.append("\n");
-            out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
-            out.append("\n");
-
-            final List<String> peptides1 = getPeptides();
-            if (peptides1.isEmpty()) {
-                out.append("sequence=[" + ClusterUtilities.mostCommonPeptides(getClusteredSpectra()) + "]");
-            } else {
-                out.append("sequence=[");
-                boolean first = true;
-                for (String s : peptides1) {
-                    if (first)
-                        first = !first;
-                    else
-                        out.append(",");
-                    out.append(s);
-                }
-                out.append("]");
-            }
-
-            out.append("\n");
-
-            out.append("consensus_mz=" + ClusterUtilities.buildMZString(getConsensusSpectrum()));
-            out.append("\n");
-            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(getConsensusSpectrum()));
-            out.append("\n");
-
-            for (ISpectrum spec : getClusteredSpectra()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("SPEC\t");
-                String id1 = spec.getId();
-                while (id1.startsWith("="))
-                    id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
-                sb.append(id1);
-                sb.append("\ttrue\n");  // changed to look at output
-                String csq = sb.toString();
-                out.append(csq);
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
-
-
-    /**
-     * do not add begin and end cluster - useful for rebuilding a mgf
-     *
-     * @param out
-     */
-    @Override
-    public void appendSpectra(Appendable out) {
-        List<ISpectrum> clusteredSpectra = getClusteredSpectra();
-        for (ISpectrum cs : clusteredSpectra) {
-            SpectrumTopPeaksMGFAppender.INSTANCE.appendSpectrum(out, cs);;  // single spectgra become mgfs
-
-        }
-    }
 
     @Override
     public boolean containsMajorPeak(int mz) {
@@ -430,7 +358,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
     @Override
     public int compareTo(ISpectralCluster o) {
-        return ISpectralCluster.SIMPLE_CLUSTER_COMPARATOR.compare(this, o);
+        return ClusterComparator.INSTANCE.compare(this, o);
     }
 
     @Override
@@ -441,7 +369,7 @@ public class PSMSpectralCluster implements ISpectralCluster {
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
-        if (abs > IPeak.SMALL_MZ_DIFFERENCE) {
+        if (abs > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
 

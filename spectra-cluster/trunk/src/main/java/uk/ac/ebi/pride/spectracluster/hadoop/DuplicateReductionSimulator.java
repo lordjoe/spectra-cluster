@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -319,8 +320,9 @@ public class DuplicateReductionSimulator {
 
             try {
                 PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
+                final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
                 for (ISpectralCluster sc : cs.getClusters()) {
-                    sc.appendClustering(out);
+                    clusterAppender.appendCluster(out, sc);
                 }
                 out.close();
             } catch (IOException e) {

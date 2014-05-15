@@ -12,12 +12,13 @@ import java.io.*;
  * User: Steve
  * Date: 9/23/13
  */
+@Deprecated
 public class DotClusterFileListener implements ClusterCreateListener {
 
 
     private final PrintWriter m_OutWriter;
     private final File m_OutFile;
-    private final IClusterAppender m_Appender = DotClusterClusterAppender.INSTANCE;
+    private final IClusterAppender m_Appender = new DotClusterClusterAppender();
 
     /**
      * creat with an output file

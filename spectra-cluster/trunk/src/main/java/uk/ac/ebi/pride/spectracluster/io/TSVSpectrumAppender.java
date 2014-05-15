@@ -10,7 +10,8 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumTSVAppender implements ISpectrumAppender {
+public class TSVSpectrumAppender implements ISpectrumAppender {
+
     @Override
     public void appendSpectrum(Appendable out, ISpectrum spectrum, Object... otherData) throws AppenderException {
         try {

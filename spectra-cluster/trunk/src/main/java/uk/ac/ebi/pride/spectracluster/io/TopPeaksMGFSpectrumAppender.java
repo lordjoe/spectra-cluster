@@ -9,12 +9,9 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumTopPeaksMGFAppender extends SpectrumMGFAppender {
+public class TopPeaksMGFSpectrumAppender extends MGFSpectrumAppender {
 
     public static final int MAX_PEAKS_TO_KEEP = 100;
-
-    private SpectrumTopPeaksMGFAppender() {
-    }
 
     @Override
     protected void appendPeaks(ISpectrum spectrum, Appendable out) throws IOException {

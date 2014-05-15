@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.spectracluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
@@ -438,7 +440,8 @@ public class ParserTests {
         ISpectralCluster sc = scs[0];
 
         StringBuilder sb = new StringBuilder();
-        sc.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, sc);
         String sc2Str = sb.toString();
         is = new LineNumberReader(new StringReader(sc2Str));
         scs = ParserUtilities.readSpectralCluster(is);
