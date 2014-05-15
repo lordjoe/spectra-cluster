@@ -54,7 +54,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      * copy with different peaks
      *
      * @param spectrum base used for charge, mz
-     * @param peaks    new peaks
+     * @param inpeaks    new peaks
      */
     public PeptideSpectrumMatch(ISpectrum spectrum, List<IPeak> inpeaks) {
         super(spectrum, inpeaks);
@@ -111,7 +111,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return constructed BigInteger
      */
-    protected BigInteger buildMajorBits() {
+    @Deprecated
+    private BigInteger buildMajorBits() {
         BigInteger ret = BigInteger.ZERO;
         final ISpectrum highestNPeaks = asMajorPeaks();
         final List<IPeak> iPeaks = ((PeaksSpectrum) highestNPeaks).internalGetPeaks();
@@ -127,8 +128,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return
      */
-    @Override
-    public ISpectrum asMajorPeaks() {
+    @Deprecated
+    private ISpectrum asMajorPeaks() {
         return getHighestNPeaks(MAJOR_PEAK_NUMBER);
     }
 
@@ -138,8 +139,8 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return
      */
-    @Override
-    public int[] asMajorPeakMZs() {
+    @Deprecated
+    private int[] asMajorPeakMZs() {
         guaranteeMajorPeaks();
         final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
         Arrays.sort(peaks);
@@ -158,18 +159,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
                 majorPeakMZ.add((int) peak.getMz());
             }
         }
-    }
-
-    /**
-     * does the concensus spectrum contin this is a major peak
-     *
-     * @param mz peak as int
-     * @return true if so
-     */
-    @Override
-    public boolean containsMajorPeak(final int mz) {
-        guaranteeMajorPeaks();
-        return majorPeakMZ.contains(mz);
     }
 
     protected void makeAdvancedCalculations() {
