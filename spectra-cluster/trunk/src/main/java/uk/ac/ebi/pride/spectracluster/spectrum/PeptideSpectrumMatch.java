@@ -135,7 +135,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return
      */
-    @Deprecated
+    @Override
     public int[] asMajorPeakMZs() {
         guaranteeMajorPeaks();
         final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
