@@ -10,19 +10,23 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
- * User: Steve
+ * @author Steve Lewis
+ * @author Rui Wang
  * Date: 6/20/13
  */
 public class Spectrum implements ISpectrum {
 
-    public static final int MAJOR_PEAK_NUMBER = 6; // Frank et al does 5 we do 1 more
+    // Frank et al does 5 we do 1 more
+    public static final int MAJOR_PEAK_NUMBER = 6;
 
     private final String id;
     private final int precursorCharge;
     private final float precursorMz;
     private final List<IPeak> peaks = new ArrayList<IPeak>();
+
     private double totalIntensity;
     private double sumSquareIntensity;
+
     // Dot products always get the highest peaks of a specific intensity -
     // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
@@ -189,16 +193,6 @@ public class Spectrum implements ISpectrum {
                 majorPeakMZ.add((int) peak.getMz());
             }
         }
-    }
-
-    /**
-     * return a spectrum normalized to the specific total intensity
-     *
-     * @return !null spectrum - might be this
-     */
-    @Deprecated
-    public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
-        return new NormailzedPeptideSpectrumMatch(this, totalIntensity);   // build a new normalized intensity
     }
 
     public double getQualityScore() {
