@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -140,7 +136,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      * @return
      */
     @Deprecated
-    private int[] asMajorPeakMZs() {
+    public int[] asMajorPeakMZs() {
         guaranteeMajorPeaks();
         final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
         Arrays.sort(peaks);
@@ -152,9 +148,9 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         return ret;
     }
 
-    protected void guaranteeMajorPeaks() {
+    private void guaranteeMajorPeaks() {
         if (majorPeakMZ.isEmpty()) {
-            ISpectrum peaks = asMajorPeaks();
+            ISpectrum peaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
             for (IPeak peak : peaks.getPeaks()) {
                 majorPeakMZ.add((int) peak.getMz());
             }
@@ -188,7 +184,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
      *
      * @return !null spectrum - might be this
      */
-    @Override
+    @Deprecated
     public INormalizedSpectrum asNormalizedTo(final double totalIntensity) {
         return new NormailzedPeptideSpectrumMatch(this, totalIntensity);   // build a new normalized intensity
     }
