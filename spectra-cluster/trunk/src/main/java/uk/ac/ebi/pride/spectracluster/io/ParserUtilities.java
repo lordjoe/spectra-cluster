@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.util;
+package uk.ac.ebi.pride.spectracluster.io;
 
 
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
@@ -8,9 +8,8 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;

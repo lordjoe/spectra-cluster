@@ -1,6 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.*;
 import java.util.Iterator;
@@ -26,7 +26,7 @@ public class MGFSpectrumIterable implements Iterable<ISpectrum> {
 
     private final LineNumberReader reader;
     private final MGFSpectrumIterator one_time_iterator;
-    private IPeptideSpectrumMatch nextSpectrum;
+    private ISpectrum nextSpectrum;
 
     /**
      * build with an existing readable file

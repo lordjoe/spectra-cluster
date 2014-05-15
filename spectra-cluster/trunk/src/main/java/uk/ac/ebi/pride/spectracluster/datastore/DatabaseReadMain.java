@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.datastore;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumIterable;
 
 import javax.sql.DataSource;
 import java.io.File;

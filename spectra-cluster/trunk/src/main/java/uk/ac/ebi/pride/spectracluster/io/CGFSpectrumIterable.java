@@ -1,7 +1,6 @@
-package uk.ac.ebi.pride.spectracluster;
+package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
 
 import java.io.*;
 import java.util.Iterator;
