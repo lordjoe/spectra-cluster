@@ -14,7 +14,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpectrumMatch {
+public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMatch {
 
 
     private String peptide;
@@ -51,16 +51,6 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     }
 
 
-    private void setPeptideAnnotations(ISpectrum spectrum) {
-        if (spectrum instanceof IPeptideSpectrumMatch) {
-            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
-        } else {
-            peptide = null;
-            annotation = null;
-        }
-    }
-
     public PeptideSpectrumMatch(String id,
                                 String peptide,
                                 int precursorCharge,
@@ -72,8 +62,15 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
         this.annotation = pAnnotation;
     }
 
-
-
+    private void setPeptideAnnotations(ISpectrum spectrum) {
+        if (spectrum instanceof IPeptideSpectrumMatch) {
+            peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
+            annotation = ((IPeptideSpectrumMatch) spectrum).getAnnotation();
+        } else {
+            peptide = null;
+            annotation = null;
+        }
+    }
 
     /**
      * return scored peptide - maybe null
@@ -112,6 +109,7 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     public boolean equivalent(final ISpectrum o) {
         if (!super.equivalent(o))
             return false;
+
         if (o instanceof PeptideSpectrumMatch) {
             PeptideSpectrumMatch realO = (PeptideSpectrumMatch) o;
 

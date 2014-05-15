@@ -13,7 +13,7 @@ import java.util.*;
  * User: Steve
  * Date: 6/20/13
  */
-public class PeaksSpectrum implements ISpectrum {
+public class Spectrum implements ISpectrum {
 
     public static final int MAJOR_PEAK_NUMBER = 6; // Frank et al does 5 we do 1 more
 
@@ -30,10 +30,10 @@ public class PeaksSpectrum implements ISpectrum {
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
 
 
-    public PeaksSpectrum(final String pId,
-                         final int pPrecursorCharge,
-                         final float pPrecursorMz,
-                         final List<IPeak> inpeaks) {
+    public Spectrum(final String pId,
+                    final int pPrecursorCharge,
+                    final float pPrecursorMz,
+                    final List<IPeak> inpeaks) {
         id = pId;
         precursorCharge = pPrecursorCharge;
         precursorMz = pPrecursorMz;
@@ -51,7 +51,7 @@ public class PeaksSpectrum implements ISpectrum {
      *
      * @param spectrum
      */
-    public PeaksSpectrum(final ISpectrum spectrum) {
+    public Spectrum(final ISpectrum spectrum) {
         this(spectrum, spectrum.getPeaks());
     }
 
@@ -61,8 +61,8 @@ public class PeaksSpectrum implements ISpectrum {
      * @param spectrum base used for charge, mz
      * @param inpeaks    new peaks
      */
-    public PeaksSpectrum(final ISpectrum spectrum,
-                         final List<IPeak> inpeaks) {
+    public Spectrum(final ISpectrum spectrum,
+                    final List<IPeak> inpeaks) {
 
         this.id = spectrum.getId();
         this.precursorCharge = spectrum.getPrecursorCharge();
@@ -296,8 +296,8 @@ public class PeaksSpectrum implements ISpectrum {
         final List<IPeak> iPeaks = internalGetPeaks();
         IPeak[] peaks = iPeaks.toArray(new IPeak[iPeaks.size()]);
         IPeak[] peaks1;
-        if (o instanceof PeaksSpectrum) {
-            final List<IPeak> iPeaks1 = ((PeaksSpectrum) o).internalGetPeaks();
+        if (o instanceof Spectrum) {
+            final List<IPeak> iPeaks1 = ((Spectrum) o).internalGetPeaks();
             peaks1 = iPeaks1.toArray(new IPeak[iPeaks1.size()]);
 
         } else {
@@ -325,7 +325,7 @@ public class PeaksSpectrum implements ISpectrum {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final PeaksSpectrum that = (PeaksSpectrum) o;
+        final Spectrum that = (Spectrum) o;
 
         if (precursorCharge != that.precursorCharge) return false;
         if (Float.compare(that.precursorMz, precursorMz) != 0) return false;
