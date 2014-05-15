@@ -125,7 +125,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             // track how many
             context.getCounter("Performance", "MergedSameCluster").increment(numberProcessed);
 
-            if (ret.getPeaksCount() > 0)
+            if (ret.getConsensusSpectrum().getPeaksCount() > 0)
                 writeCluster(context, ret);
         }
 

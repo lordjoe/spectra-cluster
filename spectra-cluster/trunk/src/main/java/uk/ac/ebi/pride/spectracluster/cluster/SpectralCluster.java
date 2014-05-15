@@ -233,18 +233,6 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
         }
     }
 
-
-    @Override
-    public List<IPeak> getPeaks() {
-        return getConsensusSpectrum().getPeaks();
-    }
-
-    @Override
-    public int getPeaksCount() {
-        return getConsensusSpectrum().getPeaksCount();
-    }
-
-
     /**
      * all internally spectrum
      */
