@@ -8,7 +8,8 @@ import java.util.List;
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
  * used by Spectra like get hightest peaks which are incomplete
  * spectra
- * User: Steve
+ * @author Steve Lewis
+ * @author Rui Wang
  * Date: 6/20/13
  *
  */
