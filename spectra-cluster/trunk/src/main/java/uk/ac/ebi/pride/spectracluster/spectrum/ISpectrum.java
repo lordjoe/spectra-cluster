@@ -69,5 +69,6 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      *
      * @return  array of major peak mz
      */
+    @Deprecated
     int[] asMajorPeakMZs();
 }
