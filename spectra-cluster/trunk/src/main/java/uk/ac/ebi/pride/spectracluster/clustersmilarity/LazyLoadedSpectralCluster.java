@@ -5,10 +5,12 @@ import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.io.SpectrumTopPeaksMGFAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import javax.annotation.Nonnull;
 import java.io.FileReader;
@@ -365,7 +367,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     @Override
     public List<ISpectrum> getClusteredSpectra() {
         ArrayList<ISpectrum> iSpectrums = new ArrayList<ISpectrum>(clusteredSpectra);
-        Collections.sort(iSpectrums, ISpectrum.ID_COMAPRATOR); // sort by id
+        Collections.sort(iSpectrums, SpectrumIDComparator.INSTANCE); // sort by id
         return iSpectrums;
     }
 
@@ -493,8 +495,7 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
     public void appendSpectra(Appendable out) {
         List<ISpectrum> clusteredSpectra = getClusteredSpectra();
         for (ISpectrum cs : clusteredSpectra) {
-            cs.appendMGF(out);  // single spectgra become mgfs
-
+            SpectrumTopPeaksMGFAppender.INSTANCE.appendSpectrum(out, cs);  // single spectgra become mgfs
         }
     }
 

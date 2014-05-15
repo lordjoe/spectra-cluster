@@ -58,11 +58,6 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public void appendMGF(Appendable out) {
-        getInternalSpectrum().appendMGF(out);
-    }
-
-    @Override
     public double getTotalIntensity() {
         return getInternalSpectrum().getTotalIntensity();
     }
@@ -161,52 +156,8 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
         return getInternalSpectrum().containsMajorPeak(mz);
     }
 
-    /**
-     * write as MGF
-     *
-     * @param out
-     */
-    @Override
-    public void appendMSF(final Appendable out) {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    /**
-     * write as MGF
-     *
-     * @param out
-     */
-    @Override
-    public void appendSPText(final Appendable out) {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
     public String toString() {
         return getId();
-    }
-
-    /**
-     * write basic data as TSV
-     *
-     * @param out
-     */
-    @Override
-    public void appendTSV(final Appendable out) {
-        try {
-            out.append(getId());
-            out.append("\t");
-            out.append(Integer.toString(getPrecursorCharge()));
-            out.append("\t");
-            String mzString = String.format("%10.2f", getPrecursorMz()).trim();
-            out.append(mzString);
-            out.append("\t");
-            out.append(getPeptide());
-            out.append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
-
     }
 
 

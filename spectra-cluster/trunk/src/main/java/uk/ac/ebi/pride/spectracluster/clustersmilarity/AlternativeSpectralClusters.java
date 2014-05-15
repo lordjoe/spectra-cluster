@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.io.SpectrumTopPeaksMGFAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -554,7 +555,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     public void appendSpectra(Appendable out) {
         List<ISpectrum> clusteredSpectra = getClusteredSpectra();
         for (ISpectrum cs : clusteredSpectra) {
-            cs.appendMGF(out);  // single spectgra become mgfs
+            SpectrumTopPeaksMGFAppender.INSTANCE.appendSpectrum(out, cs);  // single spectgra become mgfs
 
         }
     }
