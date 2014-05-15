@@ -18,7 +18,7 @@ public interface IIntensityNormalizer extends IAlgorithm {
      *
      * @return as above
      */
-    public double getNormalizedValue();
+    double getNormalizedValue();
 
     /**
      * normalize alist of peaks - all the dirty work is here
@@ -26,5 +26,5 @@ public interface IIntensityNormalizer extends IAlgorithm {
      * @param peaks
      * @return
      */
-    public List<IPeak> normalizePeaks(List<IPeak> peaks);
+    List<IPeak> normalizePeaks(List<IPeak> peaks);
 }
