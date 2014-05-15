@@ -1,4 +1,6 @@
-package uk.ac.ebi.pride.spectracluster.spectrum;
+package uk.ac.ebi.pride.spectracluster.datastore;
+
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
 import java.util.Comparator;
 

@@ -24,12 +24,10 @@ public class PeptideSpectrumMatch extends PeaksSpectrum implements IPeptideSpect
     private final String annotation;
     private final Map<String, String> properties = new HashMap<String, String>();
     // Dot products always get the highest peaks of a specific intensity -
-    // this caches thoes and returns a list sorted by MZ
+    // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
     private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
-    private BigInteger majorBits;
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
-    private Double selfDotProduct;
 
     /**
      * simple copy constructor
