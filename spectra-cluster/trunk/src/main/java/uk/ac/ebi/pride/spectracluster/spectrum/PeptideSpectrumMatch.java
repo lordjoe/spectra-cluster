@@ -93,6 +93,7 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
      *
      * @return
      */
+    //todo @rw: this can be improved
     @Override
     public boolean isDecoy() {
         PSMSpectrum psm = PSMSpectrum.getSpectrum(getId());
