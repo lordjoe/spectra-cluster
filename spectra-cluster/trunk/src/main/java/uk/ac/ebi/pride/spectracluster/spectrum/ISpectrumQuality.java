@@ -12,6 +12,4 @@ public interface ISpectrumQuality {
      * Get the quality measure of a spectrum
      */
     public double getQualityScore();
-
-
 }

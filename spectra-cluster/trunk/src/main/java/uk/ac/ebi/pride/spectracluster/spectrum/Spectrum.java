@@ -195,6 +195,7 @@ public class Spectrum implements ISpectrum {
         }
     }
 
+    //todo @rw: not the best implementation, need review
     public double getQualityScore() {
         if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {
             qualityMeasure = Defaults.INSTANCE.getDefaultQualityScorer().calculateQualityScore(this);
