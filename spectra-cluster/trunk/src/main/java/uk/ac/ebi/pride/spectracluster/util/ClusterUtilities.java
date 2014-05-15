@@ -138,7 +138,7 @@ public class ClusterUtilities {
             if (distance >= 0)    // todo fix later
                 ret.setDistance(distance);
 
-            IPeptideSpectrumMatch spec = ParserUtilities.readSPTextScan(rdr, line);
+            IPeptideSpectrumMatch spec = ParserUtilities.readMGFScan(rdr, line);
 
             ret.setSpectrum(spec);
 

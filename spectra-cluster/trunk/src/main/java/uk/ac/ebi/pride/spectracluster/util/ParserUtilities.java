@@ -8,6 +8,8 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
@@ -689,176 +691,176 @@ public class ParserUtilities {
 
 
     // constants for handling sptext files
-    public static final String NAME_START = "Name:";
-    public static final String LIBID_START = "LibID:";
-    public static final String MW_START = "MW:";
-    public static final String PRECURSORMZ_START = "PrecursorMZ:";
-    public static final String STATUS_START = "Status:";
-    public static final String FULL_NAME_START = "FullName:";
-    public static final String COMMENT_START = "Comment:";
-    public static final String NUM_PEAKS_START = "NumPeaks:";
-    public static final String NUM_PEAKS_START2 = "Num peaks:";
+//    public static final String NAME_START = "Name:";
+//    public static final String LIBID_START = "LibID:";
+//    public static final String MW_START = "MW:";
+//    public static final String PRECURSORMZ_START = "PrecursorMZ:";
+//    public static final String STATUS_START = "Status:";
+//    public static final String FULL_NAME_START = "FullName:";
+//    public static final String COMMENT_START = "Comment:";
+//    public static final String NUM_PEAKS_START = "NumPeaks:";
+//    public static final String NUM_PEAKS_START2 = "Num peaks:";
 
-    /**
-     * @param inp  !null reader
-     * @param line if non null the firat line of the stricture
-     * @return
-     */
-    public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp) {
-        return readSPTextScan(inp, null);
-    }
+//    /**
+//     * @param inp  !null reader
+//     * @param line if non null the firat line of the stricture
+//     * @return
+//     */
+//    public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp) {
+//        return readSPTextScan(inp, null);
+//    }
 
-    /**
-     * @param inp  !null reader
-     * @param line if non null the first line of the stricture
-     * @return
-     */
-    public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp, String line) {
-        String commentLine = null;
-        String peptide = null;
-        String id = null;
-        int charge = 0;
-        List<IPeak> peaks = new ArrayList<IPeak>();
-        Map<String, String> properties = new HashMap<String, String>();
-        int numberPeaks = 0;
-        double precursorMZ = 0;
-
-        String textPart;
-
-
-        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-        String annotation = null;
-        try {
-            if (line == null)
-                line = inp.readLine();
-
-            while (line != null) {
-
-                if ("".equals(line)) {
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, NAME_START);
-                if (textPart != null) {
-                    String[] items = textPart.split("/");
-                    peptide = items[0];
-                    charge = Integer.parseInt(items[1]);
-                    line = inp.readLine();
-                    break;
-                }
-
-                line = inp.readLine();
-            }
-            if (line == null)
-                return null;
-
-
-            // add scan items
-            while (line != null) {
-                line = line.trim();
-                // ignore empty lines
-                if (line.length() == 0) {
-                    line = inp.readLine();
-                    continue;
-                }
-
-                // give up on lines not starting with a letter
-                char firstChar = line.charAt(0);
-                if (!Character.isLetterOrDigit(firstChar)) {
-                    line = inp.readLine();
-                    continue;
-
-                }
-
-                if (Character.isDigit(firstChar)) {
-                    IPeak peak = buildPeak(line.trim());
-                    if (peaks.size() >= numberPeaks) {
-                        throw new IllegalStateException("too many peaks");
-                    }
-                    peaks.add(peak);
-                    if (peaks.size() >= numberPeaks) {
-                        break;
-                    } else {
-                        line = inp.readLine();
-                        continue;
-                    }
-
-                }
-
-                textPart = getTextPart(line, LIBID_START);
-                if (textPart != null) {
-                    id = textPart;
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, MW_START);
-                if (textPart != null) {
-                    properties.put("molecularWeight", textPart);
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, PRECURSORMZ_START);
-                if (textPart != null) {
-                    precursorMZ = Double.parseDouble(textPart);
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, STATUS_START);
-                if (textPart != null) {
-                    properties.put("Status", textPart);
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, FULL_NAME_START);
-                if (textPart != null) {
-                    properties.put("FullName", textPart);
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, COMMENT_START);
-                if (textPart != null) {
-                    commentLine = textPart;
-                    handleCommentText(textPart, properties);
-                    line = inp.readLine();
-                    continue;
-                }
-                textPart = getTextPart(line, NUM_PEAKS_START);
-                if (textPart != null) {
-                    numberPeaks = Integer.parseInt(textPart);
-                    line = inp.readLine();
-                    //noinspection UnnecessaryContinue
-                    continue;
-                }
-                textPart = getTextPart(line, NUM_PEAKS_START2);
-                if (textPart != null) {
-                    numberPeaks = Integer.parseInt(textPart);
-                    line = inp.readLine();
-                    //noinspection UnnecessaryContinue
-                    continue;
-                }
-                throw new IllegalStateException("cannot understand line " + line);
-
-            }
-            // here we create and build a spectrum
-            //noinspection UnnecessaryLocalVariable
-            PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
-                    id,
-                    peptide,
-                    charge,
-                    (float) precursorMZ,
-                    peaks,
-                    commentLine // save title - sequence as annotation
-            );
-            for (String s : properties.keySet()) {
-                spectrum.setProperty(s, properties.get(s));
-            }
-            return spectrum;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+//    /**
+//     * @param inp  !null reader
+//     * @param line if non null the first line of the stricture
+//     * @return
+//     */
+//    public static IPeptideSpectrumMatch readSPTextScan(LineNumberReader inp, String line) {
+//        String commentLine = null;
+//        String peptide = null;
+//        String id = null;
+//        int charge = 0;
+//        List<IPeak> peaks = new ArrayList<IPeak>();
+//        Map<String, String> properties = new HashMap<String, String>();
+//        int numberPeaks = 0;
+//        double precursorMZ = 0;
+//
+//        String textPart;
+//
+//
+//        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+//        String annotation = null;
+//        try {
+//            if (line == null)
+//                line = inp.readLine();
+//
+//            while (line != null) {
+//
+//                if ("".equals(line)) {
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, NAME_START);
+//                if (textPart != null) {
+//                    String[] items = textPart.split("/");
+//                    peptide = items[0];
+//                    charge = Integer.parseInt(items[1]);
+//                    line = inp.readLine();
+//                    break;
+//                }
+//
+//                line = inp.readLine();
+//            }
+//            if (line == null)
+//                return null;
+//
+//
+//            // add scan items
+//            while (line != null) {
+//                line = line.trim();
+//                // ignore empty lines
+//                if (line.length() == 0) {
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//
+//                // give up on lines not starting with a letter
+//                char firstChar = line.charAt(0);
+//                if (!Character.isLetterOrDigit(firstChar)) {
+//                    line = inp.readLine();
+//                    continue;
+//
+//                }
+//
+//                if (Character.isDigit(firstChar)) {
+//                    IPeak peak = buildPeak(line.trim());
+//                    if (peaks.size() >= numberPeaks) {
+//                        throw new IllegalStateException("too many peaks");
+//                    }
+//                    peaks.add(peak);
+//                    if (peaks.size() >= numberPeaks) {
+//                        break;
+//                    } else {
+//                        line = inp.readLine();
+//                        continue;
+//                    }
+//
+//                }
+//
+//                textPart = getTextPart(line, LIBID_START);
+//                if (textPart != null) {
+//                    id = textPart;
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, MW_START);
+//                if (textPart != null) {
+//                    properties.put("molecularWeight", textPart);
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, PRECURSORMZ_START);
+//                if (textPart != null) {
+//                    precursorMZ = Double.parseDouble(textPart);
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, STATUS_START);
+//                if (textPart != null) {
+//                    properties.put("Status", textPart);
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, FULL_NAME_START);
+//                if (textPart != null) {
+//                    properties.put("FullName", textPart);
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, COMMENT_START);
+//                if (textPart != null) {
+//                    commentLine = textPart;
+//                    handleCommentText(textPart, properties);
+//                    line = inp.readLine();
+//                    continue;
+//                }
+//                textPart = getTextPart(line, NUM_PEAKS_START);
+//                if (textPart != null) {
+//                    numberPeaks = Integer.parseInt(textPart);
+//                    line = inp.readLine();
+//                    //noinspection UnnecessaryContinue
+//                    continue;
+//                }
+//                textPart = getTextPart(line, NUM_PEAKS_START2);
+//                if (textPart != null) {
+//                    numberPeaks = Integer.parseInt(textPart);
+//                    line = inp.readLine();
+//                    //noinspection UnnecessaryContinue
+//                    continue;
+//                }
+//                throw new IllegalStateException("cannot understand line " + line);
+//
+//            }
+//            // here we create and build a spectrum
+//            //noinspection UnnecessaryLocalVariable
+//            PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
+//                    id,
+//                    peptide,
+//                    charge,
+//                    (float) precursorMZ,
+//                    peaks,
+//                    commentLine // save title - sequence as annotation
+//            );
+//            for (String s : properties.keySet()) {
+//                spectrum.setProperty(s, properties.get(s));
+//            }
+//            return spectrum;
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
 
     protected static void handleCommentText(String textPart, Map<String, String> properties) {
@@ -1090,12 +1092,13 @@ public class ParserUtilities {
             for (int j = 0; j < scs.length; j++) {
                 ISpectralCluster sc = scs[j];
                 StringBuilder sb = new StringBuilder();
-                if (isMGF)
-                    sc.appendSpectra(sb);
-                else
-                    sc.append(sb);
-
-                // System.out.println(sb.toString());
+                final MGFSpectrumAppender spectrumAppender = new MGFSpectrumAppender();
+                if (isMGF) {
+                    spectrumAppender.appendSpectrum(sb, sc.getConsensusSpectrum());
+                }else {
+                    final CGFClusterAppender clusterAppender = new CGFClusterAppender(spectrumAppender);
+                    clusterAppender.appendCluster(sb, sc);
+                }
             }
         }
     }

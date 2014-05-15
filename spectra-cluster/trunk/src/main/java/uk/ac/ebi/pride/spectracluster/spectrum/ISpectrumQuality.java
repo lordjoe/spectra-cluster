@@ -1,13 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 /**
+ * Spectrum quality interface
+ *
  * @author Rui Wang
  * @version $Id$
  */
-@Deprecated
 public interface ISpectrumQuality {
-
-//    public static final int BAD_QUALITY_MEASURE = -1;
 
     /**
      * Get the quality measure of a spectrum
