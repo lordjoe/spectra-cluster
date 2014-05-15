@@ -15,53 +15,28 @@ import java.util.List;
  */
 public abstract class PeaksSpectrum implements ISpectrum {
 
-    /**
-     * who knows why Johannes does this but we can as well
-     * todo generalize
-     *
-     * @param p1
-     * @return
-     */
-    public static double johannesIntensityConverted(IPeak p1) {
-        double intensity = p1.getIntensity();
-        if (intensity == 0)
-            return 0;
-        double intensity2 = 1 + Math.log(intensity);
-        return intensity2;
-
-    }
-
-
     private final String id;
     private final int precursorCharge;
     private final float precursorMz;
-    /**
-     * for calculate similarity between spectra, all peaks should be sorted by intensity
-     */
     private final List<IPeak> peaks = new ArrayList<IPeak>();
-    private final double totalIntensity;
-    private final double sumSquareIntensity;
+    private double totalIntensity;
+    private double sumSquareIntensity;
 
 
-    public PeaksSpectrum(final String pId, final int pPrecursorCharge, final float pPrecursorMz, List<IPeak> peaks) {
+    public PeaksSpectrum(final String pId,
+                         final int pPrecursorCharge,
+                         final float pPrecursorMz,
+                         final List<IPeak> inpeaks) {
         id = pId;
         precursorCharge = pPrecursorCharge;
         precursorMz = pPrecursorMz;
+
         this.peaks.clear();
-        Collections.sort(peaks);
-        this.peaks.addAll(peaks);
+        Collections.sort(inpeaks);
+        this.peaks.addAll(inpeaks);
         Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
-        double totalIntensityX = 0;
-        double sumSquareIntensityX = 0;
-        for (IPeak peak : peaks) {
-            double intensity = peak.getIntensity();
-            totalIntensityX += intensity;
-            // johannes uses this in his dotProduct // todo generalize for other algorithms
-            double ji = johannesIntensityConverted(peak);
-            sumSquareIntensityX += ji * ji;
-        }
-        totalIntensity = totalIntensityX;
-        sumSquareIntensity = sumSquareIntensityX;
+
+        calculateIntensities();
     }
 
     /**
@@ -69,7 +44,7 @@ public abstract class PeaksSpectrum implements ISpectrum {
      *
      * @param spectrum
      */
-    public PeaksSpectrum(ISpectrum spectrum) {
+    public PeaksSpectrum(final ISpectrum spectrum) {
         this(spectrum, spectrum.getPeaks());
     }
 
@@ -79,7 +54,8 @@ public abstract class PeaksSpectrum implements ISpectrum {
      * @param spectrum base used for charge, mz
      * @param inpeaks    new peaks
      */
-    public PeaksSpectrum(ISpectrum spectrum, List<IPeak> inpeaks) {
+    public PeaksSpectrum(final ISpectrum spectrum,
+                         final List<IPeak> inpeaks) {
 
         this.id = spectrum.getId();
         this.precursorCharge = spectrum.getPrecursorCharge();
@@ -87,26 +63,35 @@ public abstract class PeaksSpectrum implements ISpectrum {
 
         peaks.clear();
         peaks.addAll(inpeaks);
-
         Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
+
+        calculateIntensities();
+
+    }
+
+    private void calculateIntensities() {
         double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
         for (IPeak peak : peaks) {
             double intensity = peak.getIntensity();
             totalIntensityX += intensity;
-            // johannes uses this in his dotProduct // todo generalize for other algorithms
-            double ji = johannesIntensityConverted(peak);
+            double ji = convertIntensity(peak);
             sumSquareIntensityX += ji * ji;
         }
         totalIntensity = totalIntensityX;
         sumSquareIntensity = sumSquareIntensityX;
-
     }
 
-
-    protected void makeCalculations() {
+    /**
+     * who knows why Johannes does this but we can as well
+     * todo @rw: double check this wit Johannes
+     */
+    public double convertIntensity(IPeak p1) {
+        double intensity = p1.getIntensity();
+        if (intensity == 0)
+            return 0;
+        return 1 + Math.log(intensity);
     }
-
 
     public String getId() {
         return id;
@@ -121,7 +106,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
     }
 
     public double getTotalIntensity() {
-        //    guaranteeClean();
         return totalIntensity;
     }
 
@@ -129,7 +113,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
      * return the sum  Square of all intensities
      */
     public double getSumSquareIntensity() {
-        //  guaranteeClean();
         return sumSquareIntensity;
     }
 
@@ -141,7 +124,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
      */
     @Override
     public List<IPeak> getPeaks() {
-        // guaranteeClean();
         return Collections.unmodifiableList(peaks);
     }
 
@@ -151,7 +133,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
      * @return
      */
     protected List<IPeak> internalGetPeaks() {
-        // guaranteeClean();
         return peaks;
     }
 
@@ -161,7 +142,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
      * @return count
      */
     public int getPeaksCount() {
-        //   guaranteeClean();
         return peaks.size();
     }
 
@@ -182,7 +162,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
     public int compareTo(ISpectrum o) {
         if (this == o)
             return 0;
-        //    guaranteeClean();
         if (getPrecursorCharge() != o.getPrecursorCharge())
             return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
         if (getPrecursorMz() != o.getPrecursorMz())
@@ -203,10 +182,11 @@ public abstract class PeaksSpectrum implements ISpectrum {
     public boolean equivalent(ISpectrum o) {
         if (o == this)
             return true;
-        //   guaranteeClean();
+
         if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
+
         final List<IPeak> iPeaks = internalGetPeaks();
         IPeak[] peaks = iPeaks.toArray(new IPeak[iPeaks.size()]);
         IPeak[] peaks1;
@@ -219,6 +199,7 @@ public abstract class PeaksSpectrum implements ISpectrum {
             peaks1 = peaks2.toArray(new IPeak[peaks2.size()]);
 
         }
+
         if (peaks.length != peaks1.length) {
             return false;
         }
@@ -261,7 +242,6 @@ public abstract class PeaksSpectrum implements ISpectrum {
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = id.hashCode();
         result = 31 * result + precursorCharge;
         result = 31 * result + (precursorMz != +0.0f ? Float.floatToIntBits(precursorMz) : 0);
