@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.util;
+package uk.ac.ebi.pride.spectracluster.datastore;
 
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
