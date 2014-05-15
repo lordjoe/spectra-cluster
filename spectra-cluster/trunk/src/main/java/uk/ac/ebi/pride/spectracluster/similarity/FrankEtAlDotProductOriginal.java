@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.IOException;
@@ -148,8 +147,8 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
 
             double mass_difference = mz2 - mz1;
             if (Math.abs(mass_difference) <= mzRange) {
-                double match1 = PeptideSpectrumMatch.johannesIntensityConverted(peak1);
-                double match2 = PeptideSpectrumMatch.johannesIntensityConverted(peak2);
+                double match1 = convertIntensity(peak1);
+                double match2 = convertIntensity(peak2);
 
                 // print the peaks if a debugOutput is supplied
                 if (debugOutput != null) {
@@ -193,6 +192,17 @@ public class FrankEtAlDotProductOriginal implements SimilarityChecker {
 
         return normalizedDotProduct;
 
+    }
+
+    /**
+     * who knows why Johannes does this but we can as well
+     * todo @rw: double check this wit Johannes
+     */
+    private double convertIntensity(IPeak p1) {
+        double intensity = p1.getIntensity();
+        if (intensity == 0)
+            return 0;
+        return 1 + Math.log(intensity);
     }
 
     protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
