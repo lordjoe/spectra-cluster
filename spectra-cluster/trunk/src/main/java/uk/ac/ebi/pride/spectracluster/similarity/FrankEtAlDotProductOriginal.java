@@ -25,8 +25,9 @@ import java.util.List;
  *
  * @author jg
  *         <p/>
- *         todo: this class needs to be reviewed
+ *         todo: delete
  */
+@Deprecated
 public class FrankEtAlDotProductOriginal implements SimilarityChecker {
 
 
