@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.sql.DataSource;
 import java.io.IOException;

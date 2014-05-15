@@ -14,7 +14,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

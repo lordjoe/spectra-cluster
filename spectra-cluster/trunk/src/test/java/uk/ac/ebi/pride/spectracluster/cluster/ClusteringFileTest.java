@@ -6,7 +6,7 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import java.io.LineNumberReader;
 import java.util.List;

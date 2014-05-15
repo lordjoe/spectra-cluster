@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import java.io.File;
 import java.net.URL;

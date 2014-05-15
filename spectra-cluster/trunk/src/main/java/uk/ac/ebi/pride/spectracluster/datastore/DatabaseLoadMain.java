@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.datastore;
 
 
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumIterable;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.sql.DataSource;

@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.ChargePeakMZKey;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.util.SpectrumCreateListener;
 
 import java.io.File;
