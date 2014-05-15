@@ -10,10 +10,8 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -269,31 +267,6 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
     public ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrumBuilder.getConsensusSpectrum();
     }
-
-
-    /**
-     * does the concensus spectrum contin this is a major peak
-     *
-     * @param mz peak as int
-     * @return true if so
-     */
-    @Override
-    public boolean containsMajorPeak(final int mz) {
-        return internalGetConcensusSpectrum().containsMajorPeak(mz);
-    }
-
-    /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
-     * @return
-     */
-    @Override
-    public int[] asMajorPeakMZs() {
-        final ISpectrum consensusSpectrum1 = getConsensusSpectrum();
-        return consensusSpectrum1.asMajorPeakMZs();
-    }
-
 
     @Override
     public List<ISpectrum> getClusteredSpectra() {

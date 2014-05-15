@@ -329,11 +329,6 @@ public class PSMSpectralCluster implements ISpectralCluster {
 
 
     @Override
-    public boolean containsMajorPeak(int mz) {
-        return getConsensusSpectrum().containsMajorPeak(mz);
-    }
-
-    @Override
     public void addSpectra(List<ISpectrum> added) {
         spectraIds.clear();
         clusteredSpectra.addAll(added);
@@ -427,11 +422,6 @@ public class PSMSpectralCluster implements ISpectralCluster {
                 ", peptides=" + peptides +
                 ", clusteredSpectra=" + sb.toString() +
                 '}';
-    }
-
-    @Override
-    public int[] asMajorPeakMZs() {
-        return getConsensusSpectrum().asMajorPeakMZs();
     }
 
     @Override
