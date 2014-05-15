@@ -428,12 +428,6 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
 //
 //    }
 
-
-    @Override
-    public boolean containsMajorPeak(int mz) {
-        return getConsensusSpectrum().containsMajorPeak(mz);
-    }
-
     @Override
     public void addSpectra(List<ISpectrum> added) {
         spectraIds.clear();
@@ -530,11 +524,6 @@ public class LazyLoadedSpectralCluster implements ISpectralCluster {
                 ", peptides=" + peptides +
                 ", clusteredSpectra=" + sb.toString() +
                 '}';
-    }
-
-    @Override
-    public int[] asMajorPeakMZs() {
-        return getConsensusSpectrum().asMajorPeakMZs();
     }
 
     @Override

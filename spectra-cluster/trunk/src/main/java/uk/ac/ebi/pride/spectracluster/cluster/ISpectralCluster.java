@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.Equivalent;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
-import uk.ac.ebi.pride.spectracluster.spectrum.IMajorPeaksHolder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
@@ -17,7 +16,7 @@ import java.util.Set;
  * @date 10/05/13
  */
 // TODO JG: remove the functions of the former IPeaksHolder from the implementations
-public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>, IMajorPeaksHolder {
+public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralCluster>, Comparable<ISpectralCluster>{
 
     /**
      * Get cluster id
@@ -118,15 +117,6 @@ public interface ISpectralCluster extends ISpectrumHolder, Equivalent<ISpectralC
     public
     @Nonnull
     Set<String> getSpectralIds();
-
-    /**
-     * does the concensus spectrum contin this is a major peak
-     *
-     * @param mz peak as int
-     * @return true if so
-     */
-    @Deprecated
-    public boolean containsMajorPeak(int mz);
 
 
     /**

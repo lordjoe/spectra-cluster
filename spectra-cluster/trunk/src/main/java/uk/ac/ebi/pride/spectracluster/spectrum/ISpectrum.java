@@ -63,13 +63,12 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      */
     ISpectrum getHighestNPeaks(int numberRequested);
 
-
     /**
-     * Get the peaks with highest intensity sort by MZ
+     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
      *
-     * @return  array of major peak mz
+     * @return
      */
-    @Deprecated
     int[] asMajorPeakMZs();
 
     /**
@@ -78,6 +77,6 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      * @param mz peak as int
      * @return true if so
      */
-    @Deprecated
     boolean containsMajorPeak(final int mz);
+
 }

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 import com.lordjoe.algorithms.Equivalent;
 
 /**
- * uk.ac.ebi.pride.spectracluster.IPeak
+ * IPeak is an interface which represents a peak in a spectrum
  *
  * @author Steve Lewis
  * @author Rui Wang

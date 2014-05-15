@@ -242,18 +242,6 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         return consensusSpectrum;
     }
 
-    /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
-     * @return
-     */
-    @Override
-    public int[] asMajorPeakMZs() {
-        return getConsensusSpectrum().asMajorPeakMZs();
-    }
-
-
     @Override
     public List<ISpectrum> getClusteredSpectra() {
         guaranteeClean();
@@ -441,20 +429,5 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
         }
         return sb.toString();
 
-    }
-
-    /**
-     * does the concensus spectrum contin this is a major peak
-     *
-     * @param mz peak as int
-     * @return true if so
-     */
-    @Override
-    public boolean containsMajorPeak(final int mz) {
-        for (ISpectralCluster constitutingCluster : constitutingClusters) {
-            if (constitutingCluster.containsMajorPeak(mz))
-                return true;
-        }
-        return false;
     }
 }
