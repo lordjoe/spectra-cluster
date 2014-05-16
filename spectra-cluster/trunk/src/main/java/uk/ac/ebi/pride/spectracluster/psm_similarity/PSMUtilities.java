@@ -6,7 +6,7 @@ import org.systemsbiology.common.IFileSystem;
 import org.systemsbiology.hadoop.HDFSAccessor;
 import org.systemsbiology.remotecontrol.LocalMachineFileSystem;
 import org.systemsbiology.remotecontrol.RemoteUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
