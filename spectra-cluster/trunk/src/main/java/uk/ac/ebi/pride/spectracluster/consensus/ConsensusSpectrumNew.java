@@ -30,6 +30,7 @@ import java.util.List;
  * Also internal methods are protected allowing tests to access them
  * This is a version where we can try changes using ConsensusSpectrumBuilderTests to validate
  */
+@Deprecated
 public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
     public static final float NOISE_FILTER_INCREMENT = 100;
