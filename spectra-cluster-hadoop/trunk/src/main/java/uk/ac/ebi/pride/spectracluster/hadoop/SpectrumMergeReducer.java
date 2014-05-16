@@ -1,17 +1,23 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import org.apache.hadoop.io.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
+import com.lordjoe.algorithms.IWideBinner;
+import org.apache.hadoop.io.Text;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import javax.annotation.*;
-import java.io.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -40,7 +46,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         if (offsetBins)
             setBinner((IWideBinner) getBinner().offSetHalf());
 
-      }
+    }
 
     @Override
     public void reduceNormal(Text key, Iterable<Text> values,
@@ -89,8 +95,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
-                    }
-                    else
+                    } else
                         numberNoremove++;
 
                 }
@@ -127,13 +132,14 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
 
     /**
-         * this version of writeCluster does all the real work
-         * @param context
-         * @param cluster
-         * @throws IOException
-         * @throws InterruptedException
-         */
-       protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+     * this version of writeCluster does all the real work
+     *
+     * @param context
+     * @param cluster
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -149,7 +155,8 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
-        cluster.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
@@ -163,10 +170,9 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null
      *
      * @param context !null context
-     * @param pMzKey  !null unless done
      */
-      protected  <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
-          ChargeBinMZKey pMzKey = (ChargeBinMZKey)key;
+    protected <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
+        ChargeBinMZKey pMzKey = (ChargeBinMZKey) key;
         if (getEngine() != null) {
             final Collection<IPeptideSpectralCluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
@@ -184,15 +190,13 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
     }
 
 
-
-
     /**
      * Called once at the end of the task.
      */
     @Override
     protected void cleanup(final Context context) throws IOException, InterruptedException {
         //    writeParseParameters(context);
-         super.cleanup(context);
+        super.cleanup(context);
         int value;
 
         value = IncrementalClusteringEngine.numberOverlap;

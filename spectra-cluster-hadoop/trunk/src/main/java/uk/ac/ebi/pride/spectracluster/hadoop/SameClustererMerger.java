@@ -13,6 +13,9 @@ import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -55,7 +58,8 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
                 // cluster becomes cgf
                 StringBuilder sb = new StringBuilder();
-                cluster.appendClustering(sb);
+                final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
+                clusterAppender.appendCluster(sb, cluster);
                 writeKeyValue(cluster.getId(), sb.toString(), context);
             }
         }
@@ -166,7 +170,8 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             String keyStr = key.toString();
 
             StringBuilder sb = new StringBuilder();
-            cluster.append(sb);
+            final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+            clusterAppender.appendCluster(sb, cluster);
             String string = sb.toString();
 
             if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {

@@ -171,7 +171,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     protected final void writeAsSingleClusters(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
-            writeOneCluster(context, spc.asCluster());
+            writeOneCluster(context, ClusterUtilities.asCluster(spc));
         }
     }
 

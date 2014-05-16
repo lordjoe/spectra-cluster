@@ -2,13 +2,16 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
-import uk.ac.ebi.pride.spectracluster.cluster.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.ChargePeakMZKey;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -58,7 +61,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
             if (match == null)
                 continue; // not sure why this happens but nothing seems like the thing to do
-            final IPeptideSpectralCluster cluster = match.asCluster();
+            final IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(match);
 
 
             final Collection<IPeptideSpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
@@ -80,7 +83,8 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
-        cluster.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {

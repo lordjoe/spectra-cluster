@@ -6,6 +6,8 @@ import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -83,7 +85,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
                     List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                     //
                     for (ISpectrum spc : clusteredSpectra) {
-                        writeCluster(context,spc.asCluster());
+                        writeCluster(context,ClusterUtilities.asCluster(spc));
                     }
                 }
             }
@@ -134,7 +136,8 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
-        cluster.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
@@ -153,7 +156,6 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null
      *
      * @param context !null context
-     * @param pMzKey  !null unless done
      */
     protected <T> boolean  updateEngine(final Context context,T key ) throws IOException, InterruptedException {
         final StableChargeBinMZKey pMzKey =  (StableChargeBinMZKey)key;
