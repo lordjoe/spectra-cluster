@@ -1,6 +1,7 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.utilities.TypedPredicate;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import javax.annotation.Nonnull;
 
