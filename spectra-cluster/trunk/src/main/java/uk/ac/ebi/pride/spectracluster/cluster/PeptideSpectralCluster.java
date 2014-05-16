@@ -13,10 +13,11 @@ import java.util.List;
 
 
 /**
- * @author Rui Wang
+ * @author Steve Lewis
  * @version $Id$
  *
  */
+@Deprecated
 public class PeptideSpectralCluster extends SpectralCluster implements IPeptideSpectralCluster {
 
 

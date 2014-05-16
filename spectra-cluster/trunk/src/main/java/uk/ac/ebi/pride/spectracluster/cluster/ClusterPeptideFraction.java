@@ -5,9 +5,10 @@ import com.lordjoe.algorithms.CompareTo;
 import javax.annotation.Nonnull;
 
 /**
- * @author Rui Wang
+ * @author Steve Lewis
  * @version $Id$
  */
+@Deprecated
 public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction> {
 
     @SuppressWarnings("UnusedDeclaration")
