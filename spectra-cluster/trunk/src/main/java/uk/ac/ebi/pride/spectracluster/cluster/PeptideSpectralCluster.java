@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author Rui Wang
  * @version $Id$
- *          * NOTE extend WatchedClass to look for possible memory leaks
+ *
  */
 public class PeptideSpectralCluster extends SpectralCluster implements IPeptideSpectralCluster {
 
