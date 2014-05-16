@@ -48,12 +48,18 @@ public class IdentifiedSpectralAnnotationRetrieverTest {
             final Map<String, String> annotations = retr.getAnnotations(id,askedFor);
             Assert.assertEquals(1, annotations.size());
         }
+
+    }
+
+    @Test(expected = SpectralAnnotationRetrieverException.class)
+    public void testSpectralAnnotationRetrieverException() {
+        ISpectralAnnotationRetriever retr = new IdentifiedSpectralAnnotationRetriever(IDENTIFIED_STRINGS);
+
+        Set<String> askedFor = new HashSet<String>();
+        askedFor.add(IdentifiedSpectralAnnotationRetriever.IDENTIFIED_ANNOTATION);
         askedFor.add("Species");
-        try {
-            retr.getAnnotations(ALL_STRINGS[0],askedFor);
-            Assert.fail();
-        } catch (SpectralAnnotationRetrieverException e) {
-         }
+
+        retr.getAnnotations(ALL_STRINGS[0],askedFor);
     }
 
 
