@@ -672,7 +672,8 @@ public class ClusterUtilities {
             if (mergeWith == null) {
                 retained.add(cluster); // nothing to merge with so keep the cluster
             } else {  // merge with a close enough cluster
-                mergeWith.addSpectra(cluster.getClusteredSpectra());
+                final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                mergeWith.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
             }
         }
         // make sure the retained are still in mz order
@@ -721,7 +722,8 @@ public class ClusterUtilities {
             } else {  // merge with a close enough cluster
                 // note this may disturb the order of the cluster list but should not stop
                 // the algorithm from working
-                mergeWith.addSpectra(cluster.getClusteredSpectra());
+                final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                mergeWith.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
             }
         }
 

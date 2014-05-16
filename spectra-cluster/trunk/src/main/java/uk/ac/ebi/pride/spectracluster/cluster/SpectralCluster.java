@@ -45,7 +45,7 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
-        addSpectra(clusteredSpectra1);
+        addSpectra(clusteredSpectra1.toArray(new ISpectrum[clusteredSpectra1.size()]));
 
     }
 
@@ -266,17 +266,6 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
     public int getClusteredSpectraCount() {
         return clusteredSpectra.size();
     }
-
-    /**
-     * convenience method to all a list not individual spectra
-     *
-     * @param merged !null list to add
-     */
-    @Override
-    public void addSpectra(List<ISpectrum> merged) {
-        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
-    }
-
 
     @Override
     public void addSpectra(ISpectrum... merged) {

@@ -21,6 +21,16 @@ public interface ISpectralCluster extends ISpectrumHolder,
     String getId();
 
     /**
+     * build an id from spectral ids
+     *
+     * @return
+     *
+     * todo: for development, Steve is feeling strong about this
+     */
+    @Deprecated
+    String getSpectralId();
+
+    /**
      * concensus spectrum MZ
      *
      * @return
@@ -49,8 +59,10 @@ public interface ISpectralCluster extends ISpectrumHolder,
 
     /**
      * all internally spectrum
+     *
+     * todo: for development
      */
-    @Deprecated //todo: for development
+    @Deprecated
     @Nonnull
     List<ISpectrum> getHighestQualitySpectra();
 
@@ -75,11 +87,6 @@ public interface ISpectralCluster extends ISpectrumHolder,
     @Nonnull
     Set<String> getSpectralIds();
 
-
-    /**
-     * Add a list of spectrum to cluster
-     */
-    void addSpectra(List<ISpectrum> added);
 
     /**
      * if true the cluster is stable and will not allow removal

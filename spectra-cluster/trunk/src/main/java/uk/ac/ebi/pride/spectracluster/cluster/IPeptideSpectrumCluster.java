@@ -16,14 +16,6 @@ import java.util.List;
 public interface IPeptideSpectrumCluster extends ISpectralCluster {
 
     /**
-     * build an id from spectral ids
-     *
-     * @return
-     */
-    @Deprecated
-    String getSpectralId();
-
-    /**
      * Get a list of peptide sequences
      *
      * @return

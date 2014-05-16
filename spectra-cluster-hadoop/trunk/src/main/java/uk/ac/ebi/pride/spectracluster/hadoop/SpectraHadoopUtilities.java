@@ -271,7 +271,7 @@ public class SpectraHadoopUtilities {
 
         List<ISpectrum> toAdd = new ArrayList<ISpectrum>(spectraById.values());
         Collections.sort(toAdd);
-        merged.addSpectra(toAdd);
+        merged.addSpectra(toAdd.toArray(new ISpectrum[toAdd.size()]));
         return merged;
     }
 
@@ -332,7 +332,7 @@ public class SpectraHadoopUtilities {
 
         List<ISpectrum> toAdd = new ArrayList<ISpectrum>(spectraById.values());
         Collections.sort(toAdd);
-        merged.addSpectra(toAdd);
+        merged.addSpectra(toAdd.toArray(new ISpectrum[toAdd.size()]));
         return merged;
     }
 

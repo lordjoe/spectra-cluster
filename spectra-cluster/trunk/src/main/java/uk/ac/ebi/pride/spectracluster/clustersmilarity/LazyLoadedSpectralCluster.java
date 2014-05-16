@@ -428,12 +428,6 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectrumCluster {
 //    }
 
     @Override
-    public void addSpectra(List<ISpectrum> added) {
-        spectraIds.clear();
-        clusteredSpectra.addAll(added);
-    }
-
-    @Override
     public boolean isStable() {
         return ClusterUtilities.isClusterStable(this);
     }
