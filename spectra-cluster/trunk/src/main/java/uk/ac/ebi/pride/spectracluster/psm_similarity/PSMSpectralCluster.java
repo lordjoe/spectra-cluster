@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -345,12 +346,12 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
 
 
     @Override
-    public int compareTo(IPeptideSpectralCluster o) {
+    public int compareTo(ISpectralCluster o) {
         return ClusterComparator.INSTANCE.compare(this, o);
     }
 
     @Override
-    public boolean equivalent(IPeptideSpectralCluster o) {
+    public boolean equivalent(ISpectralCluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())

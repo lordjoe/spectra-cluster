@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util.comparator;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 
 import java.util.Comparator;
 
@@ -16,11 +16,11 @@ import java.util.Comparator;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusterComparator implements Comparator<IPeptideSpectralCluster> {
-    public static final Comparator<IPeptideSpectralCluster> INSTANCE = new ClusterComparator();
+public class ClusterComparator implements Comparator<ISpectralCluster> {
+    public static final Comparator<ISpectralCluster> INSTANCE = new ClusterComparator();
 
     @Override
-    public int compare(IPeptideSpectralCluster o1, IPeptideSpectralCluster o2) {
+    public int compare(ISpectralCluster o1, ISpectralCluster o2) {
         int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());
         if (ret != 0) {
             return ret;

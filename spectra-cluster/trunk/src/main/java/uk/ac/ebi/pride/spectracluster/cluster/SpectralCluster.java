@@ -1,77 +1,83 @@
-package uk.ac.ebi.pride.spectracluster.clustersmilarity;
+package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
+ * Default implementation of ISpectralCluster
+ *
  * @author Rui Wang
  * @version $Id$
  */
+public class SpectralCluster implements ISpectralCluster {
 
-public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
-
-    protected static String concensusId(IPeptideSpectralCluster... copied) {
-        StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectralCluster sc : copied) {
-            if (sb.length() > 0)
-                sb.append(":");
-            sb.append(sc.getId());
-        }
-
-        return sb.toString();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(IPeptideSpectralCluster... copied) {
-        //noinspection UnnecessaryLocalVariable
-        IConsensusSpectrumBuilder ret = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
-//        for (int i = 1; i < copied.length; i++) {
-//            final IConsensusSpectrumBuilder spectrumBuilder = copied[i].cloneConsensusSpectrumBuilder();
-//            if (!ret.equals(spectrumBuilder)) {
-//                final boolean equals = ret.equals(spectrumBuilder); // why not
-//                throw new IllegalStateException("AlternativeSpectralClusters MUST have the same ConsensusSpectrumBuilder");
-//            }
-//        }
-        return ret;
-    }
 
     private String id;
-    private ISpectrum consensusSpectrum;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
-    private final List<IPeptideSpectralCluster> constitutingClusters = new ArrayList<IPeptideSpectralCluster>();
-    @SuppressWarnings("FieldCanBeLocal")
-    private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
-    private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
-    private boolean locked;
+    private final Set<String> spectraIds = new HashSet<String>();
 
-    public AlternativeSpectralClusters(IPeptideSpectralCluster... copied) {
-        this.id = concensusId(copied);
-        constitutingClusters.addAll(Arrays.asList(copied));
-        qualityHolder = new SpectralQualityHolder();
-        addSpectrumHolderListener(qualityHolder);
+
+    private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
+    private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
+
+    public SpectralCluster(ISpectralCluster copied) {
+        this.id = copied.getId();
         this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
-        Set<ISpectrum> holder = new HashSet<ISpectrum>();
-        for (IPeptideSpectralCluster sc : copied) {
-            holder.addAll(sc.getClusteredSpectra());
+        addSpectrumHolderListener(this.consensusSpectrumBuilder);
+
+        this.qualityHolder = new SpectralQualityHolder();
+        addSpectrumHolderListener(qualityHolder);
+        final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
+        addSpectra(clusteredSpectra1.toArray(new ISpectrum[clusteredSpectra1.size()]));
+    }
+
+    /**
+     * use this when the cluster is not stable
+     */
+    public SpectralCluster() {
+        this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+    }
+
+    public SpectralCluster(String id) {
+        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+    }
+
+    public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
+        super();
+        this.id = id;
+        this.consensusSpectrumBuilder = consensusSpectrumBuilder;
+        addSpectrumHolderListener(this.consensusSpectrumBuilder);
+        this.qualityHolder = new SpectralQualityHolder();
+        addSpectrumHolderListener(qualityHolder);
+    }
+
+    /**
+     * return a set of all ids
+     *
+     * @return
+     */
+    @Override
+    public Set<String> getSpectralIds() {
+        if (this.spectraIds.isEmpty()) {
+            List<ISpectrum> clusteredSpectra1 = getClusteredSpectra();
+            for (ISpectrum iSpectrum : clusteredSpectra1) {
+                spectraIds.add(iSpectrum.getId());
+            }
         }
-        final ArrayList<ISpectrum> merged = new ArrayList<ISpectrum>(holder);
-        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
-        Collections.sort(clusteredSpectra);
-        this.consensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
-        locked = true; // now we are immutable
+        return Collections.unmodifiableSet(spectraIds);
     }
 
 
@@ -102,7 +108,6 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
     /**
      * notify any state change listeners - probably should
      * be protected but is in the interface to form an event cluster
-     *
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
         if (m_SpectrumHolderListeners.isEmpty())
@@ -115,31 +120,21 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         }
     }
 
-
-    @SuppressWarnings("UnusedDeclaration")
-    public List<IPeptideSpectralCluster> getConstitutingClusters() {
-        return Collections.unmodifiableList(constitutingClusters);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-
-    protected void guaranteeClean() {
-        // do nothing but keep code more compatable with SpectraCluster
-    }
-
     /**
-     * return a set of all ids
+     * if possible use the highest
      *
      * @return
      */
     @Override
-    public Set<String> getSpectralIds() {
-        if (true) throw new UnsupportedOperationException("Fix This");
-        return null;
+    public String getId() {
+        // in unstable clusters use id of the highest quality spectrum
+        if (id == null) {
+            id = getSpectralId();
+            //   ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
+            //    if (highestQualitySpectrum != null)
+            //       return highestQualitySpectrum.getId();
+        }
+        return id;
     }
 
     @Override
@@ -155,29 +150,16 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         return sb.toString();
     }
 
+    public void setId(String id) {
+        if (this.id != null) {
+            throw new IllegalStateException("Cluster id should only be set once");
+        }
 
-    /**
-     * all internally spectrum
-     */
-    @Override
-    public List<ISpectrum> getHighestQualitySpectra() {
-
-        return getClusteredSpectra();   // todo fix
+        this.id = id;
     }
 
-    //    /**
-//     * needed so copy constructors work with the interface
-//     *
-//     * @return
-//     */
-//    @Override
-//    public IConsensusSpectrumBuilder cloneConsensusSpectrumBuilder() {
-//        return consensusSpectrumBuilder.cloneSpectrumBuilder();
-//    }
-//
     @Override
     public float getPrecursorMz() {
-        guaranteeClean();
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();
         if (consensusSpectrum1 == null)
             return 0;
@@ -186,32 +168,17 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
 
     @Override
     public int getPrecursorCharge() {
-        guaranteeClean();
         return getConsensusSpectrum().getPrecursorCharge();
     }
 
-    @Override
-    public List<String> getPeptides() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
-    @Override
-    public String getMostCommonPeptide() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
-
     /**
-     * get peptides with statistics
-     *
-     * @param dd
-     * @return list ordered bu purity
+     * all internally spectrum
      */
-    @Nonnull
     @Override
-    public List<ClusterPeptideFraction> getPeptidePurity(final IDecoyDiscriminator dd) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+    public List<ISpectrum> getHighestQualitySpectra() {
+        return qualityHolder.getHighestQualitySpectra();
     }
+
 
     /**
      * real spectrum with the highest quality - this is a
@@ -227,19 +194,11 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
 
     @Override
     public ISpectrum getConsensusSpectrum() {
-        guaranteeClean();
-        return consensusSpectrum;
+        return consensusSpectrumBuilder.getConsensusSpectrum();
     }
 
-    /**
-     * this should be protected but it needs to be used by spectral clustering so that
-     * guarantee clean can be byPassed
-     *
-     * @return exactly the current concensus spectrum
-     */
     @Override
     public List<ISpectrum> getClusteredSpectra() {
-        guaranteeClean();
         return new ArrayList<ISpectrum>(clusteredSpectra);
     }
 
@@ -248,19 +207,19 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         return clusteredSpectra.size();
     }
 
-
     @Override
     public void addSpectra(ISpectrum... merged) {
-        if (locked)
-            throw new IllegalStateException("Cannot change AlternativeSpectralClusters");
         if (merged != null && merged.length > 0) {
-
+            boolean spectrumAdded = false;
             for (ISpectrum spectrumToMerge : merged) {
+                spectraIds.add(spectrumToMerge.getId());
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
+                    spectrumAdded = true;
                     clusteredSpectra.add(spectrumToMerge);
                 }
             }
-            notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
+            if (spectrumAdded)
+                notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
         }
     }
 
@@ -272,15 +231,9 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
      */
     @Override
     public boolean isRemoveSupported() {
-        return false;
+        // return !isStable();
+        return true;
     }
-
-
-    @Override
-    public void removeSpectra(ISpectrum... removed) {
-        throw new UnsupportedOperationException("Cannot change AlternativeSpectralClusters");
-    }
-
 
     /**
      * if true the cluster is stable and will not allow removal
@@ -288,27 +241,32 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
      * @return
      */
     public boolean isStable() {
-        return true;
+        return ClusterUtilities.isClusterStable(this);
     }
 
     /**
-     * if true the cluster is stable and will not allow removal
+     * if true the cluster is semi stable and will not allow removal
      *
      * @return
      */
     @Override
     public boolean isSemiStable() {
-        return true;
+        return ClusterUtilities.isClusterSemiStable(this);
     }
 
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @param stable as
-     */
-    public void setStable(boolean stable) {
-        if (!isStable())
-            throw new UnsupportedOperationException("AlternativeSpectralClusters are always stable");
+    @Override
+    public void removeSpectra(ISpectrum... removed) {
+        if (!isRemoveSupported())
+            throw new UnsupportedOperationException("Remove not supported");
+
+        if (removed != null && removed.length > 0) {
+            for (ISpectrum spectrumToMerge : removed) {
+                spectraIds.add(spectrumToMerge.getId());
+                clusteredSpectra.remove(spectrumToMerge);
+            }
+
+            notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
+        }
     }
 
 
@@ -322,20 +280,37 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
     public int compareTo(ISpectralCluster o) {
         if (o == this)
             return 0;
-        if (getPrecursorMz() != o.getPrecursorMz()) {
-            return getPrecursorMz() < o.getPrecursorMz() ? -1 : 1;
-        }
-        if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
-            return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
+        try {
+            int ret = CompareTo.compare(getPrecursorMz(), o.getPrecursorMz());
+            if (ret != 0)
+                return ret;
+            if (getPrecursorCharge() != o.getPrecursorCharge()) {
+                return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
+            }
+            if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
+                return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
+            }
+
+            ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
+            ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
+            if (highestQualitySpectrum1 != highestQualitySpectrum2) {
+                if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
+                    //noinspection UnusedAssignment
+                    highestQualitySpectrum1 = getHighestQualitySpectrum();
+                    throw new IllegalStateException("problem"); // ToDo change
+                }
+
+                return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
+            }
+        } catch (IllegalStateException e) {
+            //  give up use hash code
         }
 
-        if (getHighestQualitySpectrum() != o.getHighestQualitySpectrum()) {
-            return getHighestQualitySpectrum().getQualityScore() < o.getHighestQualitySpectrum().getQualityScore() ? -1 : 1;
-        }
+        int hash1 = hashCode();
+        int hash2 = o.hashCode();
+        if (hash1 != hash2)
+            return hash1 < hash2 ? -1 : 0;
 
-        //noinspection ConstantIfStatement
-        if (true)
-            throw new UnsupportedOperationException("Fix This"); // This should never happen
         return 0;
     }
 
@@ -357,8 +332,10 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         if (abs > Constants.SMALL_MZ_DIFFERENCE) {
             return false;
         }
-        List<ISpectrum> spc1 = getClusteredSpectra();
+
+        List<ISpectrum> spc1 = clusteredSpectra;
         List<ISpectrum> spc2 = o.getClusteredSpectra();
+
         if (spc1.size() != spc2.size()) {
             return false;
         }
@@ -380,7 +357,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
             if (spc1.size() != spc2.size())
                 return false;
 
-            //noinspection ForLoopReplaceableByForEach
+
             for (int i = 0; i < spc1.size(); i++) {
                 ISpectrum pk1 = spc1.get(i);
                 ISpectrum pk2 = spc2.get(i);
@@ -392,16 +369,18 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         }
     }
 
-
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectralCluster constitutingCluster : constitutingClusters) {
-            if (sb.length() > 0)
-                sb.append(",");
-            sb.append(constitutingCluster);
-        }
-        return sb.toString();
+        double precursorMZ = getPrecursorMz();
+        String text =
+                "charge= " + getPrecursorCharge() + "," +
+                        "mz= " + String.format("%10.3f", precursorMZ).trim() + "," +
+                        "count= " + clusteredSpectra.size() +
+                        ", spectrum = ";
+        for (ISpectrum s : clusteredSpectra)
+            text += s.getId() + ",";
 
+        text = text.substring(0, text.length() - 1);
+        return text;
     }
 }
