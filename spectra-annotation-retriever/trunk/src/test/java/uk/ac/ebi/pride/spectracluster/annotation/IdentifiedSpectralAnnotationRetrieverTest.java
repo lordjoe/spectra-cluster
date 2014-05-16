@@ -51,9 +51,9 @@ public class IdentifiedSpectralAnnotationRetrieverTest {
         askedFor.add("Species");
         try {
             retr.getAnnotations(ALL_STRINGS[0],askedFor);
-        } catch (SpectralAnnotationRetrieverException e) {
             Assert.fail();
-        }
+        } catch (SpectralAnnotationRetrieverException e) {
+         }
     }
 
 
