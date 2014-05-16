@@ -1,16 +1,22 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.algorithms.SizedWideBinner;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
+import org.systemsbiology.hadoop.AbstractParameterizedMapper;
+import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -30,9 +36,9 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
     public static IWideBinner BINNER = new SizedWideBinner(
-            IPeak.HIGHEST_USABLE_MZ,
+            Constants.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
-            IPeak.LOWEST_USABLE_MZ,
+            Constants.LOWEST_USABLE_MZ,
             WIDE_BIN_OVERLAP);
 
     private Map<Integer, String[]> binToAllKeys = new HashMap<Integer, String[]>();

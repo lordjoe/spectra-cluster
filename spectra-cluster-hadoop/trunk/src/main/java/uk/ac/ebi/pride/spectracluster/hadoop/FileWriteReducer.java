@@ -63,7 +63,6 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
     /**
      * remove a change listener
      *
-     * @param removed non-null change listener
      */
     protected final void clearClusterCreateListeners() {
         for (ClusterCreateListener listener : m_ClusterCreateListeners) {
@@ -92,7 +91,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         ClusterSizeFilter bigOnly = new ClusterSizeFilter(ClusterConsolidator.BIG_CLUSTER_SIZE); // only accept big custers
 
         // full cgf
-        appender = CGFClusterAppender.INSTANCE;
+        appender = new CGFClusterAppender(new MGFSpectrumAppender());
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
 
         // only big cgf
@@ -100,7 +99,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
 
         // full .cluster
-        appender = DotClusterClusterAppender.INSTANCE;
+        appender = new DotClusterClusterAppender();
 
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CLUSTERING_INSTANCE));
 
@@ -109,12 +108,12 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
 
              // full .cluster
-        appender = SPTextClusterAppender.INSTANCE;
-        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
-        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.SPTEXT_CLUSTERING_INSTANCE));
+//        appender = SPTextClusterAppender.INSTANCE;
+//        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+//        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.SPTEXT_CLUSTERING_INSTANCE));
 
         // only big .cluster
-        appender = MSFClusterAppender.INSTANCE;
+        appender = new MSFClusterAppender(new MSFSpectrumAppender());
         appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.MSP_CLUSTERING_INSTANCE));
 
@@ -125,9 +124,6 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
      * notify any state change listeners - probably should
      * be protected but is in the interface to form an event cluster
      *
-     * @param oldState
-     * @param newState
-     * @param commanded
      */
     public void notifyClusterCreateListeners(IPeptideSpectralCluster cluster) {
         for (ClusterCreateListener listener : m_ClusterCreateListeners) {

@@ -3,10 +3,14 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ClusterIdentityMergeReducer
@@ -42,7 +46,8 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
             if (mainCluster == null) {
                 mainCluster = thisCluster;
             } else {
-                mainCluster.addSpectra(thisCluster.getClusteredSpectra());
+                final List<ISpectrum> clusteredSpectra = thisCluster.getClusteredSpectra();
+                mainCluster.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
             }
         }
 
@@ -51,7 +56,8 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
             throw new IllegalStateException("ClusterIdentity ust operate on stable and semistable clusters");
         }
         StringBuilder sb = new StringBuilder();
-        mainCluster.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, mainCluster);
         writeKeyValue(id, sb.toString(), context);
     }
 

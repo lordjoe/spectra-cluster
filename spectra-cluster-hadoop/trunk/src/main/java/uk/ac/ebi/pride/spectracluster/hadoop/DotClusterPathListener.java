@@ -29,7 +29,6 @@ public class DotClusterPathListener implements ClusterCreateListener {
     /**
      * creat with an output file
      *
-     * @param inp - !null creatable file
      */
     public DotClusterPathListener(Path parent, MZKey key, @Nonnull final Reducer.Context context, IClusterAppender appender, PathFromMZGenerator generator) {
         m_Appender = appender;
@@ -83,8 +82,8 @@ public class DotClusterPathListener implements ClusterCreateListener {
      */
     @Override
     public void onClusterCreate(final IPeptideSpectralCluster cluster, Object... otherData) {
-        boolean written = m_Appender.appendCluster(m_OutWriter, cluster);
-        setAnythingWritten(written);
+        m_Appender.appendCluster(m_OutWriter, cluster);
+        setAnythingWritten(true);
     }
 
     /**

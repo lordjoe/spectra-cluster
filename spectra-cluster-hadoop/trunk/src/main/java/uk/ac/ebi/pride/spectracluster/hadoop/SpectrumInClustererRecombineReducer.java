@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -52,7 +54,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
             else {
                 // handle spectra kicked out
                 if (!processedSpectrunIds.contains(id)) {
-                    IPeptideSpectralCluster cluster = spectrum.asCluster();
+                    IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(spectrum);
                       writeOneVettedCluster(context, cluster);
                 }
                 else {
@@ -84,7 +86,8 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
-        cluster.append(sb);
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
