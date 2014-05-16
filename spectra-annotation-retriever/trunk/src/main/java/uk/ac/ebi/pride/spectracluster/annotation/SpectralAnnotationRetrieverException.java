@@ -22,7 +22,4 @@ public class SpectralAnnotationRetrieverException extends RuntimeException {
         super(cause);
     }
 
-    public SpectralAnnotationRetrieverException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-}
+ }
