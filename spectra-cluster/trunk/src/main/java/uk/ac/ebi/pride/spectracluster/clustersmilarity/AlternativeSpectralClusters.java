@@ -68,7 +68,8 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
         for (IPeptideSpectrumCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
-        addSpectra(new ArrayList<ISpectrum>(holder));
+        final ArrayList<ISpectrum> merged = new ArrayList<ISpectrum>(holder);
+        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
         Collections.sort(clusteredSpectra);
         this.consensusSpectrum = consensusSpectrumBuilder.getConsensusSpectrum();
         locked = true; // now we are immutable
@@ -246,17 +247,6 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
     @Override
     public int getClusteredSpectraCount() {
         return clusteredSpectra.size();
-    }
-
-
-    /**
-     * convenience method to all a list not individual spectra
-     *
-     * @param merged !null list to add
-     */
-    @Override
-    public void addSpectra(List<ISpectrum> merged) {
-        addSpectra(merged.toArray(new ISpectrum[merged.size()]));
     }
 
 

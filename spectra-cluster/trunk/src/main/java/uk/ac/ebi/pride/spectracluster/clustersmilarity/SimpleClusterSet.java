@@ -74,7 +74,8 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
                             if (sc != lastCluster) {
                                 tsvClusterAppender.appendCluster(sb, sc);
                                 sb.append("\n");
-                                lastCluster.addSpectra(sc.getClusteredSpectra());
+                                final List<ISpectrum> clusteredSpectra = sc.getClusteredSpectra();
+                                lastCluster.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
                             }
                         }
                         sb.append("\n");
