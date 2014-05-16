@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -32,18 +31,16 @@ public class PeptideSpectralCluster extends SpectralCluster implements IPeptideS
      * use this when the cluster is not stable
      */
     public PeptideSpectralCluster() {
-        this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+        super();
     }
 
     public PeptideSpectralCluster(String id) {
-        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+        super(id);
     }
 
     public PeptideSpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         super(id, consensusSpectrumBuilder);
     }
-
-
 
     @Override
     public List<String> getPeptides() {
