@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,31 +15,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Default implementation of ISpectralCluster
  *
+ * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
  */
 public class SpectralCluster implements ISpectralCluster {
-
 
     private String id;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
-    private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
+    private final List<SpectrumHolderListener> spectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private final Set<String> spectraIds = new HashSet<String>();
-
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(ISpectralCluster copied) {
-        this.id = copied.getId();
-        this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
-        addSpectrumHolderListener(this.consensusSpectrumBuilder);
+        this(copied.getId(), ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
 
-        this.qualityHolder = new SpectralQualityHolder();
-        addSpectrumHolderListener(qualityHolder);
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
         addSpectra(clusteredSpectra1.toArray(new ISpectrum[clusteredSpectra1.size()]));
     }
@@ -48,15 +43,14 @@ public class SpectralCluster implements ISpectralCluster {
      * use this when the cluster is not stable
      */
     public SpectralCluster() {
-        this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+        this(null, ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
     }
 
     public SpectralCluster(String id) {
-        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
+        this(id, ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
     }
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
-        super();
         this.id = id;
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
@@ -89,8 +83,8 @@ public class SpectralCluster implements ISpectralCluster {
      */
     @Override
     public final void addSpectrumHolderListener(SpectrumHolderListener added) {
-        if (!m_SpectrumHolderListeners.contains(added))
-            m_SpectrumHolderListeners.add(added);
+        if (!spectrumHolderListeners.contains(added))
+            spectrumHolderListeners.add(added);
     }
 
     /**
@@ -100,8 +94,8 @@ public class SpectralCluster implements ISpectralCluster {
      */
     @Override
     public final void removeSpectrumHolderListener(SpectrumHolderListener removed) {
-        while (m_SpectrumHolderListeners.contains(removed))
-            m_SpectrumHolderListeners.remove(removed);
+        while (spectrumHolderListeners.contains(removed))
+            spectrumHolderListeners.remove(removed);
     }
 
 
@@ -110,9 +104,9 @@ public class SpectralCluster implements ISpectralCluster {
      * be protected but is in the interface to form an event cluster
      */
     protected void notifySpectrumHolderListeners(boolean isAdd, ISpectrum... spectra) {
-        if (m_SpectrumHolderListeners.isEmpty())
+        if (spectrumHolderListeners.isEmpty())
             return;
-        for (SpectrumHolderListener listener : m_SpectrumHolderListeners) {
+        for (SpectrumHolderListener listener : spectrumHolderListeners) {
             if (isAdd)
                 listener.onSpectraAdd(this, spectra);
             else
@@ -130,9 +124,6 @@ public class SpectralCluster implements ISpectralCluster {
         // in unstable clusters use id of the highest quality spectrum
         if (id == null) {
             id = getSpectralId();
-            //   ISpectrum highestQualitySpectrum = getHighestQualitySpectrum();
-            //    if (highestQualitySpectrum != null)
-            //       return highestQualitySpectrum.getId();
         }
         return id;
     }
