@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import java.io.IOException;
 
