@@ -52,7 +52,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
             else {
                 // handle spectra kicked out
                 if (!processedSpectrunIds.contains(id)) {
-                    ISpectralCluster cluster = spectrum.asCluster();
+                    IPeptideSpectrumCluster cluster = spectrum.asCluster();
                       writeOneVettedCluster(context, cluster);
                 }
                 else {
@@ -77,7 +77,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final ISpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 

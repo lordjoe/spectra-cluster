@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,18 +12,18 @@ import java.util.Map;
  * @version $Id$
  */
 public class PeptideToClusters {
-    private final Map<String, List<ISpectralCluster>> clustersWithPeptides = new HashMap<String, List<ISpectralCluster>>();
-    private final Map<String, List<ISpectralCluster>> clustersWithMajorPeptides = new HashMap<String, List<ISpectralCluster>>();
+    private final Map<String, List<IPeptideSpectrumCluster>> clustersWithPeptides = new HashMap<String, List<IPeptideSpectrumCluster>>();
+    private final Map<String, List<IPeptideSpectrumCluster>> clustersWithMajorPeptides = new HashMap<String, List<IPeptideSpectrumCluster>>();
 
-    public Map<String, List<ISpectralCluster>> getClustersWithPeptides() {
+    public Map<String, List<IPeptideSpectrumCluster>> getClustersWithPeptides() {
         return clustersWithPeptides;
     }
 
-    public Map<String, List<ISpectralCluster>> getClustersWithMajorPeptides() {
+    public Map<String, List<IPeptideSpectrumCluster>> getClustersWithMajorPeptides() {
         return clustersWithMajorPeptides;
     }
 
-    public void addCluster(ISpectralCluster cluster) {
+    public void addCluster(IPeptideSpectrumCluster cluster) {
         List<String> peptides = cluster.getPeptides();
         if (peptides.size() == 0) {
             return;
@@ -37,10 +37,10 @@ public class PeptideToClusters {
         }
     }
 
-    private void addPeptideCluster(String peptide, ISpectralCluster cluster, Map<String, List<ISpectralCluster>> clusters) {
-        List<ISpectralCluster> existingClusters = clusters.get(peptide);
+    private void addPeptideCluster(String peptide, IPeptideSpectrumCluster cluster, Map<String, List<IPeptideSpectrumCluster>> clusters) {
+        List<IPeptideSpectrumCluster> existingClusters = clusters.get(peptide);
         if (existingClusters == null) {
-            existingClusters = new ArrayList<ISpectralCluster>();
+            existingClusters = new ArrayList<IPeptideSpectrumCluster>();
             clusters.put(peptide, existingClusters);
         }
         existingClusters.add(cluster);

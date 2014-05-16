@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.utilities.TypedPredicate;
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nullable;
@@ -31,7 +31,7 @@ public interface IClusterSet {
 
     public int getClusterCount();
 
-    public List<ISpectralCluster> getClusters();
+    public List<IPeptideSpectrumCluster> getClusters();
 
 
     public int getNumberDuplicateClusters();
@@ -41,7 +41,7 @@ public interface IClusterSet {
      *
      * @param visitor !null visitor(s)
      */
-    public void visitClusters(TypedVisitor<ISpectralCluster> visitor, TypedVisitor<ISpectralCluster>... otherVisitors);
+    public void visitClusters(TypedVisitor<IPeptideSpectrumCluster> visitor, TypedVisitor<IPeptideSpectrumCluster>... otherVisitors);
 
     /**
      * get all clusters matching the predicate
@@ -49,16 +49,16 @@ public interface IClusterSet {
      * @param condition
      * @return
      */
-    public List<ISpectralCluster> getMatchingClusters(TypedPredicate<ISpectralCluster> condition);
+    public List<IPeptideSpectrumCluster> getMatchingClusters(TypedPredicate<IPeptideSpectrumCluster> condition);
 
-    public void addClusters(Collection<ISpectralCluster> clusters);
+    public void addClusters(Collection<IPeptideSpectrumCluster> clusters);
 
-    public void addCluster(ISpectralCluster cluster);
+    public void addCluster(IPeptideSpectrumCluster cluster);
 
 
-    public List<ISpectralCluster> getClustersWithSpectrum(ISpectrum spectrum);
+    public List<IPeptideSpectrumCluster> getClustersWithSpectrum(ISpectrum spectrum);
 
-    public Collection<ISpectralCluster> getBestMatchingClusters(ISpectralCluster cluster, int maxMatches);
+    public Collection<IPeptideSpectrumCluster> getBestMatchingClusters(IPeptideSpectrumCluster cluster, int maxMatches);
 
     public IClusterSet dropClustersLessThanSize(int minsize);
 

@@ -228,9 +228,9 @@ public class ClusteringDataUtilities {
      * @return !null list of  consensusSpectra
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<ISpectrum> buildConsensusSpectra(final List<ISpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
+    public static List<ISpectrum> buildConsensusSpectra(final List<IPeptideSpectrumCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (ISpectralCluster cluster : pClusters) {
+        for (IPeptideSpectrumCluster cluster : pClusters) {
             final IConsensusSpectrumBuilder olderCode = factory.getConsensusSpectrumBuilder();
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();
@@ -248,12 +248,12 @@ public class ClusteringDataUtilities {
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public static List<ISpectralCluster> readSpectraClustersFromResource() {
+    public static List<IPeptideSpectrumCluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
 
-    public static List<ISpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<IPeptideSpectrumCluster> readSpectraClustersFromResource(String resName) {
         // load a file contains a list of clusters
         final InputStream resourceAsStream;
         final ClassLoader classLoader;
@@ -264,9 +264,9 @@ public class ClusteringDataUtilities {
         }
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(resourceAsStream));
 
-        ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
         //noinspection UnnecessaryLocalVariable
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>(Arrays.asList(clusters));
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>(Arrays.asList(clusters));
 
         return holder;
     }

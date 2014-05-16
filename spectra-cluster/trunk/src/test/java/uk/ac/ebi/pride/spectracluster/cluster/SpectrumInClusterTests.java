@@ -199,7 +199,7 @@ public class SpectrumInClusterTests {
     @Test
     public void testSpectrumInClusterMap() {
         // get some clusters
-        List<ISpectralCluster> scs = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectrumCluster> scs = ClusteringTestUtilities.readSpectraClustersFromResource();
         // build spectral associations
         List<SpectrumInCluster> inClusters = SpectrumInCluster.buildSpectrumInClusters(scs);
         //  map bu spectrun id - now we know all clusters for a spectrum
@@ -210,19 +210,19 @@ public class SpectrumInClusterTests {
         Map<String, List<String>> byClusterIdSerialized = SpectrumInCluster.serializeSpectrumInCluster(byClusterId);
 
         // can we rebuild the clusters
-        List<ISpectralCluster> scs2 = rebuildClusters(byClusterId, false);  // rebuild all
+        List<IPeptideSpectrumCluster> scs2 = rebuildClusters(byClusterId, false);  // rebuild all
         ClusteringTestUtilities.assertEquivalentClusters(scs, scs2);
 
         // can we serialize rebuild the clusters
-        List<ISpectralCluster> scs3 = rebuildClustersFromSerialization(byClusterIdSerialized, false);  // rebuild all
+        List<IPeptideSpectrumCluster> scs3 = rebuildClustersFromSerialization(byClusterIdSerialized, false);  // rebuild all
         ClusteringTestUtilities.assertEquivalentClusters(scs, scs3);
 
     }
 
-    public static List<ISpectralCluster> rebuildClustersFromSerialization(final Map<String, List<String>> pByClusterId, boolean discardNotOnCLuster) {
+    public static List<IPeptideSpectrumCluster> rebuildClustersFromSerialization(final Map<String, List<String>> pByClusterId, boolean discardNotOnCLuster) {
         List<String> keys = new ArrayList<String>(pByClusterId.keySet());
         Collections.sort(keys);
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
         for (String key : keys) {
             holder.add(rebuildSerializedCluster(pByClusterId.get(key), discardNotOnCLuster));
         }
@@ -238,7 +238,7 @@ public class SpectrumInClusterTests {
      * @param ccs
      * @return
      */
-    public static ISpectralCluster rebuildSerializedCluster(final List<String> ccs, boolean discardNotOnCLuster) {
+    public static IPeptideSpectrumCluster rebuildSerializedCluster(final List<String> ccs, boolean discardNotOnCLuster) {
         SpectralCluster ret = new SpectralCluster();
         for (String ccStr : ccs) {
             SpectrumInCluster cc = ClusterUtilities.readSpectrumInCluster(ccStr);
@@ -249,10 +249,10 @@ public class SpectrumInClusterTests {
     }
 
 
-    public static List<ISpectralCluster> rebuildClusters(final Map<String, List<SpectrumInCluster>> pByClusterId, boolean discardNotOnCLuster) {
+    public static List<IPeptideSpectrumCluster> rebuildClusters(final Map<String, List<SpectrumInCluster>> pByClusterId, boolean discardNotOnCLuster) {
         List<String> keys = new ArrayList<String>(pByClusterId.keySet());
         Collections.sort(keys);
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
         for (String key : keys) {
             holder.add(rebuildCluster(pByClusterId.get(key), discardNotOnCLuster));
         }
@@ -267,7 +267,7 @@ public class SpectrumInClusterTests {
      * @param ccs
      * @return
      */
-    public static ISpectralCluster rebuildCluster(final List<SpectrumInCluster> ccs, boolean discardNotOnCLuster) {
+    public static IPeptideSpectrumCluster rebuildCluster(final List<SpectrumInCluster> ccs, boolean discardNotOnCLuster) {
         SpectralCluster ret = new SpectralCluster();
         for (SpectrumInCluster cc : ccs) {
             if (!discardNotOnCLuster || !cc.isRemoveFromCluster())

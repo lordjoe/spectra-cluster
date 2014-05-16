@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.clustersmilarity.AbstractClusterMatch
@@ -12,19 +12,19 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
  */
 public abstract class AbstractClusterMatch implements IClusterMatch {
 
-    private final ISpectralCluster source;
-    private final ISpectralCluster target;
+    private final IPeptideSpectrumCluster source;
+    private final IPeptideSpectrumCluster target;
 
-    public AbstractClusterMatch(ISpectralCluster source, ISpectralCluster target) {
+    public AbstractClusterMatch(IPeptideSpectrumCluster source, IPeptideSpectrumCluster target) {
         this.source = source;
         this.target = target;
     }
 
-    public ISpectralCluster getSource() {
+    public IPeptideSpectrumCluster getSource() {
         return source;
     }
 
-    public ISpectralCluster getTarget() {
+    public IPeptideSpectrumCluster getTarget() {
         return target;
     }
 

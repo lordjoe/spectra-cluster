@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
@@ -94,7 +94,8 @@ public class FrankEtAlConsensusSpectrumBuilder implements DeprecatedConsensusSpe
      * @return A list of Peaks sorted according to their intensities.
      */
     @Override
-    public ISpectrum buildConsensusSpectrum(ISpectralCluster cluster, Object... otherData) {
+    public ISpectrum buildConsensusSpectrum(IPeptideSpectrumCluster cluster, Object... otherData) {
+        //todo: this worries me, it only using top quality spectra to build consensus spectrum
         final List<ISpectrum> clusteredSpectra = cluster.getHighestQualitySpectra();     // concensus only on highest quality
         //     final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         return buildConsensusSpectrum(clusteredSpectra);

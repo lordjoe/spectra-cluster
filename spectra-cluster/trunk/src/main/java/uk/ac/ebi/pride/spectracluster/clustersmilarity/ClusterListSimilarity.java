@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
@@ -28,11 +28,11 @@ public class ClusterListSimilarity {
      * @param s2 - entering lists of spectral clusters - exit unmatched clusters
      * @return matched clusters from set 1
      */
-    public List<ISpectralCluster> identicalClusters(List<ISpectralCluster> s1, List<ISpectralCluster> s2) {
+    public List<IPeptideSpectrumCluster> identicalClusters(List<IPeptideSpectrumCluster> s1, List<IPeptideSpectrumCluster> s2) {
         IClusterDistance dm = getDistanceMeasure();
-        List<ISpectralCluster> identical = new ArrayList<ISpectralCluster>();
-        List<ISpectralCluster> matched1 = new ArrayList<ISpectralCluster>();
-        List<ISpectralCluster> matched2 = new ArrayList<ISpectralCluster>();
+        List<IPeptideSpectrumCluster> identical = new ArrayList<IPeptideSpectrumCluster>();
+        List<IPeptideSpectrumCluster> matched1 = new ArrayList<IPeptideSpectrumCluster>();
+        List<IPeptideSpectrumCluster> matched2 = new ArrayList<IPeptideSpectrumCluster>();
 
         Collections.sort(s1);   // sort by mz
         Collections.sort(s2);   // sort by mz
@@ -49,13 +49,13 @@ public class ClusterListSimilarity {
         double oldSC1MZ = Double.MIN_VALUE;
         double oldSC2MZ = Double.MIN_VALUE;
 
-        ISpectralCluster oldSc1 = null;
-        Set<ISpectralCluster> alreadyMatched = new HashSet<ISpectralCluster>();
+        IPeptideSpectrumCluster oldSc1 = null;
+        Set<IPeptideSpectrumCluster> alreadyMatched = new HashSet<IPeptideSpectrumCluster>();
 
         while (t < nPK1 && e < nPK2) {
-            ISpectralCluster sc1 = s1.get(t);
+            IPeptideSpectrumCluster sc1 = s1.get(t);
 
-            ISpectralCluster sc2 = s2.get(e);
+            IPeptideSpectrumCluster sc2 = s2.get(e);
 
             final ISpectrum spc1 = sc1.getConsensusSpectrum();
             final ISpectrum spc2 = sc2.getConsensusSpectrum();

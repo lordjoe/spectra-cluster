@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.util.Collection;
 
@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public interface IClusterRetriever {
 
-    public ISpectralCluster retrieve(String clusterId);
+    public IPeptideSpectrumCluster retrieve(String clusterId);
 
-    public Collection<ISpectralCluster> retrieve(double minMz, double maxMz);
+    public Collection<IPeptideSpectrumCluster> retrieve(double minMz, double maxMz);
 }

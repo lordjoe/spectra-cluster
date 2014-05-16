@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -34,7 +34,7 @@ public class ClusterContentSimilarity {
      * @param s2 - entering lists of spectral clusters - exit unmatched clusters
      * @return matched clusters from set 1
      */
-    public List<ISpectralCluster> identicalClusters(List<ISpectralCluster> s1, List<ISpectralCluster> s2) {
+    public List<IPeptideSpectrumCluster> identicalClusters(List<IPeptideSpectrumCluster> s1, List<IPeptideSpectrumCluster> s2) {
         IClusterDistance dm = getDistanceMeasure();
 
         Collections.sort(s1, QualityClusterComparator.INSTANCE); // sort by hishest quality
@@ -42,9 +42,9 @@ public class ClusterContentSimilarity {
         Collections.sort(s2, QualityClusterComparator.INSTANCE); // sort by hishest quality
 
 
-        List<ISpectralCluster> identical = new ArrayList<ISpectralCluster>();
-        List<ISpectralCluster> matched1 = new ArrayList<ISpectralCluster>();
-        List<ISpectralCluster> matched2 = new ArrayList<ISpectralCluster>();
+        List<IPeptideSpectrumCluster> identical = new ArrayList<IPeptideSpectrumCluster>();
+        List<IPeptideSpectrumCluster> matched1 = new ArrayList<IPeptideSpectrumCluster>();
+        List<IPeptideSpectrumCluster> matched2 = new ArrayList<IPeptideSpectrumCluster>();
 
 
         final int nPK1 = s1.size();
@@ -57,9 +57,9 @@ public class ClusterContentSimilarity {
         int t = 0;
         int e = 0;
         while (t < nPK1 && e < nPK2) {
-            ISpectralCluster sc1 = s1.get(t);
+            IPeptideSpectrumCluster sc1 = s1.get(t);
             ISpectrum q1 = sc1.getHighestQualitySpectrum();
-            ISpectralCluster sc2 = s2.get(e);
+            IPeptideSpectrumCluster sc2 = s2.get(e);
             ISpectrum q2 = sc2.getHighestQualitySpectrum();
 
             double quality_difference = q1.getQualityScore() - q2.getQualityScore();

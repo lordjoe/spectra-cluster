@@ -7,7 +7,7 @@ import org.systemsbiology.hadoop.HDFSAccessor;
 import org.systemsbiology.remotecontrol.LocalMachineFileSystem;
 import org.systemsbiology.remotecontrol.RemoteUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringHeader;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
@@ -38,7 +38,7 @@ public class PSMUtilities {
     public static final int MAX_PROCESSED_FILES_DEBUG_ONLY = Integer.MAX_VALUE; // 4;
 
     public static void appendFileClusters(Appendable out, String clusterDirectory, IFileSystem fs, TypedPredicate<String>... tests) {
-        TypedVisitor<ISpectralCluster> visitor = new AppendClusterings(out);
+        TypedVisitor<IPeptideSpectrumCluster> visitor = new AppendClusterings(out);
         int numberProcessed = 0;
         if (fs.isDirectory(clusterDirectory)) {
             final String[] files = fs.ls(clusterDirectory);
@@ -68,7 +68,7 @@ public class PSMUtilities {
         }
     }
 
-    public static class AppendClusterings implements TypedVisitor<ISpectralCluster> {
+    public static class AppendClusterings implements TypedVisitor<IPeptideSpectrumCluster> {
         private final Appendable out;
 
         public AppendClusterings(final Appendable pOut) {
@@ -83,7 +83,7 @@ public class PSMUtilities {
          * @param pISpectralCluster interface implemented by the visitor pattern
          */
         @Override
-        public void visit(@Nonnull final ISpectralCluster sc) {
+        public void visit(@Nonnull final IPeptideSpectrumCluster sc) {
             new DotClusterClusterAppender().appendCluster(out, sc);
         }
     }
@@ -121,7 +121,7 @@ public class PSMUtilities {
                 simpleClusterSet.setHeader(header);
             }
 
-            ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
+            IPeptideSpectrumCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
             simpleClusterSet.addClusters(Arrays.asList(clusters));
 
         }
@@ -154,8 +154,8 @@ public class PSMUtilities {
                     simpleClusterSet.setHeader(header);
                 }
 
-                ISpectralCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
-                List<ISpectralCluster> clusters1 = Arrays.asList(clusters);
+                IPeptideSpectrumCluster[] clusters = readClustersFromClusteringFile(lineNumberReader);
+                List<IPeptideSpectrumCluster> clusters1 = Arrays.asList(clusters);
                 stc.addClusters(clusters1);
                 simpleClusterSet.addClusters(clusters1);
             } catch (IOException e) {
@@ -183,8 +183,8 @@ public class PSMUtilities {
      * @param inp
      * @return
      */
-    public static ISpectralCluster[] readClustersFromClusteringFile(LineNumberReader inp) {
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+    public static IPeptideSpectrumCluster[] readClustersFromClusteringFile(LineNumberReader inp) {
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
 
         try {
             String line = inp.readLine();
@@ -196,7 +196,7 @@ public class PSMUtilities {
             while (line != null) {
                 if (line.startsWith(ParserUtilities.BEGIN_CLUSTERING)) {
                     if (!clusterContent.isEmpty()) {
-                        ISpectralCluster cluster = processIntoCluster(clusterContent);
+                        IPeptideSpectrumCluster cluster = processIntoCluster(clusterContent);
                         if (cluster != null) {
                             holder.add(cluster);
                         }
@@ -210,7 +210,7 @@ public class PSMUtilities {
             }
 
             if (!clusterContent.isEmpty()) {
-                ISpectralCluster cluster = processIntoCluster(clusterContent);
+                IPeptideSpectrumCluster cluster = processIntoCluster(clusterContent);
                 if (cluster != null) {
                     holder.add(cluster);
                 }
@@ -219,12 +219,12 @@ public class PSMUtilities {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
-        ISpectralCluster[] ret = new ISpectralCluster[holder.size()];
+        IPeptideSpectrumCluster[] ret = new IPeptideSpectrumCluster[holder.size()];
         holder.toArray(ret);
         return ret;
     }
 
-    protected static ISpectralCluster processIntoCluster(List<String> clusterLines) {
+    protected static IPeptideSpectrumCluster processIntoCluster(List<String> clusterLines) {
 
         PSMSpectralCluster cluster = new PSMSpectralCluster();
         PSMSpectrum spectrum = null;

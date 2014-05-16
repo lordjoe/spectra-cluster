@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +23,7 @@ public class NumberOfStableClusters implements IClusterStatistics<Integer> {
 
 
     @Override
-    public void visit(@Nonnull ISpectralCluster pT) {
+    public void visit(@Nonnull IPeptideSpectrumCluster pT) {
         if (pT.isStable())
             statistics++;
     }

@@ -5,10 +5,10 @@ import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
 import org.systemsbiology.hadoop.IParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
@@ -239,7 +239,7 @@ public class Defaults {
 
     public IClusteringEngine getDefaultClusteringEngine() {
         SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
-        Comparator<ISpectralCluster> spectrumComparator = getDefaultSpectrumComparator();
+        Comparator<IPeptideSpectrumCluster> spectrumComparator = getDefaultSpectrumComparator();
         return ClusteringEngine.getClusteringEngineFactory().getClusteringEngine();
 
     }
@@ -288,7 +288,7 @@ public class Defaults {
         return consensusFactory.getConsensusSpectrumBuilder();
     }
 
-    public Comparator<ISpectralCluster> getDefaultSpectrumComparator() {
+    public Comparator<IPeptideSpectrumCluster> getDefaultSpectrumComparator() {
         return defaultSpectrumComparator;
     }
 

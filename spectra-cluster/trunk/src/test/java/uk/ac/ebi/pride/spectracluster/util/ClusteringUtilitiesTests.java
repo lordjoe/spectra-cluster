@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -23,26 +23,26 @@ public class ClusteringUtilitiesTests {
         // read Spectra
 
         // make two identical lists
-        List<ISpectralCluster> list1 = ClusterUtilities.asClusters(spectra);
-        List<ISpectralCluster> list2 = ClusterUtilities.asClusters(spectra);
+        List<IPeptideSpectrumCluster> list1 = ClusterUtilities.asClusters(spectra);
+        List<IPeptideSpectrumCluster> list2 = ClusterUtilities.asClusters(spectra);
 
         // add the second list to the first making duplicates
         list1.addAll(list2); // dupicate clusters
 
         final SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         // now merge - should get less or equal to original list
-        final List<ISpectralCluster> newClusters = ClusterUtilities.mergeClusters(list1, similarityChecker, 1);
+        final List<IPeptideSpectrumCluster> newClusters = ClusterUtilities.mergeClusters(list1, similarityChecker, 1);
         // we merge at least as many as we had
         Assert.assertTrue(newClusters.size() <= list1.size());
 
         // now merge - should get less or equal to original list
-        final List<ISpectralCluster> newClusters2 = ClusterUtilities.mergeClusters(newClusters, similarityChecker, 1);
+        final List<IPeptideSpectrumCluster> newClusters2 = ClusterUtilities.mergeClusters(newClusters, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters2.size() <= newClusters.size());
-        final List<ISpectralCluster> newClusters3 = ClusterUtilities.mergeClusters(newClusters2, similarityChecker, 1);
+        final List<IPeptideSpectrumCluster> newClusters3 = ClusterUtilities.mergeClusters(newClusters2, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters3.size() <= newClusters2.size());
-        final List<ISpectralCluster> newClusters4 = ClusterUtilities.mergeClusters(newClusters3, similarityChecker, 1);
+        final List<IPeptideSpectrumCluster> newClusters4 = ClusterUtilities.mergeClusters(newClusters3, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters4.size() <= newClusters3.size());
 
@@ -60,9 +60,9 @@ public class ClusteringUtilitiesTests {
     public void testMerge() throws Exception {
         List<ISpectrum> spectra = ClusteringTestUtilities.readConsensusSpectralItems();
 
-        List<ISpectralCluster> list = ClusterUtilities.asClusters(spectra);
+        List<IPeptideSpectrumCluster> list = ClusterUtilities.asClusters(spectra);
         IClusteringEngine engine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        for (ISpectralCluster sc : list) {
+        for (IPeptideSpectrumCluster sc : list) {
             engine.addClusters(sc);
         }
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
@@ -70,11 +70,11 @@ public class ClusteringUtilitiesTests {
                 break;
         }
         // we have solved for these
-        List<ISpectralCluster> found = (List<ISpectralCluster>) engine.getClusters();
+        List<IPeptideSpectrumCluster> found = (List<IPeptideSpectrumCluster>) engine.getClusters();
 
 
         final SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
-        final List<ISpectralCluster> newClusters = ClusterUtilities.mergeClusters(found, similarityChecker, 1);
+        final List<IPeptideSpectrumCluster> newClusters = ClusterUtilities.mergeClusters(found, similarityChecker, 1);
 
         // because we just did this in the engine we expect little further merging
         Assert.assertEquals(newClusters.size(), found.size());

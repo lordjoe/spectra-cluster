@@ -31,7 +31,7 @@ public class ClusterComparatorTests {
 
     @Test
     public void testClusterComparator() throws Exception {
-        final ISpectralCluster cluster1 = ClusterUtilities.asCluster(peptideSpectrumMatches.get(0));
+        final IPeptideSpectrumCluster cluster1 = ClusterUtilities.asCluster(peptideSpectrumMatches.get(0));
         int result = defaultClusterComparator.compare(cluster1, ClusterUtilities.asCluster(peptideSpectrumMatches.get(1)));
         int originalResult = originalClusterComparator.compare(cluster1, ClusterUtilities.asCluster(peptideSpectrumMatches.get(1)));
         Assert.assertEquals(result, originalResult);

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.ClusterDecoyChart;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
 
@@ -105,7 +105,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getDistributionData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize, ClusterDataType type) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize, type);
+        TypedVisitor<IPeptideSpectrumCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize, type);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -115,7 +115,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize);
+        TypedVisitor<IPeptideSpectrumCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -125,7 +125,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterMZSpread> getClusterRangeData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterMZSpread> ranges = new ArrayList<ClusterMZSpread>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateClusterMZRangeVisitor(ranges, minimumSize);
+        TypedVisitor<IPeptideSpectrumCluster> tv = new CummulativeFDR.AccumulateClusterMZRangeVisitor(ranges, minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(ranges);
@@ -135,7 +135,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize, discriminator);
+        TypedVisitor<IPeptideSpectrumCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -144,7 +144,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<ISpectralCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize, discriminator);
+        TypedVisitor<IPeptideSpectrumCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv2);
         Collections.sort(targets);
@@ -235,7 +235,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
             File originalFile = new File(arg);
             IClusterSet cs = MostSimilarClusterSet.readClusterSet(spectra1, originalFile);
             //      cs = cs.dropClustersLessThanSize(4);
-            for (ISpectralCluster sc : cs.getClusters()) {
+            for (IPeptideSpectrumCluster sc : cs.getClusters()) {
                 sc.getPeptidePurity(INSTANCE);
             }
             cs.setName(arg);

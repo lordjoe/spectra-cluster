@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  *          * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectralCluster /* extends WatchedClass */ implements ISpectralCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpectrumCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<IPeptideSpectrumCluster> {
 
 
     private String id;
@@ -37,7 +37,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
-    public SpectralCluster(ISpectralCluster copied) {
+    public SpectralCluster(IPeptideSpectrumCluster copied) {
         this.id = copied.getId();
         this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
@@ -370,7 +370,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
      * @return
      */
     @Override
-    public int compareTo(ISpectralCluster o) {
+    public int compareTo(IPeptideSpectrumCluster o) {
         if (o == this)
             return 0;
         try {
@@ -415,7 +415,7 @@ public class SpectralCluster /* extends WatchedClass */ implements ISpectralClus
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(ISpectralCluster o) {
+    public boolean equivalent(IPeptideSpectrumCluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())

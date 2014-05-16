@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
@@ -16,27 +16,27 @@ public class SpectrumToCluster {
 
     public static final int MAX_DUPLICATED_REPORTED = 16;
 
-    private final Map<String, List<ISpectralCluster>> spectrumIdToCluster = new HashMap<String, List<ISpectralCluster>>();
+    private final Map<String, List<IPeptideSpectrumCluster>> spectrumIdToCluster = new HashMap<String, List<IPeptideSpectrumCluster>>();
 
 
-    public void addClusters(List<ISpectralCluster> added) {
-        for (ISpectralCluster sc : added) {
+    public void addClusters(List<IPeptideSpectrumCluster> added) {
+        for (IPeptideSpectrumCluster sc : added) {
             addCluster(sc);
         }
     }
 
-    public void addCluster(ISpectralCluster added) {
+    public void addCluster(IPeptideSpectrumCluster added) {
         for (ISpectrum sc : added.getClusteredSpectra()) {
             addSpectrum(sc, added);
         }
     }
 
-    private void addSpectrum(final ISpectrum pSc, final ISpectralCluster pAdded) {
+    private void addSpectrum(final ISpectrum pSc, final IPeptideSpectrumCluster pAdded) {
         String id = pSc.getId();
         if (spectrumIdToCluster.containsKey(id)) {
             spectrumIdToCluster.get(id).add(pAdded); // this cluster as well
         } else {
-            List<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>();
+            List<IPeptideSpectrumCluster> clusters = new ArrayList<IPeptideSpectrumCluster>();
             clusters.add(pAdded);
             spectrumIdToCluster.put(id, clusters);
         }
@@ -67,7 +67,7 @@ public class SpectrumToCluster {
 
     private void appendDuplicatedSpectraOfSize(final int pDup, final Appendable out) {
         for (String id : spectrumIdToCluster.keySet()) {
-            List<ISpectralCluster> clusters = spectrumIdToCluster.get(id);
+            List<IPeptideSpectrumCluster> clusters = spectrumIdToCluster.get(id);
             int numberDuplicates = clusters.size();
             if (numberDuplicates == pDup)
                 appendDuplicatedSpectraOfSize(clusters, out);
@@ -80,11 +80,11 @@ public class SpectrumToCluster {
      * @param clusters
      * @param pOut
      */
-    private void appendDuplicatedSpectraOfSize(List<ISpectralCluster> clusters, final Appendable out) {
+    private void appendDuplicatedSpectraOfSize(List<IPeptideSpectrumCluster> clusters, final Appendable out) {
 
         List<List<String>> holder = new ArrayList<List<String>>();
 
-        for (ISpectralCluster cluster : clusters) {
+        for (IPeptideSpectrumCluster cluster : clusters) {
             Set<String> spectralIds = cluster.getSpectralIds();
             List<String> ids = new ArrayList<String>(spectralIds);
             Collections.sort(ids);

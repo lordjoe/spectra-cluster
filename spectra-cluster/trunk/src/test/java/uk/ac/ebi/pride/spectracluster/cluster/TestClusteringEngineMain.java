@@ -46,7 +46,7 @@ public class TestClusteringEngineMain {
             return; // not an mgf
 
         long start = System.currentTimeMillis();
-        List<ISpectralCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
+        List<IPeptideSpectrumCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
 
         /**
          * Add your favorite clustering engine here
@@ -66,7 +66,7 @@ public class TestClusteringEngineMain {
             return;
         start = System.currentTimeMillis();
 
-        for (ISpectralCluster sc : clusters) {
+        for (IPeptideSpectrumCluster sc : clusters) {
             engine.addClusters(sc);
         }
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
@@ -77,7 +77,7 @@ public class TestClusteringEngineMain {
             }
         }
 
-        final List<ISpectralCluster> clusters1 = (List<ISpectralCluster>) engine.getClusters();
+        final List<IPeptideSpectrumCluster> clusters1 = (List<IPeptideSpectrumCluster>) engine.getClusters();
 
 
         saveClusters(clusters1, inputFile);
@@ -95,7 +95,7 @@ public class TestClusteringEngineMain {
      * @param pClusters1 !null list of clusters
      * @param pInputFile !null input file
      */
-    protected void saveClusters(final List<ISpectralCluster> pClusters1, final File pInputFile) {
+    protected void saveClusters(final List<IPeptideSpectrumCluster> pClusters1, final File pInputFile) {
 
         if (pClusters1.size() == 0)
             return;
@@ -105,8 +105,8 @@ public class TestClusteringEngineMain {
             System.out.println(new File(outName).getCanonicalPath());
             out = new PrintWriter(new FileWriter(outName));
             final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-            for (ISpectralCluster iSpectralCluster : pClusters1) {
-                clusterAppender.appendCluster(out, iSpectralCluster);
+            for (IPeptideSpectrumCluster iPeptideSpectrumCluster : pClusters1) {
+                clusterAppender.appendCluster(out, iPeptideSpectrumCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

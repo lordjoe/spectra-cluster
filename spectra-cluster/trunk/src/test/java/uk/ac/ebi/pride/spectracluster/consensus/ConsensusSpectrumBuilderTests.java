@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
@@ -23,7 +23,7 @@ public class ConsensusSpectrumBuilderTests {
         ConcensusSpectrumBuilderFactory factory2 = ConsensusSpectrumNew.FACTORY;
 
 
-        List<ISpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectrumCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         //noinspection UnusedDeclaration
         int numberTested = 0;
 

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.utilities.TypedVisitor;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
+public class ClusterStatistics implements TypedVisitor<IPeptideSpectrumCluster> {
     private final List<IClusterStatistics> clusterStatisticses = new ArrayList<IClusterStatistics>();
     private final IClusterSet clusters;
     private final ISpectrumRetriever spectra;
@@ -33,8 +33,8 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     }
 
     public void gatherData() {
-        List<ISpectralCluster> clusters1 = clusters.getClusters();
-        for (ISpectralCluster sc : clusters1) {
+        List<IPeptideSpectrumCluster> clusters1 = clusters.getClusters();
+        for (IPeptideSpectrumCluster sc : clusters1) {
             visit(sc);
         }
     }
@@ -52,7 +52,7 @@ public class ClusterStatistics implements TypedVisitor<ISpectralCluster> {
     }
 
     @Override
-    public void visit(@Nonnull ISpectralCluster pT) {
+    public void visit(@Nonnull IPeptideSpectrumCluster pT) {
         for (IClusterStatistics visitor : clusterStatisticses) {
             visitor.visit(pT);
         }

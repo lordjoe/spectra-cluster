@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.util.LimitedList;
 import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
@@ -16,24 +16,24 @@ public class MostSimilarClusters {
 
     public static final int MAX_SIMILAR_CLUSTERS = 3;
 
-    private final ISpectralCluster baseCluster;
+    private final IPeptideSpectrumCluster baseCluster;
     private final LimitedList<ClusterDistanceItem> mostSimilarClusters;
     private final IClusterDistance clusterDistance;
     private double bestDistance;
 
 
-    public MostSimilarClusters(ISpectralCluster baseCluster, IClusterDistance clusterDistance) {
+    public MostSimilarClusters(IPeptideSpectrumCluster baseCluster, IClusterDistance clusterDistance) {
         this.baseCluster = baseCluster;
         this.clusterDistance = clusterDistance;
         this.mostSimilarClusters = new TreeSetLimitedList<ClusterDistanceItem>(ClusterDistanceItem.class, MAX_SIMILAR_CLUSTERS);
         bestDistance = Double.MAX_VALUE;
     }
 
-    public ISpectralCluster getBaseCluster() {
+    public IPeptideSpectrumCluster getBaseCluster() {
         return baseCluster;
     }
 
-    public ISpectralCluster getBestMatchingCluster() {
+    public IPeptideSpectrumCluster getBestMatchingCluster() {
 
         ClusterDistanceItem bestMatch = getBestMatch();
         return bestMatch.getTarget();
@@ -71,7 +71,7 @@ public class MostSimilarClusters {
         return clusterDistanceItems.get(0);
     }
 
-    public void addCluster(ISpectralCluster cluster) {
+    public void addCluster(IPeptideSpectrumCluster cluster) {
         double distance = clusterDistance.distance(baseCluster, cluster);
         if (distance < bestDistance) {
             bestDistance = distance;
@@ -81,18 +81,18 @@ public class MostSimilarClusters {
         mostSimilarClusters.add(new ClusterDistanceItem(baseCluster, cluster, distance));
     }
 
-    public void addClusters(Iterable<ISpectralCluster> clusters) {
-        for (ISpectralCluster cluster : clusters) {
+    public void addClusters(Iterable<IPeptideSpectrumCluster> clusters) {
+        for (IPeptideSpectrumCluster cluster : clusters) {
             if (baseCluster == cluster)
                 continue; // do not compare a cluster to itself
             addCluster(cluster);
         }
     }
 
-    public class ClusterDistanceComparator implements Comparator<ISpectralCluster> {
+    public class ClusterDistanceComparator implements Comparator<IPeptideSpectrumCluster> {
 
         @Override
-        public int compare(ISpectralCluster o1, ISpectralCluster o2) {
+        public int compare(IPeptideSpectrumCluster o1, IPeptideSpectrumCluster o2) {
             double distance1 = clusterDistance.distance(baseCluster, o1);
             double distance2 = clusterDistance.distance(baseCluster, o2);
 

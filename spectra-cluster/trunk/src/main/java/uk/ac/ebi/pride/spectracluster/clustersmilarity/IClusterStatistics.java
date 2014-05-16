@@ -1,13 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.utilities.TypedVisitor;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 /**
  * @author Rui Wang
  * @version $Id$
  */
-public interface IClusterStatistics<T> extends TypedVisitor<ISpectralCluster> {
+public interface IClusterStatistics<T> extends TypedVisitor<IPeptideSpectrumCluster> {
 
     /**
      * returb an object representing ststistics

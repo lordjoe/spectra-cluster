@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import com.lordjoe.utilities.TypedPredicate;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.io.FilteredClusterAppender
@@ -11,9 +11,9 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
  */
 public class FilteredClusterAppender implements IClusterAppender {
     private final IClusterAppender clusterAppender;
-    private final TypedPredicate<ISpectralCluster> m_AppendIf;
+    private final TypedPredicate<IPeptideSpectrumCluster> m_AppendIf;
 
-    public FilteredClusterAppender(final IClusterAppender wrapped, TypedPredicate<ISpectralCluster> appendIf) {
+    public FilteredClusterAppender(final IClusterAppender wrapped, TypedPredicate<IPeptideSpectrumCluster> appendIf) {
         clusterAppender = wrapped;
         m_AppendIf = appendIf;
     }
@@ -25,7 +25,7 @@ public class FilteredClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public void appendCluster(final Appendable out, final ISpectralCluster data, final Object... otherData) {
+    public void appendCluster(final Appendable out, final IPeptideSpectrumCluster data, final Object... otherData) {
         boolean anyThingDone = false;
         //noinspection  SimplifiableIfStatement
         if (m_AppendIf.apply(data, otherData)) {

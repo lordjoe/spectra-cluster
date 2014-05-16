@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 
 /**
@@ -36,7 +36,7 @@ public class ClusterSetListener implements ClusterCreateListener {
     public static final int DOT_PER_LINE = 40;
 
     @Override
-    public void onClusterCreate(final ISpectralCluster cluster, final Object... otherData) {
+    public void onClusterCreate(final IPeptideSpectrumCluster cluster, final Object... otherData) {
         set.addCluster(cluster);
         // show progress
         int size = set.getClusterCount();

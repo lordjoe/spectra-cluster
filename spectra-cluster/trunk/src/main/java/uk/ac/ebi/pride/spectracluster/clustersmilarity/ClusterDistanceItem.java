@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.io.IOException;
 import java.util.Set;
@@ -12,11 +12,11 @@ import java.util.Set;
  * @date 12/11/13
  */
 public class ClusterDistanceItem implements IClusterMatch {
-    private final ISpectralCluster source;
-    private final ISpectralCluster target;
+    private final IPeptideSpectrumCluster source;
+    private final IPeptideSpectrumCluster target;
     private final double distance;
 
-    public ClusterDistanceItem(ISpectralCluster baseCluster, ISpectralCluster otherCluster, double distance) {
+    public ClusterDistanceItem(IPeptideSpectrumCluster baseCluster, IPeptideSpectrumCluster otherCluster, double distance) {
         this.source = baseCluster;
         this.target = otherCluster;
         this.distance = distance;
@@ -76,7 +76,7 @@ public class ClusterDistanceItem implements IClusterMatch {
      * @return
      */
     @Override
-    public ISpectralCluster getTarget() {
+    public IPeptideSpectrumCluster getTarget() {
         return target;
     }
 
@@ -86,7 +86,7 @@ public class ClusterDistanceItem implements IClusterMatch {
      * @return
      */
     @Override
-    public ISpectralCluster getSource() {
+    public IPeptideSpectrumCluster getSource() {
         return source;
     }
 

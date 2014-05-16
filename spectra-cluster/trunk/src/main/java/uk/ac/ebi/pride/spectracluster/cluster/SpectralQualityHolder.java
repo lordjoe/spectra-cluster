@@ -107,6 +107,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
                 setDirty(false);
                 return;
             }
+
             Collections.sort(highestQualitySpectra, QualitySpectrumComparator.INSTANCE); // sort highest quality first
             if (highestQualitySpectra.size() > NUMBER_SPECTRA_FOR_CONSENSUS) {
                 List<ISpectrum> retained = new ArrayList<ISpectrum>();
@@ -116,6 +117,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
                 highestQualitySpectra.clear();
                 highestQualitySpectra.addAll(retained);
             }
+
             setLowestClusteredQuality(highestQualitySpectra.get(highestQualitySpectra.size() - 1).getQualityScore());
             setDirty(false);
         }
@@ -129,8 +131,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
      */
     @Override
     public void onSpectraAdd(final ISpectrumHolder holder, final ISpectrum... added) {
-        for (int i = 0; i < added.length; i++) {
-            ISpectrum add = added[i];
+        for (ISpectrum add : added) {
             handleQualityInsert(add);
         }
     }
@@ -143,8 +144,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
      */
     @Override
     public void onSpectraRemove(final ISpectrumHolder holder, final ISpectrum... removed) {
-        for (int i = 0; i < removed.length; i++) {
-            ISpectrum rem = removed[i];
+        for (ISpectrum rem : removed) {
             handleQualityRemove(rem);
         }
     }

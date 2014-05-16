@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import java.util.List;
 public class MostSimilarClusterSetStatistics implements IClusterStatistics<MostSimilarClusterSet> {
 
     private final MostSimilarClusterSet mostSimilarClusterSet;
-    private final List<ISpectralCluster> clusters;
+    private final List<IPeptideSpectrumCluster> clusters;
     private boolean dirty;
 
 
     public MostSimilarClusterSetStatistics(IClusterSet baseClusterSet, IClusterDistance clusterDistance) {
         this.mostSimilarClusterSet = new MostSimilarClusterSet(baseClusterSet, clusterDistance);
-        this.clusters = new ArrayList<ISpectralCluster>();
+        this.clusters = new ArrayList<IPeptideSpectrumCluster>();
     }
 
 
@@ -43,7 +43,7 @@ public class MostSimilarClusterSetStatistics implements IClusterStatistics<MostS
     }
 
     @Override
-    public void visit(@Nonnull ISpectralCluster pT) {
+    public void visit(@Nonnull IPeptideSpectrumCluster pT) {
         dirty = true;
         clusters.add(pT);
     }

@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
  * Date: 9/25/13
  */
 @SuppressWarnings("UnusedDeclaration")
-public class ClusterSizeFilter implements TypedPredicate<ISpectralCluster> {
+public class ClusterSizeFilter implements TypedPredicate<IPeptideSpectrumCluster> {
 
     private final int m_MinimumSize;
     private final int m_MaximumSize;
@@ -39,8 +39,8 @@ public class ClusterSizeFilter implements TypedPredicate<ISpectralCluster> {
      * @return what the implementation does
      */
     @Override
-    public boolean apply(@Nonnull final ISpectralCluster pISpectralCluster, final Object... otherdata) {
-        int clusteredSpectraCount = pISpectralCluster.getClusteredSpectraCount();
+    public boolean apply(@Nonnull final IPeptideSpectrumCluster pIPeptideSpectrumCluster, final Object... otherdata) {
+        int clusteredSpectraCount = pIPeptideSpectrumCluster.getClusteredSpectraCount();
         if (clusteredSpectraCount < getMinimumSize())
             return false;
         //noinspection RedundantIfStatement

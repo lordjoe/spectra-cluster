@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -53,7 +53,7 @@ public class ConcensusSpectrumDistance implements IClusterDistance {
      * @return distance >= 0
      */
     @Override
-    public double distance(final ISpectralCluster c1, final ISpectralCluster c2) {
+    public double distance(final IPeptideSpectrumCluster c1, final IPeptideSpectrumCluster c2) {
         final ISpectrum s1 = c1.getConsensusSpectrum();
         final ISpectrum s2 = c2.getConsensusSpectrum();
 

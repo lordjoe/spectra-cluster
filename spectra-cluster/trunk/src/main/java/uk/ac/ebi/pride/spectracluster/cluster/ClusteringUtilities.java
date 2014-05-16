@@ -22,11 +22,11 @@ public class ClusteringUtilities {
      * @return !null List<ISpectralCluster
      */
     @Nonnull
-    public static List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster, @Nonnull IClusteringEngine engine) {
-        final List<ISpectralCluster> allClusters = engine.findNoneFittingSpectra(cluster);
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+    public static List<IPeptideSpectrumCluster> asWritttenSpectra(@Nonnull IPeptideSpectrumCluster cluster, @Nonnull IClusteringEngine engine) {
+        final List<IPeptideSpectrumCluster> allClusters = engine.findNoneFittingSpectra(cluster);
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
         if (!allClusters.isEmpty()) {
-            for (ISpectralCluster removedCluster : allClusters) {
+            for (IPeptideSpectrumCluster removedCluster : allClusters) {
 
                 // drop all spectra
                 final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.io.*;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * User: Steve
  * Date: 7/19/13
  */
-public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
+public class CGFSpectrumIterable implements Iterable<IPeptideSpectrumCluster> {
 
     protected static LineNumberReader fileToLineNumberReader(File f) {
         try {
@@ -27,7 +27,7 @@ public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
 
     private final LineNumberReader reader;
     private final MGFSpectrumIterator one_time_iterator;
-    private ISpectralCluster nextCluster;
+    private IPeptideSpectrumCluster nextCluster;
 
     /**
      * build with an existing readable file
@@ -79,12 +79,12 @@ public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
      * @return an Iterator.
      */
     @Override
-    public Iterator<ISpectralCluster> iterator() {
+    public Iterator<IPeptideSpectrumCluster> iterator() {
         return one_time_iterator;
     }
 
 
-    protected class MGFSpectrumIterator implements Iterator<ISpectralCluster> {
+    protected class MGFSpectrumIterator implements Iterator<IPeptideSpectrumCluster> {
         /**
          * Returns <tt>true</tt> if the iteration has more elements. (In other
          * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -104,8 +104,8 @@ public class CGFSpectrumIterable implements Iterable<ISpectralCluster> {
          * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         @Override
-        public ISpectralCluster next() {
-            ISpectralCluster ret = nextCluster;
+        public IPeptideSpectrumCluster next() {
+            IPeptideSpectrumCluster ret = nextCluster;
             nextCluster = ParserUtilities.readSpectralCluster(reader, null);
             return ret;
         }
