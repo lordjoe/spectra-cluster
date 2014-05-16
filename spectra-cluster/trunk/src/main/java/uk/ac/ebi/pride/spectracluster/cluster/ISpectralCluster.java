@@ -50,6 +50,7 @@ public interface ISpectralCluster extends ISpectrumHolder,
     /**
      * all internally spectrum
      */
+    @Deprecated //todo: for development
     @Nonnull
     List<ISpectrum> getHighestQualitySpectra();
 
