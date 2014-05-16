@@ -82,7 +82,7 @@ public class DotClusterPathListener implements ClusterCreateListener {
      * @param cluster
      */
     @Override
-    public void onClusterCreate(final IPeptideSpectrumCluster cluster, Object... otherData) {
+    public void onClusterCreate(final IPeptideSpectralCluster cluster, Object... otherData) {
         boolean written = m_Appender.appendCluster(m_OutWriter, cluster);
         setAnythingWritten(written);
     }

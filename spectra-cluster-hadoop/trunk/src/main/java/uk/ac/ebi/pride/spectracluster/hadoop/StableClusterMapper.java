@@ -102,7 +102,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
 
         switch (clusters.length) {
             case 0:
@@ -116,7 +116,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         }
     }
 
-    protected void handleCluster(IPeptideSpectrumCluster cluster, String value, Context context) {
+    protected void handleCluster(IPeptideSpectralCluster cluster, String value, Context context) {
         IWideBinner binner = BINNER;
 
         //noinspection ForLoopReplaceableByForEach

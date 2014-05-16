@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
 
 /**
@@ -21,7 +21,7 @@ public interface IClusterDistance extends IAlgorithm {
      * @param c2 !null cluster
      * @return distance >= 0
      */
-    public double distance(IPeptideSpectrumCluster c1, IPeptideSpectrumCluster c2);
+    public double distance(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2);
 
     /**
      * if distance is further than the return value we consider the distance is

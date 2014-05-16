@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.LimitedList;
 import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
@@ -18,11 +18,11 @@ import java.util.Map;
 public class ClusterDistanceSet {
 
     public static final int MAX_PRESERVED_MATCHES = 3;
-    private final Map<IPeptideSpectrumCluster, LimitedList<ClusterDistanceItem>> bestMatches =
-            new HashMap<IPeptideSpectrumCluster, LimitedList<ClusterDistanceItem>>();
+    private final Map<IPeptideSpectralCluster, LimitedList<ClusterDistanceItem>> bestMatches =
+            new HashMap<IPeptideSpectralCluster, LimitedList<ClusterDistanceItem>>();
 
 
-    public List<ClusterDistanceItem> getBestMatches(IPeptideSpectrumCluster cluster) {
+    public List<ClusterDistanceItem> getBestMatches(IPeptideSpectralCluster cluster) {
         LimitedList<ClusterDistanceItem> items = bestMatches.get(cluster);
         if (items == null)
             //noinspection unchecked
@@ -32,7 +32,7 @@ public class ClusterDistanceSet {
     }
 
     public void addDistance(ClusterDistanceItem added) {
-        IPeptideSpectrumCluster baseCluster = added.getSource();
+        IPeptideSpectralCluster baseCluster = added.getSource();
         LimitedList<ClusterDistanceItem> items = bestMatches.get(baseCluster);
         if (items == null) {
             items = buildQueue();

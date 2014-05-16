@@ -53,10 +53,10 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < clusters.length; i++) {
-            IPeptideSpectrumCluster cluster = clusters[i];
+            IPeptideSpectralCluster cluster = clusters[i];
             int precursorCharge = cluster.getPrecursorCharge();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);

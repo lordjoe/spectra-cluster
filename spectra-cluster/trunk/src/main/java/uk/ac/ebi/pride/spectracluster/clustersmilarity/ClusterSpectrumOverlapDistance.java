@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.google.common.collect.Sets;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +30,7 @@ public class ClusterSpectrumOverlapDistance implements IClusterDistance {
     }
 
     @Override
-    public double distance(IPeptideSpectrumCluster c1, IPeptideSpectrumCluster c2) {
+    public double distance(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
         Set<String> c2SpectralIds = c2.getSpectralIds();
 

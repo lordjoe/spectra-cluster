@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -72,8 +72,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
         }
 
-        IPeptideSpectrumCluster source = m1.getSource();
-        IPeptideSpectrumCluster target = m1.getTarget();
+        IPeptideSpectralCluster source = m1.getSource();
+        IPeptideSpectralCluster target = m1.getTarget();
 
         similarityDistance = similarity.assessSimilarity(source.getConsensusSpectrum(), target.getConsensusSpectrum());
 
@@ -137,8 +137,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             appendable.append(getRating().toString());
             appendable.append("\t");
             if (bestMatch != null) {
-                IPeptideSpectrumCluster source = bestMatch.getSource();
-                IPeptideSpectrumCluster target = bestMatch.getTarget();
+                IPeptideSpectralCluster source = bestMatch.getSource();
+                IPeptideSpectralCluster target = bestMatch.getTarget();
                 appendable.append(source.getId());
                 appendable.append("\t");
                 appendable.append(target.getId());

@@ -129,8 +129,8 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param context  !null context
      * @param clusters !null list of clusters
      */
-    protected final void writeClusters(final Context context, final Collection<IPeptideSpectrumCluster> clusters) throws IOException, InterruptedException {
-        for (IPeptideSpectrumCluster cluster : clusters) {
+    protected final void writeClusters(final Context context, final Collection<IPeptideSpectralCluster> clusters) throws IOException, InterruptedException {
+        for (IPeptideSpectralCluster cluster : clusters) {
             writeCluster(context, cluster);
         }
     }
@@ -141,10 +141,10 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param context !null context
      * @param cluster !null cluster
      */
-    protected final void writeCluster(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
-        final List<IPeptideSpectrumCluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
+    protected final void writeCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+        final List<IPeptideSpectralCluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
         if (!allClusters.isEmpty()) {
-            for (IPeptideSpectrumCluster removedCluster : allClusters) {
+            for (IPeptideSpectralCluster removedCluster : allClusters) {
 
                 // drop all spectra
                 final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
@@ -168,7 +168,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @throws IOException
      * @throws InterruptedException
      */
-    protected final void writeAsSingleClusters(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
+    protected final void writeAsSingleClusters(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
             writeOneCluster(context, spc.asCluster());
@@ -176,7 +176,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     }
 
 
-    protected final void writeOneCluster(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
+    protected final void writeOneCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         String id;
         ISpectrum spc;
@@ -218,7 +218,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
        * @throws IOException
        * @throws InterruptedException
        */
-    protected abstract void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException;
+    protected abstract void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final IPeptideSpectralCluster cluster) throws IOException, InterruptedException;
 //    {
 //        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 //

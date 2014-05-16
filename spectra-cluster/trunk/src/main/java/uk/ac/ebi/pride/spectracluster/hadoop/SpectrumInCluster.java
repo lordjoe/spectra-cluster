@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.Equivalent;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -27,8 +27,8 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     public static final Comparator<SpectrumInCluster> BY_SIZE = new Comparator<SpectrumInCluster>() {
         @Override
         public int compare(final SpectrumInCluster o1, final SpectrumInCluster o2) {
-            IPeptideSpectrumCluster cluster1 = o1.getCluster();
-            IPeptideSpectrumCluster cluster2 = o2.getCluster();
+            IPeptideSpectralCluster cluster1 = o1.getCluster();
+            IPeptideSpectralCluster cluster2 = o2.getCluster();
             int diff = cluster1.getClusteredSpectraCount() - cluster2.getClusteredSpectraCount();
             if (diff != 0)
                 return diff > 0 ? -1 : 1;
@@ -71,10 +71,10 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     }
 
 
-    public static List<SpectrumInCluster> buildSpectrumInClusters(final List<IPeptideSpectrumCluster> pScs) {
+    public static List<SpectrumInCluster> buildSpectrumInClusters(final List<IPeptideSpectralCluster> pScs) {
         List<SpectrumInCluster> inClusters = new ArrayList<SpectrumInCluster>();
         // turn into
-        for (IPeptideSpectrumCluster sc : pScs) {
+        for (IPeptideSpectralCluster sc : pScs) {
             List<SpectrumInCluster> spectrumInClusters = SpectrumInCluster.fromCluster(sc);
             inClusters.addAll(spectrumInClusters);
         }
@@ -94,7 +94,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
         return byId;
     }
 
-    public static String listClusterIds(IPeptideSpectrumCluster sc) {
+    public static String listClusterIds(IPeptideSpectralCluster sc) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
@@ -116,7 +116,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
         return sb.toString();
     }
 
-    public static List<SpectrumInCluster> fromCluster(IPeptideSpectrumCluster cluster) {
+    public static List<SpectrumInCluster> fromCluster(IPeptideSpectralCluster cluster) {
         List<SpectrumInCluster> holder = new ArrayList<SpectrumInCluster>();
         for (ISpectrum sc : cluster.getClusteredSpectra()) {
             if (sc instanceof IPeptideSpectrumMatch) {
@@ -217,7 +217,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     }
 
     private IPeptideSpectrumMatch spectrum;
-    private IPeptideSpectrumCluster cluster;
+    private IPeptideSpectralCluster cluster;
     private double distance = -1;
     private boolean removeFromCluster;
     private boolean leadSpectrum; // is or was first spectrum in the cluster
@@ -226,7 +226,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     public SpectrumInCluster() {
     }
 
-    public SpectrumInCluster(final IPeptideSpectrumMatch pSpectrum, final IPeptideSpectrumCluster pCluster) {
+    public SpectrumInCluster(final IPeptideSpectrumMatch pSpectrum, final IPeptideSpectralCluster pCluster) {
         spectrum = pSpectrum;
         cluster = pCluster;
     }
@@ -264,8 +264,8 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             return false;
         if (!getSpectrum().equivalent(o.getSpectrum()))
             return false;
-        IPeptideSpectrumCluster cluster1 = getCluster();
-        IPeptideSpectrumCluster cluster2 = o.getCluster();
+        IPeptideSpectralCluster cluster1 = getCluster();
+        IPeptideSpectralCluster cluster2 = o.getCluster();
         if (!cluster1.equivalent(cluster2))
             return false;
         return true;
@@ -280,11 +280,11 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
         spectrum = pSpectrum;
     }
 
-    public IPeptideSpectrumCluster getCluster() {
+    public IPeptideSpectralCluster getCluster() {
         return cluster;
     }
 
-    public void setCluster(final IPeptideSpectrumCluster pCluster) {
+    public void setCluster(final IPeptideSpectralCluster pCluster) {
         if (cluster == pCluster)
             return; // nothing to do
         cluster = pCluster;
@@ -303,7 +303,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     protected double computeDistance() {
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         IPeptideSpectrumMatch spectrum1 = getSpectrum();
-        IPeptideSpectrumCluster cluster1 = getCluster();
+        IPeptideSpectralCluster cluster1 = getCluster();
         ISpectrum spectrum2 = cluster1.getConsensusSpectrum();
         double distance = similarityChecker.assessSimilarity(spectrum1, spectrum2);
         return distance;

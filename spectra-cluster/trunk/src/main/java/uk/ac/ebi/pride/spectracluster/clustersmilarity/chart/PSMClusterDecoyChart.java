@@ -19,7 +19,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterMZSpread;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
@@ -1031,7 +1031,7 @@ public class PSMClusterDecoyChart {
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
-        List<IPeptideSpectrumCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
+        List<IPeptideSpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
         newClusterSet = new SimpleClusterSet(stableClusters);
         System.out.println("=======New ste duplicates =======================================");
         newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
@@ -1040,7 +1040,7 @@ public class PSMClusterDecoyChart {
         System.out.println("==============================================================");
 
 
-        List<IPeptideSpectrumCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
+        List<IPeptideSpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
         System.out.println("==========original set duplicates ==========================");

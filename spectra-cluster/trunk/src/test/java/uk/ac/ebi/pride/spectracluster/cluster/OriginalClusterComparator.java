@@ -8,7 +8,7 @@ import java.util.Comparator;
  * @author Rui Wang
  * @version $Id$
  */
-public class OriginalClusterComparator implements Comparator<IPeptideSpectrumCluster> {
+public class OriginalClusterComparator implements Comparator<IPeptideSpectralCluster> {
     private static final double PRECURSOR_RANGE = 2;
 
     private IQualityScorer qualityScorer;
@@ -18,7 +18,7 @@ public class OriginalClusterComparator implements Comparator<IPeptideSpectrumClu
     }
 
     @Override
-    public int compare(IPeptideSpectrumCluster cluster1, IPeptideSpectrumCluster cluster2) {
+    public int compare(IPeptideSpectralCluster cluster1, IPeptideSpectralCluster cluster2) {
         // first check whether the precursor m/z is different
         if (cluster1.getPrecursorMz() - PRECURSOR_RANGE > cluster2.getPrecursorMz())
             return -1;

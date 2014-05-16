@@ -36,7 +36,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {
 
-        SpectralCluster sc = new SpectralCluster();
+        PeptideSpectralCluster sc = new PeptideSpectralCluster();
         Set<String> processedSpectrunIds = new HashSet<String>();
             // Note this will not be large so memory requirements are ok
 
@@ -52,7 +52,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
             else {
                 // handle spectra kicked out
                 if (!processedSpectrunIds.contains(id)) {
-                    IPeptideSpectrumCluster cluster = spectrum.asCluster();
+                    IPeptideSpectralCluster cluster = spectrum.asCluster();
                       writeOneVettedCluster(context, cluster);
                 }
                 else {
@@ -77,7 +77,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 

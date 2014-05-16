@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.spectracluster.util;
 import com.lordjoe.algorithms.CountedString;
 import com.lordjoe.algorithms.LinearBinner;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
@@ -94,7 +94,7 @@ public class ClusterUtilities {
      * @param !null cluster
      * @return as above
      */
-    public static boolean isClusterStable(IPeptideSpectrumCluster cluster) {
+    public static boolean isClusterStable(IPeptideSpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
@@ -144,7 +144,7 @@ public class ClusterUtilities {
 
             ret.setSpectrum(spec);
 
-            IPeptideSpectrumCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(rdr, null);
+            IPeptideSpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(rdr, null);
             if (clusters.length != 1)
                 throw new IllegalStateException("badSpectrumInCluster");
 
@@ -162,7 +162,7 @@ public class ClusterUtilities {
      * @param !null cluster
      * @return as above
      */
-    public static boolean isClusterSemiStable(IPeptideSpectrumCluster cluster) {
+    public static boolean isClusterSemiStable(IPeptideSpectralCluster cluster) {
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
@@ -180,7 +180,7 @@ public class ClusterUtilities {
      * @param copied should be non-empty array
      * @return !null spectrum unless copied is empty
      */
-    public static ISpectrum getHighestQualitySpectrum(IPeptideSpectrumCluster... copied) {
+    public static ISpectrum getHighestQualitySpectrum(IPeptideSpectralCluster... copied) {
         if (copied.length == 0)
             return null;
         ISpectrum ret = copied[0].getHighestQualitySpectrum();
@@ -311,7 +311,7 @@ public class ClusterUtilities {
      * @return !null list of peaks
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeak> getAllPeaks(IPeptideSpectrumCluster cluster) {
+    public static List<IPeak> getAllPeaks(IPeptideSpectralCluster cluster) {
         List<IPeak> holder = new ArrayList<IPeak>();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
             final List<IPeak> peaks = spec.getPeaks();
@@ -328,7 +328,7 @@ public class ClusterUtilities {
      * @param clusters !null   a list of clusters - this WILL be modified
      * @return !null list of clusters containing a single spectrum
      */
-    public static List<IPeptideSpectrumCluster> removeSingleSpectrumClusters(List<IPeptideSpectrumCluster> clusters) {
+    public static List<IPeptideSpectralCluster> removeSingleSpectrumClusters(List<IPeptideSpectralCluster> clusters) {
         return removeSingleSpectrumClustersSizedLessThan(clusters, 1);
     }
 
@@ -340,10 +340,10 @@ public class ClusterUtilities {
      * @param size      - clusters sized less than or equal to this will be removed and returned as single spectrum clusters
      * @return !null list of clusters containing a single spectrum
      */
-    public static List<IPeptideSpectrumCluster> removeSingleSpectrumClustersSizedLessThan(final List<IPeptideSpectrumCluster> pClusters, final int size) {
-        List<IPeptideSpectrumCluster> retained = new ArrayList<IPeptideSpectrumCluster>();
-        List<IPeptideSpectrumCluster> asSingleSpectra = new ArrayList<IPeptideSpectrumCluster>();
-        for (IPeptideSpectrumCluster cluster : pClusters) {
+    public static List<IPeptideSpectralCluster> removeSingleSpectrumClustersSizedLessThan(final List<IPeptideSpectralCluster> pClusters, final int size) {
+        List<IPeptideSpectralCluster> retained = new ArrayList<IPeptideSpectralCluster>();
+        List<IPeptideSpectralCluster> asSingleSpectra = new ArrayList<IPeptideSpectralCluster>();
+        for (IPeptideSpectralCluster cluster : pClusters) {
             if (cluster.getClusteredSpectraCount() <= size) {
                 final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                 for (ISpectrum spectrum : clusteredSpectra) {
@@ -385,7 +385,7 @@ public class ClusterUtilities {
      *
      * @return as above
      */
-    public static String mostCommonPeptides(IPeptideSpectrumCluster cluster) {
+    public static String mostCommonPeptides(IPeptideSpectralCluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         String petides = mostCommonPeptides(clusteredSpectra);
@@ -419,7 +419,7 @@ public class ClusterUtilities {
         return sb.toString();
     }
 
-    public static String[] getMostCommonPeptides(IPeptideSpectrumCluster cluster) {
+    public static String[] getMostCommonPeptides(IPeptideSpectralCluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         final List<String> peptideList = getPeptideList(clusteredSpectra);
@@ -449,9 +449,9 @@ public class ClusterUtilities {
      * @param clusters !null list of clusters
      * @return !null list of spectra
      */
-    public static List<ISpectrum> extractSpectra(List<IPeptideSpectrumCluster> clusters) {
+    public static List<ISpectrum> extractSpectra(List<IPeptideSpectralCluster> clusters) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (IPeptideSpectrumCluster cluster : clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             holder.addAll(cluster.getClusteredSpectra());
         }
         Collections.sort(holder);
@@ -464,9 +464,9 @@ public class ClusterUtilities {
      * @param clusters !null list of clusters
      * @return !null list of spectra
      */
-    public static double minClusterMZ(List<IPeptideSpectrumCluster> clusters) {
+    public static double minClusterMZ(List<IPeptideSpectralCluster> clusters) {
         double ret = Double.MAX_VALUE;
-        for (IPeptideSpectrumCluster cluster : clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             ret = Math.min(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -478,9 +478,9 @@ public class ClusterUtilities {
      * @param clusters !null list of clusters
      * @return !null list of spectra
      */
-    public static double maxClusterMZ(List<IPeptideSpectrumCluster> clusters) {
+    public static double maxClusterMZ(List<IPeptideSpectralCluster> clusters) {
         double ret = 0;
-        for (IPeptideSpectrumCluster cluster : clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             ret = Math.max(cluster.getPrecursorMz(), ret);
         }
         return ret;
@@ -520,8 +520,8 @@ public class ClusterUtilities {
      * @param spectrum  given spectrum
      * @return  a spectral cluster
      */
-    public static IPeptideSpectrumCluster asCluster(ISpectrum spectrum) {
-        SpectralCluster ret = new SpectralCluster();
+    public static IPeptideSpectralCluster asCluster(ISpectrum spectrum) {
+        PeptideSpectralCluster ret = new PeptideSpectralCluster();
         ret.addSpectra(spectrum);
         return ret;
     }
@@ -533,8 +533,8 @@ public class ClusterUtilities {
      * @param spectra !null list of spectra
      * @return !null list of spectra
      */
-    public static List<IPeptideSpectrumCluster> asClusters(List<ISpectrum> spectra) {
-        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
+    public static List<IPeptideSpectralCluster> asClusters(List<ISpectrum> spectra) {
+        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ISpectrum spectrum : spectra) {
             holder.add(asCluster(spectrum));
         }
@@ -644,13 +644,13 @@ public class ClusterUtilities {
      * @param maxMZDIfference   max difference to consider merging
      * @return !null list of new clusters
      */
-    public static List<IPeptideSpectrumCluster> mergeClusters(List<IPeptideSpectrumCluster> mergable, SimilarityChecker similarityChecker, double maxMZDIfference) {
-        List<IPeptideSpectrumCluster> retained = new ArrayList<IPeptideSpectrumCluster>();
+    public static List<IPeptideSpectralCluster> mergeClusters(List<IPeptideSpectralCluster> mergable, SimilarityChecker similarityChecker, double maxMZDIfference) {
+        List<IPeptideSpectralCluster> retained = new ArrayList<IPeptideSpectralCluster>();
         // clusters need to be compared with all clusters below them
-        for (IPeptideSpectrumCluster cluster : mergable) {
+        for (IPeptideSpectralCluster cluster : mergable) {
             double currentMZ = cluster.getPrecursorMz();
             double minimimMergableMZ = currentMZ - maxMZDIfference;
-            IPeptideSpectrumCluster mergeWith = null;
+            IPeptideSpectralCluster mergeWith = null;
             if (retained.isEmpty()) {   // start with the first cluster
                 retained.add(cluster);
                 continue;
@@ -658,7 +658,7 @@ public class ClusterUtilities {
 
             // start at the top mz cluster
             for (int index = retained.size() - 1; index >= 0; index--) {
-                IPeptideSpectrumCluster test = retained.get(index);
+                IPeptideSpectralCluster test = retained.get(index);
                 if (test.getPrecursorMz() < minimimMergableMZ)
                     break; // no more to consider
                 final ISpectrum cs1 = test.getConsensusSpectrum();
@@ -693,17 +693,17 @@ public class ClusterUtilities {
      * @param maxMZDIfference   ! maxMZ difference to look at for merging
      * @return !null list of non-merged clusters from singles
      */
-    public static List<IPeptideSpectrumCluster> mergeClustersWithSingleSpectra(List<IPeptideSpectrumCluster> mergable, List<IPeptideSpectrumCluster> singles, SimilarityChecker similarityChecker, double maxMZDIfference) {
-        List<IPeptideSpectrumCluster> retainedSingleSpectra = new ArrayList<IPeptideSpectrumCluster>();
+    public static List<IPeptideSpectralCluster> mergeClustersWithSingleSpectra(List<IPeptideSpectralCluster> mergable, List<IPeptideSpectralCluster> singles, SimilarityChecker similarityChecker, double maxMZDIfference) {
+        List<IPeptideSpectralCluster> retainedSingleSpectra = new ArrayList<IPeptideSpectralCluster>();
         int startIndex = 0;
         // clusters need to be compared with all clusters below them
-        for (IPeptideSpectrumCluster cluster : singles) {
+        for (IPeptideSpectralCluster cluster : singles) {
             double currentMZ = cluster.getPrecursorMz();
             double minimimMergableMZ = currentMZ - maxMZDIfference;
-            IPeptideSpectrumCluster mergeWith = null;
+            IPeptideSpectralCluster mergeWith = null;
             // start at the top mz cluster
             for (int index = startIndex; index > mergable.size(); index++) {
-                IPeptideSpectrumCluster test = mergable.get(index);
+                IPeptideSpectralCluster test = mergable.get(index);
                 if (index == startIndex) {
                     if (test.getPrecursorMz() < minimimMergableMZ) {
                         startIndex++;

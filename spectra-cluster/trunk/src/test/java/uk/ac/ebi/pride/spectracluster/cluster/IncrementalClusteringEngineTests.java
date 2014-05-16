@@ -42,20 +42,20 @@ public class IncrementalClusteringEngineTests {
     public void testIncrementalClusteringEngine() throws Exception {
         final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory cf = IncrementalClusteringEngine.getClusteringEngineFactory();
         final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
-        List<IPeptideSpectrumCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
-        final List<IPeptideSpectrumCluster> clusters = getRunEngine(ce, originalSpectra);
+        final List<IPeptideSpectralCluster> clusters = getRunEngine(ce, originalSpectra);
 
 
         final int size = originalSpectralClusters.size();
         final int size1 = clusters.size();
         int index = 0;
 
-        for (IPeptideSpectrumCluster sc : originalSpectralClusters) {
+        for (IPeptideSpectralCluster sc : originalSpectralClusters) {
             double mz1 = sc.getPrecursorMz();
             if (index >= clusters.size())
                 break;
-            IPeptideSpectrumCluster newCluster = clusters.get(index);
+            IPeptideSpectralCluster newCluster = clusters.get(index);
             final String spectralId1 = sc.getSpectralId();
             String spectralId2 = newCluster.getSpectralId();
             if (spectralId1.equals(spectralId2)) {
@@ -92,9 +92,9 @@ public class IncrementalClusteringEngineTests {
     public void testCompareIncrementalClusteringEngine() throws Exception {
         final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory cf = IncrementalClusteringEngine.getClusteringEngineFactory();
         final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
-        List<IPeptideSpectrumCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
-        final List<IPeptideSpectrumCluster> clusters = getRunEngine(ce, originalSpectra);
+        final List<IPeptideSpectralCluster> clusters = getRunEngine(ce, originalSpectra);
 
         IClusterSet cs1 = new SimpleClusterSet(originalSpectralClusters);
         IClusterSet cs2 = new SimpleClusterSet(clusters);
@@ -108,26 +108,26 @@ public class IncrementalClusteringEngineTests {
 
     }
 
-    protected List<IPeptideSpectrumCluster> getRunEngine(IIncrementalClusteringEngine ce, List<ISpectrum> originalSpectra) {
+    protected List<IPeptideSpectralCluster> getRunEngine(IIncrementalClusteringEngine ce, List<ISpectrum> originalSpectra) {
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
-        final List<IPeptideSpectrumCluster> clusters = new ArrayList<IPeptideSpectrumCluster>();
+        final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final IPeptideSpectrumCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
-            final Collection<IPeptideSpectrumCluster> removed = ce.addClusterIncremental(spectralCluster);
+            final IPeptideSpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
+            final Collection<IPeptideSpectralCluster> removed = ce.addClusterIncremental(spectralCluster);
             if (!removed.isEmpty())
                 clusters.addAll(removed);
         }
-        Collection<IPeptideSpectrumCluster> clustersLeft = ce.getClusters();
+        Collection<IPeptideSpectralCluster> clustersLeft = ce.getClusters();
         clusters.addAll(clustersLeft);
 
         // remove non-fitting
-        final List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
-        for (IPeptideSpectrumCluster spectralCluster : clustersLeft) {
-            final List<IPeptideSpectrumCluster> c = ClusteringUtilities.asWritttenSpectra(spectralCluster, ce);
+        final List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        for (IPeptideSpectralCluster spectralCluster : clustersLeft) {
+            final List<IPeptideSpectralCluster> c = ClusteringUtilities.asWritttenSpectra(spectralCluster, ce);
             holder.addAll(c);
         }
 
@@ -140,7 +140,7 @@ public class IncrementalClusteringEngineTests {
 
         if (TEST_KNOWN_TO_FAIL)
             return;
-        List<IPeptideSpectrumCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
 
         // these MUST be in ascending mz order
@@ -155,7 +155,7 @@ public class IncrementalClusteringEngineTests {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final IPeptideSpectrumCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
+            final IPeptideSpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
             incrementalEngine.addClusters(spectralCluster);
             oldClusteringEngine.addClusters(spectralCluster);
         }
@@ -176,10 +176,10 @@ public class IncrementalClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<IPeptideSpectrumCluster> newClusters = (List<IPeptideSpectrumCluster>) incrementalEngine.getClusters();
+        List<IPeptideSpectralCluster> newClusters = (List<IPeptideSpectralCluster>) incrementalEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<IPeptideSpectrumCluster> oldClusters = oldClusteringEngine.getClusters();
+        List<IPeptideSpectralCluster> oldClusters = oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         Assert.assertEquals(oldClusters.size(), newClusters.size());
@@ -187,8 +187,8 @@ public class IncrementalClusteringEngineTests {
         if (TEST_KNOWN_TO_FAIL)
             return;
         for (int i = 0; i < newClusters.size(); i++) {
-            IPeptideSpectrumCluster newCluster = newClusters.get(i);
-            IPeptideSpectrumCluster oldCluster = oldClusters.get(i);
+            IPeptideSpectralCluster newCluster = newClusters.get(i);
+            IPeptideSpectralCluster oldCluster = oldClusters.get(i);
             double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), oldCluster.getConsensusSpectrum());
             if (similarityScore >= similarityChecker.getDefaultThreshold()) {
                 List<ISpectrum> newClusteredSpectra = newCluster.getClusteredSpectra();

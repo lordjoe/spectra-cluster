@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 /**
  * @author Rui Wang
@@ -13,14 +13,14 @@ public interface IClusterMatch extends Comparable<IClusterMatch> {
      *
      * @return
      */
-    public IPeptideSpectrumCluster getSource();
+    public IPeptideSpectralCluster getSource();
 
     /**
      * !null target cluster
      *
      * @return
      */
-    public IPeptideSpectrumCluster getTarget();
+    public IPeptideSpectralCluster getTarget();
 
     /**
      * return some measure of the quality - base comparator use3s thia to

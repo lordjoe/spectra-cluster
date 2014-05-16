@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -40,9 +40,9 @@ public class Adapters {
      * @param inp !null cluster
      * @return !null equivalent cluster
      */
-    public static IPeptideSpectrumCluster fromSpectraCluster(SpectraCluster inp) {
+    public static IPeptideSpectralCluster fromSpectraCluster(SpectraCluster inp) {
         String id = "";
-        IPeptideSpectrumCluster ret = new SpectralCluster(id);
+        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id);
         final List<ClusteringSpectrum> spectra = inp.getSpectra();
 
         for (ClusteringSpectrum sc : spectra) {
@@ -131,7 +131,7 @@ public class Adapters {
      * @param inp !null cluster
      * @return !null equivalent cluster
      */
-    public static SpectraCluster fromSpectraCluster(IPeptideSpectrumCluster inp) {
+    public static SpectraCluster fromSpectraCluster(IPeptideSpectralCluster inp) {
         String id = "";
         SpectraCluster ret = new SpectraCluster(consensusBuilder, normalizer);
         final List<ISpectrum> spectra = inp.getClusteredSpectra();

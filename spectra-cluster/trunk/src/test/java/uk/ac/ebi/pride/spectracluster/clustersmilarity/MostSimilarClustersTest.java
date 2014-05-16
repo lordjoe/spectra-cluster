@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
 import java.util.List;
@@ -20,14 +20,14 @@ public class MostSimilarClustersTest {
     //  @Test
     public void testMostSimilarClusters() throws Exception {
 
-        List<IPeptideSpectrumCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
 
         MostSimilarClusters mostSimilarClusters = new MostSimilarClusters(spectralClusters.get(0), ClusterSpectrumOverlapDistance.INSTANCE);
 
         mostSimilarClusters.addClusters(spectralClusters);
 
-        IPeptideSpectrumCluster bestMatch = mostSimilarClusters.getBestMatchingCluster();
-        IPeptideSpectrumCluster baseCluster = mostSimilarClusters.getBaseCluster();
+        IPeptideSpectralCluster bestMatch = mostSimilarClusters.getBestMatchingCluster();
+        IPeptideSpectralCluster baseCluster = mostSimilarClusters.getBaseCluster();
         if (!baseCluster.equals(bestMatch)) {
             bestMatch = mostSimilarClusters.getBestMatchingCluster();// repeat test
             Assert.assertEquals(baseCluster, bestMatch);   // allow us to look at the bad case
@@ -37,8 +37,8 @@ public class MostSimilarClustersTest {
     @Test
     public void testAlternativeClusters() throws Exception {
 
-        List<IPeptideSpectrumCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
-        List<IPeptideSpectrumCluster> secondClusters = ClusteringTestUtilities.readSecondSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectralCluster> secondClusters = ClusteringTestUtilities.readSecondSpectraClustersFromResource();
 
         MostSimilarClusters mostSimilarClusters = new MostSimilarClusters(spectralClusters.get(0), ConcensusSpectrumDistance.INSTANCE);
 

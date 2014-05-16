@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 import com.lordjoe.utilities.ElapsedTimer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -28,13 +28,13 @@ public class ClusterSimilarityChart {
     public JPanel generateChart() {
         IClusterDistance distance = mostSimilarClusterSet.getClusterDistance();
         XYSeries xySeries = new XYSeries(distance.getClass().getSimpleName());
-        for (IPeptideSpectrumCluster cluster : mostSimilarClusterSet.getBaseSet().getClusters()) {
+        for (IPeptideSpectralCluster cluster : mostSimilarClusterSet.getBaseSet().getClusters()) {
             MostSimilarClusters mostSimilarClusters = mostSimilarClusterSet.getMostSimilarClusters(cluster);
             List<ClusterDistanceItem> bestMatches = mostSimilarClusters.getBestMatches();
 
             ClusterDistanceItem bestMatch = bestMatches.get(0);
-            IPeptideSpectrumCluster source = bestMatch.getSource();
-            IPeptideSpectrumCluster target = bestMatch.getTarget();
+            IPeptideSpectralCluster source = bestMatch.getSource();
+            IPeptideSpectralCluster target = bestMatch.getTarget();
             double dotProduct = Defaults.INSTANCE.getDefaultSimilarityChecker().assessSimilarity(source.getConsensusSpectrum(), target.getConsensusSpectrum());
             xySeries.add(dotProduct, bestMatch.getDistance());
         }
@@ -92,7 +92,7 @@ public class ClusterSimilarityChart {
         timer.showElapsed("Read New set");
         timer.reset(); // back to 0
 
-        List<IPeptideSpectrumCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
+        List<IPeptideSpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate());
         newClusterSet = new SimpleClusterSet(stableClusters);
         System.out.println("=======New ste duplicates =======================================");
         newClusterSet = SimpleClusterSet.removeDuplicates(newClusterSet);
@@ -101,7 +101,7 @@ public class ClusterSimilarityChart {
         System.out.println("==============================================================");
 
 
-        List<IPeptideSpectrumCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
+        List<IPeptideSpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
         System.out.println("==========original set duplicates ==========================");

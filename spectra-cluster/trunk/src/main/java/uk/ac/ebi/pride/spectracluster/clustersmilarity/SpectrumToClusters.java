@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class SpectrumToClusters {
-    private final Map<String, List<IPeptideSpectrumCluster>> clustersWithSpectra = new HashMap<String, List<IPeptideSpectrumCluster>>();
+    private final Map<String, List<IPeptideSpectralCluster>> clustersWithSpectra = new HashMap<String, List<IPeptideSpectralCluster>>();
     private int numberOfEmptyCluster = 0;
     private int numberOfDuplicatedSpectra = 0;
     private int numberOfSpectra = 0;
@@ -58,11 +58,11 @@ public class SpectrumToClusters {
         return numberOfDuplicatedSpectra;
     }
 
-    public Map<String, List<IPeptideSpectrumCluster>> getClustersWithSpectra() {
+    public Map<String, List<IPeptideSpectralCluster>> getClustersWithSpectra() {
         return clustersWithSpectra;
     }
 
-    public void addCluster(IPeptideSpectrumCluster cluster) {
+    public void addCluster(IPeptideSpectralCluster cluster) {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
 
         if (clusteredSpectra.isEmpty()) {
@@ -75,10 +75,10 @@ public class SpectrumToClusters {
         }
     }
 
-    private void addSpectrumCluster(String spectrumId, IPeptideSpectrumCluster cluster, Map<String, List<IPeptideSpectrumCluster>> clusters) {
-        List<IPeptideSpectrumCluster> existingClusters = clusters.get(spectrumId);
+    private void addSpectrumCluster(String spectrumId, IPeptideSpectralCluster cluster, Map<String, List<IPeptideSpectralCluster>> clusters) {
+        List<IPeptideSpectralCluster> existingClusters = clusters.get(spectrumId);
         if (existingClusters == null) {
-            existingClusters = new ArrayList<IPeptideSpectrumCluster>();
+            existingClusters = new ArrayList<IPeptideSpectralCluster>();
             clusters.put(spectrumId, existingClusters);
         } else {
             numberOfDuplicatedSpectra++;

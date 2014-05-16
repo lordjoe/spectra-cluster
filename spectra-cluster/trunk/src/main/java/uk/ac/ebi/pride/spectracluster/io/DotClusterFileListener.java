@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
@@ -64,7 +64,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
      * @param cluster
      */
     @Override
-    public void onClusterCreate(final IPeptideSpectrumCluster cluster, Object... otherData) {
+    public void onClusterCreate(final IPeptideSpectralCluster cluster, Object... otherData) {
         m_Appender.appendCluster(m_OutWriter, cluster);
     }
 

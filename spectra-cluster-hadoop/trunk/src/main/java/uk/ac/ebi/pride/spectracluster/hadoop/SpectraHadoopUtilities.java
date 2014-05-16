@@ -246,17 +246,17 @@ public class SpectraHadoopUtilities {
      * @throws InterruptedException
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static IPeptideSpectrumCluster mergeTheSameCluster(String key, Iterable<Text> values,
+    public static IPeptideSpectralCluster mergeTheSameCluster(String key, Iterable<Text> values,
                                                        Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectrumCluster merged = new SpectralCluster(permId);
+        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId);
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
             String valStr = val.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             String clusterId = cluster.getId();
             if (!clusterId.equals(permId)) {
@@ -287,10 +287,10 @@ public class SpectraHadoopUtilities {
      * @throws InterruptedException
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static IPeptideSpectrumCluster deMergeTheSameCluster(String key, Iterable<Text> values,
+    public static IPeptideSpectralCluster deMergeTheSameCluster(String key, Iterable<Text> values,
                                                          Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectrumCluster merged = new SpectralCluster(permId);
+        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId);
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         boolean pass1 = true;
@@ -298,7 +298,7 @@ public class SpectraHadoopUtilities {
         for (Text val : values) {
             String valStr = val.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
 
             String clusterId = cluster.getId();

@@ -6,8 +6,8 @@ import com.lordjoe.hadoop.ITextReducer;
 import com.lordjoe.hadoop.TextKeyValue;
 import com.lordjoe.hadoopsimulator.HadoopSimulatorJob;
 import com.lordjoe.utilities.ElapsedTimer;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
@@ -63,7 +63,7 @@ public class DuplicateReductionSimulator {
 
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
 
             switch (clusters.length) {
                 case 0:
@@ -82,7 +82,7 @@ public class DuplicateReductionSimulator {
          *
          * @param cluster
          */
-        protected TextKeyValue[] handleCluster(IPeptideSpectrumCluster cluster) {
+        protected TextKeyValue[] handleCluster(IPeptideSpectralCluster cluster) {
             List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
             List<TextKeyValue> holder = new ArrayList<TextKeyValue>();
 
@@ -172,7 +172,7 @@ public class DuplicateReductionSimulator {
         public TextKeyValue[] reduce(String key, List<String> values, Properties config) {
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
 
-            SpectralCluster sc = new SpectralCluster();
+            PeptideSpectralCluster sc = new PeptideSpectralCluster();
             List<TextKeyValue> holder = new ArrayList<TextKeyValue>();
             Set<String> processedSpectrunIds = new HashSet<String>();
 
@@ -189,7 +189,7 @@ public class DuplicateReductionSimulator {
                 } else {
                     // handle spectra kicked out
                     if (!processedSpectrunIds.contains(id)) {
-                        IPeptideSpectrumCluster cluster = ClusterUtilities.asCluster(spectrum);
+                        IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(spectrum);
                         StringBuffer sb = new StringBuffer();
                         cluster = ClusterUtilities.asCluster(spectrum);
                         TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
@@ -219,18 +219,18 @@ public class DuplicateReductionSimulator {
     private static IClusterSet rebuildClusters(final List<TextKeyValue> pStep2) {
         IClusterSet ret = new SimpleClusterSet();
         for (TextKeyValue textKeyValue : pStep2) {
-            IPeptideSpectrumCluster cluster = buildClusterFromKeyValue(textKeyValue);
+            IPeptideSpectralCluster cluster = buildClusterFromKeyValue(textKeyValue);
             if (cluster != null)
                 ret.addCluster(cluster);
         }
         return ret;
     }
 
-    private static IPeptideSpectrumCluster buildClusterFromKeyValue(final TextKeyValue kv) {
+    private static IPeptideSpectralCluster buildClusterFromKeyValue(final TextKeyValue kv) {
         String text = kv.getValue();
         // System.out.println(text);
         LineNumberReader rdr = new LineNumberReader(new StringReader(text));
-        IPeptideSpectrumCluster cls = ParserUtilities.readSpectralCluster(rdr, null);
+        IPeptideSpectralCluster cls = ParserUtilities.readSpectralCluster(rdr, null);
         return cls;
     }
 
@@ -275,10 +275,10 @@ public class DuplicateReductionSimulator {
 
     public static List<TextKeyValue> clusterToTextValues(final IClusterSet in) {
         List<TextKeyValue> input = new ArrayList<TextKeyValue>();
-        List<IPeptideSpectrumCluster> clusters = in.getClusters();
+        List<IPeptideSpectralCluster> clusters = in.getClusters();
         int index = 0;
         final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-        for (IPeptideSpectrumCluster cluster : clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             StringBuilder sb = new StringBuilder();
             clusterAppender.appendCluster(sb, cluster);
             input.add(new TextKeyValue(Integer.toString(index++), sb.toString()));
@@ -323,7 +323,7 @@ public class DuplicateReductionSimulator {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
                 final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
-                for (IPeptideSpectrumCluster sc : cs.getClusters()) {
+                for (IPeptideSpectralCluster sc : cs.getClusters()) {
                     clusterAppender.appendCluster(out, sc);
                 }
                 out.close();
