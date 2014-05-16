@@ -42,7 +42,7 @@ public class SpectrumInClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        ISpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
 
         switch (clusters.length) {
             case 0:
@@ -62,7 +62,7 @@ public class SpectrumInClusterMapper extends AbstractParameterizedMapper<Text> {
      * @param cluster
      * @param context
      */
-    protected void handleCluster(ISpectralCluster cluster,   Context context) {
+    protected void handleCluster(IPeptideSpectrumCluster cluster,   Context context) {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         for (ISpectrum sc : clusteredSpectra) {
             SpectrumInCluster spectrumInCluster = new SpectrumInCluster((IPeptideSpectrumMatch) sc, cluster);

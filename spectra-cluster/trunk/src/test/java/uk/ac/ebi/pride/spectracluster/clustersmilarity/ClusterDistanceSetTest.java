@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.util.List;
 import java.util.Random;
@@ -15,7 +15,7 @@ import java.util.Random;
 public class ClusterDistanceSetTest {
 
     private ClusterDistanceSet clusterDistanceSetx;
-    private ISpectralCluster baseCluster;
+    private IPeptideSpectrumCluster baseCluster;
 
     public static final Random RND = new Random();
 
@@ -75,7 +75,7 @@ public class ClusterDistanceSetTest {
     }
 
 
-    public ClusterDistanceSet buildTestSet(ISpectralCluster base, int size) {
+    public ClusterDistanceSet buildTestSet(IPeptideSpectrumCluster base, int size) {
         ClusterDistanceSet ret = new ClusterDistanceSet();
 
 

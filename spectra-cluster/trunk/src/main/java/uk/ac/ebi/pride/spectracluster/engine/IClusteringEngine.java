@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -23,13 +23,13 @@ public interface IClusteringEngine {
      *
      * @return !null list this will be sorted by mz a include clusters of all sizes
      */
-    public Collection<ISpectralCluster> getClusters();
+    public Collection<IPeptideSpectrumCluster> getClusters();
 
 
     /**
      * add some clusters
      */
-    public void addClusters(ISpectralCluster... cluster);
+    public void addClusters(IPeptideSpectrumCluster... cluster);
 
     /**
      * clusters are merged in the internal collection
@@ -67,7 +67,7 @@ public interface IClusteringEngine {
      */
     public
     @Nonnull
-    List<ISpectralCluster> findNoneFittingSpectra(@Nonnull ISpectralCluster cluster);
+    List<IPeptideSpectrumCluster> findNoneFittingSpectra(@Nonnull IPeptideSpectrumCluster cluster);
 
 
     /**
@@ -77,7 +77,7 @@ public interface IClusteringEngine {
      */
     public
     @Nonnull
-    List<ISpectralCluster> asWritttenSpectra(@Nonnull ISpectralCluster cluster);
+    List<IPeptideSpectrumCluster> asWritttenSpectra(@Nonnull IPeptideSpectrumCluster cluster);
 
 
     /**

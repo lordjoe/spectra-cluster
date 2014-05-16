@@ -50,7 +50,7 @@ public class ClusteringEngineMain {
             return; // not an mgf
 
         long start = System.currentTimeMillis();
-        List<ISpectralCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
+        List<IPeptideSpectrumCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
 
         /**
          * Add your favorite clustering engine here
@@ -70,14 +70,14 @@ public class ClusteringEngineMain {
             return;
         start = System.currentTimeMillis();
 
-        for (ISpectralCluster sc : clusters) {
+        for (IPeptideSpectrumCluster sc : clusters) {
             engine.addClusters(sc);
         }
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         engine.processClusters(); // force pass 1 - then we can recluster
-        List<ISpectralCluster> pass1 = engine.getClusters();     // look at results
-        List<ISpectralCluster> pass2 = null;
+        List<IPeptideSpectrumCluster> pass1 = engine.getClusters();     // look at results
+        List<IPeptideSpectrumCluster> pass2 = null;
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
             if (!engine.processClusters()) {
                 break;
@@ -85,7 +85,7 @@ public class ClusteringEngineMain {
             pass2 = engine.getClusters();  // look at results
         }
 
-        List<ISpectralCluster> clusters1 = engine.getClusters();     // get results
+        List<IPeptideSpectrumCluster> clusters1 = engine.getClusters();     // get results
 
 
         saveClusters(clusters1, inputFile);
@@ -104,7 +104,7 @@ public class ClusteringEngineMain {
      * @param pClusters1 !null list of clusters
      * @param pInputFile !null input file
      */
-    protected void saveClusters(final List<ISpectralCluster> pClusters1, final File pInputFile) {
+    protected void saveClusters(final List<IPeptideSpectrumCluster> pClusters1, final File pInputFile) {
 
         if (pClusters1.size() == 0)
             return;
@@ -113,8 +113,8 @@ public class ClusteringEngineMain {
         try {
             out = new PrintWriter(new FileWriter(outName));
             final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-            for (ISpectralCluster iSpectralCluster : pClusters1) {
-                clusterAppender.appendCluster(out, iSpectralCluster);
+            for (IPeptideSpectrumCluster iPeptideSpectrumCluster : pClusters1) {
+                clusterAppender.appendCluster(out, iPeptideSpectrumCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -131,7 +131,7 @@ public class ClusteringEngineMain {
      * @param pClusters1 !null list of clusters
      * @param pInputFile !null input file
      */
-    protected void saveClustersAsClusterings(final List<ISpectralCluster> pClusters1, final File pInputFile) {
+    protected void saveClustersAsClusterings(final List<IPeptideSpectrumCluster> pClusters1, final File pInputFile) {
 
         if (pClusters1.size() == 0)
             return;
@@ -143,8 +143,8 @@ public class ClusteringEngineMain {
             appendClusteringHeaders(out);
 
             final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
-            for (ISpectralCluster iSpectralCluster : pClusters1) {
-                clusterAppender.appendCluster(out, iSpectralCluster);
+            for (IPeptideSpectrumCluster iPeptideSpectrumCluster : pClusters1) {
+                clusterAppender.appendCluster(out, iPeptideSpectrumCluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

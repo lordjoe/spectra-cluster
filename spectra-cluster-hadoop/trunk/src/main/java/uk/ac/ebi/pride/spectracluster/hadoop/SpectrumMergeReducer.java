@@ -74,18 +74,18 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             String valStr = val.toString();
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null) {  // todo why might this happen
                 if (engine != null) {     // todo why might this happen
                     // look in great detail at a few cases
                     if (isInterestingCluster(cluster)) {
-                        Collection<ISpectralCluster> clusters = engine.getClusters();
+                        Collection<IPeptideSpectrumCluster> clusters = engine.getClusters();
                         ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
                     }
 
 
-                    final Collection<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+                    final Collection<IPeptideSpectrumCluster> removedClusters = engine.addClusterIncremental(cluster);
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
@@ -113,7 +113,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
     private static Set<String> INTERESTING_IDS = new HashSet<String>(Arrays.asList(DUPLICATE_IDS));
 
 
-    protected static boolean isInterestingCluster(ISpectralCluster test) {
+    protected static boolean isInterestingCluster(IPeptideSpectrumCluster test) {
         List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
             if (spc instanceof IPeptideSpectrumMatch) {
@@ -133,7 +133,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
          * @throws IOException
          * @throws InterruptedException
          */
-       protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull final ISpectralCluster cluster) throws IOException, InterruptedException {
+       protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -168,7 +168,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
       protected  <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
           ChargeBinMZKey pMzKey = (ChargeBinMZKey)key;
         if (getEngine() != null) {
-            final Collection<ISpectralCluster> clusters = getEngine().getClusters();
+            final Collection<IPeptideSpectrumCluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
             setEngine(null);
         }

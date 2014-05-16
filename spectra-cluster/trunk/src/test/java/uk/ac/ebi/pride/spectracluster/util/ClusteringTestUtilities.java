@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
 import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
@@ -46,13 +46,13 @@ public class ClusteringTestUtilities {
      * @param pScs
      * @param pScs2
      */
-    public static void assertEquivalentClusters(final List<ISpectralCluster> pScs, final List<ISpectralCluster> pScs2) {
+    public static void assertEquivalentClusters(final List<IPeptideSpectrumCluster> pScs, final List<IPeptideSpectrumCluster> pScs2) {
         Collections.sort(pScs, ClusterContentComparator.INSTANCE);
         Collections.sort(pScs2, ClusterContentComparator.INSTANCE);
         Assert.assertEquals(pScs.size(), pScs2.size());
         for (int i = 0; i < pScs.size(); i++) {
-            ISpectralCluster cl1 = pScs.get(i);
-            ISpectralCluster cl2 = pScs2.get(i);
+            IPeptideSpectrumCluster cl1 = pScs.get(i);
+            IPeptideSpectrumCluster cl2 = pScs2.get(i);
             boolean equivalent = cl1.equivalent(cl2);
             if (!equivalent)
                 Assert.assertTrue(equivalent);
@@ -210,21 +210,21 @@ public class ClusteringTestUtilities {
 
     }
 
-    public static List<ISpectralCluster> readSpectraClustersFromResource() {
+    public static List<IPeptideSpectrumCluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
 
-    public static List<ISpectralCluster> readSecondSpectraClustersFromResource() {
+    public static List<IPeptideSpectrumCluster> readSecondSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_SECOND_CGF_FILE);
     }
 
-    public static List<ISpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<IPeptideSpectrumCluster> readSpectraClustersFromResource(String resName) {
         List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(resName);
         int index = 1000;
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
         for (ConsensusSpectraItems si : items) {
-            ISpectralCluster cluster = new SpectralCluster(Integer.toString(index++));
+            IPeptideSpectrumCluster cluster = new SpectralCluster(Integer.toString(index++));
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);
@@ -483,9 +483,9 @@ public class ClusteringTestUtilities {
      * @param factory   !null  ConcensusSpectrumBuilderFactory
      * @return !null list of  consensusSpectra
      */
-    public static List<ISpectrum> buildConsessusSpectra(final List<ISpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
+    public static List<ISpectrum> buildConsessusSpectra(final List<IPeptideSpectrumCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (ISpectralCluster cluster : pClusters) {
+        for (IPeptideSpectrumCluster cluster : pClusters) {
             final IConsensusSpectrumBuilder olderCode = factory.getConsensusSpectrumBuilder();
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();

@@ -27,7 +27,7 @@ public class ClusteringEngineTests {
     @Test
     public void testClusteringEngine() throws Exception {
 
-        List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<IPeptideSpectrumCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
         IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
         IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
@@ -61,20 +61,20 @@ public class ClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<ISpectralCluster> newClusters = (List<ISpectralCluster>) clusteringEngine.getClusters();
+        List<IPeptideSpectrumCluster> newClusters = (List<IPeptideSpectrumCluster>) clusteringEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<ISpectralCluster> oldClusters = (List<ISpectralCluster>) oldClusteringEngine.getClusters();
+        List<IPeptideSpectrumCluster> oldClusters = (List<IPeptideSpectrumCluster>) oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
             return; // todo FIX!!!
         Assert.assertEquals(oldClusters.size(), originalSpectralClusters.size());
 
-        for (ISpectralCluster newCluster : newClusters) {
+        for (IPeptideSpectrumCluster newCluster : newClusters) {
             boolean foundSimilarCluster = false;
 
-            for (ISpectralCluster originalSpectralCluster : originalSpectralClusters) {
+            for (IPeptideSpectrumCluster originalSpectralCluster : originalSpectralClusters) {
                 double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), originalSpectralCluster.getConsensusSpectrum());
                 if (similarityScore >= similarityChecker.getDefaultThreshold()) {
                     foundSimilarCluster = true;

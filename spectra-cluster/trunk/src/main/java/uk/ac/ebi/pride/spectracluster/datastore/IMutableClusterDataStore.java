@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ public interface IMutableClusterDataStore extends IClusterDataStore {
      *
      * @param clusterToStore
      */
-    public void storeCluster(ISpectralCluster clusterToStore);
+    public void storeCluster(IPeptideSpectrumCluster clusterToStore);
 
 
     /**
@@ -34,13 +34,13 @@ public interface IMutableClusterDataStore extends IClusterDataStore {
      *
      * @param clustersToStore
      */
-    public void storeClusters(Collection<ISpectralCluster> clustersToStore);
+    public void storeClusters(Collection<IPeptideSpectrumCluster> clustersToStore);
 
     /**
      * Remove a cluster
      *
      * @param clusterToRemove !null added
      */
-    public void removeCluster(ISpectralCluster clusterToRemove);
+    public void removeCluster(IPeptideSpectrumCluster clusterToRemove);
 
 }

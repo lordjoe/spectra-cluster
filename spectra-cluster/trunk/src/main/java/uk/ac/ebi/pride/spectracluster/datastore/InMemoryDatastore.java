@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -16,7 +16,7 @@ import java.util.*;
 public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpectrumDataStore {
 
     private final Map<String, ISpectrum> idToSpectrum = new HashMap<String, ISpectrum>();
-    private final Map<String, ISpectralCluster> idToCluster = new HashMap<String, ISpectralCluster>();
+    private final Map<String, IPeptideSpectrumCluster> idToCluster = new HashMap<String, IPeptideSpectrumCluster>();
 
     public InMemoryDatastore() {
     }
@@ -28,7 +28,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @return possibly null cluster
      */
     @Override
-    public ISpectralCluster getById(final String id) {
+    public IPeptideSpectrumCluster getById(final String id) {
         return idToCluster.get(id);
     }
 
@@ -104,11 +104,11 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @return !null iterable
      */
     @Override
-    public Iterable<? extends ISpectralCluster> getClusterByMz(final double minMz, final double mazMz) {
-        List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(idToCluster.values());
+    public Iterable<? extends IPeptideSpectrumCluster> getClusterByMz(final double minMz, final double mazMz) {
+        List<IPeptideSpectrumCluster> ret = new ArrayList<IPeptideSpectrumCluster>(idToCluster.values());
         Collections.sort(ret);  // sort by mz
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-        for (ISpectralCluster sc : ret) {
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
+        for (IPeptideSpectrumCluster sc : ret) {
             float mz = sc.getPrecursorMz();
             if (mz < minMz || ((minMz == mazMz) && mz > mazMz) || (mz >= mazMz))
                 continue;
@@ -124,11 +124,11 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @return !null iterable
      */
     @Override
-    public Iterable<? extends ISpectralCluster> getClusterByMzAndCharge(final double minMz, final double mazMz, final int charge) {
-        List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(idToCluster.values());
+    public Iterable<? extends IPeptideSpectrumCluster> getClusterByMzAndCharge(final double minMz, final double mazMz, final int charge) {
+        List<IPeptideSpectrumCluster> ret = new ArrayList<IPeptideSpectrumCluster>(idToCluster.values());
         Collections.sort(ret);  // sort by mz
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-        for (ISpectralCluster sc : ret) {
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
+        for (IPeptideSpectrumCluster sc : ret) {
             if (charge != 0 && charge != sc.getPrecursorCharge())
                 continue;
             float mz = sc.getPrecursorMz();
@@ -140,8 +140,8 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
     }
 
     @Override
-    public void storeClusters(Collection<ISpectralCluster> clustersToStore) {
-        for (ISpectralCluster cluster : clustersToStore) {
+    public void storeClusters(Collection<IPeptideSpectrumCluster> clustersToStore) {
+        for (IPeptideSpectrumCluster cluster : clustersToStore) {
             storeCluster(cluster);
         }
     }
@@ -208,7 +208,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @param added !null added
      */
     @Override
-    public void storeCluster(final ISpectralCluster added) {
+    public void storeCluster(final IPeptideSpectrumCluster added) {
         final String key = added.getId();
         if (idToCluster.containsKey(key))
             throw new IllegalStateException("cannot add an existing spectrum");
@@ -233,7 +233,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @param removed !null added
      */
     @Override
-    public void removeCluster(final ISpectralCluster removed) {
+    public void removeCluster(final IPeptideSpectrumCluster removed) {
         final String key = removed.getId();
         idToCluster.remove(key);
 
@@ -246,11 +246,11 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
      * @return !null iterable
      */
     @Override
-    public Iterable<ISpectralCluster> getClustersByPeptide(final String peptide) {
-        List<ISpectralCluster> ret = new ArrayList<ISpectralCluster>(idToCluster.values());
+    public Iterable<IPeptideSpectrumCluster> getClustersByPeptide(final String peptide) {
+        List<IPeptideSpectrumCluster> ret = new ArrayList<IPeptideSpectrumCluster>(idToCluster.values());
         Collections.sort(ret);  // sort by mz
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-        for (ISpectralCluster sc : ret) {
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
+        for (IPeptideSpectrumCluster sc : ret) {
             String peptides = ClusterUtilities.mostCommonPeptides(sc);
             if (peptides.contains(",")) {
                 String[] items = peptides.split(",");

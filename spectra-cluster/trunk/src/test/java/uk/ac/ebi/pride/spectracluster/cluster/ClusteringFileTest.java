@@ -22,7 +22,7 @@ public class ClusteringFileTest {
         LineNumberReader inp = ClusteringTestUtilities.getResourceClusteringReader();
         ISpectrumRetriever spectrumRetriever = null;
 
-        ISpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(inp, spectrumRetriever);
+        IPeptideSpectrumCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(inp, spectrumRetriever);
 
         Assert.assertEquals(48, clusters.length);
 

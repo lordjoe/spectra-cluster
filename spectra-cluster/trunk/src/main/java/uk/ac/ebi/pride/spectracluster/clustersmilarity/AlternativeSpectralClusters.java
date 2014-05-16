@@ -18,11 +18,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  */
 
-public class AlternativeSpectralClusters implements ISpectralCluster, InternalSpectralCluster, Equivalent<ISpectralCluster> {
+public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, InternalSpectralCluster, Equivalent<IPeptideSpectrumCluster> {
 
-    protected static String concensusId(ISpectralCluster... copied) {
+    protected static String concensusId(IPeptideSpectrumCluster... copied) {
         StringBuilder sb = new StringBuilder();
-        for (ISpectralCluster sc : copied) {
+        for (IPeptideSpectrumCluster sc : copied) {
             if (sb.length() > 0)
                 sb.append(":");
             sb.append(sc.getId());
@@ -32,7 +32,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ISpectralCluster... copied) {
+    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(IPeptideSpectrumCluster... copied) {
         //noinspection UnnecessaryLocalVariable
         IConsensusSpectrumBuilder ret = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 //        for (int i = 1; i < copied.length; i++) {
@@ -51,21 +51,21 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
-    private final List<ISpectralCluster> constitutingClusters = new ArrayList<ISpectralCluster>();
+    private final List<IPeptideSpectrumCluster> constitutingClusters = new ArrayList<IPeptideSpectrumCluster>();
     @SuppressWarnings("FieldCanBeLocal")
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private boolean locked;
 
-    public AlternativeSpectralClusters(ISpectralCluster... copied) {
+    public AlternativeSpectralClusters(IPeptideSpectrumCluster... copied) {
         this.id = concensusId(copied);
         constitutingClusters.addAll(Arrays.asList(copied));
         qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         Set<ISpectrum> holder = new HashSet<ISpectrum>();
-        for (ISpectralCluster sc : copied) {
+        for (IPeptideSpectrumCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
         addSpectra(new ArrayList<ISpectrum>(holder));
@@ -117,7 +117,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public List<ISpectralCluster> getConstitutingClusters() {
+    public List<IPeptideSpectrumCluster> getConstitutingClusters() {
         return Collections.unmodifiableList(constitutingClusters);
     }
 
@@ -345,7 +345,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      * @return
      */
     @Override
-    public int compareTo(ISpectralCluster o) {
+    public int compareTo(IPeptideSpectrumCluster o) {
         if (o == this)
             return 0;
         if (getPrecursorMz() != o.getPrecursorMz()) {
@@ -373,7 +373,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(ISpectralCluster o) {
+    public boolean equivalent(IPeptideSpectrumCluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())
@@ -422,7 +422,7 @@ public class AlternativeSpectralClusters implements ISpectralCluster, InternalSp
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (ISpectralCluster constitutingCluster : constitutingClusters) {
+        for (IPeptideSpectrumCluster constitutingCluster : constitutingClusters) {
             if (sb.length() > 0)
                 sb.append(",");
             sb.append(constitutingCluster);

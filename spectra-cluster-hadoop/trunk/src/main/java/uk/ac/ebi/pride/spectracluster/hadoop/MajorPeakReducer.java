@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
 import uk.ac.ebi.pride.spectracluster.cluster.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.ChargePeakMZKey;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -58,10 +58,10 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
             final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
             if (match == null)
                 continue; // not sure why this happens but nothing seems like the thing to do
-            final ISpectralCluster cluster = match.asCluster();
+            final IPeptideSpectrumCluster cluster = match.asCluster();
 
 
-            final Collection<ISpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+            final Collection<IPeptideSpectrumCluster> removedClusters = engine.addClusterIncremental(cluster);
 
             writeClusters(context, removedClusters);
 
@@ -76,7 +76,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ISpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
@@ -108,7 +108,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
           ChargePeakMZKey pMzKey = (ChargePeakMZKey)key;
 
           if (getEngine() != null) {
-              final Collection<ISpectralCluster> clusters = getEngine().getClusters();
+              final Collection<IPeptideSpectrumCluster> clusters = getEngine().getClusters();
               writeClusters(context, clusters);
               setEngine(null);
           }

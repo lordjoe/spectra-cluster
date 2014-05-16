@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 
 import java.util.*;
@@ -15,12 +15,12 @@ import java.util.*;
  */
 public class SimpleClusterRetriever implements IClusterRetriever {
 
-    private final Map<String, ISpectralCluster> clusterById = new HashMap<String, ISpectralCluster>();
-    private final List<ISpectralCluster> sortedClusters = new ArrayList<ISpectralCluster>();
+    private final Map<String, IPeptideSpectrumCluster> clusterById = new HashMap<String, IPeptideSpectrumCluster>();
+    private final List<IPeptideSpectrumCluster> sortedClusters = new ArrayList<IPeptideSpectrumCluster>();
     private int numberDuplicateClusters;
 
-    public SimpleClusterRetriever(Collection<ISpectralCluster> cluaters) {
-        for (ISpectralCluster cluater : cluaters) {
+    public SimpleClusterRetriever(Collection<IPeptideSpectrumCluster> cluaters) {
+        for (IPeptideSpectrumCluster cluater : cluaters) {
             addCluster(cluater);
         }
     }
@@ -37,9 +37,9 @@ public class SimpleClusterRetriever implements IClusterRetriever {
     /**
      * Get sorted clusters
      */
-    public List<ISpectralCluster> getClusters() {
+    public List<IPeptideSpectrumCluster> getClusters() {
         if (sortedClusters.isEmpty()) {
-            ArrayList<ISpectralCluster> clusters = new ArrayList<ISpectralCluster>(clusterById.values());
+            ArrayList<IPeptideSpectrumCluster> clusters = new ArrayList<IPeptideSpectrumCluster>(clusterById.values());
             sortedClusters.addAll(clusters);
             try {
                 Collections.sort(sortedClusters);
@@ -54,7 +54,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return sortedClusters;
     }
 
-    public void addCluster(ISpectralCluster cluster) {
+    public void addCluster(IPeptideSpectrumCluster cluster) {
         try {
             guaranteeClusterId(cluster);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         sortedClusters.clear();
     }
 
-    public void guaranteeClusterId(ISpectralCluster cluster) {
+    public void guaranteeClusterId(IPeptideSpectrumCluster cluster) {
         if (cluster.getId() != null) {
             return;
         }
@@ -79,7 +79,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         buildAndSetIdForClusterWithoutId(cluster);
     }
 
-    protected void buildAndSetIdForClusterWithoutId(ISpectralCluster cluster) {
+    protected void buildAndSetIdForClusterWithoutId(IPeptideSpectrumCluster cluster) {
         String id = cluster.toString();
 
         if (cluster instanceof LazyLoadedSpectralCluster) {
@@ -100,19 +100,19 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return "GenId" + clusterIdCounter++;
     }
 
-    public SimpleClusterRetriever(ISpectralCluster... cluaters) {
+    public SimpleClusterRetriever(IPeptideSpectrumCluster... cluaters) {
         this(Arrays.asList(cluaters));
     }
 
     @Override
-    public ISpectralCluster retrieve(String clusterId) {
+    public IPeptideSpectrumCluster retrieve(String clusterId) {
         return clusterById.get(clusterId);
     }
 
     @Override
-    public List<ISpectralCluster> retrieve(double minMz, double maxMz) {
-        List<ISpectralCluster> holder = new ArrayList<ISpectralCluster>();
-        for (ISpectralCluster cluster : clusterById.values()) {
+    public List<IPeptideSpectrumCluster> retrieve(double minMz, double maxMz) {
+        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
+        for (IPeptideSpectrumCluster cluster : clusterById.values()) {
             double mz = cluster.getPrecursorMz();
             if (mz < minMz)
                 continue;

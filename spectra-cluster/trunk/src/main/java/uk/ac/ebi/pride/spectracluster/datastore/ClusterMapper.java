@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * User: Steve
  * Date: 7/15/13
  */
-public class ClusterMapper implements ParameterizedRowMapper<ISpectralCluster> {
+public class ClusterMapper implements ParameterizedRowMapper<IPeptideSpectrumCluster> {
     ClusterMapper() {
     }
 
@@ -27,7 +27,7 @@ public class ClusterMapper implements ParameterizedRowMapper<ISpectralCluster> {
 
 
     @Override
-    public ISpectralCluster mapRow(final ResultSet rs, final int i) throws SQLException {
+    public IPeptideSpectrumCluster mapRow(final ResultSet rs, final int i) throws SQLException {
         throw new UnsupportedOperationException("Fix This"); // ToDo
 //        String id = rs.getString("id");
 //        int precursor_charge = rs.getInt("precursor_charge");

@@ -73,7 +73,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
             String valStr = val.toString();
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final ISpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null && stableClusteringEngine != null) {  // todo why might this happen
                 if (!cluster.isStable()) {
@@ -121,7 +121,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 //            writeOneVettedCluster(context, cluster);     // nothing removed
 //    }
 
-    protected void writeOneVettedCluster(final Context context, final ISpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -158,7 +158,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
     protected <T> boolean  updateEngine(final Context context,T key ) throws IOException, InterruptedException {
         final StableChargeBinMZKey pMzKey =  (StableChargeBinMZKey)key;
         if (getEngine() != null) {
-            Collection<ISpectralCluster> clusters = getEngine().getClusters();
+            Collection<IPeptideSpectrumCluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
            setEngine(null);
         }

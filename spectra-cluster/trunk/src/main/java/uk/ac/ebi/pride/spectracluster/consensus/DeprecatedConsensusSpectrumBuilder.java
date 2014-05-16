@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
 
@@ -22,7 +22,7 @@ public interface DeprecatedConsensusSpectrumBuilder extends IAlgorithm {
      * @return A list of Peaks sorted according to their intensities.
      */
     @SuppressWarnings("UnusedDeclaration")
-    public ISpectrum buildConsensusSpectrum(ISpectralCluster spectra, Object... otherData);
+    public ISpectrum buildConsensusSpectrum(IPeptideSpectrumCluster spectra, Object... otherData);
 
 //    /**
 //   	 * Creates a consensus spectrum based on the
