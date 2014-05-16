@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 import java.io.*;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * User: Steve
  * Date: 7/19/13
  */
-public class CGFSpectrumIterable implements Iterable<IPeptideSpectrumCluster> {
+public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
 
     protected static LineNumberReader fileToLineNumberReader(File f) {
         try {
@@ -27,7 +27,7 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectrumCluster> {
 
     private final LineNumberReader reader;
     private final MGFSpectrumIterator one_time_iterator;
-    private IPeptideSpectrumCluster nextCluster;
+    private IPeptideSpectralCluster nextCluster;
 
     /**
      * build with an existing readable file
@@ -79,12 +79,12 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectrumCluster> {
      * @return an Iterator.
      */
     @Override
-    public Iterator<IPeptideSpectrumCluster> iterator() {
+    public Iterator<IPeptideSpectralCluster> iterator() {
         return one_time_iterator;
     }
 
 
-    protected class MGFSpectrumIterator implements Iterator<IPeptideSpectrumCluster> {
+    protected class MGFSpectrumIterator implements Iterator<IPeptideSpectralCluster> {
         /**
          * Returns <tt>true</tt> if the iteration has more elements. (In other
          * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -104,8 +104,8 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectrumCluster> {
          * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         @Override
-        public IPeptideSpectrumCluster next() {
-            IPeptideSpectrumCluster ret = nextCluster;
+        public IPeptideSpectralCluster next() {
+            IPeptideSpectralCluster ret = nextCluster;
             nextCluster = ParserUtilities.readSpectralCluster(reader, null);
             return ret;
         }

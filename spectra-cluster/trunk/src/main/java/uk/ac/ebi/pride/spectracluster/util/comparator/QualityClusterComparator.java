@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util.comparator;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Comparator;
@@ -10,16 +10,16 @@ import java.util.Comparator;
  * @author Rui Wang
  * @version $Id$
  */
-public class QualityClusterComparator implements Comparator<IPeptideSpectrumCluster> {
+public class QualityClusterComparator implements Comparator<IPeptideSpectralCluster> {
 
-    public static final Comparator<IPeptideSpectrumCluster> INSTANCE = new QualityClusterComparator();
+    public static final Comparator<IPeptideSpectralCluster> INSTANCE = new QualityClusterComparator();
 
     private QualityClusterComparator() {
     }
 
 
     @Override
-    public int compare(IPeptideSpectrumCluster cluster1, IPeptideSpectrumCluster cluster2) {
+    public int compare(IPeptideSpectralCluster cluster1, IPeptideSpectralCluster cluster2) {
         if (cluster1 == cluster2)
             return 0;
         // first check whether the precursor m/z is different

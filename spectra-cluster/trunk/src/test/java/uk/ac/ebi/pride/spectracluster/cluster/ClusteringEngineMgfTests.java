@@ -45,7 +45,7 @@ public class ClusteringEngineMgfTests {
             }
         }
 
-        List<IPeptideSpectrumCluster> oldClusters = (List<IPeptideSpectrumCluster>) oldClusteringEngine.getClusters();
+        List<IPeptideSpectralCluster> oldClusters = (List<IPeptideSpectralCluster>) oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
     }
 }

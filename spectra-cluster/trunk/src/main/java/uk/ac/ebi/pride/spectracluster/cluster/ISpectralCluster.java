@@ -12,8 +12,8 @@ import java.util.Set;
  * @version $Id$
  */
 public interface ISpectralCluster extends ISpectrumHolder,
-                                          Equivalent<IPeptideSpectrumCluster>,
-                                          Comparable<IPeptideSpectrumCluster>{
+                                          Equivalent<IPeptideSpectralCluster>,
+                                          Comparable<IPeptideSpectralCluster>{
 
     /**
      * Get cluster id

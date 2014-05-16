@@ -13,7 +13,7 @@ import java.util.List;
  * @date 10/05/13
  */
 // TODO JG: remove the functions of the former IPeaksHolder from the implementations
-public interface IPeptideSpectrumCluster extends ISpectralCluster {
+public interface IPeptideSpectralCluster extends ISpectralCluster {
 
     /**
      * Get a list of peptide sequences

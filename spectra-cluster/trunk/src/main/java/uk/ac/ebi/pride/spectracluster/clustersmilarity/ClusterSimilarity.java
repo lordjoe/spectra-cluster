@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 import javax.annotation.Nonnull;
 
@@ -54,10 +54,10 @@ public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet>
      * @param pT interface implemented by the visitor pattern
      */
     @Override
-    public void visit(@Nonnull IPeptideSpectrumCluster current) {
+    public void visit(@Nonnull IPeptideSpectralCluster current) {
         IClusterSet other = getOtherCluster();
         IClusterDistance dm = getDistanceMeasure();
-        for (IPeptideSpectrumCluster otherCluster : other.getClusters()) {
+        for (IPeptideSpectralCluster otherCluster : other.getClusters()) {
             double distance = dm.distance(current, otherCluster);
         }
 

@@ -18,11 +18,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  */
 
-public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equivalent<IPeptideSpectrumCluster> {
+public class AlternativeSpectralClusters implements IPeptideSpectralCluster, Equivalent<IPeptideSpectralCluster> {
 
-    protected static String concensusId(IPeptideSpectrumCluster... copied) {
+    protected static String concensusId(IPeptideSpectralCluster... copied) {
         StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectrumCluster sc : copied) {
+        for (IPeptideSpectralCluster sc : copied) {
             if (sb.length() > 0)
                 sb.append(":");
             sb.append(sc.getId());
@@ -32,7 +32,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(IPeptideSpectrumCluster... copied) {
+    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(IPeptideSpectralCluster... copied) {
         //noinspection UnnecessaryLocalVariable
         IConsensusSpectrumBuilder ret = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
 //        for (int i = 1; i < copied.length; i++) {
@@ -51,21 +51,21 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
-    private final List<IPeptideSpectrumCluster> constitutingClusters = new ArrayList<IPeptideSpectrumCluster>();
+    private final List<IPeptideSpectralCluster> constitutingClusters = new ArrayList<IPeptideSpectralCluster>();
     @SuppressWarnings("FieldCanBeLocal")
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private boolean locked;
 
-    public AlternativeSpectralClusters(IPeptideSpectrumCluster... copied) {
+    public AlternativeSpectralClusters(IPeptideSpectralCluster... copied) {
         this.id = concensusId(copied);
         constitutingClusters.addAll(Arrays.asList(copied));
         qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         Set<ISpectrum> holder = new HashSet<ISpectrum>();
-        for (IPeptideSpectrumCluster sc : copied) {
+        for (IPeptideSpectralCluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
         final ArrayList<ISpectrum> merged = new ArrayList<ISpectrum>(holder);
@@ -118,7 +118,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public List<IPeptideSpectrumCluster> getConstitutingClusters() {
+    public List<IPeptideSpectralCluster> getConstitutingClusters() {
         return Collections.unmodifiableList(constitutingClusters);
     }
 
@@ -320,7 +320,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
      * @return
      */
     @Override
-    public int compareTo(IPeptideSpectrumCluster o) {
+    public int compareTo(IPeptideSpectralCluster o) {
         if (o == this)
             return 0;
         if (getPrecursorMz() != o.getPrecursorMz()) {
@@ -348,7 +348,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(IPeptideSpectrumCluster o) {
+    public boolean equivalent(IPeptideSpectralCluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())
@@ -397,7 +397,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equ
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectrumCluster constitutingCluster : constitutingClusters) {
+        for (IPeptideSpectralCluster constitutingCluster : constitutingClusters) {
             if (sb.length() > 0)
                 sb.append(",");
             sb.append(constitutingCluster);

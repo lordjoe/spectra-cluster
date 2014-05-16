@@ -48,10 +48,10 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            IPeptideSpectrumCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < clusters.length; i++) {
-                IPeptideSpectrumCluster cluster = clusters[i];
+                IPeptideSpectralCluster cluster = clusters[i];
 
                 // cluster becomes cgf
                 StringBuilder sb = new StringBuilder();
@@ -104,14 +104,14 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
             int numberProcessed = 0;
 
-            SpectralCluster ret = new SpectralCluster(id);
+            PeptideSpectralCluster ret = new PeptideSpectralCluster(id);
 
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {
                 String valStr = val.toString();
 
                 LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-                final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+                final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
                 if (cluster == null) {  // todo why might this happen
                     continue;
@@ -136,10 +136,10 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
          * @param context !null context
          * @param cluster !null cluster
          */
-        protected void writeCluster(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
-            final List<IPeptideSpectrumCluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
+        protected void writeCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+            final List<IPeptideSpectralCluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
             if (!allClusters.isEmpty()) {
-                for (IPeptideSpectrumCluster removedCluster : allClusters) {
+                for (IPeptideSpectralCluster removedCluster : allClusters) {
 
                     // drop all spectra
                     final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
@@ -157,7 +157,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
         }
 
 
-        protected void writeOneCluster(final Context context, final IPeptideSpectrumCluster cluster) throws IOException, InterruptedException {
+        protected void writeOneCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
             if (cluster.getClusteredSpectraCount() == 0)
                 return; // empty dont bother
 

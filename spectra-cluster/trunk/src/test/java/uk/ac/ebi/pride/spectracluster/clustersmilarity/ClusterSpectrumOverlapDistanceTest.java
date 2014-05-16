@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 /**
  * @author Rui Wang
@@ -11,8 +11,8 @@ import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
  */
 public class ClusterSpectrumOverlapDistanceTest {
 
-    private IPeptideSpectrumCluster c1;
-    private IPeptideSpectrumCluster c2;
+    private IPeptideSpectralCluster c1;
+    private IPeptideSpectralCluster c2;
     private ClusterSpectrumOverlapDistance clusterSpectrumOverlapDistance;
 
     @Before

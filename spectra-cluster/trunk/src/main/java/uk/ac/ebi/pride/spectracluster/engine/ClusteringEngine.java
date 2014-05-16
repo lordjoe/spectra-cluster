@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -26,15 +26,15 @@ public class ClusteringEngine implements IClusteringEngine {
     }
 
     public static IClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
-                                                                      Comparator<IPeptideSpectrumCluster> spectrumComparator) {
+                                                                      Comparator<IPeptideSpectralCluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
     protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
         private final SimilarityChecker similarityChecker;
-        private final Comparator<IPeptideSpectrumCluster> spectrumComparator;
+        private final Comparator<IPeptideSpectralCluster> spectrumComparator;
 
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<IPeptideSpectrumCluster> pSpectrumComparator) {
+        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<IPeptideSpectralCluster> pSpectrumComparator) {
             similarityChecker = pSimilarityChecker;
             spectrumComparator = pSpectrumComparator;
         }
@@ -53,14 +53,14 @@ public class ClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
     private String name;
-    private final List<IPeptideSpectrumCluster> clusters = new ArrayList<IPeptideSpectrumCluster>();
-    private final List<IPeptideSpectrumCluster> clustersToAdd = new ArrayList<IPeptideSpectrumCluster>();
+    private final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<IPeptideSpectralCluster> clustersToAdd = new ArrayList<IPeptideSpectralCluster>();
     private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
-    private final Comparator<IPeptideSpectrumCluster> spectrumComparator;
+    private final Comparator<IPeptideSpectralCluster> spectrumComparator;
 
     protected ClusteringEngine(SimilarityChecker similarityChecker,
-                               Comparator<IPeptideSpectrumCluster> spectrumComparator) {
+                               Comparator<IPeptideSpectralCluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
     }
@@ -68,7 +68,7 @@ public class ClusteringEngine implements IClusteringEngine {
     protected void guaranteeClean() {
         if (isDirty()) {
             filterClustersToAdd();
-            List<IPeptideSpectrumCluster> myClustersToAdd = getClustersToAdd();
+            List<IPeptideSpectralCluster> myClustersToAdd = getClustersToAdd();
             Collections.sort(myClustersToAdd, getSpectrumComparator());
             addToClusters();
             setDirty(false);
@@ -79,9 +79,9 @@ public class ClusteringEngine implements IClusteringEngine {
      * Remove clusters which are size zero
      */
     protected void filterClustersToAdd() {
-        List<IPeptideSpectrumCluster> myClustersToAdd = getClustersToAdd();
-        List<IPeptideSpectrumCluster> l2 = new ArrayList<IPeptideSpectrumCluster>();
-        for (IPeptideSpectrumCluster sc : myClustersToAdd) {
+        List<IPeptideSpectralCluster> myClustersToAdd = getClustersToAdd();
+        List<IPeptideSpectralCluster> l2 = new ArrayList<IPeptideSpectralCluster>();
+        for (IPeptideSpectralCluster sc : myClustersToAdd) {
             if (sc.getClusteredSpectraCount() > 0)
                 l2.add(sc);
             else
@@ -97,9 +97,9 @@ public class ClusteringEngine implements IClusteringEngine {
      * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
     @Override
-    public List<IPeptideSpectrumCluster> getClusters() {
+    public List<IPeptideSpectralCluster> getClusters() {
         guaranteeClean();
-        final ArrayList<IPeptideSpectrumCluster> ret = new ArrayList<IPeptideSpectrumCluster>(clusters);
+        final ArrayList<IPeptideSpectralCluster> ret = new ArrayList<IPeptideSpectralCluster>(clusters);
         Collections.sort(ret);
         return ret;
     }
@@ -116,8 +116,8 @@ public class ClusteringEngine implements IClusteringEngine {
      * add some clusters
      */
     @Override
-    public void addClusters(IPeptideSpectrumCluster... cluster) {
-        List<IPeptideSpectrumCluster> myClustersToAdd = getClustersToAdd();
+    public void addClusters(IPeptideSpectralCluster... cluster) {
+        List<IPeptideSpectralCluster> myClustersToAdd = getClustersToAdd();
         if (cluster != null) {
             myClustersToAdd.addAll(Arrays.asList(cluster));
             setDirty(true);
@@ -150,17 +150,17 @@ public class ClusteringEngine implements IClusteringEngine {
      * for further clustering
      */
     protected void addToClusters() {
-        List<IPeptideSpectrumCluster> myClustersToAdd = getClustersToAdd();
-        List<IPeptideSpectrumCluster> myClusters = internalGetClusters();
+        List<IPeptideSpectralCluster> myClustersToAdd = getClustersToAdd();
+        List<IPeptideSpectralCluster> myClusters = internalGetClusters();
         SimilarityChecker sCheck = getSimilarityChecker();
 
-        for (IPeptideSpectrumCluster clusterToAdd : myClustersToAdd) {
+        for (IPeptideSpectralCluster clusterToAdd : myClustersToAdd) {
 
-            IPeptideSpectrumCluster mostSimilarCluster = null;
+            IPeptideSpectralCluster mostSimilarCluster = null;
             double highestSimilarityScore = 0;
 
             // find the cluster with the highest similarity score
-            for (IPeptideSpectrumCluster cluster : myClusters) {
+            for (IPeptideSpectralCluster cluster : myClusters) {
                 ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
                 ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
 
@@ -177,7 +177,7 @@ public class ClusteringEngine implements IClusteringEngine {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
             } else {
-                myClusters.add(new SpectralCluster(clusterToAdd));
+                myClusters.add(new PeptideSpectralCluster(clusterToAdd));
             }
         }
 
@@ -217,16 +217,16 @@ public class ClusteringEngine implements IClusteringEngine {
     public boolean mergeAllClusters() {
         boolean modified = false;
         boolean toMerge = true;
-        List<IPeptideSpectrumCluster> myClusters = internalGetClusters();
+        List<IPeptideSpectralCluster> myClusters = internalGetClusters();
         SimilarityChecker sCheck = getSimilarityChecker();
 
         while (toMerge) {
             toMerge = false;
-            List<IPeptideSpectrumCluster> clustersToRemove = new ArrayList<IPeptideSpectrumCluster>();
+            List<IPeptideSpectralCluster> clustersToRemove = new ArrayList<IPeptideSpectralCluster>();
             for (int i = 0; i < myClusters.size(); i++) {
                 for (int j = i + 1; j < myClusters.size(); j++) {
-                    IPeptideSpectrumCluster clusterI = myClusters.get(i);
-                    IPeptideSpectrumCluster clusterJ = myClusters.get(j);
+                    IPeptideSpectralCluster clusterI = myClusters.get(i);
+                    IPeptideSpectralCluster clusterJ = myClusters.get(j);
                     double similarityScore = sCheck.assessSimilarity(clusterI.getConsensusSpectrum(), clusterJ.getConsensusSpectrum());
                     if (similarityScore >= sCheck.getDefaultThreshold()) {
                         toMerge = true;
@@ -253,16 +253,16 @@ public class ClusteringEngine implements IClusteringEngine {
     protected boolean demergeNoneFittingSpectra() {
         boolean noneFittingSpectraFound = false;
 
-        List<IPeptideSpectrumCluster> emptyClusters = new ArrayList<IPeptideSpectrumCluster>(); // holder for any empty clusters
-        List<IPeptideSpectrumCluster> myClusters = internalGetClusters();
+        List<IPeptideSpectralCluster> emptyClusters = new ArrayList<IPeptideSpectralCluster>(); // holder for any empty clusters
+        List<IPeptideSpectralCluster> myClusters = internalGetClusters();
 
-        for (IPeptideSpectrumCluster cluster : myClusters) {
-            List<IPeptideSpectrumCluster> noneFittingSpectra = findNoneFittingSpectra(cluster);
+        for (IPeptideSpectralCluster cluster : myClusters) {
+            List<IPeptideSpectralCluster> noneFittingSpectra = findNoneFittingSpectra(cluster);
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
 
                 List<ISpectrum> holder = new ArrayList<ISpectrum>();
-                for (IPeptideSpectrumCluster removedCluster : noneFittingSpectra) {
+                for (IPeptideSpectralCluster removedCluster : noneFittingSpectra) {
                     holder.addAll(removedCluster.getClusteredSpectra());
                     clustersToAdd.add(removedCluster);
                 }
@@ -288,8 +288,8 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return !null Cluster
      */
-    public List<IPeptideSpectrumCluster> findNoneFittingSpectra(IPeptideSpectrumCluster cluster) {
-        List<IPeptideSpectrumCluster> noneFittingSpectra = new ArrayList<IPeptideSpectrumCluster>();
+    public List<IPeptideSpectralCluster> findNoneFittingSpectra(IPeptideSpectralCluster cluster) {
+        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
         if (cluster.getClusteredSpectra().size() > 1) {
@@ -315,7 +315,7 @@ public class ClusteringEngine implements IClusteringEngine {
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectrumCluster> asWritttenSpectra(@Nonnull IPeptideSpectrumCluster cluster) {
+    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
         return ClusteringUtilities.asWritttenSpectra(cluster, this);
     }
 
@@ -335,7 +335,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected List<IPeptideSpectrumCluster> getClustersToAdd() {
+    protected List<IPeptideSpectralCluster> getClustersToAdd() {
         return clustersToAdd;
     }
 
@@ -344,7 +344,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected List<IPeptideSpectrumCluster> internalGetClusters() {
+    protected List<IPeptideSpectralCluster> internalGetClusters() {
         return clusters;
     }
 
@@ -362,7 +362,7 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected Comparator<IPeptideSpectrumCluster> getSpectrumComparator() {
+    protected Comparator<IPeptideSpectralCluster> getSpectrumComparator() {
         return spectrumComparator;
     }
 

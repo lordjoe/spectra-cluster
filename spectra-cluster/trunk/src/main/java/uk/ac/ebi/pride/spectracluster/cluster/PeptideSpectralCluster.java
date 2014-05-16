@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  *          * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpectrumCluster, ISpectrumHolder, Equivalent<IPeptideSpectrumCluster> {
+public class PeptideSpectralCluster /* extends WatchedClass */ implements IPeptideSpectralCluster, ISpectrumHolder, Equivalent<IPeptideSpectralCluster> {
 
 
     private String id;
@@ -37,7 +37,7 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
-    public SpectralCluster(IPeptideSpectrumCluster copied) {
+    public PeptideSpectralCluster(IPeptideSpectralCluster copied) {
         this.id = copied.getId();
         this.consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
@@ -52,15 +52,15 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
     /**
      * use this when the cluster is not stable
      */
-    public SpectralCluster() {
+    public PeptideSpectralCluster() {
         this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
-    public SpectralCluster(String id) {
+    public PeptideSpectralCluster(String id) {
         this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
-    public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
+    public PeptideSpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         super();
         this.id = id;
         this.consensusSpectrumBuilder = consensusSpectrumBuilder;
@@ -337,7 +337,7 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
      * @return
      */
     @Override
-    public int compareTo(IPeptideSpectrumCluster o) {
+    public int compareTo(IPeptideSpectralCluster o) {
         if (o == this)
             return 0;
         try {
@@ -382,7 +382,7 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(IPeptideSpectrumCluster o) {
+    public boolean equivalent(IPeptideSpectralCluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())

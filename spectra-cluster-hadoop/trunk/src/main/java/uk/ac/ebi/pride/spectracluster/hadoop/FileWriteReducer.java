@@ -129,7 +129,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
      * @param newState
      * @param commanded
      */
-    public void notifyClusterCreateListeners(IPeptideSpectrumCluster cluster) {
+    public void notifyClusterCreateListeners(IPeptideSpectralCluster cluster) {
         for (ClusterCreateListener listener : m_ClusterCreateListeners) {
             listener.onClusterCreate(cluster);
         }
@@ -267,7 +267,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 //
             // now write the big clusters
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectrumCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             notifyClusterCreateListeners(cluster);
 //

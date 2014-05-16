@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class CGFClusterAppender implements IClusterAppender {
      * @param otherData any other cluster - implementation specific and usually blank
      */
     @Override
-    public void appendCluster(final Appendable out, final IPeptideSpectrumCluster cluster, final Object... otherData) {
+    public void appendCluster(final Appendable out, final IPeptideSpectralCluster cluster, final Object... otherData) {
         try {
             out.append("BEGIN CLUSTER");
             out.append(" Id=").append(cluster.getId());
@@ -43,7 +43,7 @@ public class CGFClusterAppender implements IClusterAppender {
         }
     }
 
-    private void appendSpectra(final Appendable out, final IPeptideSpectrumCluster cluster) {
+    private void appendSpectra(final Appendable out, final IPeptideSpectralCluster cluster) {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         for (ISpectrum cs : clusteredSpectra) {
             spectrumAppender.appendSpectrum(out, cs);  // single spectrum become mgfs

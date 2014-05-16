@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CompareTo;
 import com.lordjoe.utilities.TypedPredicate;
 import com.lordjoe.utilities.TypedVisitor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.TSVClusterAppender;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -35,23 +35,23 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
         int samePeptideNonMergable = 0;
 
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
-        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
-        List<IPeptideSpectrumCluster> clusters = inp.getClusters();
+        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        List<IPeptideSpectralCluster> clusters = inp.getClusters();
         // NOTE this is a hack sine the ids are the most common peptide
-        Collections.sort(clusters, new Comparator<IPeptideSpectrumCluster>() {
+        Collections.sort(clusters, new Comparator<IPeptideSpectralCluster>() {
             @Override
-            public int compare(IPeptideSpectrumCluster o1, IPeptideSpectrumCluster o2) {
+            public int compare(IPeptideSpectralCluster o1, IPeptideSpectralCluster o2) {
                 String id1 = o1.getId();
                 String id2 = o2.getId();
                 return id1.compareTo(id2);
             }
         });
         String currentPeptide = "";
-        IPeptideSpectrumCluster lastCluster = null;
-        List<IPeptideSpectrumCluster> toMerge = new ArrayList<IPeptideSpectrumCluster>();
+        IPeptideSpectralCluster lastCluster = null;
+        List<IPeptideSpectralCluster> toMerge = new ArrayList<IPeptideSpectralCluster>();
 
         final TSVClusterAppender tsvClusterAppender = new TSVClusterAppender();
-        for (IPeptideSpectrumCluster cluster : clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             total++;
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             String id = cluster.getId();
@@ -70,7 +70,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
                         StringBuilder sb = new StringBuilder();
                         tsvClusterAppender.appendCluster(sb, lastCluster);
                         sb.append("\n");
-                        for (IPeptideSpectrumCluster sc : toMerge) {
+                        for (IPeptideSpectralCluster sc : toMerge) {
                             if (sc != lastCluster) {
                                 tsvClusterAppender.appendCluster(sb, sc);
                                 sb.append("\n");
@@ -114,7 +114,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     private ClusteringHeader header;
     private PeptideUseId usage = new PeptideUseId();
 
-    public SimpleClusterSet(Collection<IPeptideSpectrumCluster> clusters) {
+    public SimpleClusterSet(Collection<IPeptideSpectralCluster> clusters) {
         super(clusters);
     }
 
@@ -155,9 +155,9 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
      * @return
      */
     @Override
-    public List<IPeptideSpectrumCluster> getMatchingClusters(TypedPredicate<IPeptideSpectrumCluster> condition) {
-        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
-        for (IPeptideSpectrumCluster cluster : getClusters()) {
+    public List<IPeptideSpectralCluster> getMatchingClusters(TypedPredicate<IPeptideSpectralCluster> condition) {
+        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        for (IPeptideSpectralCluster cluster : getClusters()) {
             if (condition.apply(cluster))
                 holder.add(cluster);
         }
@@ -170,8 +170,8 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
      *
      * @param visitor !null visitor(s)
      */
-    public void visitClusters(TypedVisitor<IPeptideSpectrumCluster> visitor, TypedVisitor<IPeptideSpectrumCluster>... otherVisitors) {
-        for (IPeptideSpectrumCluster cluster : getClusters()) {
+    public void visitClusters(TypedVisitor<IPeptideSpectralCluster> visitor, TypedVisitor<IPeptideSpectralCluster>... otherVisitors) {
+        for (IPeptideSpectralCluster cluster : getClusters()) {
             visitor.visit(cluster);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < otherVisitors.length; i++) {
@@ -184,14 +184,14 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
 
 
     @Override
-    public void addClusters(Collection<IPeptideSpectrumCluster> clusters) {
-        for (IPeptideSpectrumCluster cluster : clusters) {
+    public void addClusters(Collection<IPeptideSpectralCluster> clusters) {
+        for (IPeptideSpectralCluster cluster : clusters) {
             guaranteeClusterId(cluster);
             addCluster(cluster);
         }
     }
 
-    protected void buildAndSetIdForClusterWithoutId(IPeptideSpectrumCluster cluster) {
+    protected void buildAndSetIdForClusterWithoutId(IPeptideSpectralCluster cluster) {
         List<String> peptides = cluster.getPeptides();
         String id = cluster.getSpectralId();
 //        if (peptides.isEmpty())
@@ -207,18 +207,18 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
             ((PSMSpectralCluster) cluster).setId(id);
             return;
         }
-        if (cluster instanceof SpectralCluster) {
-            ((SpectralCluster) cluster).setId(id);
+        if (cluster instanceof PeptideSpectralCluster) {
+            ((PeptideSpectralCluster) cluster).setId(id);
             return;
         }
         throw new IllegalStateException("cannot guarantee non-null id");
     }
 
     @Override
-    public List<IPeptideSpectrumCluster> getClustersWithSpectrum(ISpectrum spectrum) {
+    public List<IPeptideSpectralCluster> getClustersWithSpectrum(ISpectrum spectrum) {
         String id = spectrum.getId();
-        List<IPeptideSpectrumCluster> holder = new ArrayList<IPeptideSpectrumCluster>();
-        for (IPeptideSpectrumCluster test : getClusters()) {
+        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        for (IPeptideSpectralCluster test : getClusters()) {
             List<ISpectrum> spcetrums = test.getClusteredSpectra();
             for (ISpectrum spcetrum : spcetrums) {
                 if (id.equals(spcetrum.getId())) {
@@ -234,7 +234,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     @Override
     public IClusterSet dropClustersLessThanSize(final int minsize) {
         SimpleClusterSet ret = new SimpleClusterSet();
-        for (IPeptideSpectrumCluster sc : getClusters()) {
+        for (IPeptideSpectralCluster sc : getClusters()) {
             if (sc.getClusteredSpectraCount() >= minsize)
                 ret.addCluster(sc);
         }
@@ -249,37 +249,37 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
     }
 
     @Override
-    public List<IPeptideSpectrumCluster> getBestMatchingClusters(IPeptideSpectrumCluster cluster, int maxMatches) {
+    public List<IPeptideSpectralCluster> getBestMatchingClusters(IPeptideSpectralCluster cluster, int maxMatches) {
         ClusterQualityComparator clusterQualityComparator = new ClusterQualityComparator(cluster);
 
         return getBestMatchesWithQuality(maxMatches, clusterQualityComparator);
     }
 
-    private List<IPeptideSpectrumCluster> getBestMatchesWithQuality(int maxMatches, ClusterQualityComparator clusterQualityComparator) {
-        List<IPeptideSpectrumCluster> clusters = getClusters();
+    private List<IPeptideSpectralCluster> getBestMatchesWithQuality(int maxMatches, ClusterQualityComparator clusterQualityComparator) {
+        List<IPeptideSpectralCluster> clusters = getClusters();
         Collections.sort(clusters, clusterQualityComparator);
 
         int numberOfMatches = clusters.size() < maxMatches ? clusters.size() : maxMatches;
         return clusters.subList(0, numberOfMatches);
     }
 
-    private static class ClusterQualityComparator implements Comparator<IPeptideSpectrumCluster> {
+    private static class ClusterQualityComparator implements Comparator<IPeptideSpectralCluster> {
 
-        private final IPeptideSpectrumCluster clusterToMatch;
+        private final IPeptideSpectralCluster clusterToMatch;
 
-        private ClusterQualityComparator(IPeptideSpectrumCluster clusterToMatch) {
+        private ClusterQualityComparator(IPeptideSpectralCluster clusterToMatch) {
             this.clusterToMatch = clusterToMatch;
         }
 
         @Override
-        public int compare(IPeptideSpectrumCluster o1, IPeptideSpectrumCluster o2) {
+        public int compare(IPeptideSpectralCluster o1, IPeptideSpectralCluster o2) {
             double match1 = matchQuality(o1, clusterToMatch);
             double match2 = matchQuality(o2, clusterToMatch);
 
             return CompareTo.compare(match1, match2);
         }
 
-        private double matchQuality(IPeptideSpectrumCluster c1, IPeptideSpectrumCluster c2) {
+        private double matchQuality(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
             Set<String> pep1 = new HashSet<String>(c1.getPeptides());
             Set<String> pep2 = new HashSet<String>(c2.getPeptides());
             int totalPeptides = pep1.size() + pep2.size();

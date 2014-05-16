@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener
@@ -21,7 +21,7 @@ public interface ClusterCreateListener {
      *
      * @param cluster
      */
-    public void onClusterCreate(IPeptideSpectrumCluster cluster, Object... otherData);
+    public void onClusterCreate(IPeptideSpectralCluster cluster, Object... otherData);
 
     /**
      * do something when a cluster when the last cluster is read -
