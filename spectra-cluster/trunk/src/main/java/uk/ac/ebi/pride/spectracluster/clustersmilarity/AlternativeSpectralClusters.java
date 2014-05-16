@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  */
 
-public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, InternalSpectralCluster, Equivalent<IPeptideSpectrumCluster> {
+public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Equivalent<IPeptideSpectrumCluster> {
 
     protected static String concensusId(IPeptideSpectrumCluster... copied) {
         StringBuilder sb = new StringBuilder();
@@ -238,25 +238,10 @@ public class AlternativeSpectralClusters implements IPeptideSpectrumCluster, Int
      * @return exactly the current concensus spectrum
      */
     @Override
-    public ISpectrum internalGetConcensusSpectrum() {
-        return consensusSpectrum;
-    }
-
-    @Override
     public List<ISpectrum> getClusteredSpectra() {
         guaranteeClean();
         return new ArrayList<ISpectrum>(clusteredSpectra);
     }
-
-    /**
-     * @return
-     */
-    @Override
-    public List<ISpectrum> internalGetClusteredSpectra() {
-        guaranteeClean();
-        return new ArrayList<ISpectrum>(clusteredSpectra);
-    }
-
 
     @Override
     public int getClusteredSpectraCount() {

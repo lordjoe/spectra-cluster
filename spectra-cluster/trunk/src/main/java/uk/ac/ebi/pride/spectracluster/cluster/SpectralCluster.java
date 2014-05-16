@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  *          * NOTE extend WatchedClass to look for possible memory leaks
  */
-public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpectrumCluster, ISpectrumHolder, InternalSpectralCluster, Equivalent<IPeptideSpectrumCluster> {
+public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpectrumCluster, ISpectrumHolder, Equivalent<IPeptideSpectrumCluster> {
 
 
     private String id;
@@ -254,17 +254,6 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
 
     @Override
     public ISpectrum getConsensusSpectrum() {
-        return internalGetConcensusSpectrum();
-    }
-
-    /**
-     * this should be protected but it needs to be used by spectral clustering so that
-     * guarantee clean can be byPassed
-     *
-     * @return exactly the current concensus spectrum
-     */
-    @Override
-    public ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrumBuilder.getConsensusSpectrum();
     }
 
@@ -276,17 +265,6 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
     @Override
     public int getClusteredSpectraCount() {
         return clusteredSpectra.size();
-    }
-
-    /**
-     * this should be protected but it needs to be used by spectral clustering so that
-     * guaranett clean can be byPassed
-     *
-     * @return
-     */
-    @Override
-    public List<ISpectrum> internalGetClusteredSpectra() {
-        return clusteredSpectra;
     }
 
     /**
@@ -426,12 +404,8 @@ public class SpectralCluster /* extends WatchedClass */ implements IPeptideSpect
             return false;
         }
 
-        List<ISpectrum> spc1 = internalGetClusteredSpectra();
-        List<ISpectrum> spc2;
-        if (o instanceof InternalSpectralCluster)
-            spc2 = ((InternalSpectralCluster) o).internalGetClusteredSpectra();  // no copy or clean needed
-        else
-            spc2 = o.getClusteredSpectra();
+        List<ISpectrum> spc1 = clusteredSpectra;
+        List<ISpectrum> spc2 = o.getClusteredSpectra();
 
         if (spc1.size() != spc2.size()) {
             return false;

@@ -2,7 +2,10 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
@@ -29,6 +32,8 @@ import java.util.List;
  * using an internal list - this allows steps to be individually rewritten and tested
  * Also internal methods are protected allowing tests to access them
  * This is a version where we can try changes using ConsensusSpectrumBuilderTests to validate
+ *
+ * todo: development only
  */
 @Deprecated
 public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {

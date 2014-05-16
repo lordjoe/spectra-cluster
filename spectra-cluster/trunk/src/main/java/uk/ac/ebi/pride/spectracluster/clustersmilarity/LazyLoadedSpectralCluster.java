@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectrumCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.InternalSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -471,11 +470,7 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectrumCluster {
         }
 
         List<ISpectrum> spc1 = getClusteredSpectra();
-        List<ISpectrum> spc2;
-        if (o instanceof InternalSpectralCluster)
-            spc2 = ((InternalSpectralCluster) o).internalGetClusteredSpectra();  // no copy or clean needed
-        else
-            spc2 = o.getClusteredSpectra();
+        List<ISpectrum> spc2 = o.getClusteredSpectra();
 
         if (spc1.size() != spc2.size()) {
             return false;
