@@ -65,19 +65,20 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
     ISpectrum getHighestNPeaks(int numberRequested);
 
     /**
-     * return as a spectrum the highest  MAJOR_PEAK_NUMBER
+     * return as a spectrum the highest n peaks as defined in majorPeakCount
      * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
-     *
+     * @param majorPeakCount The number of highest peaks to consider "major"
      * @return
      */
-    int[] asMajorPeakMZs();
+    int[] asMajorPeakMZs(int majorPeakCount);
 
     /**
      * does the spectrum contain this is a major peak
      *
      * @param mz peak as int
+     * @param majorPeakCount The number of highest peaks to consider "major"
      * @return true if so
      */
-    boolean containsMajorPeak(final int mz);
+    boolean containsMajorPeak(final int mz, int majorPeakCount);
 
 }

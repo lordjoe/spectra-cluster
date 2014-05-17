@@ -122,8 +122,8 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public int[] asMajorPeakMZs() {
-        return getInternalSpectrum().asMajorPeakMZs();
+    public int[] asMajorPeakMZs(int majorPeakCount) {
+        return getInternalSpectrum().asMajorPeakMZs(majorPeakCount);
     }
 
     protected IPeptideSpectrumMatch getInternalSpectrum() {
@@ -145,8 +145,8 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public boolean containsMajorPeak(int mz) {
-        return getInternalSpectrum().containsMajorPeak(mz);
+    public boolean containsMajorPeak(int mz, int majorPeakCount) {
+        return getInternalSpectrum().containsMajorPeak(mz, majorPeakCount);
     }
 
     public String toString() {

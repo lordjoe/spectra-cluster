@@ -159,7 +159,7 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public int[] asMajorPeakMZs() {
+    public int[] asMajorPeakMZs(int majorPeakCount) {
         throw new UnsupportedOperationException("Fix This");
     }
 
@@ -169,7 +169,7 @@ public class PSMSpectrum implements IPeptideSpectrumMatch {
     }
 
     @Override
-    public boolean containsMajorPeak(int mz) {
+    public boolean containsMajorPeak(int mz, int majorPeakCount) {
         throw new UnsupportedOperationException("Fix This");
     }
 

@@ -22,7 +22,8 @@ import java.util.*;
  * Date: 6/28/13
  */
 public class PeakMatchClusteringEngine implements IClusteringEngine {
-
+    // Frank et al does 5 we do 1 more
+    public static final int MAJOR_PEAK_NUMBER = 6;
 
     private final SimilarityChecker similarityChecker;
     private final Comparator<IPeptideSpectralCluster> spectrumComparator;
@@ -160,7 +161,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
             if (readCluster.getClusteredSpectraCount() != 1)
                 throw new IllegalStateException("this should be a a single spectrum cluster"); // ToDo change
             final ISpectrum theSpectrum = readCluster.getHighestQualitySpectrum();
-            final int[] peaks = theSpectrum.asMajorPeakMZs();
+            final int[] peaks = theSpectrum.asMajorPeakMZs(MAJOR_PEAK_NUMBER);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < peaks.length; i++) {
                 if (alreadyClustered.contains(theSpectrum))    // we are already in a cluster
@@ -172,7 +173,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                     ISpectrum addedSpectrum = readCluster.getHighestQualitySpectrum();
                     if (alreadyClustered.contains(addedSpectrum))
                         continue;
-                    if (!addedSpectrum.containsMajorPeak(peak))   // we do not have the peak
+                    if (!addedSpectrum.containsMajorPeak(peak, MAJOR_PEAK_NUMBER))   // we do not have the peak
                         continue;
                     engine.addClusters(addedCluster);
                 }
