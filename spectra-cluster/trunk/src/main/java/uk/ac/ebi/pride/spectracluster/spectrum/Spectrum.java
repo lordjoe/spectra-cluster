@@ -19,9 +19,6 @@ public class Spectrum implements ISpectrum {
 
     public final static IQualityScorer DEFAULT_QUALITY_SCORER = new SignalToNoiseChecker();
 
-    // Frank et al does 5 we do 1 more
-    public static final int MAJOR_PEAK_NUMBER = 6;
-
     private final String id;
     private final int precursorCharge;
     private final float precursorMz;
@@ -37,6 +34,8 @@ public class Spectrum implements ISpectrum {
     // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
     private Set<Integer> majorPeakMZ = new HashSet<Integer>();
+    // the number of peaks considered as "major" when the majorPeakMZ Set was filled the last time.
+    private int currentMajorPeakCount = 0;
 
 
     public Spectrum(final String pId,
@@ -178,8 +177,8 @@ public class Spectrum implements ISpectrum {
      * @return true if so
      */
     @Override
-    public boolean containsMajorPeak(final int mz) {
-        guaranteeMajorPeaks();
+    public boolean containsMajorPeak(final int mz, int majorPeakCount) {
+        guaranteeMajorPeaks(majorPeakCount);
         return majorPeakMZ.contains(mz);
     }
 
@@ -190,8 +189,8 @@ public class Spectrum implements ISpectrum {
      * @return
      */
     @Override
-    public int[] asMajorPeakMZs() {
-        guaranteeMajorPeaks();
+    public int[] asMajorPeakMZs(int majorPeakCount) {
+        guaranteeMajorPeaks(majorPeakCount);
         final Integer[] peaks = majorPeakMZ.toArray(new Integer[majorPeakMZ.size()]);
         Arrays.sort(peaks);
         int[] ret = new int[peaks.length];
@@ -202,12 +201,14 @@ public class Spectrum implements ISpectrum {
         return ret;
     }
 
-    private void guaranteeMajorPeaks() {
-        if (majorPeakMZ.isEmpty()) {
-            ISpectrum peaks = getHighestNPeaks(MAJOR_PEAK_NUMBER);
+    private void guaranteeMajorPeaks(int majorPeakCount) {
+        if (majorPeakMZ.isEmpty() || majorPeakCount != currentMajorPeakCount) {
+            majorPeakMZ.clear();
+            ISpectrum peaks = getHighestNPeaks(currentMajorPeakCount);
             for (IPeak peak : peaks.getPeaks()) {
                 majorPeakMZ.add((int) peak.getMz());
             }
+            currentMajorPeakCount = majorPeakCount;
         }
     }
 

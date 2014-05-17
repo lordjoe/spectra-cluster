@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
+import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
 import java.util.Comparator;
@@ -53,7 +54,8 @@ public class SpectrumClusteringData implements Comparable<SpectrumClusteringData
         charge = spec.getPrecursorCharge();
         quality = (float) spec.getQualityScore();
         precursor_mz = spec.getPrecursorMz();
-        top_peaks = spec.asMajorPeakMZs();
+        // TODO JG: this might not be an ideal solution
+        top_peaks = spec.asMajorPeakMZs(PeakMatchClusteringEngine.MAJOR_PEAK_NUMBER);
     }
 
     public SpectrumClusteringData(final String pId, final float pQuality, int precursorCharge, final float pPrecursor_mz, final int[] pTop_peaks) {
