@@ -13,6 +13,7 @@ import java.util.List;
  * @date 10/05/13
  */
 // TODO JG: remove the functions of the former IPeaksHolder from the implementations
+@Deprecated
 public interface IPeptideSpectralCluster extends ISpectralCluster {
 
     /**
