@@ -92,7 +92,9 @@ public interface ISpectralCluster extends ISpectrumHolder,
      * if true the cluster is stable and will not allow removal
      *
      * @return
+     *
      */
+    @Deprecated
     boolean isStable();
 
     /**
@@ -100,6 +102,7 @@ public interface ISpectralCluster extends ISpectrumHolder,
      *
      * @return
      */
+    @Deprecated
     boolean isSemiStable();
 
 
