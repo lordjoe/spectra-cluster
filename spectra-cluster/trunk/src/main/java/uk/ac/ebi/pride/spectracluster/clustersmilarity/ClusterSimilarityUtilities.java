@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.ElapsedTimer;
+import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
@@ -320,7 +321,7 @@ public class ClusterSimilarityUtilities {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(outFile));
             //noinspection unchecked
-            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new StableClusterPredicate());
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();
@@ -346,7 +347,7 @@ public class ClusterSimilarityUtilities {
                 writer.append("\n");
             }
             //noinspection unchecked
-            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new SemiStableClusterPredicate());
+            AbstractClusterWriter visitor = new AbstractClusterWriter(writer, new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
             //noinspection unchecked
             clusters.visitClusters(visitor);
             writer.close();
@@ -427,7 +428,6 @@ public class ClusterSimilarityUtilities {
     /**
      * return common spectra ids
      *
-     * @param c1 cluster 1
      * @param c2 cluster2
      * @return set of common ids
      */
@@ -690,7 +690,6 @@ public class ClusterSimilarityUtilities {
     /**
      * build a tsv file from an mgf directory
      *
-     * @param pArg
      * @param outFile
      * @throws IOException
      */

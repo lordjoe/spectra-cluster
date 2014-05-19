@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 import java.util.*;
@@ -224,25 +223,6 @@ public class SpectralCluster implements ICluster {
     public boolean isRemoveSupported() {
         // return !isStable();
         return true;
-    }
-
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @return
-     */
-    public boolean isStable() {
-        return ClusterUtilities.isClusterStable(this);
-    }
-
-    /**
-     * if true the cluster is semi stable and will not allow removal
-     *
-     * @return
-     */
-    @Override
-    public boolean isSemiStable() {
-        return ClusterUtilities.isClusterSemiStable(this);
     }
 
     @Override

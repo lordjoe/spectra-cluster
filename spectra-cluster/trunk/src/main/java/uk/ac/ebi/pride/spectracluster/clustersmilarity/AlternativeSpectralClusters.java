@@ -283,36 +283,6 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
 
 
     /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @return
-     */
-    public boolean isStable() {
-        return true;
-    }
-
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @return
-     */
-    @Override
-    public boolean isSemiStable() {
-        return true;
-    }
-
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @param stable as
-     */
-    public void setStable(boolean stable) {
-        if (!isStable())
-            throw new UnsupportedOperationException("AlternativeSpectralClusters are always stable");
-    }
-
-
-    /**
      * sort by mz - might be useful
      *
      * @param o

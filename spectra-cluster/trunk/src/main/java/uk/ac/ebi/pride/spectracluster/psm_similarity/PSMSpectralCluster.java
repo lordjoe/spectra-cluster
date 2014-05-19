@@ -9,7 +9,6 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
@@ -326,23 +325,6 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
 //        }
 //
 //    }
-
-
-    @Override
-    public boolean isStable() {
-        return ClusterUtilities.isClusterStable(this);
-    }
-
-
-    /**
-     * if true the cluster is semi stable and will not allow removal
-     *
-     * @return
-     */
-    @Override
-    public boolean isSemiStable() {
-        return ClusterUtilities.isClusterSemiStable(this);
-    }
 
 
     @Override

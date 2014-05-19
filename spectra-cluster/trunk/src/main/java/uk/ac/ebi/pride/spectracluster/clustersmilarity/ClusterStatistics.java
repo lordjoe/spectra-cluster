@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.utilities.TypedVisitor;
+import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 
 import javax.annotation.Nonnull;
@@ -22,8 +23,8 @@ public class ClusterStatistics implements TypedVisitor<IPeptideSpectralCluster> 
         this.spectra = spectra;
 
         clusterStatisticses.add(new NumberOfClusters());
-        clusterStatisticses.add(new NumberOfStableClusters());
-        clusterStatisticses.add(new NumberOfSemiStableClusters());
+        clusterStatisticses.add(new NumberOfStableClusters(new CountBasedClusterStabilityAssessor()));
+        clusterStatisticses.add(new NumberOfSemiStableClusters(new CountBasedClusterStabilityAssessor()));
         clusterStatisticses.add(new PeptideToClustersStatistics());
         clusterStatisticses.add(new SpectrumToClustersStatistics(spectra));
 
