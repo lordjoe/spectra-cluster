@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import com.lordjoe.utilities.Util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
@@ -26,8 +25,6 @@ import java.util.*;
 @SuppressWarnings("UnusedDeclaration")
 public class IncrementalClusteringEngine implements IIncrementalClusteringEngine {
 
-
-    public static final int PROGRESS_SHOW_INTERVAL = 100;
 
     @SuppressWarnings("UnusedDeclaration")
     public static IIncrementalClusteringEngineFactory getClusteringEngineFactory() {
@@ -63,7 +60,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     private String name;
     private final List<ICluster> clusters = new ArrayList<ICluster>();
-    private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
     private final double windowSize;
@@ -138,8 +134,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
-        int compareCount = 0;
-
         if (cluster.getClusteredSpectra().size() > 1) {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
                 final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
@@ -148,34 +142,10 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 if (similarityScore < defaultThreshold) {
                     noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
-
-                if (compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
-                    showProgress();
             }
         }
 
         return noneFittingSpectra;
-    }
-
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(IProgressHandler handler) {
-        progressHandlers.add(handler);
-
-    }
-
-    /**
-     * show some work is going on
-     */
-    protected void showProgress() {
-        for (IProgressHandler pm : progressHandlers) {
-            pm.incrementProgress(1);
-        }
     }
 
     /**
@@ -279,7 +249,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
         ICluster bestMatch = null;
         double highestSimilarityScore = 0;
-        int compareCount = 0;
 
         ICluster mostSimilarCluster = null;
         ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
@@ -297,9 +266,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 }
 
             }
-            if (compareCount++ % PROGRESS_SHOW_INTERVAL == 0)
-                showProgress();
-
         }
 
 

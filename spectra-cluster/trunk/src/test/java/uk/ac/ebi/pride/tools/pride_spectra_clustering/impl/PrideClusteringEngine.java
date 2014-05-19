@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
@@ -107,18 +106,6 @@ public class PrideClusteringEngine implements IClusteringEngine {
         }
 
         return noneFittingSpectra;
-
-    }
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(IProgressHandler handler) {
-        //noinspection SimplifiableIfStatement,PointlessBooleanExpression,ConstantConditions,RedundantIfStatement
-        if (true) throw new UnsupportedOperationException("Fix This");
 
     }
 

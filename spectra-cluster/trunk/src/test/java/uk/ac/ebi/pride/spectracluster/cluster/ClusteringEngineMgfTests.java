@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
+import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -29,7 +29,7 @@ public class ClusteringEngineMgfTests {
         List<String> spectrumIds = new ArrayList<String>(Arrays.asList("6777", "291", "13480"));
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
         //      IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {

@@ -1,12 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -18,42 +16,10 @@ import java.util.*;
  */
 public class ClusteringEngine implements IClusteringEngine {
 
-
-    public static IClusteringEngineFactory getClusteringEngineFactory() {
-        return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
-    public static IClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
-                                                                      Comparator<ICluster> spectrumComparator) {
-        return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
-    }
-
-    protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
-        private final SimilarityChecker similarityChecker;
-        private final Comparator<ICluster> spectrumComparator;
-
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
-            similarityChecker = pSimilarityChecker;
-            spectrumComparator = pSpectrumComparator;
-        }
-
-        /**
-         * make a copy of the clustering engine
-         *
-         * @return
-         */
-        @Override
-        public IClusteringEngine getClusteringEngine(Object... otherdata) {
-            return new ClusteringEngine(similarityChecker, spectrumComparator);
-        }
-    }
-
-
     private boolean dirty;
     private String name;
     private final List<ICluster> clusters = new ArrayList<ICluster>();
     private final List<ICluster> clustersToAdd = new ArrayList<ICluster>();
-    private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
 
@@ -303,18 +269,6 @@ public class ClusteringEngine implements IClusteringEngine {
         }
 
         return noneFittingSpectra;
-    }
-
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(IProgressHandler handler) {
-        progressHandlers.add(handler);
-
     }
 
     /**
