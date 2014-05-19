@@ -24,7 +24,7 @@ public class MultiSimillarityTest {
     public void setUp() throws Exception {
         // load a file contains a list of clusters
         // URL url = MultiSimillarityTest.class.getClassLoader().getResource ("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
-        URL url = MultiSimillarityTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf");
+        URL url = MultiSimillarityTest.class.getClassLoader().getResource("uk/ac/ebi/pride/spectracluster/io/spectra_400.0_4.0.cgf");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
