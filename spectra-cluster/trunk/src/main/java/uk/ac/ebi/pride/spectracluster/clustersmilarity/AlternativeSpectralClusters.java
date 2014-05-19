@@ -319,7 +319,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
      * @return
      */
     @Override
-    public int compareTo(ISpectralCluster o) {
+    public int compareTo(ICluster o) {
         if (o == this)
             return 0;
         if (getPrecursorMz() != o.getPrecursorMz()) {
@@ -347,7 +347,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(ISpectralCluster o) {
+    public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())

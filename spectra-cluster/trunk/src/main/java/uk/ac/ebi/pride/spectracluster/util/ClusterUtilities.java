@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.spectracluster.util;
 import com.lordjoe.algorithms.CountedString;
 import com.lordjoe.algorithms.LinearBinner;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
@@ -125,7 +125,7 @@ public class ClusterUtilities {
      * @param !null cluster
      * @return as above
      */
-    public static boolean isClusterStable(ISpectralCluster cluster) {
+    public static boolean isClusterStable(ICluster cluster) {
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
@@ -193,7 +193,7 @@ public class ClusterUtilities {
      * @param !null cluster
      * @return as above
      */
-    public static boolean isClusterSemiStable(ISpectralCluster cluster) {
+    public static boolean isClusterSemiStable(ICluster cluster) {
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
