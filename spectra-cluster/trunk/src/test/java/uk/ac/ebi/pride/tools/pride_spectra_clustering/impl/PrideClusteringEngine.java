@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -121,7 +120,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster, this);
+        return ClusterUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**

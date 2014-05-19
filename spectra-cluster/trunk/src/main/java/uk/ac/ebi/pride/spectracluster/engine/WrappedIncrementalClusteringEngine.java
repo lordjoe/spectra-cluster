@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.annotation.Nonnull;
@@ -146,7 +146,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster, realEngine);
+        return ClusterUtilities.asWritttenSpectra(cluster, realEngine);
     }
 
 
