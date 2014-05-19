@@ -98,7 +98,7 @@ public class ClusterUtilities {
      * @return !null List<ISpectralCluster
      */
     @Nonnull
-    public static List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster, @Nonnull IClusteringEngine engine) {
+    public static List<IPeptideSpectralCluster> removeNonFittingSpectra(@Nonnull IPeptideSpectralCluster cluster, @Nonnull IClusteringEngine engine) {
         final List<IPeptideSpectralCluster> allClusters = engine.findNoneFittingSpectra(cluster);
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         if (!allClusters.isEmpty()) {

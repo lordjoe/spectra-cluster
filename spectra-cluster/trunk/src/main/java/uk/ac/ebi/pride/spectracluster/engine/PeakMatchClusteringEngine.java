@@ -310,7 +310,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusterUtilities.asWritttenSpectra(cluster, this);
+        return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
 
