@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectralCluster implements ISpectralCluster {
+public class SpectralCluster implements ICluster {
 
     private String id;
     // holds a list of the top  SpectralQualityHolder.NUMBER_SPECTRA_FOR_CONSENSUS = 20;
@@ -32,7 +32,7 @@ public class SpectralCluster implements ISpectralCluster {
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
-    public SpectralCluster(ISpectralCluster copied) {
+    public SpectralCluster(ICluster copied) {
         this(copied.getId(), ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
 
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
@@ -268,7 +268,7 @@ public class SpectralCluster implements ISpectralCluster {
      * @return
      */
     @Override
-    public int compareTo(ISpectralCluster o) {
+    public int compareTo(ICluster o) {
         if (o == this)
             return 0;
         try {
@@ -313,7 +313,7 @@ public class SpectralCluster implements ISpectralCluster {
      * @return true if other is "similar enough to this"
      */
     @Override
-    public boolean equivalent(ISpectralCluster o) {
+    public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
         if (getPrecursorCharge() != o.getPrecursorCharge())

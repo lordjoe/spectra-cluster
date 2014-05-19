@@ -11,9 +11,9 @@ import java.util.Set;
  * @author Rui Wang
  * @version $Id$
  */
-public interface ISpectralCluster extends ISpectrumHolder,
-                                          Equivalent<ISpectralCluster>,
-                                          Comparable<ISpectralCluster>{
+public interface ICluster extends ISpectrumHolder,
+                                          Equivalent<ICluster>,
+                                          Comparable<ICluster>{
 
     /**
      * Get cluster id

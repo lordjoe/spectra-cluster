@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -95,7 +95,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
         return byId;
     }
 
-    public static String listClusterIds(ISpectralCluster sc) {
+    public static String listClusterIds(ICluster sc) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
