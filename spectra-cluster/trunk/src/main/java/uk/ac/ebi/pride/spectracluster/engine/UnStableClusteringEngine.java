@@ -12,7 +12,10 @@ import java.util.*;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
+@Deprecated
 public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
     private final Set<ICluster> stableClusters = new HashSet<ICluster>();

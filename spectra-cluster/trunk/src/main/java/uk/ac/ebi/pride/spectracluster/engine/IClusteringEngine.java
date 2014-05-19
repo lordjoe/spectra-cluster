@@ -71,16 +71,6 @@ public interface IClusteringEngine {
 
 
     /**
-     * allow nonfittinf spectra to leave and retuen a list of clusters to write out
-     *
-     * @return !null List<ISpectralCluster
-     */
-    public
-    @Nonnull
-    List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster);
-
-
-    /**
      * add code to monitor progress
      *
      * @param handler !null monitor
