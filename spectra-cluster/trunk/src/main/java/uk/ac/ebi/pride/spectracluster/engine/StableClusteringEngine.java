@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class StableClusteringEngine implements IStableClusteringEngine {
 
-    private final SortedSet<IPeptideSpectralCluster> unstableClusters = new TreeSet<IPeptideSpectralCluster>();
+    private final SortedSet<ICluster> unstableClusters = new TreeSet<ICluster>();
 
     private final SimilarityChecker similarityChecker;
 
@@ -39,7 +39,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      * @return !null list of clusters not far enough away they will no longer change
      */
     @Override
-    public Collection<IPeptideSpectralCluster> addClusterIncremental(final IPeptideSpectralCluster added) {
+    public Collection<ICluster> addClusterIncremental(final ICluster added) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
@@ -49,7 +49,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      * @param cluster
      */
     @Override
-    public void addClusters(final IPeptideSpectralCluster... cluster) {
+    public void addClusters(final ICluster... cluster) {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
@@ -105,7 +105,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     }
 
     @Override
-    public void addUnstableCluster(IPeptideSpectralCluster unstableCluster) {
+    public void addUnstableCluster(ICluster unstableCluster) {
         if (stableClusterProcessed) {
             // let this slide
             // throw new IllegalStateException("Adding unstable cluster after processing stable clusters");
@@ -115,11 +115,11 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     }
 
     @Override
-    public void processStableCluster(IPeptideSpectralCluster stableCluster) {
+    public void processStableCluster(ICluster stableCluster) {
         stableClusterProcessed = true;
 
-        Set<IPeptideSpectralCluster> emptyUnstableClusters = new HashSet<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster unstableCluster : unstableClusters) {
+        Set<ICluster> emptyUnstableClusters = new HashSet<ICluster>();
+        for (ICluster unstableCluster : unstableClusters) {
             boolean empty = mergeUnstableCluster(stableCluster, unstableCluster);
             if (empty) {
                 emptyUnstableClusters.add(unstableCluster);
@@ -129,7 +129,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         unstableClusters.removeAll(emptyUnstableClusters);
     }
 
-    private boolean mergeUnstableCluster(IPeptideSpectralCluster stableCluster, IPeptideSpectralCluster unstableCluster) {
+    private boolean mergeUnstableCluster(ICluster stableCluster, ICluster unstableCluster) {
         ISpectrum consensusSpectrum = stableCluster.getConsensusSpectrum();
 
         // find all the unstable spectra which can be merged into the stable cluster
@@ -152,8 +152,8 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     }
 
     @Override
-    public Collection<IPeptideSpectralCluster> getClusters() {
-        return new ArrayList<IPeptideSpectralCluster>(unstableClusters);
+    public Collection<ICluster> getClusters() {
+        return new ArrayList<ICluster>(unstableClusters);
     }
 
     /**
@@ -162,8 +162,9 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      *
      * @return !null Cluster
      */
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(IPeptideSpectralCluster cluster) {
-        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
+    @Override
+    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
 
         if (cluster.getClusteredSpectra().size() > 1) {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
@@ -188,14 +189,14 @@ public class StableClusteringEngine implements IStableClusteringEngine {
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
+    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
         return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
     public int getNumberOfUnstableSpectra() {
         int count = 0;
 
-        for (IPeptideSpectralCluster unstableCluster : unstableClusters) {
+        for (ICluster unstableCluster : unstableClusters) {
             count += unstableCluster.getClusteredSpectraCount();
         }
 

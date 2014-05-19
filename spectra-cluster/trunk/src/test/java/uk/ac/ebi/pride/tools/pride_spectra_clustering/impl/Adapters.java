@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
@@ -95,7 +96,6 @@ public class Adapters {
     /**
      * convert old peak to new  peak
      *
-     * @param pk !null peak list
      * @return !null equivalent peak list
      */
     public static List<IPeak> fromPeaks(List<Peak> pks) {
@@ -112,7 +112,6 @@ public class Adapters {
     /**
      * convert old peak to new  peak
      *
-     * @param pk !null peak list
      * @return !null equivalent peak list
      */
     public static List<Peak> fromIPeaks(List<IPeak> pks) {
@@ -131,7 +130,7 @@ public class Adapters {
      * @param inp !null cluster
      * @return !null equivalent cluster
      */
-    public static SpectraCluster fromSpectraCluster(IPeptideSpectralCluster inp) {
+    public static SpectraCluster fromSpectraCluster(ICluster inp) {
         String id = "";
         SpectraCluster ret = new SpectraCluster(consensusBuilder, normalizer);
         final List<ISpectrum> spectra = inp.getClusteredSpectra();

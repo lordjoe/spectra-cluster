@@ -5,10 +5,7 @@ import com.lordjoe.algorithms.SizedWideBinner;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
 import org.systemsbiology.hadoop.IParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
@@ -18,10 +15,13 @@ import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
@@ -239,7 +239,7 @@ public class Defaults {
 
     public IClusteringEngine getDefaultClusteringEngine() {
         SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
-        Comparator<IPeptideSpectralCluster> spectrumComparator = getDefaultSpectrumComparator();
+        Comparator<ICluster> spectrumComparator = getDefaultSpectrumComparator();
         return ClusteringEngine.getClusteringEngineFactory().getClusteringEngine();
 
     }
@@ -288,7 +288,7 @@ public class Defaults {
         return consensusFactory.getConsensusSpectrumBuilder();
     }
 
-    public Comparator<IPeptideSpectralCluster> getDefaultSpectrumComparator() {
+    public Comparator<ICluster> getDefaultSpectrumComparator() {
         return defaultSpectrumComparator;
     }
 

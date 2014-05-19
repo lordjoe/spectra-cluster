@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,18 +34,18 @@ public class ClusteringUtilitiesTests {
 
         final SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         // now merge - should get less or equal to original list
-        final List<IPeptideSpectralCluster> newClusters = ClusterUtilities.mergeClusters(list1, similarityChecker, 1);
+        final List<ICluster> newClusters = ClusterUtilities.mergeClusters(new ArrayList<ICluster>(list1), similarityChecker, 1);
         // we merge at least as many as we had
         Assert.assertTrue(newClusters.size() <= list1.size());
 
         // now merge - should get less or equal to original list
-        final List<IPeptideSpectralCluster> newClusters2 = ClusterUtilities.mergeClusters(newClusters, similarityChecker, 1);
+        final List<ICluster> newClusters2 = ClusterUtilities.mergeClusters(newClusters, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters2.size() <= newClusters.size());
-        final List<IPeptideSpectralCluster> newClusters3 = ClusterUtilities.mergeClusters(newClusters2, similarityChecker, 1);
+        final List<ICluster> newClusters3 = ClusterUtilities.mergeClusters(newClusters2, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters3.size() <= newClusters2.size());
-        final List<IPeptideSpectralCluster> newClusters4 = ClusterUtilities.mergeClusters(newClusters3, similarityChecker, 1);
+        final List<ICluster> newClusters4 = ClusterUtilities.mergeClusters(newClusters3, similarityChecker, 1);
         // we better get fewer
         Assert.assertTrue(newClusters4.size() <= newClusters3.size());
 
@@ -62,7 +65,7 @@ public class ClusteringUtilitiesTests {
 
         List<IPeptideSpectralCluster> list = ClusterUtilities.asClusters(spectra);
         IClusteringEngine engine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        for (IPeptideSpectralCluster sc : list) {
+        for (ICluster sc : list) {
             engine.addClusters(sc);
         }
         for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
@@ -70,11 +73,11 @@ public class ClusteringUtilitiesTests {
                 break;
         }
         // we have solved for these
-        List<IPeptideSpectralCluster> found = (List<IPeptideSpectralCluster>) engine.getClusters();
+        List<ICluster> found = (List<ICluster>) engine.getClusters();
 
 
         final SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
-        final List<IPeptideSpectralCluster> newClusters = ClusterUtilities.mergeClusters(found, similarityChecker, 1);
+        final List<ICluster> newClusters = ClusterUtilities.mergeClusters(found, similarityChecker, 1);
 
         // because we just did this in the engine we expect little further merging
         Assert.assertEquals(newClusters.size(), found.size());

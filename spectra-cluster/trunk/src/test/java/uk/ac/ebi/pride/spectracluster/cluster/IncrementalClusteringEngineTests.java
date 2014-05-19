@@ -51,11 +51,11 @@ public class IncrementalClusteringEngineTests {
         final int size1 = clusters.size();
         int index = 0;
 
-        for (IPeptideSpectralCluster sc : originalSpectralClusters) {
+        for (ICluster sc : originalSpectralClusters) {
             double mz1 = sc.getPrecursorMz();
             if (index >= clusters.size())
                 break;
-            IPeptideSpectralCluster newCluster = clusters.get(index);
+            ICluster newCluster = clusters.get(index);
             final String spectralId1 = sc.getSpectralId();
             String spectralId2 = newCluster.getSpectralId();
             if (spectralId1.equals(spectralId2)) {
@@ -111,24 +111,26 @@ public class IncrementalClusteringEngineTests {
     protected List<IPeptideSpectralCluster> getRunEngine(IIncrementalClusteringEngine ce, List<ISpectrum> originalSpectra) {
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
-        final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+        final List<ICluster> clusters = new ArrayList<ICluster>();
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final IPeptideSpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
-            final Collection<IPeptideSpectralCluster> removed = ce.addClusterIncremental(spectralCluster);
+            final ICluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
+            final Collection<ICluster> removed = ce.addClusterIncremental(spectralCluster);
             if (!removed.isEmpty())
                 clusters.addAll(removed);
         }
-        Collection<IPeptideSpectralCluster> clustersLeft = ce.getClusters();
+        Collection<ICluster> clustersLeft = ce.getClusters();
         clusters.addAll(clustersLeft);
 
         // remove non-fitting
         final List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster spectralCluster : clustersLeft) {
-            final List<IPeptideSpectralCluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce);
-            holder.addAll(c);
+        for (ICluster spectralCluster : clustersLeft) {
+            final List<ICluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce);
+            for (ICluster cluster : c) {
+                holder.add((IPeptideSpectralCluster)cluster);
+            }
         }
 
 
@@ -155,7 +157,7 @@ public class IncrementalClusteringEngineTests {
             // only deal with one charge
             if (originalSpectrum.getPrecursorCharge() != 2)
                 continue;
-            final IPeptideSpectralCluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
+            final ICluster spectralCluster = ClusterUtilities.asCluster(originalSpectrum);
             incrementalEngine.addClusters(spectralCluster);
             oldClusteringEngine.addClusters(spectralCluster);
         }
@@ -176,10 +178,10 @@ public class IncrementalClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<IPeptideSpectralCluster> newClusters = (List<IPeptideSpectralCluster>) incrementalEngine.getClusters();
+        List<ICluster> newClusters = (List<ICluster>) incrementalEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<IPeptideSpectralCluster> oldClusters = oldClusteringEngine.getClusters();
+        List<ICluster> oldClusters = oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         Assert.assertEquals(oldClusters.size(), newClusters.size());
@@ -187,8 +189,8 @@ public class IncrementalClusteringEngineTests {
         if (TEST_KNOWN_TO_FAIL)
             return;
         for (int i = 0; i < newClusters.size(); i++) {
-            IPeptideSpectralCluster newCluster = newClusters.get(i);
-            IPeptideSpectralCluster oldCluster = oldClusters.get(i);
+            ICluster newCluster = newClusters.get(i);
+            ICluster oldCluster = oldClusters.get(i);
             double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), oldCluster.getConsensusSpectrum());
             if (similarityScore >= similarityChecker.getDefaultThreshold()) {
                 List<ISpectrum> newClusteredSpectra = newCluster.getClusteredSpectra();

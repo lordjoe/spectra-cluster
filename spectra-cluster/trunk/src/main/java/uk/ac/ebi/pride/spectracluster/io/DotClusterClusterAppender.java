@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
@@ -25,7 +25,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public void appendCluster(final Appendable out, final IPeptideSpectralCluster cluster, final Object... otherData) {
+    public void appendCluster(final Appendable out, final ICluster cluster, final Object... otherData) {
         try {
             out.append("=Cluster=\n");
             out.append("av_precursor_mz=" + String.format("%10.3f", cluster.getPrecursorMz()).trim());

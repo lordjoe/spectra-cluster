@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
 import com.lordjoe.utilities.Util;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -36,15 +36,15 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
-                                                                                 Comparator<IPeptideSpectralCluster> spectrumComparator) {
+                                                                                 Comparator<ICluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
     protected static class ClusteringEngineFactory implements IIncrementalClusteringEngineFactory {
         private final SimilarityChecker similarityChecker;
-        private final Comparator<IPeptideSpectralCluster> spectrumComparator;
+        private final Comparator<ICluster> spectrumComparator;
 
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<IPeptideSpectralCluster> pSpectrumComparator) {
+        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
             similarityChecker = pSimilarityChecker;
             spectrumComparator = pSpectrumComparator;
         }
@@ -63,15 +63,15 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
 
     private String name;
-    private final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<ICluster> clusters = new ArrayList<ICluster>();
     private final List<IProgressHandler> progressHandlers = new ArrayList<IProgressHandler>();
     private final SimilarityChecker similarityChecker;
-    private final Comparator<IPeptideSpectralCluster> spectrumComparator;
+    private final Comparator<ICluster> spectrumComparator;
     private final double windowSize;
     private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(SimilarityChecker sck,
-                                          Comparator<IPeptideSpectralCluster> scm, double windowSize) {
+                                          Comparator<ICluster> scm, double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;
@@ -121,9 +121,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
     @Override
-    public List<IPeptideSpectralCluster> getClusters() {
+    public List<ICluster> getClusters() {
         // guaranteeClean();        incremental is ALWAYS clean
-        final ArrayList<IPeptideSpectralCluster> ret = new ArrayList<IPeptideSpectralCluster>(clusters);
+        final ArrayList<ICluster> ret = new ArrayList<ICluster>(clusters);
         Collections.sort(ret);
         return ret;
     }
@@ -135,8 +135,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @return !null Cluster
      */
     @Override
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(final IPeptideSpectralCluster cluster) {
-        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
+    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
         int compareCount = 0;
@@ -167,7 +167,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
+    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
         return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
@@ -195,7 +195,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * add some clusters
      */
     @Override
-    public void addClusters(IPeptideSpectralCluster... cluster) {
+    public void addClusters(ICluster... cluster) {
         // or use a WrappedIncrementalClusteringEngine
         throw new UnsupportedOperationException("Use addClusterIncremental instead or use a WrappedIncrementalClusteringEngine ");
 
@@ -227,9 +227,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @return !null Cluster
      */
     @Override
-    public List<IPeptideSpectralCluster> addClusterIncremental(final IPeptideSpectralCluster added) {
+    public List<ICluster> addClusterIncremental(final ICluster added) {
         double precursorMz = added.getPrecursorMz();
-        List<IPeptideSpectralCluster> clustersToremove = findClustersTooLow(precursorMz);
+        List<ICluster> clustersToremove = findClustersTooLow(precursorMz);
         // either add as an existing cluster if make a new cluster
         addToClusters(added);
         return clustersToremove;
@@ -242,13 +242,13 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param precursorMz new Mz
      * @return !null list of clusters to remove
      */
-    protected List<IPeptideSpectralCluster> findClustersTooLow(double precursorMz) {
+    protected List<ICluster> findClustersTooLow(double precursorMz) {
         double oldMZ = getCurrentMZ();
         double defaultThreshold1 = getWindowSize();
         double lowestMZ = precursorMz - defaultThreshold1;
-        List<IPeptideSpectralCluster> clustersToremove = new ArrayList<IPeptideSpectralCluster>();
-        List<IPeptideSpectralCluster> myClusters = internalGetClusters();
-        for (IPeptideSpectralCluster test : myClusters) {
+        List<ICluster> clustersToremove = new ArrayList<ICluster>();
+        List<ICluster> myClusters = internalGetClusters();
+        for (ICluster test : myClusters) {
             float testPrecursorMz = test.getPrecursorMz();
             if (lowestMZ > testPrecursorMz) {
                 clustersToremove.add(test);
@@ -268,10 +268,10 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * this method is called by guaranteeClean to place any added clusters in play
      * for further clustering
      */
-    protected void addToClusters(final IPeptideSpectralCluster clusterToAdd) {
-        List<IPeptideSpectralCluster> myClusters = internalGetClusters();
+    protected void addToClusters(final ICluster clusterToAdd) {
+        List<ICluster> myClusters = internalGetClusters();
         if (myClusters.isEmpty()) {   // no checks just add
-            myClusters.add(new PeptideSpectralCluster(clusterToAdd));
+            myClusters.add(new SpectralCluster(clusterToAdd));
             numberNotMerge++;
             return;
         }
@@ -290,14 +290,14 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             mostCommonPeptide = ((IPeptideSpectrumMatch) qc).getPeptide();
 
-        IPeptideSpectralCluster bestMatch = null;
+        ICluster bestMatch = null;
         double highestSimilarityScore = 0;
         int compareCount = 0;
 
-        IPeptideSpectralCluster mostSimilarCluster = null;
+        ICluster mostSimilarCluster = null;
         ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
         // find the cluster with the highest similarity score
-        for (IPeptideSpectralCluster cluster : myClusters) {
+        for (ICluster cluster : myClusters) {
             ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
 
             double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
@@ -330,7 +330,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             if (handlePotentialOverlap(clusterToAdd, bestMatch, highestSimilarityScore))
                 return;
         }
-        myClusters.add(new PeptideSpectralCluster(clusterToAdd));
+        myClusters.add(new SpectralCluster(clusterToAdd));
         numberNotMerge++;
     }
 
@@ -343,11 +343,11 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param clusterToAdd
      * @return true is we fully replace a cluster with a larger or find this fully contained
      */
-    protected boolean handleFullContainment(final IPeptideSpectralCluster clusterToAdd) {
-        final List<IPeptideSpectralCluster> myclusters = internalGetClusters();
-        IPeptideSpectralCluster toReplace = null;
+    protected boolean handleFullContainment(final ICluster clusterToAdd) {
+        final List<ICluster> myclusters = internalGetClusters();
+        ICluster toReplace = null;
         double bestSimilarity = Double.MIN_VALUE;
-        for (IPeptideSpectralCluster myCluster : myclusters) {
+        for (ICluster myCluster : myclusters) {
             double score = ClusterSimilarityUtilities.clusterFullyContainsScore(myCluster, clusterToAdd);
             if (score > bestSimilarity) {
                 bestSimilarity = score;
@@ -375,7 +375,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
-    protected boolean handlePotentialOverlap(final IPeptideSpectralCluster cluster1, final IPeptideSpectralCluster cluster2, double highestSimilarityScore) {
+    protected boolean handlePotentialOverlap(final ICluster cluster1, final ICluster cluster2, double highestSimilarityScore) {
         if (highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
             return false;     // we did nothing
         Set<String> ids = cluster1.getSpectralIds();
@@ -407,7 +407,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     }
 
-    protected void mergeIntoCluster(final IPeptideSpectralCluster mergeFrom, final IPeptideSpectralCluster mergeInto) {
+    protected void mergeIntoCluster(final ICluster mergeFrom, final ICluster mergeInto) {
         List<ISpectrum> clusteredSpectra1 = mergeFrom.getClusteredSpectra();
         ISpectrum[] clusteredSpectra = new ISpectrum[clusteredSpectra1.size()];
         final ISpectrum[] merged = clusteredSpectra1.toArray(clusteredSpectra);
@@ -422,7 +422,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
-    protected boolean assignOverlapsToBestCluster(final IPeptideSpectralCluster cluster1, final IPeptideSpectralCluster cluster2, Set<String> spectraOverlap) {
+    protected boolean assignOverlapsToBestCluster(final ICluster cluster1, final ICluster cluster2, Set<String> spectraOverlap) {
         List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
         // I am not sure here but I think we let duplicates move to the best cluster
         SimilarityChecker sCheck = getSimilarityChecker();
@@ -468,7 +468,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      *
      * @return
      */
-    protected List<IPeptideSpectralCluster> internalGetClusters() {
+    protected List<ICluster> internalGetClusters() {
         return clusters;
     }
 
@@ -487,7 +487,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @return
      */
     @SuppressWarnings("UnusedDeclaration")
-    protected Comparator<IPeptideSpectralCluster> getSpectrumComparator() {
+    protected Comparator<ICluster> getSpectrumComparator() {
         return spectrumComparator;
     }
 

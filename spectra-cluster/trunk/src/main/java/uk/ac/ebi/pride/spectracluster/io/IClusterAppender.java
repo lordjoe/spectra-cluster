@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.IClusterWriter
@@ -16,7 +16,7 @@ public interface IClusterAppender {
      * @param otherData any other data - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
-    void appendCluster(Appendable out, IPeptideSpectralCluster data, Object... otherData) throws AppenderException;
+    void appendCluster(Appendable out, ICluster data, Object... otherData) throws AppenderException;
 
     /**
      * add whatever happens at the start

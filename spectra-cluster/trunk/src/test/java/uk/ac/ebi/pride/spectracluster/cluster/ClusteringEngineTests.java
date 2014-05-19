@@ -61,20 +61,20 @@ public class ClusteringEngineTests {
         // System.out.println(String.format("new %10.2f Old %10.2f", delSec, delOldSec));
 
 
-        List<IPeptideSpectralCluster> newClusters = (List<IPeptideSpectralCluster>) clusteringEngine.getClusters();
+        List<ICluster> newClusters = (List<ICluster>) clusteringEngine.getClusters();
         Collections.sort(newClusters);
 
-        List<IPeptideSpectralCluster> oldClusters = (List<IPeptideSpectralCluster>) oldClusteringEngine.getClusters();
+        List<ICluster> oldClusters = (List<ICluster>) oldClusteringEngine.getClusters();
         Collections.sort(oldClusters);
 
         if (TEST_KNOWN_TO_FAIL)  // do not run resat of failing test - this is so all tests pass
             return; // todo FIX!!!
         Assert.assertEquals(oldClusters.size(), originalSpectralClusters.size());
 
-        for (IPeptideSpectralCluster newCluster : newClusters) {
+        for (ICluster newCluster : newClusters) {
             boolean foundSimilarCluster = false;
 
-            for (IPeptideSpectralCluster originalSpectralCluster : originalSpectralClusters) {
+            for (ICluster originalSpectralCluster : originalSpectralClusters) {
                 double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), originalSpectralCluster.getConsensusSpectrum());
                 if (similarityScore >= similarityChecker.getDefaultThreshold()) {
                     foundSimilarCluster = true;

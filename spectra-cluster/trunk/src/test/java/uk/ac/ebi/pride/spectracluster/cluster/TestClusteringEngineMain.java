@@ -66,7 +66,7 @@ public class TestClusteringEngineMain {
             return;
         start = System.currentTimeMillis();
 
-        for (IPeptideSpectralCluster sc : clusters) {
+        for (ICluster sc : clusters) {
             engine.addClusters(sc);
         }
         SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
@@ -77,7 +77,7 @@ public class TestClusteringEngineMain {
             }
         }
 
-        final List<IPeptideSpectralCluster> clusters1 = (List<IPeptideSpectralCluster>) engine.getClusters();
+        final List<ICluster> clusters1 = (List<ICluster>) engine.getClusters();
 
 
         saveClusters(clusters1, inputFile);
@@ -95,7 +95,7 @@ public class TestClusteringEngineMain {
      * @param pClusters1 !null list of clusters
      * @param pInputFile !null input file
      */
-    protected void saveClusters(final List<IPeptideSpectralCluster> pClusters1, final File pInputFile) {
+    protected void saveClusters(final List<ICluster> pClusters1, final File pInputFile) {
 
         if (pClusters1.size() == 0)
             return;
@@ -105,7 +105,7 @@ public class TestClusteringEngineMain {
             System.out.println(new File(outName).getCanonicalPath());
             out = new PrintWriter(new FileWriter(outName));
             final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-            for (IPeptideSpectralCluster iPeptideSpectralCluster : pClusters1) {
+            for (ICluster iPeptideSpectralCluster : pClusters1) {
                 clusterAppender.appendCluster(out, iPeptideSpectralCluster);
             }
         } catch (IOException e) {

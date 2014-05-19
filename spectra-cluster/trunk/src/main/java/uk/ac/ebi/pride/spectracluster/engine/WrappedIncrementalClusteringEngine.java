@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -23,14 +23,14 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     }
 
     public static IClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
-                                                                      Comparator<IPeptideSpectralCluster> spectrumComparator) {
+                                                                      Comparator<ICluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
     protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
         private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
 
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<IPeptideSpectralCluster> pSpectrumComparator) {
+        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
             incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
         }
 
@@ -51,7 +51,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;
     private final IIncrementalClusteringEngine realEngine;
-    private final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<ICluster> clusters = new ArrayList<ICluster>();
 
     public WrappedIncrementalClusteringEngine(final IIncrementalClusteringEngine pRealEngine) {
         realEngine = pRealEngine;
@@ -74,7 +74,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected List<IPeptideSpectralCluster> internalGetClusters() {
+    protected List<ICluster> internalGetClusters() {
         return clusters;
     }
 
@@ -84,13 +84,13 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      * @return !null list this will be sorted by mz a include clusters of all sizes
      */
     @Override
-    public List<IPeptideSpectralCluster> getClusters() {
-        final List<IPeptideSpectralCluster> internalClusters = internalGetClusters();
-        Set<IPeptideSpectralCluster> internalSet = new HashSet<IPeptideSpectralCluster>(internalClusters);
+    public List<ICluster> getClusters() {
+        final List<ICluster> internalClusters = internalGetClusters();
+        Set<ICluster> internalSet = new HashSet<ICluster>(internalClusters);
         IIncrementalClusteringEngine engine = getRealEngine();
-        final Collection<IPeptideSpectralCluster> lastClusters = engine.getClusters();
+        final Collection<ICluster> lastClusters = engine.getClusters();
         internalSet.addAll(lastClusters);
-        List<IPeptideSpectralCluster> ret = new ArrayList<IPeptideSpectralCluster>(internalSet);
+        List<ICluster> ret = new ArrayList<ICluster>(internalSet);
         Collections.sort(ret);
         return ret;
     }
@@ -99,13 +99,13 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      * add some clusters
      */
     @Override
-    public void addClusters(final IPeptideSpectralCluster... cluster) {
-        final List<IPeptideSpectralCluster> internalClusters = internalGetClusters();
+    public void addClusters(final ICluster... cluster) {
+        final List<ICluster> internalClusters = internalGetClusters();
         IIncrementalClusteringEngine engine = getRealEngine();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < cluster.length; i++) {
-            IPeptideSpectralCluster added = cluster[i];
-            final Collection<IPeptideSpectralCluster> finalClusters = engine.addClusterIncremental(added);
+            ICluster added = cluster[i];
+            final Collection<ICluster> finalClusters = engine.addClusterIncremental(added);
             if (!finalClusters.isEmpty())
                 internalClusters.addAll(finalClusters);
         }
@@ -132,7 +132,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      * @return !null Cluster
      */
     @Override
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(final IPeptideSpectralCluster cluster) {
+    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
         return realEngine.findNoneFittingSpectra(cluster);
     }
 
@@ -145,7 +145,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
+    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
         return ClusterUtilities.removeNonFittingSpectra(cluster, realEngine);
     }
 

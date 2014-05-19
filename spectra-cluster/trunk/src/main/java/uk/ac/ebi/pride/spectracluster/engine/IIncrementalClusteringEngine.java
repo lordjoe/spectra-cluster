@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.util.Collection;
 
@@ -31,7 +31,7 @@ public interface IIncrementalClusteringEngine extends IClusteringEngine {
      * @param added !null cluster to add
      * @return !null list of clusters not far enough away they will no longer change
      */
-    public Collection<IPeptideSpectralCluster> addClusterIncremental(IPeptideSpectralCluster added);
+    public Collection<ICluster> addClusterIncremental(ICluster added);
 
 
 }

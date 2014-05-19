@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util.comparator;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Comparator;
@@ -9,8 +9,8 @@ import java.util.Comparator;
  * @author Rui Wang
  * @version $Id$
  */
-public class DefaultClusterComparator implements Comparator<IPeptideSpectralCluster> {
-    public static final Comparator<IPeptideSpectralCluster> INSTANCE = new DefaultClusterComparator();
+public class DefaultClusterComparator implements Comparator<ICluster> {
+    public static final Comparator<ICluster> INSTANCE = new DefaultClusterComparator();
 
     private DefaultClusterComparator() {
     }
@@ -23,7 +23,7 @@ public class DefaultClusterComparator implements Comparator<IPeptideSpectralClus
      * @return
      */
     @Override
-    public int compare(IPeptideSpectralCluster cluster1, IPeptideSpectralCluster cluster2) {
+    public int compare(ICluster cluster1, ICluster cluster2) {
         if (cluster1 == cluster2)
             return 0;
 
