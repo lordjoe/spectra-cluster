@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import javax.annotation.Nonnull;
@@ -68,13 +67,4 @@ public interface IClusteringEngine {
     public
     @Nonnull
     List<ICluster> findNoneFittingSpectra(@Nonnull ICluster cluster);
-
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    public void addProgressMonitor(IProgressHandler handler);
-
 }

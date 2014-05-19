@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -51,7 +50,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
-        factory = ClusteringEngine.getClusteringEngineFactory(similarityChecker, spectrumComparator);
+        factory = new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
 
@@ -300,15 +299,4 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
         return noneFittingSpectra;
     }
 
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(IProgressHandler handler) {
-        if (true) throw new UnsupportedOperationException("Fix This");
-
-    }
 }

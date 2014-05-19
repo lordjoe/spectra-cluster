@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -132,17 +131,6 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Override
     public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
         return realEngine.findNoneFittingSpectra(cluster);
-    }
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(IProgressHandler handler) {
-        realEngine.addProgressMonitor(handler);
-
     }
 
     /**

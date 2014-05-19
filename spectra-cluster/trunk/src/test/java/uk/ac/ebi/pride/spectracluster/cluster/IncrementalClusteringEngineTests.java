@@ -150,7 +150,7 @@ public class IncrementalClusteringEngineTests {
 
         IClusteringEngineFactory incrementalFactory = WrappedIncrementalClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine incrementalEngine = incrementalFactory.getClusteringEngine(new Double(1000));
-        IClusteringEngineFactory factory = ClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        IClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         ClusteringEngine oldClusteringEngine = (ClusteringEngine) factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {

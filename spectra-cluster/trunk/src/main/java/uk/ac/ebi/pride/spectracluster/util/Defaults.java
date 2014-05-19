@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCUtilities;
 import uk.ac.ebi.pride.spectracluster.datastore.WorkingClusterDatabase;
 import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
-import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
@@ -240,7 +240,7 @@ public class Defaults {
     public IClusteringEngine getDefaultClusteringEngine() {
         SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
         Comparator<ICluster> spectrumComparator = getDefaultSpectrumComparator();
-        return ClusteringEngine.getClusteringEngineFactory().getClusteringEngine();
+        return new ClusteringEngineFactory(similarityChecker, spectrumComparator).getClusteringEngine();
 
     }
 
@@ -297,16 +297,7 @@ public class Defaults {
         return defaultQualityScorer;
     }
 
-    /**
-     * make a constructor for jobs for Clustering engine and other Hadoop jobs
-     *
-     * @return default is null allowing you to plug in your own factory
-     */
-    public IClusteringEngineFactory getDefaultClusteringEngineFactory() {
-        if (defaultClusteringEngineFactory == null)
-            defaultClusteringEngineFactory = ClusteringEngine.getClusteringEngineFactory();
-        return defaultClusteringEngineFactory;
-    }
+
 
     public IJobBuilderFactory getDefaultJobBuilderFactory() {
         return defaultJobBuilderFactory;

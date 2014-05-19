@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -90,17 +89,6 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     @Override
     public int size() {
         return unstableClusters.size();
-    }
-
-    /**
-     * add code to monitor progress
-     *
-     * @param handler !null monitor
-     */
-    @Override
-    public void addProgressMonitor(final IProgressHandler handler) {
-        throw new UnsupportedOperationException("This Should NEVER be Called");
-
     }
 
     @Override
