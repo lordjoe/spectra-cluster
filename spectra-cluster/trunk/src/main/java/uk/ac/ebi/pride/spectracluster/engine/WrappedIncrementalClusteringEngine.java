@@ -146,7 +146,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusterUtilities.asWritttenSpectra(cluster, realEngine);
+        return ClusterUtilities.removeNonFittingSpectra(cluster, realEngine);
     }
 
 

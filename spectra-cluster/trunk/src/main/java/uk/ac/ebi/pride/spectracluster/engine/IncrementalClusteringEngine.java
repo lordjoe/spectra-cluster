@@ -168,7 +168,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusterUtilities.asWritttenSpectra(cluster, this);
+        return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
     /**
