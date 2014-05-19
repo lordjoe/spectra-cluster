@@ -40,8 +40,9 @@ public class StableClusteringEngineTest {
         unstableClusters = new ArrayList<IPeptideSpectralCluster>();
         stableClusters = new ArrayList<IPeptideSpectralCluster>();
 
+        final CountBasedClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
         for (IPeptideSpectralCluster originalSpectralCluster : originalSpectralClusters) {
-            if (originalSpectralCluster.isStable()) {
+            if (clusterStabilityAssessor.isStable(originalSpectralCluster)) {
                 stableClusters.add(originalSpectralCluster);
             } else {
                 unstableClusters.add(originalSpectralCluster);

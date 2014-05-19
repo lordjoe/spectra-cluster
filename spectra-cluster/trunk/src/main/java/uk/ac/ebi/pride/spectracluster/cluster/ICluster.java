@@ -86,25 +86,4 @@ public interface ICluster extends ISpectrumHolder,
      */
     @Nonnull
     Set<String> getSpectralIds();
-
-
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @return
-     *
-     */
-    @Deprecated
-    boolean isStable();
-
-    /**
-     * if true the cluster is stable and will not allow removal
-     *
-     * @return
-     */
-    @Deprecated
-    boolean isSemiStable();
-
-
-
 }

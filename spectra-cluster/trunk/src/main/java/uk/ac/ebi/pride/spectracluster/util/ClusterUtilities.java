@@ -119,29 +119,6 @@ public class ClusterUtilities {
         return holder;
     }
 
-    /**
-     * true if the cluster is stable
-     *
-     * @param !null cluster
-     * @return as above
-     */
-    public static boolean isClusterStable(ICluster cluster) {
-        int count = cluster.getClusteredSpectraCount();
-        if (count == 1)
-            return false; // Duh but saves other tests
-        if (count >= getStableClusterSize())
-            return true;
-        // some tests for debugging
-        if (count < 5)
-            return false;
-        if (count < 10)
-            return false;
-        if (count < 15)
-            return false;
-
-        return false;
-    }
-
 
     public static SpectrumInCluster readSpectrumInCluster(String str) {
         LineNumberReader rdr = new LineNumberReader(new StringReader(str));
@@ -185,24 +162,6 @@ public class ClusterUtilities {
             throw new RuntimeException(e);
 
         }
-    }
-
-    /**
-     * true if the cluster is stable
-     *
-     * @param !null cluster
-     * @return as above
-     */
-    public static boolean isClusterSemiStable(ICluster cluster) {
-        int count = cluster.getClusteredSpectraCount();
-        if (count == 1)
-            return false; // Duh but saves other tests
-        if (count >= getSemiStableClusterSize())
-            return true;
-        // some tests for debugging
-        if (count < 5)
-            return false;
-        return false;
     }
 
     /**
