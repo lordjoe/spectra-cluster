@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util.comparator;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 

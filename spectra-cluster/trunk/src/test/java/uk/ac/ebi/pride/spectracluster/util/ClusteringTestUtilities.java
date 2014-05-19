@@ -36,8 +36,8 @@ public class ClusteringTestUtilities {
     public static final String SAMPLE_MGF_FILE = "spectra_400.0_4.0.mgf";
     public static final String SAMPLE_CLUSTERING_FILE = "Sample.clustering";
 
-    public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/spectra_400.0_4.0.cgf";
-    public static final String SAMPLE_SECOND_CGF_FILE = "uk/ac/ebi/pride/spectracluster/util/ClusterBin0400.cgf";
+    public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/io/spectra_400.0_4.0.cgf";
+    public static final String SAMPLE_SECOND_CGF_FILE = "uk/ac/ebi/pride/spectracluster/io/ClusterBin0400.cgf";
 
 
     /**
@@ -54,8 +54,7 @@ public class ClusteringTestUtilities {
             IPeptideSpectralCluster cl1 = pScs.get(i);
             IPeptideSpectralCluster cl2 = pScs2.get(i);
             boolean equivalent = cl1.equivalent(cl2);
-            if (!equivalent)
-                Assert.assertTrue(equivalent);
+            Assert.assertTrue(equivalent);
 
         }
     }

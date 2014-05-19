@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.keys;
 
 
 import uk.ac.ebi.pride.spectracluster.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ChargeMZKey

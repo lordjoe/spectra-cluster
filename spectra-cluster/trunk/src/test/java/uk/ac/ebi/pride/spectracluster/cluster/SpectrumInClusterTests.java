@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -17,6 +18,7 @@ import java.util.Map;
  * uk.ac.ebi.pride.spectracluster.cluster.SpectrumInClusterTests
  * User: Steve
  * Date: 4/7/14
+ *
  */
 public class SpectrumInClusterTests {
 
@@ -25,11 +27,10 @@ public class SpectrumInClusterTests {
                     "removeFromCluster=false\n" +
                     "distance=0.76\n" +
 
-                    "Name: LLGGLAVR/2\n" +
-                    "LibID: 1247848\n" +
-                    "PrecursorMZ: 400.250\n" +
-                    "Comment: \n" +
-                    "NumPeaks: 116\n" +
+                    "BEGIN IONS\n" +
+                    "CHARGE=2\n" +
+                    "PEPMASS=400.25\n" +
+                    "TITLE=id=1247848,sequence=LLGGLAVR\n" +
                     "128.967\t12.610\n" +
                     "136.021\t36.830\n" +
                     "137.982\t39.130\n" +
@@ -146,6 +147,7 @@ public class SpectrumInClusterTests {
                     "685.598\t1121.000\n" +
                     "715.665\t20.490\n" +
                     "728.840\t60.530\n" +
+                    "END IONS\n" +
                     "=Cluster=\n" +
                     "av_precursor_mz=400.435\n" +
                     "av_precursor_intens=1.0\n" +
