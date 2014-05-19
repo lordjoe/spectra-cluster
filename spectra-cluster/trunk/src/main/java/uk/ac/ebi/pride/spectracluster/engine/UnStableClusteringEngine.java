@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
-    private final Set<IPeptideSpectralCluster> stableClusters = new HashSet<IPeptideSpectralCluster>();
+    private final Set<ICluster> stableClusters = new HashSet<ICluster>();
 
     private final SimilarityChecker similarityChecker;
 
@@ -30,7 +30,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
     }
 
     @Override
-    public void addStableCluster(IPeptideSpectralCluster stableCluster) {
+    public void addStableCluster(ICluster stableCluster) {
         if (unStableClusterProcessed) {
             throw new IllegalStateException("Adding stable cluster after processing unstable clusters");
         }
@@ -42,15 +42,14 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
     /**
      * try to move spectra to the stable cluster
      *
-     * @param unstableCluster
      * @return true if changed
      */
     @Override
-    public boolean processUnStableCluster(IPeptideSpectralCluster unStableCluster) {
+    public boolean processUnStableCluster(ICluster unStableCluster) {
         unStableClusterProcessed = true;
 
         int startSpectraCount = unStableCluster.getClusteredSpectraCount();
-        for (IPeptideSpectralCluster stableCluster : stableClusters) {
+        for (ICluster stableCluster : stableClusters) {
             boolean empty = mergeUnstableCluster(stableCluster, unStableCluster);
             if (empty)
                 break;
@@ -59,7 +58,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
     }
 
-    private boolean mergeUnstableCluster(IPeptideSpectralCluster stableCluster, IPeptideSpectralCluster unstableCluster) {
+    private boolean mergeUnstableCluster(ICluster stableCluster, ICluster unstableCluster) {
         ISpectrum consensusSpectrum = stableCluster.getConsensusSpectrum();
 
         // find all the unstable spectra which can be merged into the stable cluster
@@ -82,8 +81,8 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
     }
 
     @Override
-    public Collection<IPeptideSpectralCluster> getClusters() {
-        return new ArrayList<IPeptideSpectralCluster>(stableClusters);
+    public Collection<ICluster> getClusters() {
+        return new ArrayList<ICluster>(stableClusters);
     }
 
     /**
@@ -92,8 +91,8 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
      *
      * @return !null Cluster
      */
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(IPeptideSpectralCluster cluster) {
-        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
+    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
 
         if (cluster.getClusteredSpectra().size() > 1) {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
@@ -112,7 +111,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
     public int getNumberOfUnstableSpectra() {
         int count = 0;
 
-        for (IPeptideSpectralCluster unstableCluster : stableClusters) {
+        for (ICluster unstableCluster : stableClusters) {
             count += unstableCluster.getClusteredSpectraCount();
         }
 

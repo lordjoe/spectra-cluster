@@ -6,6 +6,7 @@ import com.lordjoe.hadoop.ITextReducer;
 import com.lordjoe.hadoop.TextKeyValue;
 import com.lordjoe.hadoopsimulator.HadoopSimulatorJob;
 import com.lordjoe.utilities.ElapsedTimer;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
@@ -189,7 +190,7 @@ public class DuplicateReductionSimulator {
                 } else {
                     // handle spectra kicked out
                     if (!processedSpectrunIds.contains(id)) {
-                        IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(spectrum);
+                        ICluster cluster = ClusterUtilities.asCluster(spectrum);
                         StringBuffer sb = new StringBuffer();
                         cluster = ClusterUtilities.asCluster(spectrum);
                         TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
@@ -278,7 +279,7 @@ public class DuplicateReductionSimulator {
         List<IPeptideSpectralCluster> clusters = in.getClusters();
         int index = 0;
         final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-        for (IPeptideSpectralCluster cluster : clusters) {
+        for (ICluster cluster : clusters) {
             StringBuilder sb = new StringBuilder();
             clusterAppender.appendCluster(sb, cluster);
             input.add(new TextKeyValue(Integer.toString(index++), sb.toString()));
@@ -323,7 +324,7 @@ public class DuplicateReductionSimulator {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
                 final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
-                for (IPeptideSpectralCluster sc : cs.getClusters()) {
+                for (ICluster sc : cs.getClusters()) {
                     clusterAppender.appendCluster(out, sc);
                 }
                 out.close();

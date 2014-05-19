@@ -21,27 +21,27 @@ public class StableClusteringEngineTest {
 
     public static final int STABLE_CLUSTER_SIZE = 4;
 
-    private List<IPeptideSpectralCluster> unstableClusters;
-    private List<IPeptideSpectralCluster> stableClusters;
+    private List<ICluster> unstableClusters;
+    private List<ICluster> stableClusters;
     private StableClusteringEngine clusteringEngine;
 
     @Before
     public void setUp() throws Exception {
         ClusterUtilities.setStableClusterSize(STABLE_CLUSTER_SIZE);   // drop cluster size foe a small sample
         IClusteringEngine ce = ClusteringEngine.getClusteringEngineFactory().getClusteringEngine();
-        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> originalSpectralClusters = new ArrayList<ICluster>(ClusteringTestUtilities.readSpectraClustersFromResource());
 
-        for (IPeptideSpectralCluster sc : originalSpectralClusters) {
+        for (ICluster sc : originalSpectralClusters) {
             ce.addClusters(sc);
         }
-        originalSpectralClusters = (List<IPeptideSpectralCluster>) ce.getClusters();
+        originalSpectralClusters = new ArrayList<ICluster>(ce.getClusters());
 
         clusteringEngine = new StableClusteringEngine();
-        unstableClusters = new ArrayList<IPeptideSpectralCluster>();
-        stableClusters = new ArrayList<IPeptideSpectralCluster>();
+        unstableClusters = new ArrayList<ICluster>();
+        stableClusters = new ArrayList<ICluster>();
 
         final CountBasedClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
-        for (IPeptideSpectralCluster originalSpectralCluster : originalSpectralClusters) {
+        for (ICluster originalSpectralCluster : originalSpectralClusters) {
             if (clusterStabilityAssessor.isStable(originalSpectralCluster)) {
                 stableClusters.add(originalSpectralCluster);
             } else {
@@ -58,11 +58,11 @@ public class StableClusteringEngineTest {
         Assert.assertTrue(!unstableClusters.isEmpty());
         Assert.assertTrue(!stableClusters.isEmpty());
 
-        for (IPeptideSpectralCluster unstableCluster : unstableClusters) {
+        for (ICluster unstableCluster : unstableClusters) {
             clusteringEngine.addUnstableCluster(unstableCluster);
         }
 
-        for (IPeptideSpectralCluster stableCluster : stableClusters) {
+        for (ICluster stableCluster : stableClusters) {
             int clusteredSpectraCount = stableCluster.getClusteredSpectraCount();
             int numberOfUnstableSpectra = clusteringEngine.getNumberOfUnstableSpectra();
             clusteringEngine.processStableCluster(stableCluster);
@@ -77,7 +77,7 @@ public class StableClusteringEngineTest {
             }
         }
 
-        Collection<IPeptideSpectralCluster> unstableClustersAfterProcess = clusteringEngine.getClusters();
+        Collection<ICluster> unstableClustersAfterProcess = clusteringEngine.getClusters();
         // we did get some merging and I think that is good
         int actual = unstableClusters.size() - NUMBER_MERGED_CLUSTERS;
         Assert.assertEquals(unstableClustersAfterProcess.size(), actual);

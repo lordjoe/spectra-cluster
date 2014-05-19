@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
@@ -66,7 +67,7 @@ public class ClusterSimilarityUtilities {
      * @param added    cluster
      * @return non-null if we can use the return as an enclosing cluster
      */
-    public static double clusterFullyContainsScore(@Nonnull IPeptideSpectralCluster existing, @Nonnull IPeptideSpectralCluster added) {
+    public static double clusterFullyContainsScore(@Nonnull ICluster existing, @Nonnull ICluster added) {
         Set<String> spectralIds1 = existing.getSpectralIds();
         Set<String> spectralIds2 = added.getSpectralIds();
         double maxSize = Math.max(spectralIds1.size(), spectralIds2.size());
@@ -419,7 +420,7 @@ public class ClusterSimilarityUtilities {
      */
     public static
     @Nonnull
-    Set<String> getSpectraOverlap(@Nonnull final IPeptideSpectralCluster c1, @Nonnull final IPeptideSpectralCluster c2) {
+    Set<String> getSpectraOverlap(@Nonnull final ICluster c1, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(c1.getSpectralIds());
         ret.retainAll(c2.getSpectralIds());
         return ret;
@@ -433,7 +434,7 @@ public class ClusterSimilarityUtilities {
      */
     public static
     @Nonnull
-    Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final IPeptideSpectralCluster c2) {
+    Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(firstIds);
         ret.retainAll(c2.getSpectralIds());
         return ret;

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class TSVClusterAppender implements IClusterAppender{
 
     @Override
-    public void appendCluster(Appendable out, IPeptideSpectralCluster cluster, Object... otherData) {
+    public void appendCluster(Appendable out, ICluster cluster, Object... otherData) {
         try {
             out.append(cluster.getId());
             out.append("\t");

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import com.lordjoe.utilities.IProgressHandler;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class PrideClusteringEngine implements IClusteringEngine {
 
-    private final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<ICluster> clusters = new ArrayList<ICluster>();
     private List<SpectraCluster> clustersFound = null;
     private final List<ClusteringSpectrum> addedSpectra = new ArrayList<ClusteringSpectrum>();
     private final SpectraClustering clustering = new FrankEtAlClustering();
@@ -40,9 +41,9 @@ public class PrideClusteringEngine implements IClusteringEngine {
      * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
     @Override
-    public List<IPeptideSpectralCluster> getClusters() {
+    public List<ICluster> getClusters() {
         //      guaranteeClean();
-        return new ArrayList<IPeptideSpectralCluster>(clusters);
+        return new ArrayList<ICluster>(clusters);
     }
 
 
@@ -50,9 +51,9 @@ public class PrideClusteringEngine implements IClusteringEngine {
      * add some clusters
      */
     @Override
-    public void addClusters(IPeptideSpectralCluster... cluster) {
+    public void addClusters(ICluster... cluster) {
         if (cluster != null) {
-            for (IPeptideSpectralCluster sc : cluster) {
+            for (ICluster sc : cluster) {
                 final SpectraCluster spectraCluster = Adapters.fromSpectraCluster(sc);
                 final List<ClusteringSpectrum> spectra = spectraCluster.getSpectra();
                 addedSpectra.addAll(spectra);
@@ -91,8 +92,8 @@ public class PrideClusteringEngine implements IClusteringEngine {
      * @return !null Cluster
      */
     @Override
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(final IPeptideSpectralCluster cluster) {
-        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
+    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
         SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         if (cluster.getClusteredSpectra().size() > 1) {
@@ -119,7 +120,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
+    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
         return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 

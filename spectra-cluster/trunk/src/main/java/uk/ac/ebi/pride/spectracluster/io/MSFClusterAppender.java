@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.CGFClusterAppender
@@ -23,7 +23,7 @@ public class MSFClusterAppender implements IClusterAppender {
      * @return true if anything was appended otherwise false
      */
     @Override
-    public void appendCluster(final Appendable out, final IPeptideSpectralCluster data, final Object... otherData) {
+    public void appendCluster(final Appendable out, final ICluster data, final Object... otherData) {
         spectrumAppender.appendSpectrum(out, data.getConsensusSpectrum());
     }
 

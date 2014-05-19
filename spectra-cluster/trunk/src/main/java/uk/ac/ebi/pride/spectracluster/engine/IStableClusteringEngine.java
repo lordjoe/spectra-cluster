@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
  */
 public interface IStableClusteringEngine extends IIncrementalClusteringEngine {
 
-    public void addUnstableCluster(IPeptideSpectralCluster unstableCluster);
+    public void addUnstableCluster(ICluster unstableCluster);
 
-    public void processStableCluster(IPeptideSpectralCluster stableCluster);
+    public void processStableCluster(ICluster stableCluster);
 
-    public Collection<IPeptideSpectralCluster> getClusters();
+    public Collection<ICluster> getClusters();
 
     /**
      * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
@@ -24,5 +24,5 @@ public interface IStableClusteringEngine extends IIncrementalClusteringEngine {
      *
      * @return !null Cluster
      */
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(IPeptideSpectralCluster cluster);
+    public List<ICluster> findNoneFittingSpectra(ICluster cluster);
 }

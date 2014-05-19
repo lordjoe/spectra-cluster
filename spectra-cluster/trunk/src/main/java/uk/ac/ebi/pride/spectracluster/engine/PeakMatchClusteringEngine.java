@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -25,9 +25,9 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public static final int MAJOR_PEAK_NUMBER = 6;
 
     private final SimilarityChecker similarityChecker;
-    private final Comparator<IPeptideSpectralCluster> spectrumComparator;
-    private final List<IPeptideSpectralCluster> singleSpectrumClusters = new ArrayList<IPeptideSpectralCluster>();
-    private final List<IPeptideSpectralCluster> currentClusters = new ArrayList<IPeptideSpectralCluster>();
+    private final Comparator<ICluster> spectrumComparator;
+    private final List<ICluster> singleSpectrumClusters = new ArrayList<ICluster>();
+    private final List<ICluster> currentClusters = new ArrayList<ICluster>();
     private final Set<ISpectrum> alreadyClustered = new HashSet<ISpectrum>();
     private final IClusteringEngineFactory factory;
     private String name = "PeakMatchClusteringEngine";
@@ -38,7 +38,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public PeakMatchClusteringEngine(final Comparator<IPeptideSpectralCluster> spectrumComparator) {
+    public PeakMatchClusteringEngine(final Comparator<ICluster> spectrumComparator) {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker(), spectrumComparator);
     }
 
@@ -49,7 +49,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     }
 
 
-    public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker, final Comparator<IPeptideSpectralCluster> spectrumComparator) {
+    public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
         factory = ClusteringEngine.getClusteringEngineFactory(similarityChecker, spectrumComparator);
@@ -64,10 +64,10 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * add some clusters
      */
     @Override
-    public void addClusters(final IPeptideSpectralCluster... pClusters) {
+    public void addClusters(final ICluster... pClusters) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < pClusters.length; i++) {
-            IPeptideSpectralCluster cluster = pClusters[i];
+            ICluster cluster = pClusters[i];
             if (cluster.getClusteredSpectraCount() == 1)
                 singleSpectrumClusters.addAll(Arrays.asList(cluster));
             else
@@ -99,8 +99,8 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     protected boolean mergeAndCombineClusters() {
         int startingClusterCount = currentClusters.size() + singleSpectrumClusters.size();
-        List<IPeptideSpectralCluster> singleSpectra = ClusterUtilities.removeSingleSpectrumClusters(currentClusters);
-        List<IPeptideSpectralCluster> mergedClusters = mergeClusters(currentClusters);
+        List<ICluster> singleSpectra = ClusterUtilities.removeSingleSpectrumClusters(currentClusters);
+        List<ICluster> mergedClusters = mergeClusters(currentClusters);
         singleSpectra = mergeClustersWithSingles(mergedClusters, singleSpectra);
 
         singleSpectrumClusters.clear();
@@ -129,10 +129,10 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @param singleSpectra
      * @return
      */
-    protected List<IPeptideSpectralCluster> mergeClustersWithSingles(List<IPeptideSpectralCluster> mergedClusters, List<IPeptideSpectralCluster> singleSpectra) {
+    protected List<ICluster> mergeClustersWithSingles(List<ICluster> mergedClusters, List<ICluster> singleSpectra) {
         // let a shared function do all the dirty work so other engines can share code
         //noinspection UnnecessaryLocalVariable
-        List<IPeptideSpectralCluster> retained = ClusterUtilities.mergeClustersWithSingleSpectra(mergedClusters,
+        List<ICluster> retained = ClusterUtilities.mergeClustersWithSingleSpectra(mergedClusters,
                 singleSpectra, internalGetSimilarityChecker(), MAXIMUM_SINGLE_SPECTRUM_MERGE_MZ_DIFFERENCE);
 
         return retained;
@@ -143,7 +143,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @param mergable
      * @return
      */
-    protected List<IPeptideSpectralCluster> mergeClusters(List<IPeptideSpectralCluster> mergable) {
+    protected List<ICluster> mergeClusters(List<ICluster> mergable) {
         // let a shared function do all the dirty work so other engines can share code
         return ClusterUtilities.mergeClusters(mergable, internalGetSimilarityChecker(), MAXIMUM_MERGE_MZ_DIFFERENCE);
     }
@@ -156,7 +156,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     protected boolean clusterUsingPeaks() {
         Collections.sort(singleSpectrumClusters, QualityClusterComparator.INSTANCE);   // sort by quality
         for (int index = 0; index < singleSpectrumClusters.size(); index++) {
-            IPeptideSpectralCluster readCluster = singleSpectrumClusters.get(index);
+            ICluster readCluster = singleSpectrumClusters.get(index);
             if (readCluster.getClusteredSpectraCount() != 1)
                 throw new IllegalStateException("this should be a a single spectrum cluster"); // ToDo change
             final ISpectrum theSpectrum = readCluster.getHighestQualitySpectrum();
@@ -168,7 +168,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 int peak = peaks[i];
                 final IClusteringEngine engine = factory.getClusteringEngine();
                 for (int index2 = index; index2 < singleSpectrumClusters.size(); index2++) {
-                    IPeptideSpectralCluster addedCluster = singleSpectrumClusters.get(index2);
+                    ICluster addedCluster = singleSpectrumClusters.get(index2);
                     ISpectrum addedSpectrum = readCluster.getHighestQualitySpectrum();
                     if (alreadyClustered.contains(addedSpectrum))
                         continue;
@@ -179,9 +179,9 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 if (engine.size() < 2)
                     continue; // nothing to cluster
                 engine.processClusters();
-                final Collection<IPeptideSpectralCluster> clusters = engine.getClusters();
+                final Collection<ICluster> clusters = engine.getClusters();
                 currentClusters.addAll(clusters);
-                for (IPeptideSpectralCluster cluster : clusters) {
+                for (ICluster cluster : clusters) {
                     alreadyClustered.addAll(cluster.getClusteredSpectra());
                 }
             }
@@ -198,13 +198,13 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * SLewis - I think a guarantee that they are sorted by MZ is useful
      */
     @Override
-    public List<IPeptideSpectralCluster> getClusters() {
+    public List<ICluster> getClusters() {
         if (currentClusters.isEmpty()) {        // pass 1
-            List<IPeptideSpectralCluster> ret = new ArrayList<IPeptideSpectralCluster>(singleSpectrumClusters);
+            List<ICluster> ret = new ArrayList<ICluster>(singleSpectrumClusters);
             Collections.sort(ret);
             return ret;
         } else {
-            List<IPeptideSpectralCluster> ret = new ArrayList<IPeptideSpectralCluster>(currentClusters);
+            List<ICluster> ret = new ArrayList<ICluster>(currentClusters);
             ret.addAll(singleSpectrumClusters);
             Collections.sort(ret);
             return ret;
@@ -228,7 +228,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @return
      */
     @SuppressWarnings("UnusedDeclaration")
-    protected Comparator<IPeptideSpectralCluster> internalGetSpectrumComparator() {
+    protected Comparator<ICluster> internalGetSpectrumComparator() {
         return spectrumComparator;
     }
 
@@ -282,8 +282,9 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      *
      * @return !null Cluster
      */
-    public List<IPeptideSpectralCluster> findNoneFittingSpectra(IPeptideSpectralCluster cluster) {
-        List<IPeptideSpectralCluster> noneFittingSpectra = new ArrayList<IPeptideSpectralCluster>();
+    @Override
+    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
         SimilarityChecker sCheck = getSimilarityChecker();
 
         if (cluster.getClusteredSpectra().size() > 1) {
@@ -309,7 +310,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     @Nonnull
     @Override
-    public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
+    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
         return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
