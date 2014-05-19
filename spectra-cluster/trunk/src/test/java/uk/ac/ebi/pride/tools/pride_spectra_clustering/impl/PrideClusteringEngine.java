@@ -12,7 +12,6 @@ import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,19 +108,6 @@ public class PrideClusteringEngine implements IClusteringEngine {
 
         return noneFittingSpectra;
 
-    }
-
-
-    /**
-     * allow nonfitting spectra to leave and return a list of clusters to write out
-     *
-     * @param cluster
-     * @return !null List<ISpectralCluster
-     */
-    @Nonnull
-    @Override
-    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
-        return ClusterUtilities.removeNonFittingSpectra(cluster, this);
     }
 
     /**

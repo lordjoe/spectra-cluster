@@ -3,10 +3,8 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import com.lordjoe.utilities.IProgressHandler;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -135,20 +133,6 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
         return realEngine.findNoneFittingSpectra(cluster);
     }
-
-
-    /**
-     * allow nonfitting spectra to leave and return a list of clusters to write out
-     *
-     * @param cluster
-     * @return !null List<ISpectralCluster
-     */
-    @Nonnull
-    @Override
-    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
-        return ClusterUtilities.removeNonFittingSpectra(cluster, realEngine);
-    }
-
 
     /**
      * add code to monitor progress

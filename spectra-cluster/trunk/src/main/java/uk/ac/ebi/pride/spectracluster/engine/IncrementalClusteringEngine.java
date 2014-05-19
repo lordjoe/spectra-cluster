@@ -12,7 +12,6 @@ import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -158,18 +157,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return noneFittingSpectra;
     }
 
-
-    /**
-     * allow nonfitting spectra to leave and return a list of clusters to write out
-     *
-     * @param cluster
-     * @return !null List<ISpectralCluster
-     */
-    @Nonnull
-    @Override
-    public List<ICluster> asWritttenSpectra(@Nonnull ICluster cluster) {
-        return ClusterUtilities.removeNonFittingSpectra(cluster, this);
-    }
 
     /**
      * add code to monitor progress
