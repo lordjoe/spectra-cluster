@@ -1,13 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -311,7 +310,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster, this);
+        return ClusterUtilities.asWritttenSpectra(cluster, this);
     }
 
 

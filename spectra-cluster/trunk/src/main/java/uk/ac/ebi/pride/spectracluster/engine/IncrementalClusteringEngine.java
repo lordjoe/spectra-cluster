@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import com.lordjoe.utilities.IProgressHandler;
 import com.lordjoe.utilities.Util;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
@@ -169,7 +168,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Nonnull
     @Override
     public List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster) {
-        return ClusteringUtilities.asWritttenSpectra(cluster, this);
+        return ClusterUtilities.asWritttenSpectra(cluster, this);
     }
 
     /**

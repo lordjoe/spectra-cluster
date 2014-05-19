@@ -6,6 +6,7 @@ import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
@@ -13,6 +14,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
@@ -87,6 +89,34 @@ public class ClusterUtilities {
 
     public static String getSemiStableClusterId() {
         return STABLE_CLUSTER_PREFIX + UUID.randomUUID().toString();
+    }
+
+    /**
+     * allow nonfitting spectra to leave and retuen a list of clusters to write out
+     *
+     * @param cluster
+     * @return !null List<ISpectralCluster
+     */
+    @Nonnull
+    public static List<IPeptideSpectralCluster> asWritttenSpectra(@Nonnull IPeptideSpectralCluster cluster, @Nonnull IClusteringEngine engine) {
+        final List<IPeptideSpectralCluster> allClusters = engine.findNoneFittingSpectra(cluster);
+        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        if (!allClusters.isEmpty()) {
+            for (IPeptideSpectralCluster removedCluster : allClusters) {
+
+                // drop all spectra
+                final List<ISpectrum> clusteredSpectra = removedCluster.getClusteredSpectra();
+                ISpectrum[] allRemoved = clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]);
+                cluster.removeSpectra(allRemoved);
+
+                // and save as stand alone
+                holder.add(removedCluster);
+            }
+
+        }
+        if (cluster.getClusteredSpectraCount() > 0)
+            holder.add(cluster);
+        return holder;
     }
 
     /**
