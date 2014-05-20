@@ -7,6 +7,10 @@ import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import java.util.Comparator;
 
 /**
+ * Factory for making WrappedIncrementalClusteringEngine
+ *
+ * The only reason to keep this factory class is for the default configuration
+ *
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$

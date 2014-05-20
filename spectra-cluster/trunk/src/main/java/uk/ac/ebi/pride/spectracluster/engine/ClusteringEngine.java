@@ -22,7 +22,7 @@ public class ClusteringEngine implements IClusteringEngine {
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
 
-    protected ClusteringEngine(ISimilarityChecker similarityChecker,
+    public ClusteringEngine(ISimilarityChecker similarityChecker,
                                Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;

@@ -7,6 +7,10 @@ import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import java.util.Comparator;
 
 /**
+ * Factory for making IncrementalClusteringEngine
+ *
+ * The only reason to keep this factory class is for the default configuration
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -20,7 +24,8 @@ public class IncrementalClusteringEngineFactory {
         this.spectrumComparator = Defaults.INSTANCE.getDefaultSpectrumComparator();
     }
 
-    public IncrementalClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+    public IncrementalClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker,
+                                              final Comparator<ICluster> pSpectrumComparator) {
         similarityChecker = pSimilarityChecker;
         spectrumComparator = pSpectrumComparator;
     }

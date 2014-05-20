@@ -31,7 +31,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private final double windowSize;
     private int currentMZAsInt;
 
-    protected IncrementalClusteringEngine(ISimilarityChecker sck,
+    public IncrementalClusteringEngine(ISimilarityChecker sck,
                                           Comparator<ICluster> scm,
                                           double windowSize) {
         this.similarityChecker = sck;
