@@ -64,11 +64,6 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     }
 
     @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
-    @Override
     public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
     }

@@ -43,11 +43,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
         return similarityChecker;
     }
 
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
     /**
      * add some clusters
      */
@@ -227,8 +222,9 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     @Override
     public String toString() {
-        if (getName() != null)
-            return getName();
+        String name = this.getClass().getName();
+        if (name != null)
+            return name;
         return super.toString();
     }
 

@@ -11,6 +11,7 @@ import java.util.*;
 /**
  * Default implementation of the clustering engine
  *
+ * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
  */
@@ -54,13 +55,6 @@ public class ClusteringEngine implements IClusteringEngine {
         myClustersToAdd.clear();
         myClustersToAdd.addAll(l2);
     }
-
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
-
 
     /**
      * Get clustered clusters
