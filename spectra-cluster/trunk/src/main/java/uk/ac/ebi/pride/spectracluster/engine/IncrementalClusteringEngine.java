@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
@@ -21,10 +20,8 @@ import java.util.*;
  * User: Steve
  * Date: 7/5/13
  */
-@SuppressWarnings("UnusedDeclaration")
 public class IncrementalClusteringEngine implements IIncrementalClusteringEngine {
 
-    private String name;
     private final List<ICluster> clusters = new ArrayList<ICluster>();
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
@@ -51,12 +48,13 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     public void setCurrentMZ(final double pCurrentMZ) {
         int test = ClusterUtilities.mzToInt(pCurrentMZ);
-        if (getCurrentMZ() > test) {  // all ow roundoff error but not much
-            double del = getCurrentMZ() - test;  // difference
+        final int currentMZ = getCurrentMZ();
+        if (currentMZ > test) {  // all ow roundoff error but not much
+            double del = currentMZ - test;  // difference
 
             if (Math.abs(del) > ClusterUtilities.MZ_RESOLUTION * Constants.SMALL_MZ_DIFFERENCE) {
                 throw new IllegalStateException("mz values MUST be added in order - was "
-                        + Util.formatDouble(getCurrentMZ(), 3) + " new " +
+                        + Util.formatDouble(currentMZ, 3) + " new " +
                         Util.formatDouble(pCurrentMZ, 3) + " del  " +
                         del
                 );
@@ -67,16 +65,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         currentMZAsInt = test;
     }
 
-//    protected void guaranteeClean() {
-//        if (isDirty()) {
-//            filterClustersToAdd();
-//            List<ISpectralCluster> myClustersToAdd = getClustersToAdd();
-//            Collections.sort(myClustersToAdd, getSpectrumComparator());
-//            addToClusters();
-//            setDirty(false);
-//        }
-//    }
-
 
     /**
      * Get clustered clusters
@@ -84,7 +72,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     @Override
     public List<ICluster> getClusters() {
-        // guaranteeClean();        incremental is ALWAYS clean
         final ArrayList<ICluster> ret = new ArrayList<ICluster>(clusters);
         Collections.sort(ret);
         return ret;
@@ -127,7 +114,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @return !null list of clusters to remove
      */
     protected List<ICluster> findClustersTooLow(double precursorMz) {
-        double oldMZ = getCurrentMZ();
         double defaultThreshold1 = getWindowSize();
         double lowestMZ = precursorMz - defaultThreshold1;
         List<ICluster> clustersToremove = new ArrayList<ICluster>();
@@ -169,10 +155,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
 
         ISpectrum qc = clusterToAdd.getHighestQualitySpectrum();
-        String mostCommonPeptide = "";
-        if (qc instanceof IPeptideSpectrumMatch)
-            //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-            mostCommonPeptide = ((IPeptideSpectrumMatch) qc).getPeptide();
 
         ICluster bestMatch = null;
         double highestSimilarityScore = 0;
@@ -380,6 +362,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Override
     public String toString() {
         int nClusters = size();
+        final String name = getName();
         if (name != null)
             return name + " with " + nClusters;
         return super.toString();

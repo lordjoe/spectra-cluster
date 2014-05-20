@@ -10,7 +10,10 @@ import java.util.*;
  * Wraps an  IIncrementalClusteringEngine to do one pass clustering
  * User: Steve
  * Date: 8/13/13
+ *
+ * todo: development, since it is never used
  */
+@Deprecated
 public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
 
     private boolean dirty;

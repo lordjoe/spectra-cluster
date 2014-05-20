@@ -236,6 +236,16 @@ public class ClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
+    @Override
+    public ISimilarityChecker getSimilarityChecker() {
+        return similarityChecker;
+    }
+
+    /**
+     * used to expose internals for overridig classes only
+     *
+     * @return
+     */
     protected List<ICluster> getClustersToAdd() {
         return clustersToAdd;
     }
@@ -247,16 +257,6 @@ public class ClusteringEngine implements IClusteringEngine {
      */
     protected List<ICluster> internalGetClusters() {
         return clusters;
-    }
-
-    /**
-     * used to expose internals for overridig classes only
-     *
-     * @return
-     */
-    @Override
-    public ISimilarityChecker getSimilarityChecker() {
-        return similarityChecker;
     }
 
     /**

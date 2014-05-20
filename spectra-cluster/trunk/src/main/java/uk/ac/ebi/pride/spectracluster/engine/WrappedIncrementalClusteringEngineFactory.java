@@ -14,7 +14,10 @@ import java.util.Comparator;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development since it is only used in unit tests
  */
+@Deprecated
 public class WrappedIncrementalClusteringEngineFactory {
 
     private final IncrementalClusteringEngineFactory incrementalFactory;
