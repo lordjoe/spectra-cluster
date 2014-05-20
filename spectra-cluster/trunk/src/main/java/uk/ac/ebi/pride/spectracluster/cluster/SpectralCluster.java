@@ -313,6 +313,8 @@ public class SpectralCluster implements ICluster {
         if (spc1.size() != spc2.size()) {
             return false;
         }
+        // TODO discuss how spectra are compared - why not compare the consensus spectra directly and enforce
+        // a high similarity there?
         if (spc1.size() <= 1) {
 
             List<IPeak> peaks = getConsensusSpectrum().getPeaks();
