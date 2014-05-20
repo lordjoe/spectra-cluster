@@ -27,7 +27,7 @@ import java.util.List;
  *         todo: delete
  */
 @Deprecated
-public class FrankEtAlDotProductOriginal implements SimilarityChecker {
+public class FrankEtAlDotProductOriginal implements ISimilarityChecker {
 
 
     public static final int K2011_BIN_SIZE = 50;

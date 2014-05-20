@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
@@ -73,7 +73,7 @@ public class ClusteringEngineMain {
         for (ICluster sc : clusters) {
             engine.addClusters(sc);
         }
-        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         engine.processClusters(); // force pass 1 - then we can recluster
         List<ICluster> pass1 = engine.getClusters();     // look at results
@@ -162,7 +162,7 @@ public class ClusteringEngineMain {
      */
     protected void appendClusteringHeaders(final PrintWriter pOut) {
         pOut.append("name=" + name + "\n");
-        final SimilarityChecker defaultSimilarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        final ISimilarityChecker defaultSimilarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         pOut.append("similarity_method=" + defaultSimilarityChecker.getClass().getSimpleName() + "\n");
         pOut.append("threshold=" + defaultSimilarityChecker.getDefaultThreshold() + "\n");
         pOut.append("fdr=" + "-1" + "\n"); // todo what is this?

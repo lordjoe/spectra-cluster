@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import java.util.Comparator;
@@ -14,7 +14,7 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusteringEngineFactory implements IClusteringEngineFactory {
-    private final SimilarityChecker similarityChecker;
+    private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
 
     public ClusteringEngineFactory() {
@@ -22,7 +22,7 @@ public class ClusteringEngineFactory implements IClusteringEngineFactory {
         this.spectrumComparator = DefaultClusterComparator.INSTANCE;
     }
 
-    public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+    public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
         similarityChecker = pSimilarityChecker;
         spectrumComparator = pSpectrumComparator;
     }

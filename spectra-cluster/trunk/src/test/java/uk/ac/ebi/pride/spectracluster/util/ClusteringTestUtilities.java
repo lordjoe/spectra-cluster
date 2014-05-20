@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterContentComparator;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
@@ -312,7 +312,7 @@ public class ClusteringTestUtilities {
         if (numberMisMatchedPeaks == 0)
             return true;  // probably will nopt happen
 
-        final SimilarityChecker checker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        final ISimilarityChecker checker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
 
         // well we better agree on the highest peaks

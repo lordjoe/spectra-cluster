@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
@@ -17,7 +16,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
 
     private final SortedSet<ICluster> unstableClusters = new TreeSet<ICluster>();
 
-    private final SimilarityChecker similarityChecker;
+    private final ISimilarityChecker similarityChecker;
 
     private boolean stableClusterProcessed;
 
@@ -25,7 +24,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker());
     }
 
-    public StableClusteringEngine(SimilarityChecker similarityChecker) {
+    public StableClusteringEngine(ISimilarityChecker similarityChecker) {
         this.similarityChecker = similarityChecker;
     }
 
@@ -61,24 +60,14 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         throw new UnsupportedOperationException("This Should NEVER be Called");
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
     @Override
     public String getName() {
-        return "StableClusteringEngine";
+        return this.getClass().getName();
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
     @Override
-    public void setName(final String pName) {
-        throw new UnsupportedOperationException("This Should NEVER be Called");
+    public ISimilarityChecker getSimilarityChecker() {
+        return similarityChecker;
     }
 
     /**
@@ -141,30 +130,6 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     @Override
     public Collection<ICluster> getClusters() {
         return new ArrayList<ICluster>(unstableClusters);
-    }
-
-    /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    @Override
-    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
-        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = similarityChecker.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
-                }
-            }
-        }
-
-        return noneFittingSpectra;
     }
 
     public int getNumberOfUnstableSpectra() {

@@ -1,10 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine
@@ -18,12 +17,25 @@ import java.util.List;
 public interface IClusteringEngine {
 
     /**
+     * Get the name of the clustering engine
+     *
+     * @return  name of the clustering engine
+     */
+    public String getName();
+
+    /**
+     * Get the similarity check used
+     *
+     * @return  an instance of similarity checker
+     */
+    public ISimilarityChecker getSimilarityChecker();
+
+    /**
      * Get clustered clusters sorted by MZ is useful
      *
      * @return !null list this will be sorted by mz a include clusters of all sizes
      */
     public Collection<ICluster> getClusters();
-
 
     /**
      * add some clusters
@@ -38,33 +50,9 @@ public interface IClusteringEngine {
     public boolean processClusters();
 
     /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
-    public String getName();
-
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
-    public void setName(final String pName);
-
-    /**
      * total number of clusters including queued clustersToAdd
      *
      * @return
      */
     public int size();
-
-    /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    public
-    @Nonnull
-    List<ICluster> findNoneFittingSpectra(@Nonnull ICluster cluster);
 }

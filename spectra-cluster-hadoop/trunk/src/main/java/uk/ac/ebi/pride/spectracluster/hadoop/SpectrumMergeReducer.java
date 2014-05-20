@@ -119,7 +119,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
     private static Set<String> INTERESTING_IDS = new HashSet<String>(Arrays.asList(DUPLICATE_IDS));
 
 
-    protected static boolean isInterestingCluster(IPeptideSpectralCluster test) {
+    protected static boolean isInterestingCluster(ICluster test) {
         List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
             if (spc instanceof IPeptideSpectrumMatch) {
@@ -140,7 +140,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final ICluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 

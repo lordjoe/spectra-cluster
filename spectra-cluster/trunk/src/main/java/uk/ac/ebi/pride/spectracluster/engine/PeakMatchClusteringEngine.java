@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -22,13 +22,12 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     // Frank et al does 5 we do 1 more
     public static final int MAJOR_PEAK_NUMBER = 6;
 
-    private final SimilarityChecker similarityChecker;
+    private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
     private final List<ICluster> singleSpectrumClusters = new ArrayList<ICluster>();
     private final List<ICluster> currentClusters = new ArrayList<ICluster>();
     private final Set<ISpectrum> alreadyClustered = new HashSet<ISpectrum>();
     private final IClusteringEngineFactory factory;
-    private String name = "PeakMatchClusteringEngine";
 
     public PeakMatchClusteringEngine() {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
@@ -42,20 +41,26 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker) {
+    public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker) {
         this(similarityChecker, Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
 
 
-    public PeakMatchClusteringEngine(final SimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
+    public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
         factory = new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
 
-    public SimilarityChecker getSimilarityChecker() {
+    @Override
+    public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
     }
 
     /**
@@ -216,7 +221,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      *
      * @return
      */
-    protected SimilarityChecker internalGetSimilarityChecker() {
+    protected ISimilarityChecker internalGetSimilarityChecker() {
         return similarityChecker;
     }
 
@@ -230,27 +235,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
         return spectrumComparator;
     }
 
-
-    /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
-    @Override
-    public void setName(final String pName) {
-        name = pName;
-    }
-
     /**
      * allow engines to be named
      *
@@ -258,8 +242,8 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      */
     @Override
     public String toString() {
-        if (name != null)
-            return name;
+        if (getName() != null)
+            return getName();
         return super.toString();
     }
 
@@ -272,31 +256,4 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     public int size() {
         return singleSpectrumClusters.size();  // todo do better
     }
-
-
-    /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    @Override
-    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
-        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
-        SimilarityChecker sCheck = getSimilarityChecker();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
-                }
-            }
-        }
-
-        return noneFittingSpectra;
-    }
-
 }

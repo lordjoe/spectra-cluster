@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
@@ -447,7 +447,7 @@ public class ClusterSimilarityUtilities {
      */
     public static void testNotClustered(final List<IPeptideSpectralCluster> cps) {
         int compareCount = 0;
-        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         for (int i = 0; i < cps.size() - 1; i++) {
             IPeptideSpectralCluster cluster = cps.get(i);
@@ -573,7 +573,7 @@ public class ClusterSimilarityUtilities {
     }
 
     public static void examineIndividualSpectra(final IPeptideSpectralCluster clusterToAdd, final Collection<IPeptideSpectralCluster> myClusters, final String pMcpIn) {
-        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         double highestSimilarityScore = 0;
         int compareCount = 0;

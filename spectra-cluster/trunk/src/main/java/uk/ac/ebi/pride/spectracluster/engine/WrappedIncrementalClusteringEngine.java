@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
@@ -19,7 +19,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
 
-    public static IClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
+    public static IClusteringEngineFactory getClusteringEngineFactory(ISimilarityChecker similarityChecker,
                                                                       Comparator<ICluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
@@ -27,7 +27,7 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
         private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
 
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+        public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
             incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
         }
 
@@ -122,35 +122,14 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
         return wasDirty;
     }
 
-    /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    @Override
-    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
-        return realEngine.findNoneFittingSpectra(cluster);
-    }
-
-    /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
     @Override
     public String getName() {
-        return getRealEngine().getName();
+        return this.getClass().getName();
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
     @Override
-    public void setName(final String pName) {
-        getRealEngine().setName(pName);
+    public ISimilarityChecker getSimilarityChecker() {
+        return realEngine.getSimilarityChecker();
     }
 
     /**

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -16,7 +16,7 @@ public class ConsensusSimilarityDistance implements IClusterDistance {
     public static final String VERSION = "0.1";
     public static final ConsensusSimilarityDistance INSTANCE = new ConsensusSimilarityDistance();
 
-    private final SimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
+    private final ISimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
     private ConsensusSimilarityDistance() {
     }

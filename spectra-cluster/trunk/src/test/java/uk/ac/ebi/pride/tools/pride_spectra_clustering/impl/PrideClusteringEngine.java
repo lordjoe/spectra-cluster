@@ -3,10 +3,7 @@ package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
@@ -84,32 +81,6 @@ public class PrideClusteringEngine implements IClusteringEngine {
     }
 
     /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    @Override
-    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
-        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
-        SimilarityChecker sCheck = Defaults.INSTANCE.getDefaultSimilarityChecker();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
-                }
-            }
-        }
-
-        return noneFittingSpectra;
-
-    }
-
-    /**
      * nice for debugging to name an engine
      *
      * @return possibly null name
@@ -119,14 +90,9 @@ public class PrideClusteringEngine implements IClusteringEngine {
         return "PrideClusteringEngine";
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
     @Override
-    public void setName(final String pName) {
-
+    public ISimilarityChecker getSimilarityChecker() {
+        throw new UnsupportedOperationException("Method call not supported in this class");
     }
 
     /**

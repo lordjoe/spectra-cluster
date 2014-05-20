@@ -6,12 +6,14 @@ import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import javax.annotation.Nonnull;
@@ -92,14 +94,37 @@ public class ClusterUtilities {
     }
 
     /**
+     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
+     * usually is called on removed clusters
+     *
+     * @return !null Cluster
+     */
+    public static List<ICluster> findNoneFittingSpectra(ICluster cluster, ISimilarityChecker similarityChecker) {
+        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
+
+        if (cluster.getClusteredSpectra().size() > 1) {
+            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
+                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
+                final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
+                final double defaultThreshold = similarityChecker.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                if (similarityScore < defaultThreshold) {
+                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
+                }
+            }
+        }
+
+        return noneFittingSpectra;
+    }
+
+    /**
      * allow nonfitting spectra to leave and retuen a list of clusters to write out
      *
      * @param cluster
      * @return !null List<ISpectralCluster
      */
     @Nonnull
-    public static List<ICluster> removeNonFittingSpectra(@Nonnull ICluster cluster, @Nonnull IClusteringEngine engine) {
-        final List<ICluster> allClusters = engine.findNoneFittingSpectra(cluster);
+    public static List<ICluster> removeNonFittingSpectra(@Nonnull ICluster cluster, @Nonnull ISimilarityChecker similarityChecker) {
+        final List<ICluster> allClusters = findNoneFittingSpectra(cluster, similarityChecker);
         List<ICluster> holder = new ArrayList<ICluster>();
         if (!allClusters.isEmpty()) {
             for (ICluster removedCluster : allClusters) {
@@ -634,7 +659,7 @@ public class ClusterUtilities {
      * @param maxMZDIfference   max difference to consider merging
      * @return !null list of new clusters
      */
-    public static List<ICluster> mergeClusters(List<ICluster> mergable, SimilarityChecker similarityChecker, double maxMZDIfference) {
+    public static List<ICluster> mergeClusters(List<ICluster> mergable, ISimilarityChecker similarityChecker, double maxMZDIfference) {
         List<ICluster> retained = new ArrayList<ICluster>();
         // clusters need to be compared with all clusters below them
         for (ICluster cluster : mergable) {
@@ -683,7 +708,7 @@ public class ClusterUtilities {
      * @param maxMZDIfference   ! maxMZ difference to look at for merging
      * @return !null list of non-merged clusters from singles
      */
-    public static List<ICluster> mergeClustersWithSingleSpectra(List<ICluster> mergable, List<ICluster> singles, SimilarityChecker similarityChecker, double maxMZDIfference) {
+    public static List<ICluster> mergeClustersWithSingleSpectra(List<ICluster> mergable, List<ICluster> singles, ISimilarityChecker similarityChecker, double maxMZDIfference) {
         List<ICluster> retainedSingleSpectra = new ArrayList<ICluster>();
         int startIndex = 0;
         // clusters need to be compared with all clusters below them
@@ -774,9 +799,9 @@ public class ClusterUtilities {
             out.append("name=" + name);
             out.append("\n");
             Defaults defaults = Defaults.INSTANCE;
-            SimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
+            ISimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
 
-            Class<? extends SimilarityChecker> scc = similarityChecker.getClass();
+            Class<? extends ISimilarityChecker> scc = similarityChecker.getClass();
             out.append("similarity_method=" + scc.getSimpleName());
             out.append("\n");
 
