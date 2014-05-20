@@ -283,7 +283,7 @@ public class SpectralCluster implements ICluster {
         int hash1 = hashCode();
         int hash2 = o.hashCode();
         if (hash1 != hash2)
-            return hash1 < hash2 ? -1 : 0;
+            return hash1 < hash2 ? -1 : 0;  // TODO JG check if this is intended
 
         return 0;
     }
