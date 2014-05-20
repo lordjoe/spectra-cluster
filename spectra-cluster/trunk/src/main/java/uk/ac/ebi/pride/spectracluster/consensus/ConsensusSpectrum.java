@@ -137,6 +137,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             return;
 
         for (ISpectrum spectrum : merged) {
+            // TODO JG in my opinion this filtering should not be done by ConsensusSpectrum but when the spectra
+            // are loaded initially
             List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(Constants.MAX_PEAKS_TO_KEEP).getPeaks();
             addPeaks(spectrumPeaks);
 
