@@ -66,12 +66,13 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected int averageCharge;
     protected int sumCharge;
     protected ISpectrum consensusSpectrum;
+    protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
 
     protected final String methodName = "Crowded Consensus Spectrum Builder";
     protected final String methodVersion = "0.1";
 
     /**
-     * The m/z threshold to consider to peaks identical
+     * The m/z threshold to consider two peaks identical
      */
     protected static final float FINAL_MZ_THRESHOLD = 0.4F;
     /**
@@ -79,9 +80,15 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * to reach the final threshold. Each iteration increases the threshold by MZ_THRESHOLD_STEP.
      */
     protected static final float MZ_THRESHOLD_STEP = 0.1F;
-
-    protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
-    public final static boolean USE_ROUNDING = false;
+    /**
+     * Defines whether m/z values should be rounded. Thereby, more peaks are considered identical
+     * without reducing accuracy.
+     */
+    protected final static boolean USE_ROUNDING = false;
+    /**
+     * Defines the precision used if rounding is enabled.
+     */
+    protected final static int MZ_PRECISION = 1000;
 
     /**
      * Holds all peaks from all added spectra. In case an exact m/z is found twice, the intensities are added.
@@ -315,7 +322,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = ClusterUtilities.round(mzToAdd);
+                mzToAdd = ClusterUtilities.round(mzToAdd, MZ_PRECISION);
 
             boolean wasAdded = false;
 

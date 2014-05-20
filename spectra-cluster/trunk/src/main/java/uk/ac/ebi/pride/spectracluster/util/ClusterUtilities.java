@@ -764,6 +764,7 @@ public class ClusterUtilities {
      * @param f
      * @return
      */
+    @Deprecated
     public static double round(double f) {
         return round(f, MZ_PRECISSION);
     }
