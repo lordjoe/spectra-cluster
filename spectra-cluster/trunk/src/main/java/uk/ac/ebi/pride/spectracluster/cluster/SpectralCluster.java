@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,7 +31,7 @@ public class SpectralCluster implements ICluster {
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
 
     public SpectralCluster(ICluster copied) {
-        this(copied.getId(), ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
+        this(copied.getId(), Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
 
         final List<ISpectrum> clusteredSpectra1 = copied.getClusteredSpectra();
         addSpectra(clusteredSpectra1.toArray(new ISpectrum[clusteredSpectra1.size()]));
@@ -41,11 +41,11 @@ public class SpectralCluster implements ICluster {
      * use this when the cluster is not stable
      */
     public SpectralCluster() {
-        this(null, ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
+        this(null, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
     public SpectralCluster(String id) {
-        this(id, ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder());
+        this(id, Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder());
     }
 
     public SpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
