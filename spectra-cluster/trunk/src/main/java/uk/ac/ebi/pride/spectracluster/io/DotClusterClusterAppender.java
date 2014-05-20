@@ -1,8 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.SpectrumUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import java.io.IOException;
@@ -28,7 +32,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
     public void appendCluster(final Appendable out, final ICluster cluster, final Object... otherData) {
         try {
             out.append("=Cluster=\n");
-            out.append("av_precursor_mz=" + String.format("%10.3f", cluster.getPrecursorMz()).trim());
+            out.append("av_precursor_mz=").append(String.format("%10.3f", cluster.getPrecursorMz()).trim());
             out.append("\n");
             out.append("av_precursor_intens=1.0");   // Useless, since intensities are completely random
             out.append("\n");
@@ -39,9 +43,9 @@ public class DotClusterClusterAppender implements IClusterAppender {
 //            out.append("sequence=[" + s + "]");
 //            out.append("\n");
 
-            out.append("consensus_mz=" + ClusterUtilities.buildMZString(cluster.getConsensusSpectrum()));
+            out.append("consensus_mz=").append(SpectrumUtilities.buildMZString(cluster.getConsensusSpectrum()));
             out.append("\n");
-            out.append("consensus_intens=" + ClusterUtilities.buildIntensityString(cluster.getConsensusSpectrum()));
+            out.append("consensus_intens=").append(SpectrumUtilities.buildIntensityString(cluster.getConsensusSpectrum()));
             out.append("\n");
 
             List<ISpectrum> spectra = clusteredSpectra1;
@@ -75,7 +79,46 @@ public class DotClusterClusterAppender implements IClusterAppender {
     @Override
     public void appendStart(final Appendable out, final Object... otherData) {
         String name = (String) otherData[0];
-        ClusterUtilities.appendDotClusterHeader(out, name);
+        appendDotClusterHeader(out, name);
+    }
+
+    /**
+     * write the header of a .clustering file
+     *
+     * @param out
+     * @param name
+     */
+    public void appendDotClusterHeader(Appendable out, String name) {
+
+        if (name.endsWith(Constants.CLUSTERING_EXTENSION))
+            name = name.substring(0, name.length() - Constants.CLUSTERING_EXTENSION.length());
+        try {
+            out.append("name=").append(name);
+            out.append("\n");
+            Defaults defaults = Defaults.INSTANCE;
+            ISimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
+
+            Class<? extends ISimilarityChecker> scc = similarityChecker.getClass();
+            out.append("similarity_method=").append(scc.getSimpleName());
+            out.append("\n");
+
+
+            double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
+            if (similarityChecker instanceof FrankEtAlDotProduct) {
+                //noinspection RedundantCast
+                defaultSimilarityThreshold = ((FrankEtAlDotProduct) similarityChecker).getDefaultThreshold();
+            }
+            out.append("threshold=").append(String.valueOf(defaultSimilarityThreshold));
+            out.append("\n");
+            out.append("fdr=0");
+            out.append("\n");
+            out.append("description=").append(name);
+            out.append("\n");
+            out.append("\n");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
     /**

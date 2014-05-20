@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 import java.io.*;
 
@@ -15,9 +15,9 @@ import java.io.*;
 public class DotClusterFileListener implements ClusterCreateListener {
 
 
-    private final PrintWriter m_OutWriter;
-    private final File m_OutFile;
-    private final IClusterAppender m_Appender = new DotClusterClusterAppender();
+    private final PrintWriter outWriter;
+    private final File outFile;
+    private final DotClusterClusterAppender appender = new DotClusterClusterAppender();
 
     /**
      * creat with an output file
@@ -26,10 +26,10 @@ public class DotClusterFileListener implements ClusterCreateListener {
      */
     public DotClusterFileListener(File inp) {
         try {
-            m_OutFile = inp;
+            outFile = inp;
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             final PrintWriter printWriter = new PrintWriter(new FileWriter(inp));
-            m_OutWriter = printWriter;
+            outWriter = printWriter;
         } catch (IOException e) {
             throw new RuntimeException(e);
 
@@ -54,7 +54,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
     @Override
     public void onClusterStarted(Object... otherData) {
 
-        ClusterUtilities.appendDotClusterHeader(m_OutWriter, m_OutFile.getName());
+        appender.appendDotClusterHeader(outWriter, outFile.getName());
     }
 
 
@@ -65,7 +65,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
      */
     @Override
     public void onClusterCreate(final IPeptideSpectralCluster cluster, Object... otherData) {
-        m_Appender.appendCluster(m_OutWriter, cluster);
+        appender.appendCluster(outWriter, cluster);
     }
 
     /**
@@ -74,7 +74,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
      */
     @Override
     public void onClusterCreateFinished(Object... otherData) {
-        m_OutWriter.close();
+        outWriter.close();
     }
 
     /**
@@ -94,10 +94,10 @@ public class DotClusterFileListener implements ClusterCreateListener {
             }
         } else {
             String name = pF.getName();
-            if (name.toLowerCase().endsWith(ClusterUtilities.CGF_EXTENSION)) {
+            if (name.toLowerCase().endsWith(Constants.CGF_EXTENSION)) {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(pF));
-                    String clusteringName = name.substring(0, name.length() - ClusterUtilities.CGF_EXTENSION.length()) + ClusterUtilities.CLUSTERING_EXTENSION;
+                    String clusteringName = name.substring(0, name.length() - Constants.CGF_EXTENSION.length()) + Constants.CLUSTERING_EXTENSION;
                     File outFile = new File(pF.getParent(), clusteringName);
                     DotClusterFileListener lstnr = new DotClusterFileListener(outFile);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstnr);

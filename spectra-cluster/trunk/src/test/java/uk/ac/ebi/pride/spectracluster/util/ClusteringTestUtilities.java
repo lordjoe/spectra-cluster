@@ -375,11 +375,11 @@ public class ClusteringTestUtilities {
 
         List<Float> mzValues1 = new ArrayList<Float>(l1.size());
         for (IPeak p : l1)
-            mzValues1.add((float) ClusterUtilities.round(p.getMz(), 10)); // don't bother about rounding differences
+            mzValues1.add((float) MZUtilities.round(p.getMz(), 10)); // don't bother about rounding differences
 
         List<Float> mzValues2 = new ArrayList<Float>(l2.size());
         for (uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak p : l2)
-            mzValues2.add((float) ClusterUtilities.round(p.getMz(), 10));
+            mzValues2.add((float) MZUtilities.round(p.getMz(), 10));
 
         Collections.sort(mzValues1);
         Collections.sort(mzValues2);
@@ -402,7 +402,7 @@ public class ClusteringTestUtilities {
 
     public static boolean arePeakListsEquivalent(List<IPeak> l1x, List<uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak> l2x) {
 
-        int l1Count = ClusterUtilities.getTotalCount(l1x);   // for debugging
+        int l1Count = PeakUtilities.getTotalCount(l1x);   // for debugging
         int l2Count = Adapters.getTotalCount(l2x);   // for debugging
 
 
@@ -428,10 +428,10 @@ public class ClusteringTestUtilities {
             if (count1 != count2) {
                 System.out.println(" <-- count differs!");
                 isEqual = false;
-            } else if (ClusterUtilities.round(p1.getMz()) != ClusterUtilities.round(p2.getMz())) {
+            } else if (MZUtilities.round(p1.getMz()) != MZUtilities.round(p2.getMz())) {
                 System.out.println(" <-- m/z differ!");
                 isEqual = false;
-            } else if (ClusterUtilities.round(p1.getIntensity(), 100) != ClusterUtilities.round(p2.getIntensity(), 100)) {
+            } else if (MZUtilities.round(p1.getIntensity(), 100) != MZUtilities.round(p2.getIntensity(), 100)) {
                 if (Math.abs(p1.getIntensity() - p2.getIntensity()) >= 2 || p1.getIntensity() < 100000) {
                     System.out.println(" <-- intensity differ!");
                     isEqual = false;

@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class PeakBinningTests {
         double maxMZ = 5000;
         double binSize = 100;
         //noinspection UnusedDeclaration
-        List<IPeak> binned = ClusterUtilities.getHighestInBins(peaks, minMZ, maxMZ, binSize, maxPerBin);
+        List<IPeak> binned = PeakUtilities.getHighestInBins(peaks, minMZ, maxMZ, binSize, maxPerBin);
 //        for (IPeak iPeak : binned) {
 //
 //        }

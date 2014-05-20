@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.util.SpectrumInClusterUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -156,7 +157,7 @@ public class DuplicateReductionSimulator {
             for (String val : values) {
                 String valStr = val.toString();
                 LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-                SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+                SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
                 handler.add(sci2);
             }
             return handler;
@@ -182,7 +183,7 @@ public class DuplicateReductionSimulator {
             for (String value : values) {
                 numberReducedByCluster++;
                 LineNumberReader rdr = new LineNumberReader((new StringReader(value)));
-                SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+                SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
                 IPeptideSpectrumMatch spectrum = sci2.getSpectrum();
                 String id = spectrum.getId();
                 if (!sci2.isRemoveFromCluster()) {

@@ -11,6 +11,9 @@ public final class Constants {
     private Constants() {
     }
 
+    public static final String CLUSTERING_EXTENSION = ".clustering";
+    public static final String CGF_EXTENSION = ".cgf";
+
     public static final double SMALL_MZ_DIFFERENCE = 0.002;
     public static final double SMALL_INTENSITY_DIFFERENCE = 0.1;
     public static final int HIGHEST_USABLE_MZ = 5000; // ignore peaks higher than this
