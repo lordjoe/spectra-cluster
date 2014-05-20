@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.tools.fast_spectra_clustering;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.FrankEtAlClustering;
@@ -55,8 +55,8 @@ public class FrankEtAlClusteringTest {
                 boolean peakFound = false;
                 final List<Peak> consensusSpectrum = cluster.getConsensusSpectrum();
                 for (Peak p : consensusSpectrum) {
-                    if (Math.abs(p.getMz() - 686.52796) < Constants.SMALL_MZ_DIFFERENCE) {
-                        Assert.assertEquals(2.1374678, p.getIntensity(), Constants.SMALL_INTENSITY_DIFFERENCE);
+                    if (Math.abs(p.getMz() - 686.52796) < MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
+                        Assert.assertEquals(2.1374678, p.getIntensity(), MZIntensityUtilities.SMALL_INTENSITY_DIFFERENCE);
                         peakFound = true;
                     }
                 }
@@ -94,14 +94,14 @@ public class FrankEtAlClusteringTest {
             SpectraCluster cluster = generatedCluster.get(i);
 
             if (i == 5) {
-                Assert.assertEquals(400.62, cluster.getAverageMz(), Constants.SMALL_MZ_DIFFERENCE);
+                Assert.assertEquals(400.62, cluster.getAverageMz(), MZIntensityUtilities.SMALL_MZ_DIFFERENCE);
                 Assert.assertEquals(1, cluster.getClusterSize());
 
                 boolean peakFound = false;
                 final List<Peak> consensusSpectrum = cluster.getConsensusSpectrum();
                 for (Peak p : consensusSpectrum) {
-                    if (Math.abs(p.getMz() - 365.26794) < Constants.SMALL_MZ_DIFFERENCE) {
-                        Assert.assertEquals(0.5862995642779956, p.getIntensity(), Constants.SMALL_INTENSITY_DIFFERENCE);
+                    if (Math.abs(p.getMz() - 365.26794) < MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
+                        Assert.assertEquals(0.5862995642779956, p.getIntensity(), MZIntensityUtilities.SMALL_INTENSITY_DIFFERENCE);
                         peakFound = true;
                     }
                 }

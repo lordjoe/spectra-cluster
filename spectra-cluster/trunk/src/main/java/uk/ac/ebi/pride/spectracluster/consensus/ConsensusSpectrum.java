@@ -6,8 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
-import uk.ac.ebi.pride.spectracluster.util.MZUtilities;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
@@ -143,7 +142,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         for (ISpectrum spectrum : merged) {
             // TODO JG in my opinion this filtering should not be done by ConsensusSpectrum but when the spectra
             // are loaded initially
-            List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(Constants.MAX_PEAKS_TO_KEEP).getPeaks();
+            List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(PeakUtilities.MAX_PEAKS_TO_KEEP).getPeaks();
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();
@@ -207,7 +206,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = MZUtilities.round(mzToRemove, MZ_PRECISION);
+                mzToRemove = MZIntensityUtilities.round(mzToRemove, MZ_PRECISION);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -328,7 +327,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = MZUtilities.round(mzToAdd, MZ_PRECISION);
+                mzToAdd = MZIntensityUtilities.round(mzToAdd, MZ_PRECISION);
 
             boolean wasAdded = false;
 
@@ -342,7 +341,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
                     break;
                 }
 
-                if (mzToAdd == MZUtilities.round(currentExistingPeak.getMz())) {
+                if (mzToAdd == MZIntensityUtilities.round(currentExistingPeak.getMz())) {
                     allPeaks.set(j, new Peak(
                                     currentExistingPeak.getMz(),
                                     peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
@@ -450,7 +449,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         int lowerBound = 0;
         // process the peaks using a sliding window of 100 m/z
-        for (double startMz = 0, endMz = NOISE_FILTER_INCREMENT; endMz <= Constants.HIGHEST_USABLE_MZ; endMz += NOISE_FILTER_INCREMENT, startMz += NOISE_FILTER_INCREMENT) {
+        for (double startMz = 0, endMz = NOISE_FILTER_INCREMENT; endMz <= MZIntensityUtilities.HIGHEST_USABLE_MZ; endMz += NOISE_FILTER_INCREMENT, startMz += NOISE_FILTER_INCREMENT) {
             List<IPeak> peakBuffer = new ArrayList<IPeak>();
 
             // set the lower bound

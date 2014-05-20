@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -304,7 +304,7 @@ public class SpectralCluster implements ICluster {
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
-        if (abs > Constants.SMALL_MZ_DIFFERENCE) {
+        if (abs > MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
             return false;
         }
 

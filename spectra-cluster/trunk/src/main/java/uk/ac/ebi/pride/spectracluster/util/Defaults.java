@@ -135,17 +135,17 @@ public class Defaults {
 
 
     private static final IWideBinner NARROW_MZ_BINNER = new SizedWideBinner(
-            Constants.HIGHEST_USABLE_MZ,
+            MZIntensityUtilities.HIGHEST_USABLE_MZ,
             NARRROW_BIN_WIDTH,
-            Constants.LOWEST_USABLE_MZ,
+            MZIntensityUtilities.LOWEST_USABLE_MZ,
             NARRROW_BIN_OVERLAP);
 
 
     @java.lang.SuppressWarnings("UnusedDeclaration")
     private static final IWideBinner WIDE_MZ_BINNER = new SizedWideBinner(
-            Constants.HIGHEST_USABLE_MZ,
+            MZIntensityUtilities.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
-            Constants.LOWEST_USABLE_MZ,
+            MZIntensityUtilities.LOWEST_USABLE_MZ,
             WIDE_BIN_OVERLAP);
 
 

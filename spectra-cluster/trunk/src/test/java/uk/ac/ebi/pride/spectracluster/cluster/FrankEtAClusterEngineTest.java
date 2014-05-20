@@ -1,13 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ public class FrankEtAClusterEngineTest {
             IPeak peak2 = peaks2.get(i);
 
             del = Math.abs(peak1.getMz() - peak2.getMz());
-            if (del > Constants.SMALL_MZ_DIFFERENCE)
+            if (del > MZIntensityUtilities.SMALL_MZ_DIFFERENCE)
                 return false; // fail
         }
 
@@ -119,7 +120,7 @@ public class FrankEtAClusterEngineTest {
             IPeak peak2 = peaks2.get(i);
 
             del = Math.abs(peak1.getIntensity() - peak2.getIntensity());
-            if (del > Constants.SMALL_INTENSITY_DIFFERENCE)
+            if (del > MZIntensityUtilities.SMALL_INTENSITY_DIFFERENCE)
                 return false; // fail
             if (peak1.getCount() != peak2.getCount())
                 return false;   // fail

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -18,6 +18,7 @@ import java.util.*;
 public class Spectrum implements ISpectrum {
 
     public final static IQualityScorer DEFAULT_QUALITY_SCORER = new SignalToNoiseChecker();
+    public static final int BAD_QUALITY_MEASURE = -1;
 
     private final String id;
     private final int precursorCharge;
@@ -28,7 +29,7 @@ public class Spectrum implements ISpectrum {
     private double sumSquareIntensity;
 
     private final IQualityScorer qualityScorer;
-    private double qualityMeasure = Constants.BAD_QUALITY_MEASURE;
+    private double qualityMeasure = BAD_QUALITY_MEASURE;
 
     // Dot products always get the highest peaks of a specific intensity -
     // this caches those and returns a list sorted by MZ
@@ -213,7 +214,7 @@ public class Spectrum implements ISpectrum {
     }
 
     public double getQualityScore() {
-        if (qualityMeasure == Constants.BAD_QUALITY_MEASURE) {
+        if (qualityMeasure == BAD_QUALITY_MEASURE) {
             qualityMeasure = qualityScorer.calculateQualityScore(this);
         }
 
@@ -305,7 +306,7 @@ public class Spectrum implements ISpectrum {
         if (o == this)
             return true;
 
-        if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > Constants.SMALL_MZ_DIFFERENCE) {
+        if (Math.abs(o.getPrecursorMz() - getPrecursorMz()) > MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
             return false;
         }
 

@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
@@ -340,7 +340,7 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
-        if (abs > Constants.SMALL_MZ_DIFFERENCE) {
+        if (abs > MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
             return false;
         }
 
