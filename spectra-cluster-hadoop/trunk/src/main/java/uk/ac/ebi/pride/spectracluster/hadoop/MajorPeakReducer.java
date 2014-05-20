@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -64,7 +65,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
             final IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(match);
 
 
-            final Collection<IPeptideSpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+            final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
 
             writeClusters(context, removedClusters);
 
@@ -79,7 +80,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ICluster cluster) throws IOException, InterruptedException {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
@@ -112,7 +113,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
           ChargePeakMZKey pMzKey = (ChargePeakMZKey)key;
 
           if (getEngine() != null) {
-              final Collection<IPeptideSpectralCluster> clusters = getEngine().getClusters();
+              final Collection<ICluster> clusters = getEngine().getClusters();
               writeClusters(context, clusters);
               setEngine(null);
           }

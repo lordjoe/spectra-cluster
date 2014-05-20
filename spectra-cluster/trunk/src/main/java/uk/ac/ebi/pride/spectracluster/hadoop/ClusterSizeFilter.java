@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.utilities.TypedPredicate;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import javax.annotation.Nonnull;
 
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
  * Date: 9/25/13
  */
 @SuppressWarnings("UnusedDeclaration")
-public class ClusterSizeFilter implements TypedPredicate<IPeptideSpectralCluster> {
+public class ClusterSizeFilter implements TypedPredicate<ICluster> {
 
     private final int m_MinimumSize;
     private final int m_MaximumSize;
@@ -35,13 +35,12 @@ public class ClusterSizeFilter implements TypedPredicate<IPeptideSpectralCluster
     }
 
     /**
-     * @param pT
      * @param otherdata - implementation specific and usually blank
      * @return what the implementation does
      */
     @Override
-    public boolean apply(@Nonnull final IPeptideSpectralCluster pIPeptideSpectralCluster, final Object... otherdata) {
-        int clusteredSpectraCount = pIPeptideSpectralCluster.getClusteredSpectraCount();
+    public boolean apply(@Nonnull final ICluster cluster, final Object... otherdata) {
+        int clusteredSpectraCount = cluster.getClusteredSpectraCount();
         if (clusteredSpectraCount < getMinimumSize())
             return false;
         //noinspection RedundantIfStatement

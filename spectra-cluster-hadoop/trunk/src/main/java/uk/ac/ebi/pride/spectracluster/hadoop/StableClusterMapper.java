@@ -6,6 +6,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.systemsbiology.hadoop.AbstractParameterizedMapper;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
+import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
@@ -43,6 +45,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
     private Map<Integer, String[]> binToAllKeys = new HashMap<Integer, String[]>();
     private int numberMapCalls;
+    private IClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
 
 
     @Override
@@ -128,7 +131,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         //noinspection ForLoopReplaceableByForEach
         int precursorCharge = cluster.getPrecursorCharge();
         double precursorMZ = cluster.getPrecursorMz();
-        boolean stable = cluster.isStable();
+        boolean stable = clusterStabilityAssessor.isStable(cluster);
         int numberSpectra = cluster.getClusteredSpectraCount();
 
         int[] bins = binner.asBins(precursorMZ);
@@ -136,7 +139,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         for (int j = 0; j < bins.length; j++) {
             int bin = bins[j];
             String[] keys = getBinKeys(bin, precursorCharge, precursorMZ, context);
-            if (cluster.isStable()) {
+            if (stable) {
                 //noinspection ForLoopReplaceableByForEach
                 for (int k = 0; k < keys.length; k++) {
                     String akey = keys[k];

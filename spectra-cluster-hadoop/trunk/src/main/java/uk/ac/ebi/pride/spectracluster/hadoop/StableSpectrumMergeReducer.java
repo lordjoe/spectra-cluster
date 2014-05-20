@@ -1,29 +1,36 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import org.apache.hadoop.io.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.IWideBinner;
+import org.apache.hadoop.io.Text;
+import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Merge spectra with unstable clusters
  */
 public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
-      private int currentGroup;
-
-
+    private int currentGroup;
+    private IClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
 
 
     public int getCurrentGroup() {
@@ -32,17 +39,17 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 
 
     public void setCurrentGroup(int currentGroup) {
-          this.currentGroup = currentGroup;
+        this.currentGroup = currentGroup;
     }
 
 
-    @Override protected void setup(final Context context) throws IOException, InterruptedException {
+    @Override
+    protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
         setBinner(StableClusterMapper.BINNER);
         ISetableParameterHolder application = getApplication();
         ClusterUtilities.setStableClusterSizeFromProperties(application);
     }
-
 
 
     @Override
@@ -66,7 +73,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
             updateEngine(context, realKey);
         }
 
-        IStableClusteringEngine stableClusteringEngine = (IStableClusteringEngine)getEngine();
+        IStableClusteringEngine stableClusteringEngine = (IStableClusteringEngine) getEngine();
 
         int numberProcessed = 0;
 
@@ -78,14 +85,14 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
             final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null && stableClusteringEngine != null) {  // todo why might this happen
-                if (!cluster.isStable()) {
+                if (!clusterStabilityAssessor.isStable(cluster)) {
                     stableClusteringEngine.addUnstableCluster(cluster);
                 } else {
-                   stableClusteringEngine.processStableCluster(cluster);
+                    stableClusteringEngine.processStableCluster(cluster);
                     List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
                     //
                     for (ISpectrum spc : clusteredSpectra) {
-                        writeCluster(context,ClusterUtilities.asCluster(spc));
+                        writeCluster(context, ClusterUtilities.asCluster(spc));
                     }
                 }
             }
@@ -123,7 +130,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 //            writeOneVettedCluster(context, cluster);     // nothing removed
 //    }
 
-    protected void writeOneVettedCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
@@ -157,12 +164,12 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
      *
      * @param context !null context
      */
-    protected <T> boolean  updateEngine(final Context context,T key ) throws IOException, InterruptedException {
-        final StableChargeBinMZKey pMzKey =  (StableChargeBinMZKey)key;
+    protected <T> boolean updateEngine(final Context context, T key) throws IOException, InterruptedException {
+        final StableChargeBinMZKey pMzKey = (StableChargeBinMZKey) key;
         if (getEngine() != null) {
-            Collection<IPeptideSpectralCluster> clusters = getEngine().getClusters();
+            Collection<ICluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
-           setEngine(null);
+            setEngine(null);
         }
 
         // if not at end make a new engine
@@ -178,9 +185,6 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         }
         return true;
     }
-
-
-
 
 
 }

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
@@ -86,12 +87,12 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
                 if (engine != null) {     // todo why might this happen
                     // look in great detail at a few cases
                     if (isInterestingCluster(cluster)) {
-                        Collection<IPeptideSpectralCluster> clusters = engine.getClusters();
+                        Collection<ICluster> clusters = engine.getClusters();
                         ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
                     }
 
 
-                    final Collection<IPeptideSpectralCluster> removedClusters = engine.addClusterIncremental(cluster);
+                    final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
@@ -174,7 +175,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
     protected <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
         ChargeBinMZKey pMzKey = (ChargeBinMZKey) key;
         if (getEngine() != null) {
-            final Collection<IPeptideSpectralCluster> clusters = getEngine().getClusters();
+            final Collection<ICluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
             setEngine(null);
         }
