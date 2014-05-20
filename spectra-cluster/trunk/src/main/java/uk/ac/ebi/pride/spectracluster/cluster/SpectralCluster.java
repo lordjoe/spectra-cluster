@@ -234,9 +234,9 @@ public class SpectralCluster implements ICluster {
             throw new UnsupportedOperationException("Remove not supported");
 
         if (removed != null && removed.length > 0) {
-            for (ISpectrum spectrumToMerge : removed) {
-                spectraIds.add(spectrumToMerge.getId());
-                clusteredSpectra.remove(spectrumToMerge);
+            for (ISpectrum spectrumToRemove : removed) {
+                spectraIds.remove(spectrumToRemove.getId());
+                clusteredSpectra.remove(spectrumToRemove);
             }
 
             notifySpectrumHolderListeners(false, removed); // tell other interested parties  false says this is a remove
