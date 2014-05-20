@@ -22,6 +22,7 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
 
+    private IClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
 
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
@@ -52,7 +53,7 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
         }
 
         //noinspection ConstantConditions
-        if(!mainCluster.isSemiStable()) {
+        if(!clusterStabilityAssessor.isSemiStable(mainCluster)) {
             throw new IllegalStateException("ClusterIdentity ust operate on stable and semistable clusters");
         }
         StringBuilder sb = new StringBuilder();

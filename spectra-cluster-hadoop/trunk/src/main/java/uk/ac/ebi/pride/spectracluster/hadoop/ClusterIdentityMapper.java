@@ -16,6 +16,7 @@ import java.io.*;
  */
 public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
 
+    private IClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
 
     @Override
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
@@ -47,12 +48,12 @@ public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
      * @param context
      */
     protected void handleCluster(IPeptideSpectralCluster cluster,String text, Context context) {
-        if(cluster.isStable())   {
+        if(clusterStabilityAssessor.isStable(cluster))   {
             String id = ClusterUtilities.getStableClusterId();
             writeKeyValue(id,text,context);
             return;
         }
-        if(cluster.isSemiStable())   {
+        if(clusterStabilityAssessor.isSemiStable(cluster))   {
              String id = ClusterUtilities.getSemiStableClusterId();
              writeKeyValue(id,text,context);
              return;
