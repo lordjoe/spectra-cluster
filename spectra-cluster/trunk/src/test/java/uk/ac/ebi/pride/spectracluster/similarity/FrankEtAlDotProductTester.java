@@ -24,7 +24,7 @@ import java.util.List;
  *         <p/>
  *         todo: this class needs to be reviewed
  */
-public class FrankEtAlDotProductTester implements SimilarityChecker {
+public class FrankEtAlDotProductTester implements ISimilarityChecker {
 
     public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
 

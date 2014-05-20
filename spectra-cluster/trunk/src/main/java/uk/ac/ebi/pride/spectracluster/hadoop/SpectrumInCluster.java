@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -302,7 +302,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     }
 
     protected double computeDistance() {
-        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         IPeptideSpectrumMatch spectrum1 = getSpectrum();
         IPeptideSpectralCluster cluster1 = getCluster();
         ISpectrum spectrum2 = cluster1.getConsensusSpectrum();

@@ -46,8 +46,8 @@ public class MultiSimillarityTest {
                 continue;
 
 
-            SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
-            SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+            ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+            ISimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
 /*            double oldDP;
             oldDP = oldSimilarity.assessSimilarity(spectra.get(2), spectra.get(3));

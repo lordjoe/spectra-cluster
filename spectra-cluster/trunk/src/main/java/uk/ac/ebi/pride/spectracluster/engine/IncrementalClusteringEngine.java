@@ -4,7 +4,7 @@ import com.lordjoe.utilities.Util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -31,16 +31,16 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
     }
 
-    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(SimilarityChecker similarityChecker,
+    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(ISimilarityChecker similarityChecker,
                                                                                  Comparator<ICluster> spectrumComparator) {
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
     }
 
     protected static class ClusteringEngineFactory implements IIncrementalClusteringEngineFactory {
-        private final SimilarityChecker similarityChecker;
+        private final ISimilarityChecker similarityChecker;
         private final Comparator<ICluster> spectrumComparator;
 
-        public ClusteringEngineFactory(final SimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+        public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
             similarityChecker = pSimilarityChecker;
             spectrumComparator = pSpectrumComparator;
         }
@@ -60,12 +60,12 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     private String name;
     private final List<ICluster> clusters = new ArrayList<ICluster>();
-    private final SimilarityChecker similarityChecker;
+    private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
     private final double windowSize;
     private int currentMZAsInt;
 
-    protected IncrementalClusteringEngine(SimilarityChecker sck,
+    protected IncrementalClusteringEngine(ISimilarityChecker sck,
                                           Comparator<ICluster> scm, double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
@@ -124,31 +124,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    @Override
-    public List<ICluster> findNoneFittingSpectra(final ICluster cluster) {
-        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
-        SimilarityChecker sCheck = getSimilarityChecker();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = sCheck.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = sCheck.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
-                }
-            }
-        }
-
-        return noneFittingSpectra;
-    }
-
-    /**
      * add some clusters
      */
     @Override
@@ -158,24 +133,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
     @Override
     public String getName() {
-        return name;
-    }
-
-    /**
-     * nice for debugging to name an engine
-     *
-     * @param pName possibly null name
-     */
-    @Override
-    public void setName(final String pName) {
-        name = pName;
+        return this.getClass().getName();
     }
 
     /**
@@ -238,7 +198,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return; // no need to add we are contained
 
 
-        SimilarityChecker sCheck = getSimilarityChecker();
+        ISimilarityChecker sCheck = getSimilarityChecker();
         List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
 
         ISpectrum qc = clusterToAdd.getHighestQualitySpectrum();
@@ -346,7 +306,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return true;
         }
         // allow a bonus for overlap
-        SimilarityChecker sCheck = getSimilarityChecker();
+        ISimilarityChecker sCheck = getSimilarityChecker();
         if (highestSimilarityScore + BONUS_PER_OVERLAP > sCheck.getDefaultThreshold()) {
             mergeIntoCluster(cluster1, cluster2);
             return true;
@@ -378,7 +338,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     protected boolean assignOverlapsToBestCluster(final ICluster cluster1, final ICluster cluster2, Set<String> spectraOverlap) {
         List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
         // I am not sure here but I think we let duplicates move to the best cluster
-        SimilarityChecker sCheck = getSimilarityChecker();
+        ISimilarityChecker sCheck = getSimilarityChecker();
         ISpectrum cs1 = cluster1.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
         ISpectrum cs2 = cluster2.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
         for (ISpectrum spc : clusteredSpectra1) {
@@ -430,7 +390,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      *
      * @return
      */
-    protected SimilarityChecker getSimilarityChecker() {
+    @Override
+    public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
     }
 

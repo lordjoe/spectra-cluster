@@ -14,24 +14,24 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("UnusedDeclaration")
 public class ClusterSizeFilter implements TypedPredicate<ICluster> {
 
-    private final int m_MinimumSize;
-    private final int m_MaximumSize;
+    private final int minimumSize;
+    private final int maximumSize;
 
     public ClusterSizeFilter(final int pMinimumSize) {
         this(pMinimumSize, Integer.MAX_VALUE); // no upper limit
     }
 
     public ClusterSizeFilter(final int pMinimumSize, final int maxSize) {
-        m_MinimumSize = pMinimumSize;
-        m_MaximumSize = maxSize;
+        minimumSize = pMinimumSize;
+        maximumSize = maxSize;
     }
 
     public int getMinimumSize() {
-        return m_MinimumSize;
+        return minimumSize;
     }
 
     public int getMaximumSize() {
-        return m_MaximumSize;
+        return maximumSize;
     }
 
     /**

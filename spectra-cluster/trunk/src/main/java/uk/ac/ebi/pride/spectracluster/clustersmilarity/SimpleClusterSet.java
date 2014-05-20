@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.TSVClusterAppender;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -34,7 +34,7 @@ public class SimpleClusterSet extends SimpleClusterRetriever implements ICluster
         int mergable = 0;
         int samePeptideNonMergable = 0;
 
-        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         List<IPeptideSpectralCluster> clusters = inp.getClusters();
         // NOTE this is a hack sine the ids are the most common peptide

@@ -20,7 +20,7 @@ import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import javax.annotation.Nonnull;
@@ -157,7 +157,7 @@ public class Defaults {
 
     private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
-    private SimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
+    private ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
 
     private IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
@@ -238,7 +238,7 @@ public class Defaults {
     }
 
     public IClusteringEngine getDefaultClusteringEngine() {
-        SimilarityChecker similarityChecker = getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = getDefaultSimilarityChecker();
         Comparator<ICluster> spectrumComparator = getDefaultSpectrumComparator();
         return new ClusteringEngineFactory(similarityChecker, spectrumComparator).getClusteringEngine();
 
@@ -261,14 +261,14 @@ public class Defaults {
         normalizer = pNormalizer;
     }
 
-    public SimilarityChecker getDefaultSimilarityChecker() {
+    public ISimilarityChecker getDefaultSimilarityChecker() {
         if (defaultSimilarityChecker == null) {
             defaultSimilarityChecker = new FrankEtAlDotProduct();
         }
         return defaultSimilarityChecker;
     }
 
-    public void setDefaultSimilarityChecker(final SimilarityChecker pDefaultSimilarityChecker) {
+    public void setDefaultSimilarityChecker(final ISimilarityChecker pDefaultSimilarityChecker) {
         defaultSimilarityChecker = pDefaultSimilarityChecker;
     }
 

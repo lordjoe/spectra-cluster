@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
@@ -38,7 +38,7 @@ public class ClusteringEngineTests {
             oldClusteringEngine.addClusters(ClusterUtilities.asCluster(originalSpectrum));
         }
         //noinspection UnusedAssignment
-        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
 //        for (int i = 0; i < 2; i++) {

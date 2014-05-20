@@ -1,12 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Steve Lewis
@@ -20,7 +22,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
     private final Set<ICluster> stableClusters = new HashSet<ICluster>();
 
-    private final SimilarityChecker similarityChecker;
+    private final ISimilarityChecker similarityChecker;
 
     private boolean unStableClusterProcessed;
 
@@ -28,7 +30,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker());
     }
 
-    public UnStableClusteringEngine(SimilarityChecker similarityChecker) {
+    public UnStableClusteringEngine(ISimilarityChecker similarityChecker) {
         this.similarityChecker = similarityChecker;
     }
 
@@ -83,32 +85,8 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
         return unstableCluster.getClusteredSpectraCount() == 0;
     }
 
-    @Override
     public Collection<ICluster> getClusters() {
         return new ArrayList<ICluster>(stableClusters);
-    }
-
-    /**
-     * expose critical code for demerge - THIS NEVER CHANGES INTERNAL STATE and
-     * usually is called on removed clusters
-     *
-     * @return !null Cluster
-     */
-    public List<ICluster> findNoneFittingSpectra(ICluster cluster) {
-        List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
-
-        if (cluster.getClusteredSpectra().size() > 1) {
-            for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
-                final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
-                final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = similarityChecker.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
-                    noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
-                }
-            }
-        }
-
-        return noneFittingSpectra;
     }
 
     public int getNumberOfUnstableSpectra() {

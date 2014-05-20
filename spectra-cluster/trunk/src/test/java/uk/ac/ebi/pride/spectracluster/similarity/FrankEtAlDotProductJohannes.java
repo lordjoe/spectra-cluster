@@ -26,7 +26,7 @@ import java.util.List;
  *         <p/>
  */
 @Deprecated
-public class FrankEtAlDotProductJohannes implements SimilarityChecker {
+public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
     /**
      * This is for debugging purposes only! Do not turn this to false in productive mode.
      * If this boolean is set to false, the algorithm does not check whether there is

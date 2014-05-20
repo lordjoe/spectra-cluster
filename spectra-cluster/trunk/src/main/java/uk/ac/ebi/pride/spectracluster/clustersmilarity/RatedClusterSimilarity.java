@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
     private final ClusterSimilarityEnum rating;
     private double similarityDistance;
     private final Set<ClusterSimilarityProblem> problems = new HashSet<ClusterSimilarityProblem>();
-    private final SimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
+    private final ISimilarityChecker similarity = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
     public RatedClusterSimilarity(MostSimilarClusters clusters) {
         this.clusters = clusters;

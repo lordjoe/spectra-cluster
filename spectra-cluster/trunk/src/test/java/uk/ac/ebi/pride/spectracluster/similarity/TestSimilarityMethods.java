@@ -564,8 +564,8 @@ public class TestSimilarityMethods {
      */
     @Test
     public void testSimilarity() throws Exception {
-        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
-        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+        ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        ISimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
         double oldDP = oldSimilarity.assessSimilarity(spectrum1, spectrum2);
         double newDP = newSimilarity.assessSimilarity(spectrum1, spectrum2);
@@ -582,8 +582,8 @@ public class TestSimilarityMethods {
     @Test
     public void testSelfSimilarity() throws Exception {
 
-        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
-        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+        ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        ISimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
         double toSelf = oldSimilarity.assessSimilarity(spectrum1, spectrum1);
         Assert.assertEquals(1, toSelf, 0);
@@ -598,8 +598,8 @@ public class TestSimilarityMethods {
     public void testInterestingSpectra() throws Exception {
         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
-        SimilarityChecker newSimilarity = new FrankEtAlDotProduct();
+        ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        ISimilarityChecker newSimilarity = new FrankEtAlDotProduct();
 
         for (IPeptideSpectrumMatch s1 : spectra) {
             for (IPeptideSpectrumMatch s2 : spectra) {
@@ -625,8 +625,8 @@ public class TestSimilarityMethods {
 
         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        SimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
-        SimilarityChecker newSimilarity = new FrankEtAlDotProductJohannes();
+        ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
+        ISimilarityChecker newSimilarity = new FrankEtAlDotProductJohannes();
 
         for (IPeptideSpectrumMatch s1 : spectra) {
             for (IPeptideSpectrumMatch s2 : spectra) {

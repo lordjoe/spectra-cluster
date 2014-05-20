@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleSpectrumRetriever;
 import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
-import uk.ac.ebi.pride.spectracluster.similarity.SimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -127,7 +127,7 @@ public class IncrementalClusteringEngineTests {
         // remove non-fitting
         final List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ICluster spectralCluster : clustersLeft) {
-            final List<ICluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce);
+            final List<ICluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce.getSimilarityChecker());
             for (ICluster cluster : c) {
                 holder.add((IPeptideSpectralCluster)cluster);
             }
@@ -162,7 +162,7 @@ public class IncrementalClusteringEngineTests {
             oldClusteringEngine.addClusters(spectralCluster);
         }
         //noinspection UnusedDeclaration,UnusedAssignment
-        SimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
         incrementalEngine.processClusters();
