@@ -22,6 +22,19 @@ import java.util.*;
  */
 public class IncrementalClusteringEngine implements IIncrementalClusteringEngine {
 
+
+    public static final double MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP = 0.2;
+    public static final double BONUS_PER_OVERLAP = 0.05;
+    // with 1 we merge all true subclusters but not others
+    public static final double MINIMUM_MERGE_SCORE = 1; // 0.5;
+
+
+    public static int numberOverlap = 0;
+    public static int numberNotMerge = 0;
+    public static int numberGoodMerge = 0;
+    public static int numberLessGoodMerge = 0;
+    public static int numberReAsssigned = 0;
+
     private final List<ICluster> clusters = new ArrayList<ICluster>();
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
@@ -154,8 +167,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         ISimilarityChecker sCheck = getSimilarityChecker();
         List<ISpectrum> clusteredSpectra1 = clusterToAdd.getClusteredSpectra();
 
-        ISpectrum qc = clusterToAdd.getHighestQualitySpectrum();
-
         ICluster bestMatch = null;
         double highestSimilarityScore = 0;
 
@@ -196,9 +207,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         numberNotMerge++;
     }
 
-    // with 1 we merge all true subclusters but not others
-    public static final double MINIMUM_MERGE_SCORE = 1; // 0.5;
-
     /**
      * figure out is
      *
@@ -226,8 +234,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return false;
     }
 
-    public static final double MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP = 0.2;
-    public static final double BONUS_PER_OVERLAP = 0.05;
 
     /**
      * if there are overlapping spectra among the current cluster and the best match
@@ -241,7 +247,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         if (highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
             return false;     // we did nothing
         Set<String> ids = cluster1.getSpectralIds();
-        int numberIds = ids.size();
         Set<String> best = cluster2.getSpectralIds();
         Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, cluster2);
         int numberOverlap = spectraOverlap.size();
@@ -307,11 +312,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
 
-    public static int numberOverlap = 0;
-    public static int numberNotMerge = 0;
-    public static int numberGoodMerge = 0;
-    public static int numberLessGoodMerge = 0;
-    public static int numberReAsssigned = 0;
+
 
 
     /**
