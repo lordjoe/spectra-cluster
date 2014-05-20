@@ -45,7 +45,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
 
 
     /**
-     * should only be called if we remove the highest quality spectrum
+     * should only be called if we insert the highest quality spectrum
      */
     protected void handleQualityInsert(ISpectrum inserted) {
         double quality = inserted.getQualityScore();
