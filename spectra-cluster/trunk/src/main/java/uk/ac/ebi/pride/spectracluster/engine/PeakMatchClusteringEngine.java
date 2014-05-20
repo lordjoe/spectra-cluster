@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import java.util.*;
@@ -28,23 +27,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     private final List<ICluster> currentClusters = new ArrayList<ICluster>();
     private final Set<ISpectrum> alreadyClustered = new HashSet<ISpectrum>();
     private final ClusteringEngineFactory factory;
-
-    public PeakMatchClusteringEngine() {
-        this(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
-
-    @SuppressWarnings("UnusedDeclaration")
-    public PeakMatchClusteringEngine(final Comparator<ICluster> spectrumComparator) {
-        this(Defaults.INSTANCE.getDefaultSimilarityChecker(), spectrumComparator);
-    }
-
-
-    @SuppressWarnings("UnusedDeclaration")
-    public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker) {
-        this(similarityChecker, Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
 
     public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;

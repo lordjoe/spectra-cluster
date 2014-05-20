@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 
 import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
@@ -55,7 +56,7 @@ public class ClusteringEngineMain {
         /**
          * Add your favorite clustering engine here
          */
-        PeakMatchClusteringEngine engine = new PeakMatchClusteringEngine();
+        PeakMatchClusteringEngine engine = new PeakMatchClusteringEngineFactory().getPeakMatchClusteringEngine();
         //     IClusteringEngine engine = new PRideC();
         long end = System.currentTimeMillis();
         final long readTIme = end - start;

@@ -6,7 +6,10 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
+@Deprecated
 public interface IUnStableClusteringEngine {
 
     public void addStableCluster(ICluster unstableCluster);
