@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
 
@@ -283,7 +282,7 @@ public class SpectralCluster implements ICluster {
         int hash1 = hashCode();
         int hash2 = o.hashCode();
         if (hash1 != hash2)
-            return hash1 < hash2 ? -1 : 0;  // TODO JG check if this is intended
+            return hash1 < hash2 ? -1 : 1;
 
         return 0;
     }
@@ -317,18 +316,23 @@ public class SpectralCluster implements ICluster {
         // a high similarity there?
         if (spc1.size() <= 1) {
 
-            List<IPeak> peaks = getConsensusSpectrum().getPeaks();
-            List<IPeak> peaks1 = o.getConsensusSpectrum().getPeaks();
-            if (peaks.size() != peaks1.size()) {
-                return false;
-            }
-            for (int i = 0; i < peaks1.size(); i++) {
-                IPeak pk0 = peaks.get(i);
-                IPeak pk1 = peaks1.get(i);
-                if (!pk0.equivalent(pk1))
-                    return false;
-            }
-            return true; // just one spectrum so check peaks
+            final ISpectrum consensusSpectrum = getConsensusSpectrum();
+            final ISpectrum oConsensusSpectrum = o.getConsensusSpectrum();
+
+            return consensusSpectrum.equivalent(oConsensusSpectrum);
+
+//            List<IPeak> peaks = consensusSpectrum.getPeaks();
+//            List<IPeak> peaks1 = oConsensusSpectrum.getPeaks();
+//            if (peaks.size() != peaks1.size()) {
+//                return false;
+//            }
+//            for (int i = 0; i < peaks1.size(); i++) {
+//                IPeak pk0 = peaks.get(i);
+//                IPeak pk1 = peaks1.get(i);
+//                if (!pk0.equivalent(pk1))
+//                    return false;
+//            }
+//            return true; // just one spectrum so check peaks
         } else {
             if (spc1.size() != spc2.size())
                 return false;
