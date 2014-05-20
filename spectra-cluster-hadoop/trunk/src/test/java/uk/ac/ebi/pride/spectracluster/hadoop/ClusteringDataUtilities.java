@@ -111,7 +111,7 @@ public class ClusteringDataUtilities {
         //noinspection MismatchedQueryAndUpdateOfCollection
         List<IPeak> mismatched = new ArrayList<IPeak>();
         double diff = Math.abs(sp1.getPrecursorMz() - sp2.getPrecursorMz());
-        if (diff > Constants.SMALL_MZ_DIFFERENCE)
+        if (diff > MZIntensityUtilities.SMALL_MZ_DIFFERENCE)
             return false;
 
         if (sp1.getPeaksCount() != sp1.getPeaksCount())

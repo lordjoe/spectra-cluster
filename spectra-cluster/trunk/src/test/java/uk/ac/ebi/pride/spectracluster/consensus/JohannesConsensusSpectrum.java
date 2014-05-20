@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.MZUtilities;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -172,7 +172,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = (float) MZUtilities.round(mzToRemove);
+                mzToRemove = (float) MZIntensityUtilities.round(mzToRemove);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -233,7 +233,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = (float) MZUtilities.round(mzToAdd);
+                mzToAdd = (float) MZIntensityUtilities.round(mzToAdd);
 
             boolean wasAdded = false;
 

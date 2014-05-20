@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
 
 import java.io.*;
 

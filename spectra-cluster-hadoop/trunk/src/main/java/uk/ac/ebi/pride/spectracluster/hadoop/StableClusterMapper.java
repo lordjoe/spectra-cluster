@@ -13,8 +13,8 @@ import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -38,9 +38,9 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
     public static IWideBinner BINNER = new SizedWideBinner(
-            Constants.HIGHEST_USABLE_MZ,
+            MZIntensityUtilities.HIGHEST_USABLE_MZ,
             WIDE_BIN_WIDTH,
-            Constants.LOWEST_USABLE_MZ,
+            MZIntensityUtilities.LOWEST_USABLE_MZ,
             WIDE_BIN_OVERLAP);
 
     private Map<Integer, String[]> binToAllKeys = new HashMap<Integer, String[]>();
@@ -52,7 +52,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
         ISetableParameterHolder application = getApplication();
-        ClusterUtilities.setStableClusterSizeFromProperties(application);
+        StableClusterUtilities.setStableClusterSizeFromProperties(application);
         AbstractBinnedAPrioriPartitioner.setBinner(BINNER);
       }
 
@@ -176,7 +176,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     }
 
     public void incrementDaltonCounters(int precursorMZ, Context context) {
-        Counter counter = context.getCounter("Binning", ClusterUtilities.describeDaltons(precursorMZ));
+        Counter counter = context.getCounter("Binning", MZIntensityUtilities.describeDaltons(precursorMZ));
         counter.increment(1);
     }
 

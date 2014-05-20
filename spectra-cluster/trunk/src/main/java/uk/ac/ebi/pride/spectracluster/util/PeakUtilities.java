@@ -18,6 +18,12 @@ import java.util.PriorityQueue;
  */
 public class PeakUtilities {
     /**
+     * after this many peaks we can drop the rest
+     */
+    public static final int MAX_PEAKS_TO_KEEP = 100;
+
+
+    /**
      * operations that merge peaks in lists had better preserve the total count
      * useful in testing and debuggine
      *

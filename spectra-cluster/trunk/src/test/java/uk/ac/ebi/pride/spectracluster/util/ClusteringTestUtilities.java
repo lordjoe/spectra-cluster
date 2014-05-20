@@ -291,7 +291,7 @@ public class ClusteringTestUtilities {
         //noinspection MismatchedQueryAndUpdateOfCollection
         List<IPeak> mismatched = new ArrayList<IPeak>();
         double diff = Math.abs(sp1.getPrecursorMz() - sp2.getPrecursorMz());
-        if (diff > Constants.SMALL_MZ_DIFFERENCE)
+        if (diff > MZIntensityUtilities.SMALL_MZ_DIFFERENCE)
             return false;
 
         if (sp1.getPeaksCount() != sp1.getPeaksCount())
@@ -375,11 +375,11 @@ public class ClusteringTestUtilities {
 
         List<Float> mzValues1 = new ArrayList<Float>(l1.size());
         for (IPeak p : l1)
-            mzValues1.add((float) MZUtilities.round(p.getMz(), 10)); // don't bother about rounding differences
+            mzValues1.add((float) MZIntensityUtilities.round(p.getMz(), 10)); // don't bother about rounding differences
 
         List<Float> mzValues2 = new ArrayList<Float>(l2.size());
         for (uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak p : l2)
-            mzValues2.add((float) MZUtilities.round(p.getMz(), 10));
+            mzValues2.add((float) MZIntensityUtilities.round(p.getMz(), 10));
 
         Collections.sort(mzValues1);
         Collections.sort(mzValues2);
@@ -428,10 +428,10 @@ public class ClusteringTestUtilities {
             if (count1 != count2) {
                 System.out.println(" <-- count differs!");
                 isEqual = false;
-            } else if (MZUtilities.round(p1.getMz()) != MZUtilities.round(p2.getMz())) {
+            } else if (MZIntensityUtilities.round(p1.getMz()) != MZIntensityUtilities.round(p2.getMz())) {
                 System.out.println(" <-- m/z differ!");
                 isEqual = false;
-            } else if (MZUtilities.round(p1.getIntensity(), 100) != MZUtilities.round(p2.getIntensity(), 100)) {
+            } else if (MZIntensityUtilities.round(p1.getIntensity(), 100) != MZIntensityUtilities.round(p2.getIntensity(), 100)) {
                 if (Math.abs(p1.getIntensity() - p2.getIntensity()) >= 2 || p1.getIntensity() < 100000) {
                     System.out.println(" <-- intensity differ!");
                     isEqual = false;

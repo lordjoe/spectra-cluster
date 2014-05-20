@@ -9,10 +9,18 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class MZUtilities {
+public class MZIntensityUtilities {
 
-    // todo: decide where to store these static variables
+    public static final double SMALL_MZ_DIFFERENCE = 0.002;
+
+    public static final double SMALL_INTENSITY_DIFFERENCE = 0.1;
+
+    public static final int HIGHEST_USABLE_MZ = 5000; // ignore peaks higher than this
+
+    public static final int LOWEST_USABLE_MZ = 50; // ignore peaks lower than this
+
     public static final int MZ_RESOLUTION = 1000; // we care about differences of 0.01 dalton
+
     /**
      * Rounding factor to use. 1000 means 3 positions after the comma.
      */
