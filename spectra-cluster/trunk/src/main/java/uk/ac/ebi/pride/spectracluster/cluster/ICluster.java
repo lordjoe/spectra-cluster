@@ -31,14 +31,16 @@ public interface ICluster extends ISpectrumHolder,
     String getSpectralId();
 
     /**
-     * concensus spectrum MZ
+     * concensus spectrum MZ. If not available (ie. no spectra in cluster)
+     * 0 is returned.
      *
      * @return
      */
     float getPrecursorMz();
 
     /**
-     * concensus spectrum Charge
+     * concensus spectrum Charge. If not available (ie. no spectra in cluster)
+     * 0 is returned.
      *
      * @return
      */

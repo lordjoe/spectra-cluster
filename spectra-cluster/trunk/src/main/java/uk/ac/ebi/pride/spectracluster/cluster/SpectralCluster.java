@@ -158,7 +158,10 @@ public class SpectralCluster implements ICluster {
 
     @Override
     public int getPrecursorCharge() {
-        return getConsensusSpectrum().getPrecursorCharge();
+        ISpectrum consensusSpectrum1 = getConsensusSpectrum();
+        if (consensusSpectrum1 == null)
+            return 0;
+        return consensusSpectrum1.getPrecursorCharge();
     }
 
     /**
