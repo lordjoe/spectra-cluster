@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.SpectrumInClusterUtilities;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
@@ -185,14 +185,14 @@ public class SpectrumInClusterTests {
 //        }
 
         LineNumberReader rdr = new LineNumberReader(new StringReader(TEST_DATA));
-        SpectrumInCluster sci = ClusterUtilities.readSpectrumInCluster(rdr);
+        SpectrumInCluster sci = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
 
         StringBuilder sb = new StringBuilder();
         sci.append(sb);
         System.out.println(sb);
 
         rdr = new LineNumberReader(new StringReader(sb.toString()));
-        SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+        SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
 
         boolean equivalent = sci.equivalent(sci2);
         Assert.assertTrue(equivalent);
@@ -243,7 +243,7 @@ public class SpectrumInClusterTests {
     public static IPeptideSpectralCluster rebuildSerializedCluster(final List<String> ccs, boolean discardNotOnCLuster) {
         PeptideSpectralCluster ret = new PeptideSpectralCluster();
         for (String ccStr : ccs) {
-            SpectrumInCluster cc = ClusterUtilities.readSpectrumInCluster(ccStr);
+            SpectrumInCluster cc = SpectrumInClusterUtilities.readSpectrumInCluster(ccStr);
             if (!discardNotOnCLuster || !cc.isRemoveFromCluster())
                 ret.addSpectra(cc.getSpectrum());
         }

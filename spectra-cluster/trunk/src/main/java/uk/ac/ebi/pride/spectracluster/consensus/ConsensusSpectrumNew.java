@@ -6,8 +6,9 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZUtilities;
+import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -194,7 +195,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = ClusterUtilities.round(mzToRemove);
+                mzToRemove = MZUtilities.round(mzToRemove);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -255,7 +256,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
             double mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = ClusterUtilities.round(mzToAdd);
+                mzToAdd = MZUtilities.round(mzToAdd);
 
             boolean wasAdded = false;
 
@@ -269,7 +270,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
                     break;
                 }
 
-                if (mzToAdd == ClusterUtilities.round(currentExistingPeak.getMz())) {
+                if (mzToAdd == MZUtilities.round(currentExistingPeak.getMz())) {
                     allPeaks.set(j, new Peak(
                                     currentExistingPeak.getMz(),
                                     peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
@@ -417,7 +418,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      */
     protected List<IPeak> adaptPeakIntensities(List<IPeak> inpx) {
 
-        int originalCount = ClusterUtilities.getTotalCount(inpx);   // for debugging
+        int originalCount = PeakUtilities.getTotalCount(inpx);   // for debugging
 
         List<IPeak> ret = new ArrayList<IPeak>(inpx);
         for (int i = 0; i < ret.size(); i++) {
@@ -428,7 +429,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
             ret.set(i, new Peak(peak.getMz(), newIntensity, peak.getCount()));
         }
 
-        int finalCount = ClusterUtilities.getTotalCount(ret);   // for debugging
+        int finalCount = PeakUtilities.getTotalCount(ret);   // for debugging
         if (originalCount != finalCount)
             throw new IllegalStateException("Peak merge changed total count");
 
@@ -440,7 +441,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      * MZ_THRESHOLD_STEP.
      */
     protected List<IPeak> mergeIdenticalPeaksOldCode(List<IPeak> inPeaks) {
-        int originalCount = ClusterUtilities.getTotalCount(inPeaks);   // for debugging
+        int originalCount = PeakUtilities.getTotalCount(inPeaks);   // for debugging
 
         List<IPeak> ret = new ArrayList<IPeak>();
         if (inPeaks.size() == 0)
@@ -490,7 +491,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         }
 
-        int finalCount = ClusterUtilities.getTotalCount(ret);   // for debugging
+        int finalCount = PeakUtilities.getTotalCount(ret);   // for debugging
         if (originalCount != finalCount)
             throw new IllegalStateException("Peak merge changed total count");
 
@@ -503,7 +504,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      * MZ_THRESHOLD_STEP.
      */
     protected List<IPeak> mergeIdenticalPeaks(List<IPeak> inPeaks) {
-        int originalCount = ClusterUtilities.getTotalCount(inPeaks);   // for debugging
+        int originalCount = PeakUtilities.getTotalCount(inPeaks);   // for debugging
 
         List<IPeak> newPeakList = inPeaks;
         if (inPeaks.size() == 0)
@@ -513,7 +514,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         }
 
-        int finalCount = ClusterUtilities.getTotalCount(newPeakList);   // for debugging
+        int finalCount = PeakUtilities.getTotalCount(newPeakList);   // for debugging
         if (originalCount != finalCount)
             throw new IllegalStateException("Peak merge changed total count");
 

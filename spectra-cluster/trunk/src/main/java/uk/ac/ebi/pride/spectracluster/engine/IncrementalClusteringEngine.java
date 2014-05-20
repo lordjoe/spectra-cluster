@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
+import uk.ac.ebi.pride.spectracluster.util.MZUtilities;
 
 import java.util.*;
 
@@ -63,12 +64,12 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
 
     public void setCurrentMZ(final double pCurrentMZ) {
-        int test = ClusterUtilities.mzToInt(pCurrentMZ);
+        int test = MZUtilities.mzToInt(pCurrentMZ);
         final int currentMZ = getCurrentMZ();
         if (currentMZ > test) {  // all ow roundoff error but not much
             double del = currentMZ - test;  // difference
 
-            if (Math.abs(del) > ClusterUtilities.MZ_RESOLUTION * Constants.SMALL_MZ_DIFFERENCE) {
+            if (Math.abs(del) > MZUtilities.MZ_RESOLUTION * Constants.SMALL_MZ_DIFFERENCE) {
                 throw new IllegalStateException("mz values MUST be added in order - was "
                         + Util.formatDouble(currentMZ, 3) + " new " +
                         Util.formatDouble(pCurrentMZ, 3) + " del  " +

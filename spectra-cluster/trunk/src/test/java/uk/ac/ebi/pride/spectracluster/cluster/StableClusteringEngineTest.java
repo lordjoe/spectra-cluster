@@ -6,8 +6,8 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class StableClusteringEngineTest {
 
     @Before
     public void setUp() throws Exception {
-        ClusterUtilities.setStableClusterSize(STABLE_CLUSTER_SIZE);   // drop cluster size foe a small sample
+        StableClusterUtilities.setStableClusterSize(STABLE_CLUSTER_SIZE);   // drop cluster size foe a small sample
         IClusteringEngine ce = new ClusteringEngineFactory().getClusteringEngine();
         List<ICluster> originalSpectralClusters = new ArrayList<ICluster>(ClusteringTestUtilities.readSpectraClustersFromResource());
 

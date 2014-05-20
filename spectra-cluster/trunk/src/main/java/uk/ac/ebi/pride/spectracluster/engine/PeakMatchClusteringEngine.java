@@ -115,10 +115,65 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     protected List<ICluster> mergeClustersWithSingles(List<ICluster> mergedClusters, List<ICluster> singleSpectra) {
         // let a shared function do all the dirty work so other engines can share code
         //noinspection UnnecessaryLocalVariable
-        List<ICluster> retained = ClusterUtilities.mergeClustersWithSingleSpectra(mergedClusters,
+        List<ICluster> retained = mergeClustersWithSingleSpectra(mergedClusters,
                 singleSpectra, internalGetSimilarityChecker(), MAXIMUM_SINGLE_SPECTRUM_MERGE_MZ_DIFFERENCE);
 
         return retained;
+    }
+
+    /**
+     * take a collection of clusters - presumably with clustered and another group - maybe
+     * single spectrun clusters - that fact is not important but the groups sould be distinct
+     * merge where possible and return the list of not merged spectra
+     *
+     * @param mergable          !null list of clusters - the clusters will change but not change in number
+     * @param singles           !null list of single spectra
+     * @param similarityChecker !null similarity
+     * @param maxMZDIfference   ! maxMZ difference to look at for merging
+     * @return !null list of non-merged clusters from singles
+     */
+    public static List<ICluster> mergeClustersWithSingleSpectra(List<ICluster> mergable, List<ICluster> singles, ISimilarityChecker similarityChecker, double maxMZDIfference) {
+        List<ICluster> retainedSingleSpectra = new ArrayList<ICluster>();
+        int startIndex = 0;
+        // clusters need to be compared with all clusters below them
+        for (ICluster cluster : singles) {
+            double currentMZ = cluster.getPrecursorMz();
+            double minimimMergableMZ = currentMZ - maxMZDIfference;
+            ICluster mergeWith = null;
+            // start at the top mz cluster
+            for (int index = startIndex; index > mergable.size(); index++) {
+                ICluster test = mergable.get(index);
+                if (index == startIndex) {
+                    if (test.getPrecursorMz() < minimimMergableMZ) {
+                        startIndex++;
+                        continue; // try again
+                    }
+                }
+                double distance = similarityChecker.assessSimilarity(test.getConsensusSpectrum(), cluster.getConsensusSpectrum());
+                if (distance <= similarityChecker.getDefaultThreshold()) {
+                    mergeWith = test;
+                    break; // found who to merge with
+                }
+
+            }
+            if (mergeWith == null) {
+                retainedSingleSpectra.add(cluster); // nothing to merge with so keep single
+            } else {  // merge with a close enough cluster
+                // note this may disturb the order of the cluster list but should not stop
+                // the algorithm from working
+                final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                mergeWith.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
+            }
+        }
+
+
+        // make sure the mergable are still in mz order
+        Collections.sort(mergable);
+
+
+        // make sure the retainedSingleSpectra are still in mz order
+        Collections.sort(retainedSingleSpectra);
+        return retainedSingleSpectra;
     }
 
 

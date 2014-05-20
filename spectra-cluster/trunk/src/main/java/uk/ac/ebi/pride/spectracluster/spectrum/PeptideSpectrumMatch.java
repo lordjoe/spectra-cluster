@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
 import java.util.List;
 
@@ -129,10 +128,25 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
 
             String peptide1 = getPeptide();
             String peptide2 = realO.getPeptide();
-            if (!ClusterUtilities.equalObject(peptide1, peptide2))
+            if (!equalObject(peptide1, peptide2))
                 return false;
         }
 
         return true;
+    }
+
+    /**
+     * null safe equals function
+     *
+     * @param o1
+     * @param o2
+     * @return
+     */
+    public static boolean equalObject(Object o1, Object o2) {
+        if (o1 == o2)
+            return true;
+        if (o1 == null || o2 == null)
+            return false;
+        return o1.equals(o2);
     }
 }

@@ -2,8 +2,11 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.MZUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -169,7 +172,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = (float) ClusterUtilities.round(mzToRemove);
+                mzToRemove = (float) MZUtilities.round(mzToRemove);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
@@ -230,7 +233,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             float mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
-                mzToAdd = (float) ClusterUtilities.round(mzToAdd);
+                mzToAdd = (float) MZUtilities.round(mzToAdd);
 
             boolean wasAdded = false;
 
