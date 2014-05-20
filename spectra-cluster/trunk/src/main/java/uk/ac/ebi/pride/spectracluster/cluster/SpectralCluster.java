@@ -203,15 +203,17 @@ public class SpectralCluster implements ICluster {
     public void addSpectra(ISpectrum... merged) {
         if (merged != null && merged.length > 0) {
             boolean spectrumAdded = false;
+            final ArrayList<ISpectrum> added = new ArrayList<ISpectrum>();
             for (ISpectrum spectrumToMerge : merged) {
                 spectraIds.add(spectrumToMerge.getId());
                 if (!clusteredSpectra.contains(spectrumToMerge)) {
                     spectrumAdded = true;
                     clusteredSpectra.add(spectrumToMerge);
+                    added.add(spectrumToMerge);
                 }
             }
             if (spectrumAdded)
-                notifySpectrumHolderListeners(true, merged);   // tell other interested parties  true says this is an add
+                notifySpectrumHolderListeners(true, added.toArray(new ISpectrum[added.size()]));   // tell other interested parties  true says this is an add
         }
     }
 
