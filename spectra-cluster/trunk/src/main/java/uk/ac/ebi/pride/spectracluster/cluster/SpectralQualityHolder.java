@@ -27,11 +27,11 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
     }
 
 
-    public boolean isDirty() {
+    protected boolean isDirty() {
         return dirty;
     }
 
-    public void setDirty(final boolean pDirty) {
+    protected void setDirty(final boolean pDirty) {
         dirty = pDirty;
     }
 
