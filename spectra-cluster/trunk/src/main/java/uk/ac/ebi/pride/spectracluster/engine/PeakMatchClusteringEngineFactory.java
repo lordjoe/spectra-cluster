@@ -13,7 +13,10 @@ import java.util.Comparator;
  *
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
+@Deprecated
 public class PeakMatchClusteringEngineFactory {
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
