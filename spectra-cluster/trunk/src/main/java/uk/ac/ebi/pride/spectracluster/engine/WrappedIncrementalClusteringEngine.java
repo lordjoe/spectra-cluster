@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -13,38 +12,6 @@ import java.util.*;
  * Date: 8/13/13
  */
 public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
-
-    @SuppressWarnings("UnusedDeclaration")
-    public static IClusteringEngineFactory getClusteringEngineFactory() {
-        return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
-    public static IClusteringEngineFactory getClusteringEngineFactory(ISimilarityChecker similarityChecker,
-                                                                      Comparator<ICluster> spectrumComparator) {
-        return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
-    }
-
-    protected static class ClusteringEngineFactory implements IClusteringEngineFactory {
-        private final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory incrementalFactory;
-
-        public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
-            incrementalFactory = IncrementalClusteringEngine.getClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
-        }
-
-        /**
-         * make a copy of the clustering engine
-         *
-         * @return
-         */
-        @Override
-        public IClusteringEngine getClusteringEngine(Object... otherdata) {
-            if (otherdata.length < 1)
-                throw new IllegalArgumentException("WrappedClusteringEngine needs a Double as WindowSize"); //
-            double windowSize = (Double) otherdata[0];
-            return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine(windowSize));
-        }
-    }
-
 
     private boolean dirty;
     private final IIncrementalClusteringEngine realEngine;

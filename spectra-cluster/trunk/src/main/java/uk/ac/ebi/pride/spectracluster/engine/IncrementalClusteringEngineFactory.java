@@ -7,31 +7,31 @@ import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import java.util.Comparator;
 
 /**
- * Factory for making ClusteringEngine
- *
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusteringEngineFactory {
+public class IncrementalClusteringEngineFactory {
+
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
 
-    public ClusteringEngineFactory() {
+    public IncrementalClusteringEngineFactory() {
         this.similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         this.spectrumComparator = Defaults.INSTANCE.getDefaultSpectrumComparator();
     }
 
-    public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+    public IncrementalClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
         similarityChecker = pSimilarityChecker;
         spectrumComparator = pSpectrumComparator;
     }
 
+
     /**
-     * make a copy of the clustering engine
+     * build a new version
      *
      * @return
      */
-    public IClusteringEngine getClusteringEngine(Object... other) {
-        return new ClusteringEngine(similarityChecker, spectrumComparator);
+    public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize) {
+        return new IncrementalClusteringEngine(similarityChecker, spectrumComparator, windowSize);
     }
 }

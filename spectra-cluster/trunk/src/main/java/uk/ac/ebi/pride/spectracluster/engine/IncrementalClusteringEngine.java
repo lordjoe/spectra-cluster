@@ -9,7 +9,6 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Constants;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -25,39 +24,6 @@ import java.util.*;
 @SuppressWarnings("UnusedDeclaration")
 public class IncrementalClusteringEngine implements IIncrementalClusteringEngine {
 
-
-    @SuppressWarnings("UnusedDeclaration")
-    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory() {
-        return getClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
-    public static IIncrementalClusteringEngineFactory getClusteringEngineFactory(ISimilarityChecker similarityChecker,
-                                                                                 Comparator<ICluster> spectrumComparator) {
-        return new ClusteringEngineFactory(similarityChecker, spectrumComparator);
-    }
-
-    protected static class ClusteringEngineFactory implements IIncrementalClusteringEngineFactory {
-        private final ISimilarityChecker similarityChecker;
-        private final Comparator<ICluster> spectrumComparator;
-
-        public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
-            similarityChecker = pSimilarityChecker;
-            spectrumComparator = pSpectrumComparator;
-        }
-
-
-        /**
-         * build a new version
-         *
-         * @return
-         */
-        @Override
-        public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize) {
-            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator, windowSize);
-        }
-    }
-
-
     private String name;
     private final List<ICluster> clusters = new ArrayList<ICluster>();
     private final ISimilarityChecker similarityChecker;
@@ -66,7 +32,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private int currentMZAsInt;
 
     protected IncrementalClusteringEngine(ISimilarityChecker sck,
-                                          Comparator<ICluster> scm, double windowSize) {
+                                          Comparator<ICluster> scm,
+                                          double windowSize) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;

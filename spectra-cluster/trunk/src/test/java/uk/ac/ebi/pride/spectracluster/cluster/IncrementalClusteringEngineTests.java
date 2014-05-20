@@ -40,7 +40,7 @@ public class IncrementalClusteringEngineTests {
 
     @Test
     public void testIncrementalClusteringEngine() throws Exception {
-        final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory cf = IncrementalClusteringEngine.getClusteringEngineFactory();
+        final IncrementalClusteringEngineFactory cf = new IncrementalClusteringEngineFactory();
         final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
         List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
@@ -90,7 +90,7 @@ public class IncrementalClusteringEngineTests {
 
     @Test
     public void testCompareIncrementalClusteringEngine() throws Exception {
-        final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory cf = IncrementalClusteringEngine.getClusteringEngineFactory();
+        final IncrementalClusteringEngineFactory cf = new IncrementalClusteringEngineFactory();
         final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
         List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
@@ -148,9 +148,9 @@ public class IncrementalClusteringEngineTests {
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
 
-        IClusteringEngineFactory incrementalFactory = WrappedIncrementalClusteringEngine.getClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        WrappedIncrementalClusteringEngineFactory incrementalFactory = new WrappedIncrementalClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine incrementalEngine = incrementalFactory.getClusteringEngine(new Double(1000));
-        IClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        ClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         ClusteringEngine oldClusteringEngine = (ClusteringEngine) factory.getClusteringEngine();
 
         for (ISpectrum originalSpectrum : originalSpectra) {

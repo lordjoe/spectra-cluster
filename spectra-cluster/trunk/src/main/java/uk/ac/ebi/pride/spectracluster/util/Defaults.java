@@ -14,7 +14,6 @@ import uk.ac.ebi.pride.spectracluster.datastore.WorkingClusterDatabase;
 import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
@@ -165,7 +164,7 @@ public class Defaults {
 
     private IIntensityNormalizer normalizer = new TotalIntensityNormalizer();
 
-    private IClusteringEngineFactory defaultClusteringEngineFactory;
+    private ClusteringEngineFactory defaultClusteringEngineFactory;
 
     private Appendable debugOutput;
 
@@ -280,7 +279,7 @@ public class Defaults {
         defaultSpectrumComparator = pDefaultSpectrumComparator;
     }
 
-    public void setDefaultClusteringEngineFactory(final IClusteringEngineFactory pDefaultClusteringEngineFactory) {
+    public void setDefaultClusteringEngineFactory(final ClusteringEngineFactory pDefaultClusteringEngineFactory) {
         defaultClusteringEngineFactory = pDefaultClusteringEngineFactory;
     }
 
