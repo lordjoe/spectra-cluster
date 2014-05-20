@@ -9,6 +9,8 @@ import java.util.Comparator;
 /**
  * Factory for making ClusteringEngine
  *
+ * The only reason to keep this factory class is for the default configuration
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -21,7 +23,8 @@ public class ClusteringEngineFactory {
         this.spectrumComparator = Defaults.INSTANCE.getDefaultSpectrumComparator();
     }
 
-    public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
+    public ClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker,
+                                   final Comparator<ICluster> pSpectrumComparator) {
         similarityChecker = pSimilarityChecker;
         spectrumComparator = pSpectrumComparator;
     }
