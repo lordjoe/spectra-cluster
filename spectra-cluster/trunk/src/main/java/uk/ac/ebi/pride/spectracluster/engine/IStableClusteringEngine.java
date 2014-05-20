@@ -8,7 +8,10 @@ import java.util.Collection;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
+@Deprecated
 public interface IStableClusteringEngine extends IIncrementalClusteringEngine {
 
     public void addUnstableCluster(ICluster unstableCluster);

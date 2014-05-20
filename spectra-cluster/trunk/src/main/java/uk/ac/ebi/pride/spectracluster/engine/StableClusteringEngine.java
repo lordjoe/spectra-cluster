@@ -11,7 +11,10 @@ import java.util.*;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
+@Deprecated
 public class StableClusteringEngine implements IStableClusteringEngine {
 
     private final SortedSet<ICluster> unstableClusters = new TreeSet<ICluster>();
