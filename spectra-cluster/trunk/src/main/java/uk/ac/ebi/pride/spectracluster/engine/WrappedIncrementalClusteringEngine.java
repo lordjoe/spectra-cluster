@@ -93,11 +93,6 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     }
 
     @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
-    @Override
     public ISimilarityChecker getSimilarityChecker() {
         return realEngine.getSimilarityChecker();
     }

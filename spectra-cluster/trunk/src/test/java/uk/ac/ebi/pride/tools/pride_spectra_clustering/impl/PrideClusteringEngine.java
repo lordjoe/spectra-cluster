@@ -80,16 +80,6 @@ public class PrideClusteringEngine implements IClusteringEngine {
         return false; // we are done after one pass
     }
 
-    /**
-     * nice for debugging to name an engine
-     *
-     * @return possibly null name
-     */
-    @Override
-    public String getName() {
-        return "PrideClusteringEngine";
-    }
-
     @Override
     public ISimilarityChecker getSimilarityChecker() {
         throw new UnsupportedOperationException("Method call not supported in this class");

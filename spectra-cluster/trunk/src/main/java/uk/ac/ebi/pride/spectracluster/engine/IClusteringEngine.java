@@ -17,13 +17,6 @@ import java.util.Collection;
 public interface IClusteringEngine {
 
     /**
-     * Get the name of the clustering engine
-     *
-     * @return  name of the clustering engine
-     */
-    public String getName();
-
-    /**
      * Get the similarity check used
      *
      * @return  an instance of similarity checker

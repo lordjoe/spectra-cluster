@@ -100,11 +100,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     }
 
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
     /**
      * add one cluster and return any clusters which are too far in mz from further consideration
      *
@@ -363,7 +358,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Override
     public String toString() {
         int nClusters = size();
-        final String name = getName();
+        final String name = this.getClass().getName();
         if (name != null)
             return name + " with " + nClusters;
         return super.toString();
