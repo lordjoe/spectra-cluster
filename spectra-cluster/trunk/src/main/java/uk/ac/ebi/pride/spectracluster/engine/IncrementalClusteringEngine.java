@@ -29,6 +29,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     public static final double MINIMUM_MERGE_SCORE = 1; // 0.5;
 
 
+    /**
+     * These are mainly for debugging
+     */
     public static int numberOverlap = 0;
     public static int numberNotMerge = 0;
     public static int numberGoodMerge = 0;
@@ -213,7 +216,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         ICluster toReplace = null;
         double bestSimilarity = Double.MIN_VALUE;
         for (ICluster myCluster : myclusters) {
-            double score = ClusterSimilarityUtilities.clusterFullyContainsScore(myCluster, clusterToAdd);
+            double score = ClusterUtilities.clusterFullyContainsScore(myCluster, clusterToAdd);
             if (score > bestSimilarity) {
                 bestSimilarity = score;
                 toReplace = myCluster;

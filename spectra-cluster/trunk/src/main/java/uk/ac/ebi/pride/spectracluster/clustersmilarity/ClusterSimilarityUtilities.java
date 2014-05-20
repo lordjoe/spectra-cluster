@@ -5,19 +5,18 @@ import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
@@ -27,57 +26,6 @@ import java.util.*;
  * Date: 6/27/13
  */
 public class ClusterSimilarityUtilities {
-
-    public static final Random RND = new Random();
-
-    /**
-     * return non-null if c1 contains all spactra in c2 or vice
-     * versa
-     *
-     * @param c1 cluster
-     * @param c2 cluster
-     * @return non-null if we can use the return as an enclosing cluster
-     */
-    public static
-    @Nullable
-    IPeptideSpectralCluster clusterFullyContains(@Nonnull IPeptideSpectralCluster c1, @Nonnull IPeptideSpectralCluster c2) {
-        int size1 = c1.getClusteredSpectraCount();
-        int size2 = c1.getClusteredSpectraCount();
-        if (size1 == size2) {
-            if (c1.getSpectralId().equals(c2.getSpectralId()))
-                return c1; // same size same spectra;
-        }
-        IPeptideSpectralCluster containing = c1;
-        IPeptideSpectralCluster smaller = c2;
-        if (size1 < size2) {
-            containing = c2;
-            smaller = c1;
-        }
-        Set<String> spectralIds = containing.getSpectralIds();
-        if (spectralIds.containsAll(smaller.getSpectralIds()))
-            return containing;   // contains all spectra in c1
-        return null; // clusters are distinct
-    }
-
-
-    /**
-     * score commonality
-     *
-     * @param existing cluster
-     * @param added    cluster
-     * @return non-null if we can use the return as an enclosing cluster
-     */
-    public static double clusterFullyContainsScore(@Nonnull ICluster existing, @Nonnull ICluster added) {
-        Set<String> spectralIds1 = existing.getSpectralIds();
-        Set<String> spectralIds2 = added.getSpectralIds();
-        double maxSize = Math.max(spectralIds1.size(), spectralIds2.size());
-        double minSize = Math.min(spectralIds1.size(), spectralIds2.size());
-
-        Set<String> common = new HashSet<String>(spectralIds1);
-        boolean changed = common.retainAll(spectralIds2);
-
-        return (double) common.size() / minSize;
-    }
 
     public static CountedMap<String> getCountedMap(IClusterSet cl) {
         CountedMap<String> ret = new CountedMap<String>();
