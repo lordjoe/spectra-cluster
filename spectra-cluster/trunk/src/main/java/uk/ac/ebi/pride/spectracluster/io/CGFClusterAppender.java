@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class CGFClusterAppender implements IClusterAppender {
 
+    public static final String CGF_EXTENSION = ".cgf";
 
     private MGFSpectrumAppender spectrumAppender;
 

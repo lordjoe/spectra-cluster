@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Constants;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.SpectrumUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
@@ -21,6 +20,7 @@ import java.util.List;
  */
 public class DotClusterClusterAppender implements IClusterAppender {
 
+    public static final String CLUSTERING_EXTENSION = ".clustering";
 
     /**
      * @param out       !null open appendale
@@ -90,8 +90,8 @@ public class DotClusterClusterAppender implements IClusterAppender {
      */
     public void appendDotClusterHeader(Appendable out, String name) {
 
-        if (name.endsWith(Constants.CLUSTERING_EXTENSION))
-            name = name.substring(0, name.length() - Constants.CLUSTERING_EXTENSION.length());
+        if (name.endsWith(CLUSTERING_EXTENSION))
+            name = name.substring(0, name.length() - CLUSTERING_EXTENSION.length());
         try {
             out.append("name=").append(name);
             out.append("\n");
