@@ -84,11 +84,11 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * Defines whether m/z values should be rounded. Thereby, more peaks are considered identical
      * without reducing accuracy.
      */
-    protected final static boolean USE_ROUNDING = false;
+    public final static boolean USE_ROUNDING = false;
     /**
      * Defines the precision used if rounding is enabled.
      */
-    protected final static int MZ_PRECISION = 1000;
+    public final static int MZ_PRECISION = 1000;
 
     /**
      * Holds all peaks from all added spectra. In case an exact m/z is found twice, the intensities are added.
@@ -201,7 +201,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
-                mzToRemove = ClusterUtilities.round(mzToRemove);
+                mzToRemove = ClusterUtilities.round(mzToRemove, MZ_PRECISION);
 
             for (int j = posAllPeaks; j < allPeaks.size(); j++) {
                 IPeak currentExistingPeak = allPeaks.get(j);
