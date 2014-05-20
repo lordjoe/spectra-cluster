@@ -65,11 +65,11 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
     /**
      * should only be called if we remove the highest quality spectrum
      */
-    protected void handleQualityRemove(ISpectrum inserted) {
-        double quality = inserted.getQualityScore();
+    protected void handleQualityRemove(ISpectrum removed) {
+        double quality = removed.getQualityScore();
         if (quality < getLowestClusteredQuality())
             return; // worse than  the lowest
-        if (highestQualitySpectra.remove(inserted)) {
+        if (highestQualitySpectra.remove(removed)) {
             setDirty(true);
         }
     }
