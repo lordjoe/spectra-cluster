@@ -15,14 +15,7 @@ import java.util.Collection;
  */
 public interface IIncrementalClusteringEngine extends IClusteringEngine {
 
-    public static interface IIncrementalClusteringEngineFactory {
-        /**
-         * build a new version
-         *
-         * @return
-         */
-        public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize);
-    }
+
 
     /**
      * add one cluster and return any clusters which are too far in mz from further consideration

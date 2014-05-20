@@ -27,7 +27,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     private final List<ICluster> singleSpectrumClusters = new ArrayList<ICluster>();
     private final List<ICluster> currentClusters = new ArrayList<ICluster>();
     private final Set<ISpectrum> alreadyClustered = new HashSet<ISpectrum>();
-    private final IClusteringEngineFactory factory;
+    private final ClusteringEngineFactory factory;
 
     public PeakMatchClusteringEngine() {
         this(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
