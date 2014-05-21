@@ -24,7 +24,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
-        setMapBinner(Defaults.DEFAULT_WIDE_MZ_BINNER);
+        setMapBinner(HadoopDefaults.DEFAULT_WIDE_MZ_BINNER);
     }
 
     public IWideBinner getMapBinner() {
@@ -89,7 +89,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
     @SuppressWarnings("UnusedDeclaration")
     public void incrementDaltonCounters(int precursorMZ, Context context) {
-        Counter counter = context.getCounter("Binning", ClusterUtilities.describeDaltons(precursorMZ));
+        Counter counter = context.getCounter("Binning", MZIntensityUtilities.describeDaltons(precursorMZ));
         counter.increment(1);
     }
 

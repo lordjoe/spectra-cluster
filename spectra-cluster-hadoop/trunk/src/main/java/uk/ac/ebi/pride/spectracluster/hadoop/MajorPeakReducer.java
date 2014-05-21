@@ -28,7 +28,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
 
 
 
-    private double majorPeakWindowSize = Defaults.getMajorPeakMZWindowSize();
+    private double majorPeakWindowSize = HadoopDefaults.getMajorPeakMZWindowSize();
 
 
     public double getMajorPeakWindowSize() {
@@ -95,7 +95,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
     }
 
     protected void incrementBinCounters(ChargeMZKey mzKey, Context context) {
-         IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
+         IWideBinner binner = HadoopDefaults.DEFAULT_WIDE_MZ_BINNER;
          int[] bins = binner.asBins(mzKey.getPrecursorMZ());
          //noinspection ForLoopReplaceableByForEach
          for (int i = 0; i < bins.length; i++) {

@@ -2,8 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.MarkedNumber;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class APrioriBinningTests {
 
     @Test
     public void testDefaultBinning() {
-        APrioriBinning<String> binning = new APrioriBinning(NUMBER_BINS, Defaults.DEFAULT_WIDE_MZ_BINNER);
+        APrioriBinning<String> binning = new APrioriBinning(NUMBER_BINS, HadoopDefaults.DEFAULT_WIDE_MZ_BINNER);
         List<MarkedNumber<String>> markedNumbers = APrioriBinning.readFromResource();
         markedNumbers = MarkedNumber.normalize(markedNumbers);
         double[] values = new double[NUMBER_BINS];
@@ -27,7 +26,7 @@ public class APrioriBinningTests {
         for (MarkedNumber<String> markedNumber : markedNumbers) {
             String current = markedNumber.getMark();
             current = current.substring(2); // drop MZ
-            double daltons = ClusterUtilities.asDaltons(current);
+            double daltons = MZIntensityUtilities.asDaltons(current);
             int bin = binning.getBin(daltons);
             bins[index++] = bin;
             double value = markedNumber.getValue();

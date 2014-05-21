@@ -33,7 +33,7 @@ public class SpectraHadoopUtilities {
      * @return MZ_RESOLUTION * mz as int
      */
     public static String mzToKey(double mz) {
-        int peak = ClusterUtilities.mzToInt(mz);
+        int peak = MZIntensityUtilities.mzToInt(mz);
         //noinspection UnnecessaryLocalVariable
         String str = String.format("%010d", peak);
         return str;
@@ -48,7 +48,7 @@ public class SpectraHadoopUtilities {
     public static double keyToMZ(String key) {
         //noinspection UnnecessaryLocalVariable
         double ret = Integer.parseInt(key); // (double)MZ_RESOLUTION;
-        return ret / ClusterUtilities.MZ_RESOLUTION;
+        return ret / MZIntensityUtilities.MZ_RESOLUTION;
     }
 
     public static Properties readParams(Path params, Configuration conf) {

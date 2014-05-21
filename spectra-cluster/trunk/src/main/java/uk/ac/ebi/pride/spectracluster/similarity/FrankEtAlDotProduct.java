@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
@@ -29,10 +27,6 @@ import java.util.List;
  *         <p/>
  */
 public class FrankEtAlDotProduct implements ISimilarityChecker {
-    /**
-     * The logger to use.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(FrankEtAlDotProduct.class);
 
     // add a nonsense park
     public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE, 0);
@@ -179,8 +173,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 double match2 = convertIntensity(peak2);
 
                 // print the peaks if a debugOutput is supplied
-                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
-                logger.debug(fmt);
+//                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
 
                 dotProduct += match1 * match2;
 

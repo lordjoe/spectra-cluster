@@ -24,7 +24,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
      @Override
      protected void setup(final Context context) throws IOException, InterruptedException {
          super.setup(context);
-         setMapBinner(Defaults.DEFAULT_WIDE_MZ_BINNER);
+         setMapBinner(HadoopDefaults.DEFAULT_WIDE_MZ_BINNER);
      }
 
      public IWideBinner getMapBinner() {

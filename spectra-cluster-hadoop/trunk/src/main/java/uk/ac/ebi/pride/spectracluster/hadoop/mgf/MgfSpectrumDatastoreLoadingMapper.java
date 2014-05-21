@@ -5,12 +5,12 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.systemsbiology.hadoop.AbstractParameterizedMapper;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
+import uk.ac.ebi.pride.spectracluster.datastore.DataSourceDefaults;
 import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -36,8 +36,8 @@ public class MgfSpectrumDatastoreLoadingMapper extends AbstractParameterizedMapp
         String tableName = application.getParameter("table_name");
 
         DataSource source = HBaseUtilities.getHBaseDataSource();
-        Defaults.INSTANCE.setDefaultDataSource(source);
-        Defaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
+        DataSourceDefaults.INSTANCE.setDefaultDataSource(source);
+        DataSourceDefaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
 
         this.spectrumDataStore = new SpectrumDataStore(tableName, source);
     }

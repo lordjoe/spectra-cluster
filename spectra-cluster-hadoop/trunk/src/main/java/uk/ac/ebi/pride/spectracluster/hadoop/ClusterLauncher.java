@@ -1,16 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.utilities.*;
-import org.apache.hadoop.conf.*;
-import org.systemsbiology.common.*;
+import org.apache.hadoop.conf.Configuration;
+import org.systemsbiology.common.IFileSystem;
 import org.systemsbiology.hadoop.*;
 import org.systemsbiology.remotecontrol.*;
-import org.systemsbiology.xml.*;
- import uk.ac.ebi.pride.spectracluster.util.*;
+import org.systemsbiology.xml.XMLUtilities;
 
 import java.io.*;
 import java.util.*;
-import java.util.prefs.*;
+import java.util.prefs.Preferences;
 
 import static org.systemsbiology.hadoop.HadoopUtilities.*;
 
@@ -1316,7 +1315,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
      */
     @SuppressWarnings("ConstantConditions")
     public static void workingMain(String[] args) {
-        workingMain(args, Defaults.INSTANCE.getDefaultJobBuilderFactory());
+        workingMain(args, HadoopDefaults.INSTANCE.getDefaultJobBuilderFactory());
     }
 
     /**

@@ -73,7 +73,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
         }
 
         public void incrementDaltonCounters(int precursorMZ, Context context) {
-            Counter counter = context.getCounter("Binning", ClusterUtilities.describeDaltons(precursorMZ));
+            Counter counter = context.getCounter("Binning", MZIntensityUtilities.describeDaltons(precursorMZ));
             counter.increment(1);
         }
 

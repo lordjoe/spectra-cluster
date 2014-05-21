@@ -4,7 +4,6 @@ import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -12,14 +11,12 @@ import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.*;
+import java.util.Collection;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumMergeReducer.
@@ -86,10 +83,10 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             if (cluster != null) {  // todo why might this happen
                 if (engine != null) {     // todo why might this happen
                     // look in great detail at a few cases
-                    if (isInterestingCluster(cluster)) {
-                        Collection<ICluster> clusters = engine.getClusters();
-                        ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
-                    }
+//                    if (isInterestingCluster(cluster)) {
+//                        Collection<ICluster> clusters = engine.getClusters();
+//                        ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
+//                    }
 
 
                     final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
@@ -108,28 +105,28 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         }
     }
 
-    private static String[] DUPLICATE_IDS = {
-            "VYYFQGGNNELGTAVGK", //   606.51,606.54
-            "YEEQTTNHPVAIVGAR",   //    595.7100228.2
-            "WAGNANELNAAYAADGYAR",  // 666.67797
-            "AKQPVKDGPLSTNVEAK"
+//    private static String[] DUPLICATE_IDS = {
+//            "VYYFQGGNNELGTAVGK", //   606.51,606.54
+//            "YEEQTTNHPVAIVGAR",   //    595.7100228.2
+//            "WAGNANELNAAYAADGYAR",  // 666.67797
+//            "AKQPVKDGPLSTNVEAK"
+//
+//    };
 
-    };
-
-    private static Set<String> INTERESTING_IDS = new HashSet<String>(Arrays.asList(DUPLICATE_IDS));
+//    private static Set<String> INTERESTING_IDS = new HashSet<String>(Arrays.asList(DUPLICATE_IDS));
 
 
-    protected static boolean isInterestingCluster(ICluster test) {
-        List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
-        for (ISpectrum spc : clusteredSpectra) {
-            if (spc instanceof IPeptideSpectrumMatch) {
-                String peptide = ((IPeptideSpectrumMatch) spc).getPeptide();
-                if (peptide != null && INTERESTING_IDS.contains(peptide))
-                    return true;
-            }
-        }
-        return false;
-    }
+//    protected static boolean isInterestingCluster(ICluster test) {
+//        List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
+//        for (ISpectrum spc : clusteredSpectra) {
+//            if (spc instanceof IPeptideSpectrumMatch) {
+//                String peptide = ((IPeptideSpectrumMatch) spc).getPeptide();
+//                if (peptide != null && INTERESTING_IDS.contains(peptide))
+//                    return true;
+//            }
+//        }
+//        return false;
+//    }
 
 
     /**
@@ -144,8 +141,8 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
-        if (isInterestingCluster(cluster))
-            System.out.println(cluster.toString());
+//        if (isInterestingCluster(cluster))
+//            System.out.println(cluster.toString());
 
         IWideBinner binner1 = getBinner();
         float precursorMz = cluster.getPrecursorMz();
