@@ -93,10 +93,10 @@ public class DotClusterFileListener implements ClusterCreateListener {
             }
         } else {
             String name = pF.getName();
-            if (name.toLowerCase().endsWith(CGFClusterAppender.CGF_EXTENSION)) {
+            if (name.toLowerCase().endsWith(ParserUtilities.CGF_EXTENSION)) {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(pF));
-                    String clusteringName = name.substring(0, name.length() - CGFClusterAppender.CGF_EXTENSION.length()) + DotClusterClusterAppender.CLUSTERING_EXTENSION;
+                    String clusteringName = name.substring(0, name.length() - ParserUtilities.CGF_EXTENSION.length()) + ParserUtilities.CLUSTERING_EXTENSION;
                     File outFile = new File(pF.getParent(), clusteringName);
                     DotClusterFileListener lstnr = new DotClusterFileListener(outFile);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstnr);

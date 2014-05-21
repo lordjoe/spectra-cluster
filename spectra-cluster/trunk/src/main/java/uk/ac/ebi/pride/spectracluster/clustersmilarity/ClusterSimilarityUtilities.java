@@ -5,8 +5,6 @@ import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
@@ -122,7 +120,7 @@ public class ClusterSimilarityUtilities {
                     throw new RuntimeException(e);
                 }
             }
-            if (file.getName().endsWith(CGFClusterAppender.CGF_EXTENSION)) {
+            if (file.getName().endsWith(ParserUtilities.CGF_EXTENSION)) {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(file));
 
@@ -185,10 +183,10 @@ public class ClusterSimilarityUtilities {
             }
         } else {
             String name = pF.getName();
-            if (name.toLowerCase().endsWith(CGFClusterAppender.CGF_EXTENSION)) {
+            if (name.toLowerCase().endsWith(ParserUtilities.CGF_EXTENSION)) {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(pF));
-                    String clusteringName = name.substring(0, name.length() - CGFClusterAppender.CGF_EXTENSION.length()) + DotClusterClusterAppender.CLUSTERING_EXTENSION;
+                    String clusteringName = name.substring(0, name.length() - ParserUtilities.CGF_EXTENSION.length()) + ParserUtilities.CLUSTERING_EXTENSION;
                     File outFile = new File(pF.getParent(), clusteringName);
                     ParserUtilities.readAndProcessSpectralClusters(rdr, lstn);
                 } catch (FileNotFoundException e) {

@@ -37,6 +37,9 @@ public class ParserUtilities {
     public static final String CONSENSUS_INTENSITY = "consensus_intens=";
     public static final String SPECTRUM_ID = "SPEC";
 
+    public static final String CLUSTERING_EXTENSION = ".clustering";
+    public static final String CGF_EXTENSION = ".cgf";
+
     /**
      * See ParserTests for an example
      *
