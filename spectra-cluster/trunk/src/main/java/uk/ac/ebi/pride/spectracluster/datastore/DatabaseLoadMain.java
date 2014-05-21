@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumIterable;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -26,7 +25,7 @@ public class DatabaseLoadMain {
 
 
     public DatabaseLoadMain(String dbName) {
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         database = new SpectrumDataStore(dbName, ds);
     }
 

@@ -40,7 +40,7 @@ public class StableClusteringEngineTest {
         unstableClusters = new ArrayList<ICluster>();
         stableClusters = new ArrayList<ICluster>();
 
-        final CountBasedClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor();
+        final CountBasedClusterStabilityAssessor clusterStabilityAssessor = new CountBasedClusterStabilityAssessor(StableClusterUtilities.getStableClusterSize(), StableClusterUtilities.getSemiStableClusterSize());
         for (ICluster originalSpectralCluster : originalSpectralClusters) {
             if (clusterStabilityAssessor.isStable(originalSpectralCluster)) {
                 stableClusters.add(originalSpectralCluster);

@@ -168,7 +168,7 @@ public class ClusteringEngineMain {
         pOut.append("threshold=" + defaultSimilarityChecker.getDefaultThreshold() + "\n");
         pOut.append("fdr=" + "-1" + "\n"); // todo what is this?
         pOut.append("description=" + description + "\n");
-        Defaults.appendAnalysisParameters(pOut);
+        Defaults.INSTANCE.appendAnalysisParameters(pOut);
         pOut.append("\n");
     }
 
