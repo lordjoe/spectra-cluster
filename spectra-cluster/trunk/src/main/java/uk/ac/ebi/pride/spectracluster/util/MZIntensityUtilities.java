@@ -26,7 +26,7 @@ public class MZIntensityUtilities {
     /**
      * Rounding factor to use. 1000 means 3 positions after the comma.
      */
-    public final static int MZ_PRECISSION = 1000; // using a precision of 1000 reduces memory usages but leads to different results.
+    public final static int MZ_PRECISION = 1000; // using a precision of 1000 reduces memory usages but leads to different results.
 
     /**
      * convert am int into an mz for east comparison
@@ -111,7 +111,7 @@ public class MZIntensityUtilities {
      */
     @Deprecated
     public static double round(double f) {
-        return round(f, MZ_PRECISSION);
+        return round(f, MZ_PRECISION);
     }
 
     /**
