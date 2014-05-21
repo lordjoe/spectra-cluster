@@ -20,8 +20,6 @@ import java.util.List;
  */
 public class DotClusterClusterAppender implements IClusterAppender {
 
-    public static final String CLUSTERING_EXTENSION = ".clustering";
-
     /**
      * @param out       !null open appendale
      * @param cluster      !null cluster
@@ -90,8 +88,8 @@ public class DotClusterClusterAppender implements IClusterAppender {
      */
     public void appendDotClusterHeader(Appendable out, String name) {
 
-        if (name.endsWith(CLUSTERING_EXTENSION))
-            name = name.substring(0, name.length() - CLUSTERING_EXTENSION.length());
+        if (name.endsWith(ParserUtilities.CLUSTERING_EXTENSION))
+            name = name.substring(0, name.length() - ParserUtilities.CLUSTERING_EXTENSION.length());
         try {
             out.append("name=").append(name);
             out.append("\n");
