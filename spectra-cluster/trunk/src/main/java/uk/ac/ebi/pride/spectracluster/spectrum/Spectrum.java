@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
@@ -17,7 +17,6 @@ import java.util.*;
  */
 public class Spectrum implements ISpectrum {
 
-    public final static IQualityScorer DEFAULT_QUALITY_SCORER = new SignalToNoiseChecker();
     public static final int BAD_QUALITY_MEASURE = -1;
 
     private final String id;
@@ -43,7 +42,7 @@ public class Spectrum implements ISpectrum {
                     final int pPrecursorCharge,
                     final float pPrecursorMz,
                     final List<IPeak> inpeaks) {
-        this(pId, pPrecursorCharge, pPrecursorMz, DEFAULT_QUALITY_SCORER, inpeaks);
+        this(pId, pPrecursorCharge, pPrecursorMz, Defaults.INSTANCE.getDefaultQualityScorer(), inpeaks);
     }
 
 
