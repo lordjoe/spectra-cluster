@@ -5,10 +5,18 @@ import org.systemsbiology.hadoop.ISetableParameterHolder;
 import java.util.UUID;
 
 /**
+ * Utility methods for StableClustering
+ *
  * @author Rui Wang
  * @version $Id$
+ *
+ * todo: development
  */
-public class StableClusterUtilities {
+@Deprecated
+public final class StableClusterUtilities {
+
+    private StableClusterUtilities() {}
+
     public static final String STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.StableClusterSize";
     public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
 

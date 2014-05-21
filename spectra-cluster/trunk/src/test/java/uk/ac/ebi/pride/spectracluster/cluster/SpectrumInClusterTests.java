@@ -5,7 +5,7 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.SpectrumInClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterUtilities;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;

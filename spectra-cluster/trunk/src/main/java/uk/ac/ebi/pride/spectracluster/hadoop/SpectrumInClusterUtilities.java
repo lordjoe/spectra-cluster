@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.util;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
@@ -10,10 +10,15 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 
 /**
+ * Utility methods for SpectrumInCluster
+ *
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumInClusterUtilities {
+public final class SpectrumInClusterUtilities {
+
+    private SpectrumInClusterUtilities() {
+    }
 
     public static SpectrumInCluster readSpectrumInCluster(String str) {
         LineNumberReader rdr = new LineNumberReader(new StringReader(str));

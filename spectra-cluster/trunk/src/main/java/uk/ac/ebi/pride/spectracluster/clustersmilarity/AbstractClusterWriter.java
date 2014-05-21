@@ -4,7 +4,6 @@ import com.lordjoe.utilities.TypedPredicate;
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
-import uk.ac.ebi.pride.spectracluster.util.OrPredicate;
 
 import javax.annotation.Nonnull;
 
