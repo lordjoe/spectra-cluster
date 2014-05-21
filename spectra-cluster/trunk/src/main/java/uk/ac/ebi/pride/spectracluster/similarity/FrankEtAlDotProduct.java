@@ -34,17 +34,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
      */
     private static final Logger logger = LoggerFactory.getLogger(FrankEtAlDotProduct.class);
 
-    /**
-     * This is for debugging purposes only! Do not turn this to false in productive mode.
-     * If this boolean is set to false, the algorithm does not check whether there is
-     * a better matching peak in spectrum 1 than the current one.
-     * <p/>
-     * TODO: this MUST be removed once testing is complete
-     *
-     * todo: Removing this will result some unit tests fail, need to check this with Steve
-     */
-    protected static boolean CHECK_BEST_PEAK_SPEC1 = true;
-
     // add a nonsense park
     public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE, 0);
 
@@ -165,27 +154,13 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 IPeak nextPeak2 = peaks2[e + 1];
                 double mass_difference_nextT = mz2 - nextPeak1.getMz();
                 double mass_difference_nextE = nextPeak2.getMz() - mz1;
-                double mass_difference_nextTE = nextPeak2.getMz() - nextPeak1.getMz();
-
-                if (!CHECK_BEST_PEAK_SPEC1)
-                    mass_difference_nextTE = Double.MAX_VALUE;
 
                 // use the next spectrum in E if it's a better match
                 if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
-                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT) &&
-                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextTE)) {
+                    Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT)) {
                     e++;
                     peak2 = nextPeak2;
                     mass_difference = mass_difference_nextE;
-                }
-
-                // use the next spectrum in T if it's a better match
-                if (CHECK_BEST_PEAK_SPEC1 && Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
-                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE) &&
-                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextTE)) {
-                    t++;
-                    peak1 = nextPeak1;
-                    mass_difference = mass_difference_nextT;
                 }
 
                 // do the matching
@@ -301,7 +276,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
             return Defaults.getNumberComparedPeaks();
 
         // use m/z / 50
-
         return (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
     }
 
