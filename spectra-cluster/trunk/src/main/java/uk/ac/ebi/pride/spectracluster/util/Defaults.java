@@ -166,21 +166,6 @@ public class Defaults {
 
     private ClusteringEngineFactory defaultClusteringEngineFactory;
 
-    private Appendable debugOutput;
-
-    /**
-     * code might append results we want to look at
-     *
-     * @return
-     */
-    public Appendable getDebugOutput() {
-        return debugOutput;
-    }
-
-    public void setDebugOutput(final Appendable pDebugOutput) {
-        debugOutput = pDebugOutput;
-    }
-
     private DataSource defaultDataSource;
 
     private ConcensusSpectrumBuilderFactory consensusFactory = ConsensusSpectrum.FACTORY;

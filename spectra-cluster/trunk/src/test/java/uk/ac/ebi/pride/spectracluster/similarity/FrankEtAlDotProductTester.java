@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -103,7 +102,6 @@ public class FrankEtAlDotProductTester implements ISimilarityChecker {
      */
     @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
-        Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
         // initialize the number of peaks to use with 15
         int k = 15;
         switch (version) {

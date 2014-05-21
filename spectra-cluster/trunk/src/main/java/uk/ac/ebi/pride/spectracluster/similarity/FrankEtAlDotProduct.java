@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,23 +30,25 @@ import java.util.List;
  */
 public class FrankEtAlDotProduct implements ISimilarityChecker {
     /**
+     * The logger to use.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(FrankEtAlDotProduct.class);
+
+    /**
      * This is for debugging purposes only! Do not turn this to false in productive mode.
      * If this boolean is set to false, the algorithm does not check whether there is
      * a better matching peak in spectrum 1 than the current one.
      * <p/>
      * TODO: this MUST be removed once testing is complete
+     *
+     * todo: Removing this will result some unit tests fail, need to check this with Steve
      */
     protected static boolean CHECK_BEST_PEAK_SPEC1 = true;
 
     // add a nonsense park
     public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE, 0);
 
-
     public static final int K2011_BIN_SIZE = 50;
-    /**
-     * The logger to use.
-     */
-    //private static final Logger logger = Logger.getLogger(FrankEtAlDotProduct.class);
 
     /**
      * The versions available from this algorithm. The only
@@ -121,7 +126,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
     @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
 
-        Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
         // initialize the number of peaks1 to use with 15
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
@@ -166,7 +170,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 if (!CHECK_BEST_PEAK_SPEC1)
                     mass_difference_nextTE = Double.MAX_VALUE;
 
-
                 // use the next spectrum in E if it's a better match
                 if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
                         Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT) &&
@@ -190,15 +193,8 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 double match2 = convertIntensity(peak2);
 
                 // print the peaks if a debugOutput is supplied
-                if (debugOutput != null) {
-                    String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
-                    try {
-                        debugOutput.append(fmt);
-                    } catch (IOException e1) {
-                        throw new RuntimeException(e1);
-
-                    }
-                }
+                String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
+                logger.debug(fmt);
 
                 dotProduct += match1 * match2;
 
@@ -207,6 +203,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 t++;
                 continue;
             }
+
             if (mass_difference == 0) {
                 if (lastIsT) {
                     e++;
@@ -278,7 +275,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
             return Defaults.getNumberComparedPeaks();
-        ;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
@@ -288,7 +284,6 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
 
         if (peptideMass % largeBinningRegion > 0)
             k += Defaults.getNumberComparedPeaks();
-        ;
 
         return k;
     }
@@ -306,9 +301,8 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
             return Defaults.getNumberComparedPeaks();
 
         // use m/z / 50
-        int k = (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
 
-        return k;
+        return (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
     }
 
     public double getMzRange() {
