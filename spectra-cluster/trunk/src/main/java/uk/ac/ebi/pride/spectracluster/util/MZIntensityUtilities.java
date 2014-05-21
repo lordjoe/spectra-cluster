@@ -6,6 +6,8 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import java.util.List;
 
 /**
+ * Utility methods for either m/z or intensity
+ *
  * @author Rui Wang
  * @version $Id$
  */

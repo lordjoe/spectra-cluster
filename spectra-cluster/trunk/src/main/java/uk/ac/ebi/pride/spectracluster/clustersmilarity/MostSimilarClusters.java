@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.util.LimitedList;
-import uk.ac.ebi.pride.spectracluster.util.TreeSetLimitedList;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.spectracluster.util;
+package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Array;

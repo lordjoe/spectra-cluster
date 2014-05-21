@@ -20,7 +20,10 @@ import java.util.*;
  * @author Steve Lewis
  * @date 5/10/13
  */
-public class ClusterUtilities {
+public final class ClusterUtilities {
+
+    private ClusterUtilities() {
+    }
 
     /**
      * return non-null if c1 contains all spactra in c2 or vice
@@ -34,7 +37,7 @@ public class ClusterUtilities {
     @Nullable
     ICluster clusterFullyContains(@Nonnull ICluster c1, @Nonnull ICluster c2) {
         int size1 = c1.getClusteredSpectraCount();
-        int size2 = c1.getClusteredSpectraCount();
+        int size2 = c2.getClusteredSpectraCount();
         if (size1 == size2) {
             if (c1.getSpectralId().equals(c2.getSpectralId()))
                 return c1; // same size same spectra;
@@ -63,7 +66,6 @@ public class ClusterUtilities {
     public static double clusterFullyContainsScore(@Nonnull ICluster existing, @Nonnull ICluster added) {
         Set<String> spectralIds1 = existing.getSpectralIds();
         Set<String> spectralIds2 = added.getSpectralIds();
-        double maxSize = Math.max(spectralIds1.size(), spectralIds2.size());
         double minSize = Math.min(spectralIds1.size(), spectralIds2.size());
 
         Set<String> common = new HashSet<String>(spectralIds1);

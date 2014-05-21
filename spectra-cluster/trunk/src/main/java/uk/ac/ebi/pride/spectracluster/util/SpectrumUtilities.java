@@ -10,10 +10,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Utility methods for Spectrum
+ *
  * @author Rui Wang
  * @version $Id$
  */
-public class SpectrumUtilities {
+public final class SpectrumUtilities {
+
+    private SpectrumUtilities() {
+    }
+
     /**
      * make a list of mx values comma separated as a string
      *
@@ -34,7 +40,7 @@ public class SpectrumUtilities {
     /**
      * make a list of mx values comma separated as a string
      *
-     * @param spec !null spectrun
+     * @param spec !null spectrum
      * @return as above
      */
     public static String buildIntensityString(final ISpectrum spec) {
@@ -49,7 +55,7 @@ public class SpectrumUtilities {
     }
 
     /**
-     * return the most common peptides (first if equally commmon) or ""
+     * return the most common peptides (first if equally common) or ""
      * if no peptides found
      *
      * @return as above
@@ -58,8 +64,7 @@ public class SpectrumUtilities {
         final List<String> peptideList = getPeptideList(spectra);
         CountedString[] countedStrings = CountedString.getCountedStrings(peptideList);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < countedStrings.length; i++) {
-            CountedString countedString = countedStrings[i];
+        for (CountedString countedString : countedStrings) {
             if (sb.length() > 0)
                 sb.append(",");
             sb.append(countedString);
@@ -80,17 +85,17 @@ public class SpectrumUtilities {
      * @return as above
      */
     public static List<String> getPeptideList(List<ISpectrum> spectra) {
-        List<String> petides = new ArrayList<String>();
+        List<String> peptides = new ArrayList<String>();
         for (ISpectrum spec : spectra) {
             if (spec instanceof IPeptideSpectrumMatch) {
                 String peptide = ((IPeptideSpectrumMatch) spec).getPeptide();
                 if (peptide == null || peptide.length() == 0)
                     continue;
                 String[] items = peptide.split(";");
-                petides.addAll(Arrays.asList(items));
+                peptides.addAll(Arrays.asList(items));
             }
 
         }
-        return petides;
+        return peptides;
     }
 }

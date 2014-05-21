@@ -4,7 +4,6 @@ import com.lordjoe.algorithms.LinearBinner;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 
 import java.util.ArrayList;
@@ -13,10 +12,16 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
+ * Utility methods for Peak
+ *
  * @author Rui Wang
  * @version $Id$
  */
 public class PeakUtilities {
+
+    private PeakUtilities() {
+    }
+
     /**
      * after this many peaks we can drop the rest
      */
@@ -39,7 +44,7 @@ public class PeakUtilities {
     }
 
     /**
-     * binn the mz range finding the highest peaks in each bin
+     * bin the mz range finding the highest peaks in each bin
      *
      * @param peaks     !null original peaks
      * @param minMZ     minmum mz to bin
@@ -57,7 +62,7 @@ public class PeakUtilities {
         LinearBinner binner = new LinearBinner(maxMZ, binSize, minMZ);
         /// these will keep the highest values
         // unchecked cast
-        PriorityQueue<IPeak>[] higheseEachBin = Cast.it(new PriorityQueue[binner.getNumberBins()]);
+        PriorityQueue<IPeak>[] higheseEachBin = new PriorityQueue[binner.getNumberBins()];
 
 
         // for all peaks
@@ -96,38 +101,12 @@ public class PeakUtilities {
 
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {
-        float[] mzValues = parseCommaDelimitedFloats(commaDelimitecMZ);
-        float[] intensityValues = parseCommaDelimitedFloats(commaDelimitedIntensity);
-        if (mzValues.length != intensityValues.length)
-            throw new IllegalArgumentException("Unequal mz and intensity lists");
-        List<IPeak> holder = new ArrayList<IPeak>();
-        for (int i = 0; i < intensityValues.length; i++) {
-            holder.add(new Peak(mzValues[i], intensityValues[i]));
-        }
-        Collections.sort(holder);  // sort peaks by mz
-        return holder;
-    }
-
-    public static float[] parseCommaDelimitedFloats(String commaDelimitedFloats) {
-        String[] items = commaDelimitedFloats.trim().split(",");
-        float[] ret = new float[items.length];
-        for (int i = 0; i < items.length; i++) {
-            String item = items[i];
-            ret[i] = Float.parseFloat(item);
-        }
-        return ret;
-    }
-
-
     /**
      * get all peaks from the cluster
      *
      * @param cluster !null cluster
      * @return !null list of peaks
      */
-    @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak> getAllPeaks(IPeptideSpectralCluster cluster) {
         List<IPeak> holder = new ArrayList<IPeak>();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
@@ -144,7 +123,6 @@ public class PeakUtilities {
      * @param sc
      * @return
      */
-    @SuppressWarnings("UnusedDeclaration")
     public static List<IPeak> peaksByIntensity(ISpectrum sc) {
         List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
         Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
