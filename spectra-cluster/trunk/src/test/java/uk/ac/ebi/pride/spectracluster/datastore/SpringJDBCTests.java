@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.datastore;
 
 import com.lordjoe.utilities.CollectionUtilities;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -42,7 +42,7 @@ public class SpringJDBCTests {
             return;
         // run once with the right password - the machine will remember
         //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         final Connection connection = ds.getConnection();
         Assert.assertNotNull(connection);
         final Statement statement = connection.createStatement();
@@ -70,7 +70,7 @@ public class SpringJDBCTests {
         if (SKIP_DATABASE_TESTS)
             return;
 
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         db.clearAllData();
@@ -118,7 +118,7 @@ public class SpringJDBCTests {
         if (SKIP_DATABASE_TESTS)
             return;
 
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         // the returns list is a List<IPeptideSpectrumMatch>
@@ -162,7 +162,7 @@ public class SpringJDBCTests {
     public void testDbAccess() throws Exception {
         if (SKIP_DATABASE_TESTS)
             return;
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
 
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 

@@ -12,6 +12,19 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
 
+    private int stableClusterSize;
+    private int semiStableClusterSize;
+
+    public CountBasedClusterStabilityAssessor() {
+        this.stableClusterSize = DEFAULT_STABLE_CLUSTER_SIZE;
+        this.semiStableClusterSize = DEFAULT_SEMI_STABLE_CLUSTER_SIZE;
+    }
+
+    public CountBasedClusterStabilityAssessor(int stableClusterSize, int semiStableClusterSize) {
+        this.stableClusterSize = stableClusterSize;
+        this.semiStableClusterSize = semiStableClusterSize;
+    }
+
     @Override
     public boolean isStable(ICluster cluster) {
         int count = cluster.getClusteredSpectraCount();

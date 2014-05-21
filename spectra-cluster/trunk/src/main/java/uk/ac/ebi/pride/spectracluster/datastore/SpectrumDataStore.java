@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -26,12 +25,12 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
 
     @SuppressWarnings("UnusedDeclaration")
     public SpectrumDataStore(String database) {
-        this(database, Defaults.INSTANCE.getDefaultDataSource());
+        this(database, DataSourceDefaults.INSTANCE.getDefaultDataSource());
     }
 
     public SpectrumDataStore(String databaseStr, DataSource ds) {
         datasource = ds;
-        database = Defaults.INSTANCE.getDatabaseFactory().buildWorkingDatabase(databaseStr, ds);
+        database = DataSourceDefaults.INSTANCE.getDatabaseFactory().buildWorkingDatabase(databaseStr, ds);
         dataBaseName = databaseStr;
 
     }

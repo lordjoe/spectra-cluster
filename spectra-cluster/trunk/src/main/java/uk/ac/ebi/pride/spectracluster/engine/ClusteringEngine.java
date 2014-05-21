@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -22,6 +23,11 @@ public class ClusteringEngine implements IClusteringEngine {
     private final List<ICluster> clustersToAdd = new ArrayList<ICluster>();
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
+
+    public ClusteringEngine() {
+        this.similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        this.spectrumComparator = Defaults.INSTANCE.getDefaultSpectrumComparator();
+    }
 
     public ClusteringEngine(ISimilarityChecker similarityChecker,
                                Comparator<ICluster> spectrumComparator) {
