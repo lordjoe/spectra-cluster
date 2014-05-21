@@ -154,13 +154,24 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                 IPeak nextPeak2 = peaks2[e + 1];
                 double mass_difference_nextT = mz2 - nextPeak1.getMz();
                 double mass_difference_nextE = nextPeak2.getMz() - mz1;
+                double mass_difference_nextTE = nextPeak2.getMz() - nextPeak1.getMz();
 
                 // use the next spectrum in E if it's a better match
                 if (Math.abs(mass_difference_nextE) < Math.abs(mass_difference) &&
-                    Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT)) {
+                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextT) &&
+                        Math.abs(mass_difference_nextE) < Math.abs(mass_difference_nextTE)) {
                     e++;
                     peak2 = nextPeak2;
                     mass_difference = mass_difference_nextE;
+                }
+
+                // use the next spectrum in T if it's a better match
+                if (Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
+                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE) &&
+                        Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextTE)) {
+                    t++;
+                    peak1 = nextPeak1;
+                    mass_difference = mass_difference_nextT;
                 }
 
                 // do the matching
@@ -276,6 +287,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
             return Defaults.getNumberComparedPeaks();
 
         // use m/z / 50
+
         return (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
     }
 
