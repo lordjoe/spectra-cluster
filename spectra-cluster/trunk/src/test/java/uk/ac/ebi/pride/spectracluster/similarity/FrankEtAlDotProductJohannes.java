@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -118,7 +117,6 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
     @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
 
-        Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
         // initialize the number of peaks1 to use with 15
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
 
@@ -186,17 +184,6 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
                 // do the matching
                 double match1 = convertIntensity(peak1);
                 double match2 = convertIntensity(peak2);
-
-                // print the peaks if a debugOutput is supplied
-                if (debugOutput != null) {
-                    String fmt = String.format("%8.3f %8.3f  %8.3f %8.3f \n", peak1.getMz(), match1, peak2.getMz(), match2);
-                    try {
-                        debugOutput.append(fmt);
-                    } catch (IOException e1) {
-                        throw new RuntimeException(e1);
-
-                    }
-                }
 
                 dotProduct += match1 * match2;
 

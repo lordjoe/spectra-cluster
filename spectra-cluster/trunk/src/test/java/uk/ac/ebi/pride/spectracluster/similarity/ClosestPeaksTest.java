@@ -1,10 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.similarity;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -64,7 +63,6 @@ public class ClosestPeaksTest {
                 //        System.out.println("Comparing " + id1 + " " + id2);
 
                 StringBuilder usedPeaksTester = new StringBuilder();
-                Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
 
 
                 double dotOrg = checker.assessSimilarity(psm1, psm2);
@@ -114,7 +112,6 @@ public class ClosestPeaksTest {
                     different++;
 
                     StringBuilder usedPeaksTester = new StringBuilder();
-                    Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
 
                     // these are the really interesting cases
                     dotOrg = checker.assessSimilarity(psm1, psm2);
@@ -127,7 +124,6 @@ public class ClosestPeaksTest {
                     interestingIds.add(id2);
 
                     //                 System.out.println(usedPeaksTester.toString());
-                    Defaults.INSTANCE.setDebugOutput(null);
                     //                 System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
                 }
                 total++;
@@ -175,7 +171,6 @@ public class ClosestPeaksTest {
                 if (dotOrg - 0.01 > dotNew || dotOrg + 0.01 < dotNew) {
                     different++;
                     StringBuilder usedPeaksTester = new StringBuilder();
-                    Defaults.INSTANCE.setDebugOutput(usedPeaksTester);
                     // these are the really interesting cases
                     dotOrg = checker.assessSimilarity(psm1, psm2);
 
@@ -187,7 +182,6 @@ public class ClosestPeaksTest {
                     interestingIds.add(id2);
 
                     //                   System.out.println(usedPeaksTester.toString());
-                    Defaults.INSTANCE.setDebugOutput(null);
                     //                  System.out.printf(id2 + ":" + id1 + " " + "Old: %8.3f Newx: %8.3f New: %8.3f\tDiff: %8.3f\n", dotOrg, noClosestPeak, dotNew, dotOrg - dotNew);
                 }
                 total++;
