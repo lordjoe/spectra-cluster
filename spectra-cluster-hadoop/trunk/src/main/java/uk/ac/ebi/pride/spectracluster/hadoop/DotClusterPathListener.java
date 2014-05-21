@@ -4,6 +4,7 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.mapreduce.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.IClusterAppender;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -42,7 +43,7 @@ public class DotClusterPathListener implements ClusterCreateListener {
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
             m_OutWriter = new PrintWriter(new OutputStreamWriter(dsOut));
             // add a header
-            ClusterUtilities.appendDotClusterHeader(m_OutWriter,m_PermFile.getName());
+            new DotClusterClusterAppender().appendDotClusterHeader(m_OutWriter, m_PermFile.getName());
 
         }
         catch (IOException e) {

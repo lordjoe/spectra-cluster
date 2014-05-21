@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 
@@ -16,6 +15,9 @@ import java.io.StringReader;
  * @version $Id$
  */
 public final class SpectrumInClusterUtilities {
+
+    public static final String PLACE_SPECTRUM_IN_BEST_CLUSTER = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.PlaceSpectrumInBestCluster";
+    public static final String BREAK_UP_CLUSTERS_LESS_THAN = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.BreakUpClustersLessThan";
 
     private SpectrumInClusterUtilities() {
     }

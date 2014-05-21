@@ -17,6 +17,7 @@ import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -48,7 +49,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         super.setup(context);
         setBinner(StableClusterMapper.BINNER);
         ISetableParameterHolder application = getApplication();
-        ClusterUtilities.setStableClusterSizeFromProperties(application);
+        StableClusterUtilities.setStableClusterSizeFromProperties(application);
     }
 
 

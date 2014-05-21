@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import org.apache.hadoop.io.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import org.apache.hadoop.io.Text;
+import org.systemsbiology.hadoop.AbstractParameterizedReducer;
+import org.systemsbiology.hadoop.ISetableParameterHolder;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterReducer
@@ -20,7 +23,7 @@ public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
         super.setup(context);
 
         ISetableParameterHolder application = getApplication();
-        spectrumInBestCluster = application.getBooleanParameter(ClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
+        spectrumInBestCluster = application.getBooleanParameter(SpectrumInClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
     }
 
 
@@ -55,7 +58,7 @@ public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
         for (Text val : values) {
             String valStr = val.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+            SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
             passedClusters.add(sci2);
         }
         return passedClusters;

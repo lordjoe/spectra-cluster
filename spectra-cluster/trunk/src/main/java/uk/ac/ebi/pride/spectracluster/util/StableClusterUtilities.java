@@ -17,11 +17,11 @@ public final class StableClusterUtilities {
 
     private StableClusterUtilities() {}
 
+    /**
+     * This is Steve's way of guarantee the uniqueness of the property
+     */
     public static final String STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.StableClusterSize";
     public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
-
-    public static final String PLACE_SPECTRUM_IN_BEST_CLUSTER = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.PlaceSpectrumInBestCluster";
-    public static final String BREAK_UP_CLUSTERS_LESS_THAN = "uk.ac.ebi.pride.spectracluster.cluster.SpectrumInCluster.BreakUpClustersLessThan";
 
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;

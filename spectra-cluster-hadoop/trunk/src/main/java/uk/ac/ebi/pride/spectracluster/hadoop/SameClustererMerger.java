@@ -1,28 +1,36 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
-import org.apache.hadoop.conf.*;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.*;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.mapreduce.lib.input.*;
-import org.apache.hadoop.mapreduce.lib.output.*;
-import org.apache.hadoop.util.*;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.ToolRunner;
 import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -71,13 +79,13 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
      */
     public static class ClusterIdReducer extends AbstractParameterizedReducer {
 
-        private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
+        private IncrementalClusteringEngineFactory factory = new IncrementalClusteringEngineFactory();
         private IIncrementalClusteringEngine engine;
 
 
         public IIncrementalClusteringEngine getEngine() {
             if (engine == null) {
-                engine = factory.getIncrementalClusteringEngine(Defaults.getSameClusterMergeMZWindowSize());
+                engine = factory.getIncrementalClusteringEngine(HadoopDefaults.getSameClusterMergeMZWindowSize());
             }
             return engine;
         }
@@ -141,7 +149,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
          * @param cluster !null cluster
          */
         protected void writeCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
-            final List<ICluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
+            final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker());
             if (!allClusters.isEmpty()) {
                 for (ICluster removedCluster : allClusters) {
 

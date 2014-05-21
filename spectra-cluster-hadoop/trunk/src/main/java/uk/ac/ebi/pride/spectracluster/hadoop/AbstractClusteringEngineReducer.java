@@ -1,17 +1,21 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.utilities.ElapsedTimer;
+import org.systemsbiology.hadoop.AbstractParameterizedReducer;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngineFactory;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
-import javax.annotation.*;
-import java.io.*;
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.AbstractClusteringEngineReducer
@@ -20,12 +24,11 @@ import java.util.*;
  * Date: 3/28/14
  */
 public abstract class AbstractClusteringEngineReducer extends AbstractParameterizedReducer {
-    public static final AbstractClusteringEngineReducer[] EMPTY_ARRAY = {};
     protected double majorPeak;
     protected int currentCharge;
     private int currentBin;
-    private IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
-    private IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory factory = IncrementalClusteringEngine.getClusteringEngineFactory();
+    private IWideBinner binner = HadoopDefaults.DEFAULT_WIDE_MZ_BINNER;
+    private IncrementalClusteringEngineFactory factory = new IncrementalClusteringEngineFactory();
     private IIncrementalClusteringEngine engine;
     private ElapsedTimer binTime = new ElapsedTimer();
     private ElapsedTimer jobTime = new ElapsedTimer();
@@ -107,7 +110,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
         return currentCharge;
     }
 
-    public final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory getFactory() {
+    public final IncrementalClusteringEngineFactory getFactory() {
         return factory;
     }
 
@@ -119,7 +122,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
         currentCharge = pCurrentCharge;
     }
 
-    public final void setFactory(final IIncrementalClusteringEngine.IIncrementalClusteringEngineFactory pFactory) {
+    public final void setFactory(final IncrementalClusteringEngineFactory pFactory) {
         factory = pFactory;
     }
 
@@ -142,7 +145,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param cluster !null cluster
      */
     protected final void writeCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
-        final List<ICluster> allClusters = getEngine().findNoneFittingSpectra(cluster);
+        final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker());
         if (!allClusters.isEmpty()) {
             for (ICluster removedCluster : allClusters) {
 

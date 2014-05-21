@@ -85,7 +85,7 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
     @SuppressWarnings("UnusedDeclaration")
     public int getPartitionHash() {
         int ret = getCharge() * 10000;
-        ret += (int)(getPrecursorMZ() * ClusterUtilities.MZ_RESOLUTION + 0.5);
+        ret += (int)(getPrecursorMZ() * MZIntensityUtilities.MZ_RESOLUTION + 0.5);
         return ret;
     }
 

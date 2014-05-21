@@ -49,12 +49,12 @@ public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
      */
     protected void handleCluster(IPeptideSpectralCluster cluster,String text, Context context) {
         if(clusterStabilityAssessor.isStable(cluster))   {
-            String id = ClusterUtilities.getStableClusterId();
+            String id = StableClusterUtilities.getStableClusterId();
             writeKeyValue(id,text,context);
             return;
         }
         if(clusterStabilityAssessor.isSemiStable(cluster))   {
-             String id = ClusterUtilities.getSemiStableClusterId();
+             String id = StableClusterUtilities.getSemiStableClusterId();
              writeKeyValue(id,text,context);
              return;
          }

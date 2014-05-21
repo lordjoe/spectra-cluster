@@ -1,15 +1,25 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.utilities.*;
-import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.datastore.*;
-import uk.ac.ebi.pride.spectracluster.hadoop.hbase.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.utilities.CollectionUtilities;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.datastore.DataSourceDefaults;
+import uk.ac.ebi.pride.spectracluster.datastore.IWorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.datastore.SpectrumDataStore;
+import uk.ac.ebi.pride.spectracluster.datastore.SpectrumUtilities;
+import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
+import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 
-import javax.sql.*;
-import java.sql.*;
-import java.util.*;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.PhoenixTests
@@ -31,8 +41,8 @@ public class PhoenixTests {
             // use hard coded HBase connection
             DataSource source = HBaseUtilities.getHBaseDataSource();
             m_Source = source;
-            Defaults.INSTANCE.setDefaultDataSource(source);
-            Defaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
+            DataSourceDefaults.INSTANCE.setDefaultDataSource(source);
+            DataSourceDefaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
         }
     }
 
@@ -96,7 +106,7 @@ public class PhoenixTests {
         if (SKIP_DATABASE_TESTS)
             return;
 
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         db.clearAllData();
@@ -144,7 +154,7 @@ public class PhoenixTests {
         if (SKIP_DATABASE_TESTS)
             return;
 
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         // the returns list is a List<IPeptideSpectrumMatch>
@@ -188,7 +198,7 @@ public class PhoenixTests {
     public void testDbAccess() throws Exception {
         if (SKIP_DATABASE_TESTS)
             return;
-        DataSource ds = Defaults.INSTANCE.getDefaultDataSource();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
 
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 

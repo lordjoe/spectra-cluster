@@ -126,7 +126,7 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 System.err.println("Input path mass finder " + otherArg);
 
                 Path parentPath = inputPath.getParent();
-                outPath = new Path(parentPath, Defaults.getOutputPath());
+                outPath = new Path(parentPath, HadoopDefaults.getOutputPath());
 
                 FileSystem fileSystem = outPath.getFileSystem(conf);
             //    fileSystem.delete(outPath,true); // drop prior contents

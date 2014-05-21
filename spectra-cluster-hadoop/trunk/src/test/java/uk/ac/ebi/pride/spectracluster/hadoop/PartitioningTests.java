@@ -104,7 +104,7 @@ public class PartitioningTests {
 
 
     protected static void partitionKeys(String[] args) {
-        IWideBinner binner = Defaults.DEFAULT_WIDE_MZ_BINNER;
+        IWideBinner binner = HadoopDefaults.DEFAULT_WIDE_MZ_BINNER;
         File f = new File(args[0]);
         if (!f.exists() || !f.isFile())
             throw new IllegalArgumentException("File does not exits " + args[0]);

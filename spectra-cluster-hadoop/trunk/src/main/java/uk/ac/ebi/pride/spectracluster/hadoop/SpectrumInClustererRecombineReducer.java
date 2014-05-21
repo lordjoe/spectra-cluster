@@ -26,7 +26,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
         super.setup(context);
 
         ISetableParameterHolder application = getApplication();
-        spectrumInBestCluster = application.getBooleanParameter(ClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
+        spectrumInBestCluster = application.getBooleanParameter(SpectrumInClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -45,7 +45,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
          for (Text tv : values) {
             String value = tv.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(value)));
-            SpectrumInCluster sci2 = ClusterUtilities.readSpectrumInCluster(rdr);
+            SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
             IPeptideSpectrumMatch spectrum = sci2.getSpectrum();
             String id = spectrum.getId();
             if (!sci2.isRemoveFromCluster()) {
