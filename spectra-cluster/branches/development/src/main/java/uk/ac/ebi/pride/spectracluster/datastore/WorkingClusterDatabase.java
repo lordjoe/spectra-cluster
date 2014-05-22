@@ -18,7 +18,7 @@ public class WorkingClusterDatabase implements IWorkingClusterDatabase {
 
     public static WorkingDatabaseFactory FACTORY = new WorkingDatabaseFactory() {
         /**
-         * return a workling database - needed so we can subclass to handle Phoenix
+         * return a working database - needed so we can subclass to handle Phoenix
          *
          * @param databaseName - name of the database - tables will have <databasename> . prepended
          * @param ds           !null data source - this provides the connection

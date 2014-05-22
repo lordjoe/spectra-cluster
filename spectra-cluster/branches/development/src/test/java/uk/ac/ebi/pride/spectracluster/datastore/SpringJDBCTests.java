@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import javax.sql.*;
-import java.sql.*;
+import java. sql.*;
 import java.util.*;
 
 /**

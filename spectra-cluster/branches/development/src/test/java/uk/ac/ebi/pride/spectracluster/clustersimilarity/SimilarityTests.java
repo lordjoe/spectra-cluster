@@ -16,7 +16,7 @@ public class SimilarityTests {
 
     public static final Random RND = new Random();
 
-    private IClusterDistance distanceMeasure  = ConcensusSpectrumDistance.INSTANCE;
+    private IClusterDistance distanceMeasure = ConcensusSpectrumDistance.INSTANCE;
     private IClusterDistance distanceMeasure2 = ClusterSpectrumOverlapDistance.INSTANCE;
     private IClusterDistance distanceMeasure3 = ClusterContentDistance.INSTANCE;
     private IClusterDistance distanceMeasure4 = ConsensusSimilarityDistance.INSTANCE;
@@ -41,30 +41,32 @@ public class SimilarityTests {
      * @throws Exception
      */
 
-    public static final double MINIMUM_NON_SELF_DISTANCE = 0.01;
-    public static final double MAXIMUM_SELF_DISTANCE = 0.0001;
-     @Test
+    public static final double MAXIMUM_SELF_DISTANCE = 0.0000001;
+    public static final double MINIMUM_NON_SELF_DISTANCE = MAXIMUM_SELF_DISTANCE * 100;
+
+    @Test
     public void testSelfSimilarity() throws Exception {
         List<ISpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+   //     for (int j = 0; j < 10000; j++) {
+            for (ISpectralCluster sc1 : originalSpectralClusters) {
+                for (int i = 0; i < measures.length; i++) {
+                    IClusterDistance measure = measures[i];
+                    double distance = measure.distance(sc1, sc1);
+                    if (distance > MAXIMUM_SELF_DISTANCE) {
+                        distance = measure.distance(sc1, sc1); //  break here
+                        Assert.assertEquals(0, distance, MAXIMUM_SELF_DISTANCE);    // every cluster is similar to itself
+                    }
+                    ISpectralCluster other = chooseOtherCluster(originalSpectralClusters, sc1);
+                    distance = measure.distance(sc1, other);
+                    if (distance < MINIMUM_NON_SELF_DISTANCE) {
+                        distance = measure.distance(sc1, sc1); //  break here
+                        distance = measure.distance(sc1, other); //  break here
+                        Assert.assertTrue(distance > MINIMUM_NON_SELF_DISTANCE);
+                    }
+                }
 
-        for (ISpectralCluster sc1 : originalSpectralClusters) {
-            for (int i = 0; i < measures.length; i++) {
-                IClusterDistance measure = measures[i];
-                double distance = measure.distance(sc1, sc1);
-                if (distance > MAXIMUM_SELF_DISTANCE) {
-                    distance = measure.distance(sc1, sc1); //  break here
-                    Assert.assertEquals(0, distance, MAXIMUM_SELF_DISTANCE);    // every cluster is similar to itself
-                }
-                ISpectralCluster other = chooseOtherCluster(originalSpectralClusters, sc1);
-                distance = measure.distance(sc1, other);
-                if (distance < MINIMUM_NON_SELF_DISTANCE) {
-                    distance = measure.distance(sc1, sc1); //  break here
-                    distance = measure.distance(sc1, other); //  break here
-                    Assert.assertTrue(distance > MINIMUM_NON_SELF_DISTANCE);
-                }
             }
-
-        }
+ //     }
 
     }
 
