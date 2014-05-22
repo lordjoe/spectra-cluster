@@ -3,12 +3,12 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import com.lordjoe.utilities.Util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -246,7 +246,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return false;     // we did nothing
         Set<String> ids = cluster1.getSpectralIds();
         Set<String> best = cluster2.getSpectralIds();
-        Set<String> spectraOverlap = ClusterSimilarityUtilities.getSpectraOverlap(ids, cluster2);
+        Set<String> spectraOverlap = getSpectraOverlap(ids, cluster2);
         int numberOverlap = spectraOverlap.size();
         if (numberOverlap == 0)
             return false; // no overlap
@@ -270,6 +270,20 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         return assignOverlapsToBestCluster(cluster1, cluster2, spectraOverlap);
 
 
+    }
+
+    /**
+     * return common spectra ids
+     *
+     * @param c2 cluster2
+     * @return set of common ids
+     */
+    public static
+    @Nonnull
+    Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
+        Set<String> ret = new HashSet<String>(firstIds);
+        ret.retainAll(c2.getSpectralIds());
+        return ret;
     }
 
     protected void mergeIntoCluster(final ICluster mergeFrom, final ICluster mergeInto) {
