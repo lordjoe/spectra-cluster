@@ -8,8 +8,6 @@ import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
@@ -215,15 +213,15 @@ public class DuplicateReductionSimulator {
     }
 
 
-    private static IClusterSet rebuildClusters(final List<TextKeyValue> pStep2) {
-        IClusterSet ret = new SimpleClusterSet();
-        for (TextKeyValue textKeyValue : pStep2) {
-            IPeptideSpectralCluster cluster = buildClusterFromKeyValue(textKeyValue);
-            if (cluster != null)
-                ret.addCluster(cluster);
-        }
-        return ret;
-    }
+//    private static IClusterSet rebuildClusters(final List<TextKeyValue> pStep2) {
+//        IClusterSet ret = new SimpleClusterSet();
+//        for (TextKeyValue textKeyValue : pStep2) {
+//            IPeptideSpectralCluster cluster = buildClusterFromKeyValue(textKeyValue);
+//            if (cluster != null)
+//                ret.addCluster(cluster);
+//        }
+//        return ret;
+//    }
 
     private static IPeptideSpectralCluster buildClusterFromKeyValue(final TextKeyValue kv) {
         String text = kv.getValue();
@@ -246,44 +244,44 @@ public class DuplicateReductionSimulator {
         List<TextKeyValue> ret = hj.runJob(pInput, unusedConfig);
         return ret;
     }
-
-
-    public static IClusterSet simulateDuplicateReduction(IClusterSet in) {
-        ElapsedTimer timer = new ElapsedTimer();
-        List<TextKeyValue> input = clusterToTextValues(in);
-        timer.showElapsed("clusterToTextValues");
-        timer.reset();
-
-        List<TextKeyValue> step1 = runSpectrumMapReduce(input);
-        timer.showElapsed("runSpectrumMapReduce");
-        timer.reset();
-        input.clear(); // we cannot afford the memory
-
-        List<TextKeyValue> step2 = runClusterMapReduce(step1);
-        step1.clear(); // we cannot afford the memory
-        timer.showElapsed("runClusterMapReduce");
-        timer.reset();
-
-        IClusterSet ret = rebuildClusters(step2);
-        step2.clear(); // we cannot afford the memory
-        timer.showElapsed("rebuildClusters");
-        timer.reset();
-
-        return ret;
-    }
-
-    public static List<TextKeyValue> clusterToTextValues(final IClusterSet in) {
-        List<TextKeyValue> input = new ArrayList<TextKeyValue>();
-        List<IPeptideSpectralCluster> clusters = in.getClusters();
-        int index = 0;
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
-        for (ICluster cluster : clusters) {
-            StringBuilder sb = new StringBuilder();
-            clusterAppender.appendCluster(sb, cluster);
-            input.add(new TextKeyValue(Integer.toString(index++), sb.toString()));
-        }
-        return input;
-    }
+//
+//
+//    public static IClusterSet simulateDuplicateReduction(IClusterSet in) {
+//        ElapsedTimer timer = new ElapsedTimer();
+//        List<TextKeyValue> input = clusterToTextValues(in);
+//        timer.showElapsed("clusterToTextValues");
+//        timer.reset();
+//
+//        List<TextKeyValue> step1 = runSpectrumMapReduce(input);
+//        timer.showElapsed("runSpectrumMapReduce");
+//        timer.reset();
+//        input.clear(); // we cannot afford the memory
+//
+//        List<TextKeyValue> step2 = runClusterMapReduce(step1);
+//        step1.clear(); // we cannot afford the memory
+//        timer.showElapsed("runClusterMapReduce");
+//        timer.reset();
+//
+//        IClusterSet ret = rebuildClusters(step2);
+//        step2.clear(); // we cannot afford the memory
+//        timer.showElapsed("rebuildClusters");
+//        timer.reset();
+//
+//        return ret;
+//    }
+//
+//    public static List<TextKeyValue> clusterToTextValues(final IClusterSet in) {
+//        List<TextKeyValue> input = new ArrayList<TextKeyValue>();
+//        List<IPeptideSpectralCluster> clusters = in.getClusters();
+//        int index = 0;
+//        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+//        for (ICluster cluster : clusters) {
+//            StringBuilder sb = new StringBuilder();
+//            clusterAppender.appendCluster(sb, cluster);
+//            input.add(new TextKeyValue(Integer.toString(index++), sb.toString()));
+//        }
+//        return input;
+//    }
 
     private static void usage() {
         System.out.println("<cgffile or cgf directory>   ...");

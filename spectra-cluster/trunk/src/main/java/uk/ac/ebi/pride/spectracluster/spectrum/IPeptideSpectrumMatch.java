@@ -21,11 +21,4 @@ public interface IPeptideSpectrumMatch extends ISpectrum {
      */
     public String getAnnotation();
 
-    /**
-     * true if we know this is a decoy
-     *
-     * @return
-     */
-    public boolean isDecoy();
-
 }

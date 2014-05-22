@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
-
 import javax.annotation.Nonnull;
 import java.util.List;
 
