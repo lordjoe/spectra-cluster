@@ -56,10 +56,6 @@
         <url>http://www.ebi.ac.uk</url>
     </organization>
 
-    <properties>
-        <assembly.dir>${project.name}-${project.version}</assembly.dir>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -157,6 +153,7 @@
 
     <build>
         <plugins>
+            <!--compiler-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -165,13 +162,18 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <!--unit tests-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/db/*.java</exclude>
-                    </excludes>
+                    <includes>
+                        <include>**/*Tests.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <skipTests>true</skipTests>
+                    <junitArtifactName>junit:junit</junitArtifactName>
                 </configuration>
             </plugin>
             <plugin>
@@ -195,11 +197,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--jar-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <!--NOTE: you must have this version number, otherwise, the build will not be able to find Validator-->
+                <version>2.4</version>
                 <configuration>
-                    <!-- comment exclusion section out if want to run batch dbtest -->
                     <excludes>
                         <exclude>**/test</exclude>
                         <exclude>**/test/*.class</exclude>
@@ -213,13 +217,6 @@
                         </manifest>
                     </archive>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!--assembly to zip-->
             <plugin>
