@@ -24,6 +24,7 @@ import java.util.*;
  */
 public class Defaults {
 
+
     /*
     # properties for defaults look like
     uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.LargeBinningRegion=1000
@@ -140,8 +141,12 @@ public class Defaults {
 
     public static final IWideBinner DEFAULT_WIDE_MZ_BINNER = NARROW_MZ_BINNER;
 
+    public static String getOutputPath() {
+         return gOutputPath;
+     }
 
     public static final Defaults INSTANCE = new Defaults();
+
 
     private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
@@ -156,6 +161,8 @@ public class Defaults {
     private IClusteringEngineFactory defaultClusteringEngineFactory;
 
     private Appendable debugOutput;
+
+
 
     /**
      * code might append results we want to look at
@@ -178,12 +185,10 @@ public class Defaults {
     private IJobBuilderFactory defaultJobBuilderFactory;
 
     private Defaults() {
-
+        if(DEFAULT_WIDE_MZ_BINNER != NARROW_MZ_BINNER)
+            throw new IllegalStateException("Defaults not properly initialized");
     }
 
-    public static String getOutputPath() {
-        return gOutputPath;
-    }
 
     public WorkingDatabaseFactory getDatabaseFactory() {
         return databaseFactory;

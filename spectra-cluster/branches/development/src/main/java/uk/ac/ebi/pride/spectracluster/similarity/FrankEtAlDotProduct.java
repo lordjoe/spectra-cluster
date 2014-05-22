@@ -32,7 +32,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
      *
      * TODO: this MUST be removed once testing is complete
      */
-    protected static boolean CHECK_BEST_PEAK_SPEC1 = true;
+    protected static boolean CHECK_BEST_PEAK_SPEC1 = false;
 
     // add a nonsense park
     public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE,0);
@@ -120,6 +120,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
     @Override
     public double assessSimilarity(ISpectrum spectrum1, ISpectrum spectrum2) {
 
+
         Appendable debugOutput = Defaults.INSTANCE.getDebugOutput(); // if someone wants to see internal data write here
         // initialize the number of peaks1 to use with 15
         int numberCompared = computeNumberComparedSpectra(spectrum1, spectrum2);
@@ -163,7 +164,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
                 double mass_difference_nextTE = nextPeak2.getMz() - nextPeak1.getMz();
 
                 if (!CHECK_BEST_PEAK_SPEC1)
-                    mass_difference_nextTE = Double.MAX_VALUE;
+                   mass_difference_nextTE = Double.MAX_VALUE;
 
 
                 // use the next spectrum in E if it's a better match
@@ -177,6 +178,7 @@ public class FrankEtAlDotProduct implements SimilarityChecker {
 
                 // use the next spectrum in T if it's a better match
                 if (CHECK_BEST_PEAK_SPEC1 && Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
+     //           if (Math.abs(mass_difference_nextT) < Math.abs(mass_difference) &&
                         Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextE) &&
                         Math.abs(mass_difference_nextT) < Math.abs(mass_difference_nextTE)) {
                     t++;
