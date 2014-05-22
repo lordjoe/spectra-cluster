@@ -1,5 +1,7 @@
 <assembly>
 
+    <id>spectra-cluster-hadoop</id>
+
     <formats>
         <format>zip</format>
     </formats>
@@ -8,7 +10,8 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>${assembly.dir}/lib</outputDirectory>
+            <!--<outputDirectory>${assembly.dir}/lib</outputDirectory>-->
+            <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
