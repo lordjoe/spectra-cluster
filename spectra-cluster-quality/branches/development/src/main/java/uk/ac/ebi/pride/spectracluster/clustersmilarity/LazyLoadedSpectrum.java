@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -12,18 +13,18 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
+public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
     private final String id;
-    private final ISpectrumRetriever retriever;
+    private final uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever;
     private IPeptideSpectrumMatch internalSpectrum;
     private Double selfDotProduct;
 
-    public LazyLoadedSpectrum(String id, ISpectrumRetriever retriever) {
+    public LazyLoadedSpectrum(String id, uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever) {
         this.id = id;
         this.retriever = retriever;
     }
 
-    public ISpectrumRetriever getRetriever() {
+    public uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever getRetriever() {
         return retriever;
     }
 
@@ -128,7 +129,7 @@ public class LazyLoadedSpectrum implements IPeptideSpectrumMatch {
 
     protected IPeptideSpectrumMatch getInternalSpectrum() {
         if (internalSpectrum == null) {
-            ISpectrumRetriever retriever1 = getRetriever();
+            uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever1 = getRetriever();
             internalSpectrum = (IPeptideSpectrumMatch) retriever1.retrieve(getId());
         }
         return internalSpectrum;

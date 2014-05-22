@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
+import uk.ac.ebi.pride.spectracluster.cluster.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.ClusterDecoyChart;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
