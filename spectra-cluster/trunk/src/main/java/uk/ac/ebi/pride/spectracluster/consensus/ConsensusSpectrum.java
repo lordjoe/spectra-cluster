@@ -69,7 +69,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected int averageCharge;
     protected int sumCharge;
     protected ISpectrum consensusSpectrum;
-    protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
+    protected final List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
 
     protected final String methodName = "Crowded Consensus Spectrum Builder";
     protected final String methodVersion = "0.1";

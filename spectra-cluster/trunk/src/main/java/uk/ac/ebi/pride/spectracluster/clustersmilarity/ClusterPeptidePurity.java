@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CompareTo;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
 

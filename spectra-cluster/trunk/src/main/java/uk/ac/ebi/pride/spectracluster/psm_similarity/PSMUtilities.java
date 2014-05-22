@@ -11,9 +11,9 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusteringHeader;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import javax.annotation.Nonnull;
 import java.io.*;

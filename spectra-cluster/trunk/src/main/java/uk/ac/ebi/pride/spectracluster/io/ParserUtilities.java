@@ -12,7 +12,9 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
@@ -370,7 +372,6 @@ public class ParserUtilities {
                 cluster.addPeptides(peptideSequence);
             } else if (clusterLine.startsWith(SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
-                String id = parts[1];
                 //     IPeptideSpectrumMatch spectrum = PSMSpectrum.getSpectrum(id );
                 LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
                 cluster.addSpectra(spectrum);
@@ -865,80 +866,80 @@ public class ParserUtilities {
 //    }
 
 
-    protected static void handleCommentText(String textPart, Map<String, String> properties) {
-        List<String> items = splitNameValueText(textPart);
-        //noinspection ForLoopReplaceableByForEach
-        for (String item : items) {
-            handleProperty(item, properties);
-        }
-    }
+//    protected static void handleCommentText(String textPart, Map<String, String> properties) {
+//        List<String> items = splitNameValueText(textPart);
+//        //noinspection ForLoopReplaceableByForEach
+//        for (String item : items) {
+//            handleProperty(item, properties);
+//        }
+//    }
 
-    protected static List<String> splitNameValueText(String textPart) {
-        List<String> items = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
-        textPart = textPart.trim();
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < textPart.length(); i++) {
-            char c = textPart.charAt(i);
-            switch (c) {
-                case ' ':
-                    if (sb.length() > 0) {
-                        items.add(sb.toString());
-                        sb.setLength(0);
-                    }
-                    break;
-
-                case '\"':
-                    c = textPart.charAt(++i);
-                    while (c != '\"') {
-                        sb.append(c);
-                        c = textPart.charAt(++i);
-                    }
-                    break;
-                default:
-                    sb.append(c);
-
-            }
-        }
-        if (sb.length() < 0) {
-            items.add(sb.toString());
-            sb.setLength(0);
-        }
-        return items;
-    }
-
-    protected static void handleProperty(String protertyExpression, Map<String, String> properties) {
-        if (protertyExpression.contains("=")) {
-            String[] items = protertyExpression.split("=");
-            String key = items[0].trim();
-            String value = items[1].trim();
-            properties.put(key, value);
-            return;
-        }
-
-        properties.put(protertyExpression, "true");
-
-
-    }
-
-
-    protected static IPeak buildPeak(String textPart) {
-        String[] items = textPart.split("\t");
-        float mz = Float.parseFloat(items[0]);
-        float intensity = Float.parseFloat(items[1]);
-        return new Peak(mz, intensity);
-    }
-
-    protected static String getTextPart(String line, String prefix) {
-        if (line.startsWith(prefix))
-            return new String(line.substring(prefix.length()).trim());  // I am worried about small substrings of big strings
-        return null;
-    }
+//    protected static List<String> splitNameValueText(String textPart) {
+//        List<String> items = new ArrayList<String>();
+//        StringBuilder sb = new StringBuilder();
+//        textPart = textPart.trim();
+//
+//        //noinspection ForLoopReplaceableByForEach
+//        for (int i = 0; i < textPart.length(); i++) {
+//            char c = textPart.charAt(i);
+//            switch (c) {
+//                case ' ':
+//                    if (sb.length() > 0) {
+//                        items.add(sb.toString());
+//                        sb.setLength(0);
+//                    }
+//                    break;
+//
+//                case '\"':
+//                    c = textPart.charAt(++i);
+//                    while (c != '\"') {
+//                        sb.append(c);
+//                        c = textPart.charAt(++i);
+//                    }
+//                    break;
+//                default:
+//                    sb.append(c);
+//
+//            }
+//        }
+//        if (sb.length() < 0) {
+//            items.add(sb.toString());
+//            sb.setLength(0);
+//        }
+//        return items;
+//    }
+//
+//    protected static void handleProperty(String protertyExpression, Map<String, String> properties) {
+//        if (protertyExpression.contains("=")) {
+//            String[] items = protertyExpression.split("=");
+//            String key = items[0].trim();
+//            String value = items[1].trim();
+//            properties.put(key, value);
+//            return;
+//        }
+//
+//        properties.put(protertyExpression, "true");
+//
+//
+//    }
+//
+//
+//    protected static IPeak buildPeak(String textPart) {
+//        String[] items = textPart.split("\t");
+//        float mz = Float.parseFloat(items[0]);
+//        float intensity = Float.parseFloat(items[1]);
+//        return new Peak(mz, intensity);
+//    }
+//
+//    protected static String getTextPart(String line, String prefix) {
+//        if (line.startsWith(prefix))
+//            return new String(line.substring(prefix.length()).trim());  // I am worried about small substrings of big strings
+//        return null;
+//    }
 
     /**
      * *******************************
-     * Error handling code for MGF parse failuer
+     * Error handling code for MGF parse failure
      * *******************************
      */
     public static final int MAX_NUMBER_BAD_MGF_LINES = 2000;
@@ -956,8 +957,6 @@ public class ParserUtilities {
         if (gNumberBadMGFLines++ > MAX_NUMBER_BAD_MGF_LINES)
             throw new IllegalStateException("cannot read MGF data line " + line +
                     " failing after " + gNumberBadMGFLines + " errors");
-        System.err.println("Cannot parse mgf line " + line);
-
     }
 
     /**
@@ -990,7 +989,7 @@ public class ParserUtilities {
     }
 
     /**
-     * comvert   PEPMASS=459.17000000000002 8795.7734375   into  459.17
+     * convert   PEPMASS=459.17000000000002 8795.7734375   into  459.17
      *
      * @param pLine line as above
      * @return indicasted mass
@@ -1012,7 +1011,7 @@ public class ParserUtilities {
         if (items.length > 1) {
             spectrumId = items[0].trim().substring("TITLE=id=".length());
         }
-        return new String(spectrumId);  // I am worried about small substrings of big strings
+        return spectrumId;
     }
 
 

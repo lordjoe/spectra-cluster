@@ -12,8 +12,8 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
 
-    private int stableClusterSize;
-    private int semiStableClusterSize;
+    private final int stableClusterSize;
+    private final int semiStableClusterSize;
 
     public CountBasedClusterStabilityAssessor() {
         this.stableClusterSize = DEFAULT_STABLE_CLUSTER_SIZE;
@@ -30,7 +30,7 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
-        if (count >= DEFAULT_STABLE_CLUSTER_SIZE)
+        if (count >= stableClusterSize)
             return true;
         // some tests for debugging
         if (count < 5)
@@ -48,7 +48,7 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
         int count = cluster.getClusteredSpectraCount();
         if (count == 1)
             return false; // Duh but saves other tests
-        if (count >= DEFAULT_SEMI_STABLE_CLUSTER_SIZE)
+        if (count >= semiStableClusterSize)
             return true;
         // some tests for debugging
         if (count < 5)

@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class SignalToNoiseChecker implements IQualityScorer {
 
-    public static final int NUMBER_HIGH_PEAKS = 6;
-    public static final String VERSION = "1.0";
+    private static final int NUMBER_HIGH_PEAKS = 6;
+    private static final String VERSION = "1.0";
 
 
     /**

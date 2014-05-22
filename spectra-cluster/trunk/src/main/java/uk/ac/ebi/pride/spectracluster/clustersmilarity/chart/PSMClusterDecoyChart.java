@@ -19,10 +19,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterMZSpread;
-import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMComparisonMain;
 

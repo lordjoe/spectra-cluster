@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.ArrayList;
 import java.util.HashMap;

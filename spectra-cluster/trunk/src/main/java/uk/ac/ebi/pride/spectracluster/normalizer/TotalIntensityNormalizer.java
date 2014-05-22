@@ -20,7 +20,7 @@ import java.util.List;
  * @author Rui Wang
  */
 public class TotalIntensityNormalizer implements IIntensityNormalizer {
-    public static final String VERSION = "1.0";
+    private static final String VERSION = "1.0";
 
     private static final double DEFAULT_TOTAL_INTENSITY = 1000;
 
@@ -113,10 +113,8 @@ public class TotalIntensityNormalizer implements IIntensityNormalizer {
 
         final TotalIntensityNormalizer that = (TotalIntensityNormalizer) o;
 
-        if (CompareTo.compare(that.totalIntensity, totalIntensity) != 0)
-            return false;
+        return CompareTo.compare(that.totalIntensity, totalIntensity) == 0;
 
-        return true;
     }
 
     @Override

@@ -15,10 +15,10 @@ import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
 import java.io.*;
 import java.util.*;

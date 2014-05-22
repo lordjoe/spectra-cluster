@@ -94,6 +94,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
             Defaults.configureAnalysisParameters(getApplication());
+            HadoopDefaults.configureAnalysisParameters(getApplication());
          }
 
 

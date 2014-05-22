@@ -82,6 +82,6 @@ public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction
     @Override
     public String toString() {
         //noinspection ImplicitArrayToString
-        return peptide.toString() + ":" + String.format("%6.3f", getPurity());
+        return peptide + ":" + String.format("%6.3f", getPurity());
     }
 }

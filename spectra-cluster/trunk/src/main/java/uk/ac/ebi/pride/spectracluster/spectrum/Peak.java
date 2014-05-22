@@ -61,7 +61,7 @@ public class Peak implements IPeak {
     /**
      * like equals but weaker - says other is equivalent to this
      *
-     * @param other poiibly null other object
+     * @param other possible null other object
      * @return true if other is "similar enough to this"
      */
     @Override
@@ -89,9 +89,8 @@ public class Peak implements IPeak {
         final Peak peak = (Peak) o;
 
         if (Float.compare(peak.intensity, intensity) != 0) return false;
-        if (Float.compare(peak.massChargeRatio, massChargeRatio) != 0) return false;
+        return Float.compare(peak.massChargeRatio, massChargeRatio) == 0;
 
-        return true;
     }
 
     @Override
