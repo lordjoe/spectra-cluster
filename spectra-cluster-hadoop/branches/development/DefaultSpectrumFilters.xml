@@ -1,0 +1,6 @@
+<Filters>
+    <SpectrumFilter minimumLength="16"/>
+    <!-- This is hard coded
+    <SpectrumFilter identified="true"/>
+    -->
+</Filters>
