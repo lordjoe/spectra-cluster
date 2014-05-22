@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.CountedMap;
 import com.lordjoe.hadoop.ITextMapper;
 import com.lordjoe.hadoop.ITextReducer;
 import com.lordjoe.hadoop.TextKeyValue;
@@ -9,18 +8,17 @@ import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.io.*;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -299,39 +297,39 @@ public class DuplicateReductionSimulator {
         }
         ElapsedTimer timer = new ElapsedTimer();
         for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            File originalFile = new File(arg);
-            if (!originalFile.exists())
-                throw new IllegalStateException("nonexistant cluster file " + arg);
-            timer.reset();
-            IClusterSet cs = ClusterSimilarityUtilities.createClusteringSetFromCGF(originalFile);
-
-            CountedMap<String> countedMap = ClusterSimilarityUtilities.getCountedMap(cs);
-            System.out.println(countedMap);
-            System.out.println();  // terminate dots display
-            timer.showElapsed("read " + arg);
-            timer.reset();
-            if (cs.getClusterCount() == 0)
-                throw new IllegalStateException("bad cluster file " + arg);
-            IClusterSet cs2 = DuplicateReductionSimulator.simulateDuplicateReduction(cs);
-            timer.showElapsed("processed " + arg);
-            timer.reset();
-            CountedMap<String> countedMap2 = ClusterSimilarityUtilities.getCountedMap(cs2);
-            System.out.println(countedMap2);
-            CountedMap<String> countedMap3 = countedMap.getDifferences(countedMap2);
-            System.out.println(countedMap3);
-
-            try {
-                PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
-                final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
-                for (ICluster sc : cs.getClusters()) {
-                    clusterAppender.appendCluster(out, sc);
-                }
-                out.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            timer.showElapsed("written " + arg);
+//            String arg = args[i];
+//            File originalFile = new File(arg);
+//            if (!originalFile.exists())
+//                throw new IllegalStateException("nonexistant cluster file " + arg);
+//            timer.reset();
+//            IClusterSet cs = ClusterSimilarityUtilities.createClusteringSetFromCGF(originalFile);
+//
+//            CountedMap<String> countedMap = ClusterSimilarityUtilities.getCountedMap(cs);
+//            System.out.println(countedMap);
+//            System.out.println();  // terminate dots display
+//            timer.showElapsed("read " + arg);
+//            timer.reset();
+//            if (cs.getClusterCount() == 0)
+//                throw new IllegalStateException("bad cluster file " + arg);
+//            IClusterSet cs2 = DuplicateReductionSimulator.simulateDuplicateReduction(cs);
+//            timer.showElapsed("processed " + arg);
+//            timer.reset();
+//            CountedMap<String> countedMap2 = ClusterSimilarityUtilities.getCountedMap(cs2);
+//            System.out.println(countedMap2);
+//            CountedMap<String> countedMap3 = countedMap.getDifferences(countedMap2);
+//            System.out.println(countedMap3);
+//
+//            try {
+//                PrintWriter out = new PrintWriter(new FileWriter(arg + ".clustering"));
+//                final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
+//                for (ICluster sc : cs.getClusters()) {
+//                    clusterAppender.appendCluster(out, sc);
+//                }
+//                out.close();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            timer.showElapsed("written " + arg);
         }
     }
 
