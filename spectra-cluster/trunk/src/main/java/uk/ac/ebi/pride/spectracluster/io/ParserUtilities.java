@@ -24,15 +24,6 @@ public class ParserUtilities {
     public static final String END_IONS = "END IONS";
     public static final String BEGIN_CLUSTER = "BEGIN CLUSTER";
     public static final String END_CLUSTER = "END CLUSTER";
-    public static final String BEGIN_CLUSTERING = "=Cluster=";
-
-
-    public static final String AVERAGE_PRECURSOR_MZ = "av_precursor_mz=";
-    public static final String AVERAGE_PRECURSOR_INTENSITY = "av_precursor_intens=";
-    public static final String PEPTIDE_SEQUENCE = "sequence=";
-    public static final String CONSENSUS_MZ = "consensus_mz=";
-    public static final String CONSENSUS_INTENSITY = "consensus_intens=";
-    public static final String SPECTRUM_ID = "SPEC";
 
     public static final String CLUSTERING_EXTENSION = ".clustering";
     public static final String CGF_EXTENSION = ".cgf";
