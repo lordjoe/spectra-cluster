@@ -209,6 +209,7 @@
                             <mainClass>uk.ac.ebi.pride.spectracluster.export.Exporter</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>
                 </configuration>
