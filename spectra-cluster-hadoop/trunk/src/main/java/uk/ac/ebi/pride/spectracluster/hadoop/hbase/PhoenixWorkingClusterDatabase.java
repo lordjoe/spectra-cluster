@@ -5,10 +5,10 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.hadoop.hbase.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import uk.ac.ebi.pride.spectracluster.datastore.IWorkingClusterDatabase;
-import uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCUtilities;
-import uk.ac.ebi.pride.spectracluster.datastore.WorkingClusterDatabase;
-import uk.ac.ebi.pride.spectracluster.datastore.WorkingDatabaseFactory;
+import uk.ac.ebi.pride.spectracluster.hadoop.datastore.IWorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.hadoop.datastore.SpringJDBCUtilities;
+import uk.ac.ebi.pride.spectracluster.hadoop.datastore.WorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.hadoop.datastore.WorkingDatabaseFactory;
 
 import javax.sql.DataSource;
 import java.util.List;

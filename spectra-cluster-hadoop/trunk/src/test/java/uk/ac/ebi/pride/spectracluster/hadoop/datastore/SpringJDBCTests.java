@@ -1,15 +1,9 @@
-package uk.ac.ebi.pride.spectracluster.hadoop;
+package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
 import com.lordjoe.utilities.CollectionUtilities;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.hadoop.datastore.DataSourceDefaults;
-import uk.ac.ebi.pride.spectracluster.hadoop.datastore.IWorkingClusterDatabase;
-import uk.ac.ebi.pride.spectracluster.hadoop.datastore.SpectrumDataStore;
-import uk.ac.ebi.pride.spectracluster.hadoop.datastore.SpectrumUtilities;
-import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
-import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
+import uk.ac.ebi.pride.spectracluster.hadoop.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 
@@ -22,33 +16,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * uk.ac.ebi.pride.spectracluster.hadoop.PhoenixTests
- *
- * @author Steve Lewis
- * @date 28/10/13
+ * uk.ac.ebi.pride.spectracluster.datastore.SpringJDBCTests
+ * User: Steve
+ * Date: 7/15/13
  */
-public class PhoenixTests {
+public class SpringJDBCTests {
 
 
-    public static final boolean SKIP_DATABASE_TESTS = false; // these tests are long and not critical
+    public static final boolean SKIP_DATABASE_TESTS = true; // these tests are long and not critical
 
-    private DataSource m_Source;
-
-    @Before
-    // make sure we are using Pohenix/hbase as a datasource
-    public void setDataStore() {
-        if (m_Source == null) {
-            // use hard coded HBase connection
-            DataSource source = HBaseUtilities.getHBaseDataSource();
-            m_Source = source;
-            DataSourceDefaults.INSTANCE.setDefaultDataSource(source);
-            DataSourceDefaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
-        }
-    }
-
-    public DataSource getSource() {
-        return m_Source;
-    }
 
     /*
        NOTE - these  tests will work only when a MYSQL database is running on local_host and
@@ -66,7 +42,8 @@ public class PhoenixTests {
             return;
         // run once with the right password - the machine will remember
         //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
-        final Connection connection = getSource().getConnection();
+        DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
+        final Connection connection = ds.getConnection();
         Assert.assertNotNull(connection);
         final Statement statement = connection.createStatement();
         final ResultSet resultSet = statement.executeQuery("describe test.spectrums");
@@ -80,19 +57,6 @@ public class PhoenixTests {
 
 
     }
-
-    // get rid of
-   //@Test
-    public void testDbExpunge() throws Exception {
-        if (SKIP_DATABASE_TESTS)
-            return;
-        // run once with the right password - the machine will remember
-        //   SpringJDBCUtilities.setHostPassword("localhost", "<secret>");
-        SpectrumDataStore db = new SpectrumDataStore("test", getSource());
-        IWorkingClusterDatabase database = db.getDatabase();
-        database.expungeDatabase();
-    }
-
 
     /**
      * clear then load the database and make sure that
@@ -116,7 +80,7 @@ public class PhoenixTests {
         if (allSpectra.iterator().hasNext())
             return; // already loaded
 
-        List<? extends ISpectrum> originalSpectra = ClusteringDataUtilities.readISpectraFromResource();
+        List<? extends ISpectrum> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
         db.storeSpectra(originalSpectra);
 
@@ -158,7 +122,7 @@ public class PhoenixTests {
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         // the returns list is a List<IPeptideSpectrumMatch>
-        List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringDataUtilities.readISpectraFromResource());
+        List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringTestUtilities.readISpectraFromResource());
         List<ISpectrum> holder = getAllSpectra(db);
 
         // load up as needed
@@ -203,7 +167,7 @@ public class PhoenixTests {
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
         final Iterable<? extends ISpectrum> allSpectra = db.getAllSpectra();
-        List originalSpectra = ClusteringDataUtilities.readISpectraFromResource();
+        List originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
 
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
