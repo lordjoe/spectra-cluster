@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
@@ -110,11 +111,11 @@ public class ClusterSimilarityUtilities {
 
                     ClusteringHeader header = simpleClusterSet.getHeader();
                     if (header == null) {
-                        header = ParserUtilities.readClusterHeader(lineNumberReader);
+                        header = ClusterParserUtilities.readClusterHeader(lineNumberReader);
                         simpleClusterSet.setHeader(header);
                     }
 
-                    IPeptideSpectralCluster[] clusters = ParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
+                    IPeptideSpectralCluster[] clusters = ClusterParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
                     simpleClusterSet.addClusters(Arrays.asList(clusters));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -663,7 +664,7 @@ public class ClusterSimilarityUtilities {
 
 
         Set<PSMSpectrum> spectra = psms.getAllSpectrums();
-        for (IPeptideSpectrumMatch sm : spectra) {
+        for (IDecoyPeptideSpectrumMatch sm : spectra) {
             if (sm.isDecoy()) {
                 String peptide = sm.getPeptide();
                 if (!decoys.contains(peptide))
