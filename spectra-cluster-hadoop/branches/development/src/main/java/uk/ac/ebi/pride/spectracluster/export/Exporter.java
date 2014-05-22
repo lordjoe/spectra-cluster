@@ -64,6 +64,8 @@ public class Exporter {
         final PrintWriter out = fromDirectory(outputDirectory,activeDirectory);
         try {
             final List<File> mzTabFiles = MZTabhandler.getMZTabFiles(activeDirectory);
+            if(mzTabFiles.size() == 0)
+                throw new IllegalStateException("Bad or Empty input directory " + activeDirectory.getAbsolutePath()); // ToDo change
             for (File mzTabFile : mzTabFiles) {
                 System.out.println(mzTabFile.getAbsolutePath());
                 MZTabProcessor processor = new MZTabProcessor(this, mzTabFile);
