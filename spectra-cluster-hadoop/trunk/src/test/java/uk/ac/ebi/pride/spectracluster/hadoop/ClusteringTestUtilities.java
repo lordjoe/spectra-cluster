@@ -5,6 +5,7 @@ import org.junit.Assert;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
 
@@ -45,6 +46,29 @@ public class ClusteringTestUtilities {
             Assert.assertTrue(equivalent);
 
         }
+    }
+
+    /**
+     * read a resource mgf as a list of spectra
+     *
+     * @return
+     */
+    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
+        return readISpectraFromResource(SAMPLE_MGF_FILE);
+    }
+
+    /**
+     * read a resource mgf as a list of spectra
+     *
+     * @param resName
+     * @return
+     */
+    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
+        // load a file contains a list of clusters
+        File inputFile = getSpectrumFile(resName);
+
+        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        return Arrays.asList(mgfSpectra);
     }
 
     /**
