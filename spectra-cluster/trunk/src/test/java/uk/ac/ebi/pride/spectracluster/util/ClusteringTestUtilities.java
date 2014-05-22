@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
 import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
@@ -10,8 +9,9 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterContentComparator;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.mgf_parser.MgfFile;
@@ -38,26 +38,6 @@ public class ClusteringTestUtilities {
 
     public static final String SAMPLE_CGF_FILE = "uk/ac/ebi/pride/spectracluster/io/spectra_400.0_4.0.cgf";
     public static final String SAMPLE_SECOND_CGF_FILE = "uk/ac/ebi/pride/spectracluster/io/ClusterBin0400.cgf";
-
-
-    /**
-     * fial an assertion of all clusters om the set are not equivalent
-     *
-     * @param pScs
-     * @param pScs2
-     */
-    public static void assertEquivalentClusters(final List<IPeptideSpectralCluster> pScs, final List<IPeptideSpectralCluster> pScs2) {
-        Collections.sort(pScs, ClusterContentComparator.INSTANCE);
-        Collections.sort(pScs2, ClusterContentComparator.INSTANCE);
-        Assert.assertEquals(pScs.size(), pScs2.size());
-        for (int i = 0; i < pScs.size(); i++) {
-            IPeptideSpectralCluster cl1 = pScs.get(i);
-            IPeptideSpectralCluster cl2 = pScs2.get(i);
-            boolean equivalent = cl1.equivalent(cl2);
-            Assert.assertTrue(equivalent);
-
-        }
-    }
 
     /**
      * read a resource mgf as a list of spectra

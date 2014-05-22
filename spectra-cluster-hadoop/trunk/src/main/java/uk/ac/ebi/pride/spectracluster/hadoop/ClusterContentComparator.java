@@ -1,7 +1,7 @@
-package uk.ac.ebi.pride.spectracluster.util.comparator;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 import java.util.Comparator;
 
