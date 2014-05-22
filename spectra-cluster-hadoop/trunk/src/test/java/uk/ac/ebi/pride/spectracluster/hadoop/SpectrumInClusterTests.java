@@ -1,11 +1,10 @@
-package uk.ac.ebi.pride.spectracluster.cluster;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.hadoop.SpectrumInClusterUtilities;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
