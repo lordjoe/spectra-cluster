@@ -1,4 +1,4 @@
-package uk.ac.ebi.spectracluster.filters;
+package uk.ac.ebi.pride.spectracluster.filters;
 
 import com.lordjoe.filters.*;
 import org.xml.sax.*;
@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import javax.annotation.*;
 
 /**
- * uk.ac.ebi.spectracluster.filters.SpectrumFilters
+ * uk.ac.ebi.pride.spectracluster.filters.SpectrumFilters
  *
  * @author Steve Lewis
  * @date 16/05/2014

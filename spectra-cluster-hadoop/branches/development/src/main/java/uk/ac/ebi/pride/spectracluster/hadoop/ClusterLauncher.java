@@ -1461,8 +1461,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     // Call with
-    // params=tandem.params remoteHost=Glados remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample
-    //
+    // config=Launcher.properties  params=sample.properties
     public static void main(final String[] args) throws Exception {
         // reset globals
         SpectraHadoopMain.resetInstance();
