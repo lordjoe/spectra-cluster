@@ -44,6 +44,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
         Defaults.configureAnalysisParameters(getApplication());
+        HadoopDefaults.configureAnalysisParameters(getApplication());
     }
 
 

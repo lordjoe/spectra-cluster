@@ -1,13 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity.chart;
 
 import com.lordjoe.utilities.TypedVisitor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterMZSpread;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDataType;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IDecoyDiscriminator;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleSpectrumRetriever;
+import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

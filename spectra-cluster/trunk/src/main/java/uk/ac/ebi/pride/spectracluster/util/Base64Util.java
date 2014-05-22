@@ -61,11 +61,10 @@ public class Base64Util {
 		 * Decode the data and put it into byte array
 		 */
         boolean zLibCompression = false;
-        List<Double> resultArray = decode(doublePrecision, bigEndian, zLibCompression, dataString);
-		/*
+        /*
 		 * Return result as list
 		 */
-        return resultArray;
+        return decode(doublePrecision, bigEndian, zLibCompression, dataString);
     }
 
 
@@ -101,9 +100,7 @@ public class Base64Util {
             decompresser.end();
             // Use uncompressed byte array
             dataByteArray = new byte[uncompressedArrayLength];
-            for (int i = 0; i < uncompressedArrayLength; i++) {
-                dataByteArray[i] = uncompressedByteArray[i];
-            }
+            System.arraycopy(uncompressedByteArray, 0, dataByteArray, 0, uncompressedArrayLength);
         }
         ByteBuffer dataByteBuffer = ByteBuffer.wrap(dataByteArray);
 		/*
@@ -213,22 +210,22 @@ public class Base64Util {
 			/*
 			 * Precision == "32"
 			 */
-            for (int i = 0; i < dataLength; i++) {
-                if (inDataList.get(i) instanceof Double) {
-                    Double doubleVal = (Double) inDataList.get(i);
+            for (Number anInDataList : inDataList) {
+                if (anInDataList instanceof Double) {
+                    Double doubleVal = (Double) anInDataList;
                     dataByteBuffer.putFloat(doubleVal.floatValue());
-                } else if (inDataList.get(i) instanceof Integer) {
-                    Integer intVal = (Integer) inDataList.get(i);
-                    dataByteBuffer.putInt(intVal.intValue());
+                } else if (anInDataList instanceof Integer) {
+                    Integer intVal = (Integer) anInDataList;
+                    dataByteBuffer.putInt(intVal);
                 }
             }
         } else {
 			/*
 			 * Precision == "64"
 			 */
-            for (int i = 0; i < dataLength; i++) {
-                Double doubleVal = (Double) inDataList.get(i);
-                dataByteBuffer.putDouble(doubleVal.doubleValue());
+            for (Number anInDataList : inDataList) {
+                Double doubleVal = (Double) anInDataList;
+                dataByteBuffer.putDouble(doubleVal);
             }
         }
 		/*

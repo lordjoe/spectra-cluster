@@ -26,7 +26,6 @@ public class FilteredClusterAppender implements IClusterAppender {
      */
     @Override
     public void appendCluster(final Appendable out, final ICluster data, final Object... otherData) {
-        boolean anyThingDone = false;
         //noinspection  SimplifiableIfStatement
         if (m_AppendIf.apply(data, otherData)) {
             clusterAppender.appendCluster(out, data, otherData);

@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
- * used by Spectra like get hightest peaks which are incomplete
+ * used by Spectra like get highest peaks which are incomplete
  * spectra
  * @author Steve Lewis
  * @author Rui Wang
@@ -66,7 +66,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
 
     /**
      * return as a spectrum the highest n peaks as defined in majorPeakCount
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     * this follows Frank et all suggestion that all spectra in a cluster will share at least one of these
      * @param majorPeakCount The number of highest peaks to consider "major"
      * @return
      */

@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class Spectrum implements ISpectrum {
 
-    public static final int BAD_QUALITY_MEASURE = -1;
+    private static final int BAD_QUALITY_MEASURE = -1;
 
     private final String id;
     private final int precursorCharge;
@@ -33,7 +33,7 @@ public class Spectrum implements ISpectrum {
     // Dot products always get the highest peaks of a specific intensity -
     // this caches those and returns a list sorted by MZ
     private final Map<Integer, ISpectrum> highestPeaks = new HashMap<Integer, ISpectrum>();
-    private Set<Integer> majorPeakMZ = new HashSet<Integer>();
+    private final Set<Integer> majorPeakMZ = new HashSet<Integer>();
     // the number of peaks considered as "major" when the majorPeakMZ Set was filled the last time.
     private int currentMajorPeakCount = 0;
 
@@ -112,7 +112,7 @@ public class Spectrum implements ISpectrum {
      * who knows why Johannes does this but we can as well
      * todo @rw: double check this wit Johannes
      */
-    public double convertIntensity(IPeak p1) {
+    double convertIntensity(IPeak p1) {
         double intensity = p1.getIntensity();
         if (intensity == 0)
             return 0;
@@ -171,7 +171,7 @@ public class Spectrum implements ISpectrum {
     }
 
     /**
-     * does the concensus spectrum contin this is a major peak
+     * does the concensus spectrum contain this is a major peak
      *
      * @param mz peak as int
      * @return true if so
@@ -184,7 +184,7 @@ public class Spectrum implements ISpectrum {
 
     /**
      * return as a spectrum the highest  MAJOR_PEAK_NUMBER
-     * this follows Frank etall's suggestion that all spectra in a cluster will share at least one of these
+     * this follows Frank et all suggestion that all spectra in a cluster will share at least one of these
      *
      * @return
      */
@@ -298,7 +298,7 @@ public class Spectrum implements ISpectrum {
     /**
      * like equals but weaker - says other is equivalent to this
      *
-     * @param o possbly null other object
+     * @param o possibly null other object
      * @return true if other is "similar enough to this"
      */
     public boolean equivalent(ISpectrum o) {
@@ -367,8 +367,7 @@ public class Spectrum implements ISpectrum {
         result = id.hashCode();
         result = 31 * result + precursorCharge;
         result = 31 * result + (precursorMz != +0.0f ? Float.floatToIntBits(precursorMz) : 0);
-        for (int i = 0; i < peaks.size(); i++) {
-            IPeak pk0 = peaks.get(i);
+        for (IPeak pk0 : peaks) {
             result = 31 * result + pk0.hashCode();
         }
 

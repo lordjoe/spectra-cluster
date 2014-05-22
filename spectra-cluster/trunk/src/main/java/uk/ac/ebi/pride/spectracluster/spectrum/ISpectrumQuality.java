@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
  * @author Rui Wang
  * @version $Id$
  */
-public interface ISpectrumQuality {
+interface ISpectrumQuality {
 
     /**
      * Get the quality measure of a spectrum

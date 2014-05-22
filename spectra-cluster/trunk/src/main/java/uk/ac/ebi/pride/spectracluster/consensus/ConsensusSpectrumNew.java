@@ -85,7 +85,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
      */
     protected final float MZ_THRESHOLD_STEP = 0.1F;
 
-    protected List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
+    protected final List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
     public final static boolean USE_ROUNDING = true;
 
     /**
@@ -189,8 +189,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
 
         int posAllPeaks = 0;
 
-        for (int i = 0; i < peaksToRemove.size(); i++) {
-            IPeak peakToRemove = peaksToRemove.get(i);
+        for (IPeak peakToRemove : peaksToRemove) {
             double mzToRemove = peakToRemove.getMz();
 
             if (USE_ROUNDING)
@@ -250,8 +249,7 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
         int posAllPeaks = 0;
         List<IPeak> newPeaks = new ArrayList<IPeak>(); // peaks with m/z values that do not yet exist
 
-        for (int i = 0; i < peaksToAdd.size(); i++) {
-            IPeak peakToAdd = peaksToAdd.get(i);
+        for (IPeak peakToAdd : peaksToAdd) {
             double mzToAdd = peakToAdd.getMz();
 
             if (USE_ROUNDING)
@@ -465,17 +463,13 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
                     final double nextPeakFraction = nextPeakIntensity / totalIntensity;
                     final double currentPeakFraction = currentPeakIntensity / totalIntensity;
 
-                    final double totalFraction = nextPeakFraction + currentPeakFraction;
-
-
                     double weightedMz = (nextPeakFraction * nextPeakMz) + (currentPeakFraction * currentPeakMz);
 
 
                     final double intensity = currentPeakIntensity + nextPeakIntensity;
                     final int count = currentPeak.getCount() + nextPeak.getCount();
-                    IPeak newPeak = new Peak((float) weightedMz, (float) intensity, count);
 
-                    currentPeak = newPeak;
+                    currentPeak = new Peak((float) weightedMz, (float) intensity, count);
                 } else {
                     // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
                     // list and are thereby removed from the consensusPeaks
@@ -538,9 +532,6 @@ public class ConsensusSpectrumNew implements IConsensusSpectrumBuilder {
                 final double totalIntensity = nextPeakIntensity + currentPeakIntensity;
                 final double nextPeakFraction = nextPeakIntensity / totalIntensity;
                 final double currentPeakFraction = currentPeakIntensity / totalIntensity;
-
-                final double totalFraction = nextPeakFraction + currentPeakFraction;
-
 
                 double weightedMz = (nextPeakFraction * nextPeakMz) + (currentPeakFraction * currentPeakMz);
 

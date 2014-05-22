@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class CGFClusterAppender implements IClusterAppender {
 
-    private MGFSpectrumAppender spectrumAppender;
+    private final MGFSpectrumAppender spectrumAppender;
 
     public CGFClusterAppender(MGFSpectrumAppender spectrumAppender) {
         this.spectrumAppender = spectrumAppender;

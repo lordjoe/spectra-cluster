@@ -68,10 +68,6 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
         one_time_iterator = new MGFSpectrumIterator();
     }
 
-    protected LineNumberReader getReader() {
-        return reader;
-    }
-
 
     /**
      * Returns an iterator over a set of elements of type T.

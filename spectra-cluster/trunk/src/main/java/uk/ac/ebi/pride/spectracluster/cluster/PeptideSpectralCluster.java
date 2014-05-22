@@ -80,13 +80,11 @@ public class PeptideSpectralCluster extends SpectralCluster implements IPeptideS
         byPurity.clear();
         double numberSpectra = getClusteredSpectraCount();
         CountedString[] items = CountedString.getCountedStrings(getPeptides());
-        for (int i = 0; i < items.length; i++) {
-            CountedString item = items[i];
+        for (CountedString item : items) {
             String value = item.getValue();
             String[] peptides = value.split(";");
             boolean decoy = false;
-            for (int j = 0; j < peptides.length; j++) {
-                String peptide = peptides[j];
+            for (String peptide : peptides) {
                 if (peptide != null && dd != null)
                     decoy |= dd.isDecoy(peptide);
                 else

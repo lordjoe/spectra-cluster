@@ -69,7 +69,6 @@ public final class ClusterUtilities {
         double minSize = Math.min(spectralIds1.size(), spectralIds2.size());
 
         Set<String> common = new HashSet<String>(spectralIds1);
-        boolean changed = common.retainAll(spectralIds2);
 
         return (double) common.size() / minSize;
     }

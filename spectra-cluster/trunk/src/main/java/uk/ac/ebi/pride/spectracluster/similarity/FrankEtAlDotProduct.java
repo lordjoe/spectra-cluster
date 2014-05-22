@@ -29,9 +29,9 @@ import java.util.List;
 public class FrankEtAlDotProduct implements ISimilarityChecker {
 
     // add a nonsense park
-    public static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE, 0);
+    private static final IPeak LAST_PEAK = new Peak(Float.MAX_VALUE, 0);
 
-    public static final int K2011_BIN_SIZE = 50;
+    private static final int K2011_BIN_SIZE = 50;
 
     /**
      * The versions available from this algorithm. The only
@@ -117,14 +117,14 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
         double sumSquareIntensity1 = highestPeaksSpectrum1.getSumSquareIntensity();
 
         // the collection is immutable we need to build a new one
-        List<IPeak> kHighestPeaks1 = new ArrayList(highestPeaksSpectrum1.getPeaks());
+        List<IPeak> kHighestPeaks1 = new ArrayList<IPeak>(highestPeaksSpectrum1.getPeaks());
         kHighestPeaks1.add(LAST_PEAK); //add a peak we will not use
         IPeak[] peaks1 = kHighestPeaks1.toArray(new IPeak[kHighestPeaks1.size()]);
 
         ISpectrum highestPeaksSpectrum2 = spectrum2.getHighestNPeaks(numberCompared);
         double sumSquareIntensity2 = highestPeaksSpectrum2.getSumSquareIntensity();
         // the collection is immutable we need to build a new one
-        List<IPeak> kHighestPeaks2 = new ArrayList(highestPeaksSpectrum2.getPeaks());
+        List<IPeak> kHighestPeaks2 = new ArrayList<IPeak>(highestPeaksSpectrum2.getPeaks());
         kHighestPeaks2.add(LAST_PEAK); //add a peak we will not use
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
 
