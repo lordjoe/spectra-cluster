@@ -2,15 +2,10 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.MostSimilarClusterSet;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleSpectrumRetriever;
 import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -88,25 +83,25 @@ public class IncrementalClusteringEngineTests {
 
     }
 
-    @Test
-    public void testCompareIncrementalClusteringEngine() throws Exception {
-        final IncrementalClusteringEngineFactory cf = new IncrementalClusteringEngineFactory();
-        final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
-        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
-        List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
-        final List<IPeptideSpectralCluster> clusters = getRunEngine(ce, originalSpectra);
-
-        IClusterSet cs1 = new SimpleClusterSet(originalSpectralClusters);
-        IClusterSet cs2 = new SimpleClusterSet(clusters);
-
-        IPeptideSpectrumMatch[] sm = new IPeptideSpectrumMatch[originalSpectra.size()];
-        for (int i = 0; i < sm.length; i++) {
-            sm[i] = (IPeptideSpectrumMatch) originalSpectra.get(i);
-        }
-        SimpleSpectrumRetriever sr = new SimpleSpectrumRetriever(sm);
-        MostSimilarClusterSet.compareClusterSets(sr, cs1, cs2);
-
-    }
+//    @Test
+//    public void testCompareIncrementalClusteringEngine() throws Exception {
+//        final IncrementalClusteringEngineFactory cf = new IncrementalClusteringEngineFactory();
+//        final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
+//        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+//        List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
+//        final List<IPeptideSpectralCluster> clusters = getRunEngine(ce, originalSpectra);
+//
+//        IClusterSet cs1 = new SimpleClusterSet(originalSpectralClusters);
+//        IClusterSet cs2 = new SimpleClusterSet(clusters);
+//
+//        IPeptideSpectrumMatch[] sm = new IPeptideSpectrumMatch[originalSpectra.size()];
+//        for (int i = 0; i < sm.length; i++) {
+//            sm[i] = (IPeptideSpectrumMatch) originalSpectra.get(i);
+//        }
+//        SimpleSpectrumRetriever sr = new SimpleSpectrumRetriever(sm);
+//        MostSimilarClusterSet.compareClusterSets(sr, cs1, cs2);
+//
+//    }
 
     protected List<IPeptideSpectralCluster> getRunEngine(IIncrementalClusteringEngine ce, List<ISpectrum> originalSpectra) {
         // these MUST be in ascending mz order

@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 
 import java.util.List;
@@ -98,18 +97,6 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
     @Override
     public String getAnnotation() {
         return annotation;
-    }
-
-    /**
-     * true if we know this is a decoy
-     *
-     * @return
-     */
-    //todo @rw: this can be improved
-    @Override
-    public boolean isDecoy() {
-        PSMSpectrum psm = PSMSpectrum.getSpectrum(getId());
-        return psm.isDecoy();
     }
 
     /**
