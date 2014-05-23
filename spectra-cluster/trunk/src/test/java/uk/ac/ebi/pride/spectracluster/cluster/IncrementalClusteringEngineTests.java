@@ -145,8 +145,7 @@ public class IncrementalClusteringEngineTests {
 
         WrappedIncrementalClusteringEngineFactory incrementalFactory = new WrappedIncrementalClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
         IClusteringEngine incrementalEngine = incrementalFactory.getClusteringEngine(new Double(1000));
-        ClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-        ClusteringEngine oldClusteringEngine = (ClusteringEngine) factory.getClusteringEngine();
+        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge

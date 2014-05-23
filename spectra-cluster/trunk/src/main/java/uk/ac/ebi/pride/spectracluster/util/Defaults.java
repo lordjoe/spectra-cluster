@@ -121,9 +121,7 @@ public class Defaults {
     }
 
     public IClusteringEngine getDefaultClusteringEngine() {
-        ISimilarityChecker similarityChecker = getDefaultSimilarityChecker();
-        Comparator<ICluster> spectrumComparator = getDefaultSpectrumComparator();
-        return new ClusteringEngineFactory(similarityChecker, spectrumComparator).getClusteringEngine();
+        return new ClusteringEngineFactory().getClusteringEngine();
 
     }
 

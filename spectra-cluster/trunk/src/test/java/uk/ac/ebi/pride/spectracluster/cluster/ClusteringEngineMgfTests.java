@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -28,8 +28,7 @@ public class ClusteringEngineMgfTests {
         List<String> spectrumIds = new ArrayList<String>(Arrays.asList("6777", "291", "13480"));
         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
         //      IClusteringEngine clusteringEngine = Defaults.INSTANCE.getDefaultClusteringEngine();
-        ClusteringEngineFactory factory = new ClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-        IClusteringEngine oldClusteringEngine = factory.getClusteringEngine();
+        IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             if (spectrumIds.contains(originalSpectrum.getId())) {
