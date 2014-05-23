@@ -75,7 +75,7 @@ public class ClusteringEngineTests {
 
             for (ICluster originalSpectralCluster : originalSpectralClusters) {
                 double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), originalSpectralCluster.getConsensusSpectrum());
-                if (similarityScore >= similarityChecker.getDefaultThreshold()) {
+                if (similarityScore >= Defaults.getSimilarityThreshold()) {
                     foundSimilarCluster = true;
                     List<ISpectrum> newClusteredSpectra = newCluster.getClusteredSpectra();
                     List<ISpectrum> originalClusteredSpectra = originalSpectralCluster.getClusteredSpectra();

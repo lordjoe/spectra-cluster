@@ -187,7 +187,7 @@ public class IncrementalClusteringEngineTests {
             ICluster newCluster = newClusters.get(i);
             ICluster oldCluster = oldClusters.get(i);
             double similarityScore = similarityChecker.assessSimilarity(newCluster.getConsensusSpectrum(), oldCluster.getConsensusSpectrum());
-            if (similarityScore >= similarityChecker.getDefaultThreshold()) {
+            if (similarityScore >= Defaults.getSimilarityThreshold()) {
                 List<ISpectrum> newClusteredSpectra = newCluster.getClusteredSpectra();
                 List<ISpectrum> originalClusteredSpectra = oldCluster.getClusteredSpectra();
                 Assert.assertEquals(originalClusteredSpectra.size(), newClusteredSpectra.size());

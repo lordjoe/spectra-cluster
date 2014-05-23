@@ -86,7 +86,7 @@ public final class ClusterUtilities {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
                 final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
                 final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = similarityChecker.getDefaultRetainThreshold();  // use a lower threshold to keep as to add
+                final double defaultThreshold = Defaults.getRetainThreshold();  // use a lower threshold to keep as to add
                 if (similarityScore < defaultThreshold) {
                     noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
@@ -281,7 +281,7 @@ public final class ClusterUtilities {
                     break; // no more to consider
                 final ISpectrum cs1 = test.getConsensusSpectrum();
                 double similarity = similarityChecker.assessSimilarity(cs1, cluster.getConsensusSpectrum());
-                if (similarity >= similarityChecker.getDefaultThreshold()) {
+                if (similarity >= Defaults.getSimilarityThreshold()) {
                     mergeWith = test;
                     break; // found who to merge with
                 }

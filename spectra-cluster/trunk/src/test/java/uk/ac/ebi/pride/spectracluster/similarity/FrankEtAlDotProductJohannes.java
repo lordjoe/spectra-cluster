@@ -90,27 +90,6 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
     private AlgorithmVersion version = DEFAULT_ALGORITHM;
 
     /**
-     * erturn the default similarity Threshold
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultThreshold() {
-        return Defaults.INSTANCE.getSimilarityThreshold();
-    }
-
-    /**
-     * return the default similarity Threshold  this is
-     * the threshold to keep  a spectrum in a cluster
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultRetainThreshold() {
-        return Defaults.INSTANCE.getRetainThreshold();
-    }
-
-    /**
      * Assesses the spectra's similarity using
      * the normalized dot-product
      */

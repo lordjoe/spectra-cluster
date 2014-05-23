@@ -13,21 +13,6 @@ import uk.ac.ebi.pride.spectracluster.util.IAlgorithm;
  * @author Rui Wang
  */
 public interface ISimilarityChecker extends IAlgorithm {
-    /**
-     * return the default similarity Threshold  this is
-     * the threshold to add a spectrum to a cluster
-     *
-     * @return as above
-     */
-    public double getDefaultThreshold();
-
-    /**
-     * return the default similarity Threshold  this is
-     * the threshold to keep  a spectrum in a cluster
-     *
-     * @return as above
-     */
-    public double getDefaultRetainThreshold();
 
     /**
      * Assesses the similarity between the two passed

@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 import javax.annotation.Nonnull;
@@ -179,7 +180,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             if (similarityScore > highestSimilarityScore) {
                 highestSimilarityScore = similarityScore;
                 bestMatch = cluster; //    track good but not great
-                if (similarityScore >= sCheck.getDefaultThreshold()) {
+                if (similarityScore >= Defaults.getSimilarityThreshold()) {
                     mostSimilarCluster = bestMatch;
                 }
 
@@ -259,7 +260,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
         // allow a bonus for overlap
         ISimilarityChecker sCheck = getSimilarityChecker();
-        if (highestSimilarityScore + BONUS_PER_OVERLAP > sCheck.getDefaultThreshold()) {
+        if (highestSimilarityScore + BONUS_PER_OVERLAP > Defaults.getSimilarityThreshold()) {
             mergeIntoCluster(cluster1, cluster2);
             return true;
 

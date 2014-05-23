@@ -97,7 +97,7 @@ public class Defaults {
 
     private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
-    private ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct();
+    private ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct(getSimilarityMZRange(), getNumberComparedPeaks());
 
     private IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
@@ -158,9 +158,6 @@ public class Defaults {
     }
 
     public ISimilarityChecker getDefaultSimilarityChecker() {
-        if (defaultSimilarityChecker == null) {
-            defaultSimilarityChecker = new FrankEtAlDotProduct();
-        }
         return defaultSimilarityChecker;
     }
 

@@ -116,7 +116,7 @@ public class ClusteringEngine implements IClusteringEngine {
 
                 double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
-                if (similarityScore >= sCheck.getDefaultThreshold() && similarityScore > highestSimilarityScore) {
+                if (similarityScore >= Defaults.getSimilarityThreshold() && similarityScore > highestSimilarityScore) {
                     highestSimilarityScore = similarityScore;
                     mostSimilarCluster = cluster;
                 }
@@ -178,7 +178,7 @@ public class ClusteringEngine implements IClusteringEngine {
                     ICluster clusterI = myClusters.get(i);
                     ICluster clusterJ = myClusters.get(j);
                     double similarityScore = sCheck.assessSimilarity(clusterI.getConsensusSpectrum(), clusterJ.getConsensusSpectrum());
-                    if (similarityScore >= sCheck.getDefaultThreshold()) {
+                    if (similarityScore >= Defaults.getSimilarityThreshold()) {
                         toMerge = true;
                         modified = true;
                         ISpectrum[] clusteredSpectra = new ISpectrum[clusterI.getClusteredSpectra().size()];

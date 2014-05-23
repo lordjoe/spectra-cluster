@@ -163,7 +163,7 @@ public class ClusteringDataUtilities {
         // dot product
         double similarity = checker.assessSimilarity(sp1, sp2);
         // certainly in the same cluster
-        double defaultThreshold = checker.getDefaultThreshold();  // 0.6 - 0.7
+        double defaultThreshold = Defaults.getSimilarityThreshold();  // 0.6 - 0.7
         //noinspection UnusedDeclaration
         double highThreshold = 1.0 - ((1.0 - defaultThreshold) / 2); // 0.8 - 0.85
         //noinspection RedundantIfStatement

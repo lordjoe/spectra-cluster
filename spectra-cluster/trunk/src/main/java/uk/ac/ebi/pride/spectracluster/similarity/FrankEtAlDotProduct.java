@@ -4,7 +4,6 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +44,13 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
 
     public static final AlgorithmVersion DEFAULT_ALGORITHM = AlgorithmVersion.NAT_METH_2011;
 
-    /**
-     * Use Defaults which builds with reflection
-     * Set the class with Defaults.setSimilarityCheckerClass
-     */
+    private double similarityMZRange;
+    private int numberOfPeaksToCompare;
 
-    public FrankEtAlDotProduct() {
+    public FrankEtAlDotProduct(double similarityMZRange,
+                               int numberOfPeaksToCompare) {
+        this.similarityMZRange = similarityMZRange;
+        this.numberOfPeaksToCompare = numberOfPeaksToCompare;
     }
 
     /**
@@ -73,34 +73,12 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
         return getVersion().toString();
     }
 
-    private double mzRange = Defaults.getSimilarityMZRange();
     /**
      * The algorithm version to use. By
      * default the version described in
      * Nature Methods 2011 will be used.
      */
     private AlgorithmVersion version = DEFAULT_ALGORITHM;
-
-    /**
-     * return the default similarity Threshold
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultThreshold() {
-        return Defaults.getSimilarityThreshold();
-    }
-
-    /**
-     * return the default similarity Threshold  this is
-     * the threshold to keep  a spectrum in a cluster
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultRetainThreshold() {
-        return Defaults.getRetainThreshold();
-    }
 
     /**
      * Assesses the spectra's similarity using
@@ -128,7 +106,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
         kHighestPeaks2.add(LAST_PEAK); //add a peak we will not use
         IPeak[] peaks2 = kHighestPeaks2.toArray(new IPeak[kHighestPeaks2.size()]);
 
-        double mzRange = this.getMzRange();
+        double mzRange = similarityMZRange;
         boolean lastIsT = false;
         int t = 0;
         int e = 0;
@@ -224,7 +202,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
     }
 
     protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
-        int numberComparedPeaks = Defaults.getNumberComparedPeaks();
+        int numberComparedPeaks = numberOfPeaksToCompare;
         float precursorMz = spectrum1.getPrecursorMz();
         float precursor2 = spectrum2.getPrecursorMz();
         switch (version) {
@@ -253,16 +231,16 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
                                Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-            return Defaults.getNumberComparedPeaks();
+            return numberOfPeaksToCompare;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
-        int largeBinningRegion = Defaults.getLargeBinningRegion();
-        int k = Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
+        int largeBinningRegion = numberOfPeaksToCompare;
+        int k = numberOfPeaksToCompare* (int) (peptideMass / largeBinningRegion);
 
         if (peptideMass % largeBinningRegion > 0)
-            k += Defaults.getNumberComparedPeaks();
+            k += numberOfPeaksToCompare;
 
         return k;
     }
@@ -277,23 +255,15 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
     private int calculateK2011(Float precursor1, Float precursor2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null)
-            return Defaults.getNumberComparedPeaks();
+            return numberOfPeaksToCompare;
 
         // use m/z / 50
 
         return (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);
     }
 
-    public double getMzRange() {
-        return mzRange;
-    }
-
     public AlgorithmVersion getVersion() {
         return version;
-    }
-
-    public void setMzRange(double mzRange) {
-        this.mzRange = mzRange;
     }
 
     public void setVersion(AlgorithmVersion version) {
