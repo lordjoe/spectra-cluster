@@ -62,6 +62,7 @@ public class Exporter {
 
     public void exportDirectory() {
         final PrintWriter out = fromDirectory(outputDirectory,activeDirectory);
+        int numberWritten = 0;
         try {
             final List<File> mzTabFiles = MZTabhandler.getMZTabFiles(activeDirectory);
             if(mzTabFiles.size() == 0)
@@ -69,7 +70,7 @@ public class Exporter {
             for (File mzTabFile : mzTabFiles) {
                 System.out.println(mzTabFile.getAbsolutePath());
                 MZTabProcessor processor = new MZTabProcessor(this, mzTabFile);
-                processor.handleCorrespondingMGFs(out);
+                numberWritten += processor.handleCorrespondingMGFs(out);
               }
         } finally {
             out.close();
