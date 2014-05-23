@@ -30,6 +30,8 @@ public class MZTabProcessor {
     public MZTabProcessor(Exporter exporter, File mzTabFile) {
         this.exporter = exporter;
         tabHandler = new MZTabhandler(mzTabFile);
+        if(tabHandler.getMzTabs() == null)
+            return;
         addTabHandler(tabHandler);
     }
 
@@ -69,28 +71,32 @@ public class MZTabProcessor {
         return idToProtein.get(accession);
     }
 
-    public void handleCorrespondingMGFs(Appendable out) {
+    public int handleCorrespondingMGFs(Appendable out) {
+        int totalWritten = 0;
         for (MsRun run : msRunFiles.keySet()) {
-            handleMFGFile(run, out);
+            totalWritten += handleMFGFile(run, out);
         }
-
+        return totalWritten;
     }
 
-    protected void handleMFGFile(MsRun run , Appendable out) {
+    protected int handleMFGFile(MsRun run , Appendable out) {
+        int numberProcessed = 0;
+        int totalWritten = 0;
         try {
-            int numberProcessed = 0;
-            MSRunProcessor processor = idToProcessor.get(run.getId());
+             MSRunProcessor processor = idToProcessor.get(run.getId());
             File file = msRunFiles.get(run);
             LineNumberReader rdr = new LineNumberReader(new FileReader(file));
              IPeptideSpectrumMatch psm = ParserUtilities.readMGFScan(rdr);
             while (psm != null) {
-                processPSM(psm,processor, out);
+                if(processPSM(psm,processor, out))
+                    totalWritten++ ;
                 psm = ParserUtilities.readMGFScan(rdr);
                 numberProcessed++;
             }
         } catch (FileNotFoundException e) {
             throw new UnsupportedOperationException(e);
         }
+        return totalWritten;
     }
 
     protected PSM getPSM(String peptideId,MSRunProcessor processor) {
@@ -102,17 +108,19 @@ public class MZTabProcessor {
         return psm;
     }
 
-    protected void processPSM(IPeptideSpectrumMatch spectrum,MSRunProcessor processor, Appendable out) {
+    protected boolean processPSM(IPeptideSpectrumMatch spectrum,MSRunProcessor processor, Appendable out) {
         final String id = spectrum.getId();
 
         PSM peptide = getPSM(id,processor);
         if(peptide == null)
-            return;
+            return false; // not written
 
         final TypedFilterCollection filters = getExporter().getFilters();
        ISpectrum passed = (ISpectrum)filters.passes(spectrum);
-        if(passed != null)
+        final boolean ret = passed != null;
+        if(ret)
             spectrum.appendMGF(out);
+        return ret; // true if appended
       }
 
     protected void addTabHandler(MZTabhandler tab) {

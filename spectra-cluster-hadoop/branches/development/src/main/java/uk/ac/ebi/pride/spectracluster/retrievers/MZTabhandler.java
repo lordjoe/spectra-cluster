@@ -4,6 +4,7 @@ import com.lordjoe.filters.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.jmztab.model.*;
 import uk.ac.ebi.pride.jmztab.utils.*;
+import uk.ac.ebi.pride.jmztab.utils.errors.*;
 
 import java.io.*;
 import java.util.*;
@@ -22,18 +23,30 @@ public class MZTabhandler {
         return files;
     }
 
-    private final MZTabFile mzTabs;
+    private MZTabFile mzTabs;
 
     public MZTabhandler(File inp) {
         try {
             MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream());
             mzTabs = parser.getMZTabFile();
+            if (mzTabs == null)
+                return;
             final Collection<PSM> psMs = mzTabs.getPSMs();
             final Collection<Comment> comments = mzTabs.getComments();
             final Collection<Protein> proteins = mzTabs.getProteins();
 
+        } catch (MZTabErrorOverflowException e) {
+            e.printStackTrace();   // might happen on too many errors
+            mzTabs = null;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();   // might happen on too many errors
+            mzTabs = null;
+        } catch (RuntimeException e) {
+            e.printStackTrace();  // might happen on too many errors
+            mzTabs = null;
         } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
+            e.printStackTrace();  // might happen on too many errors
+            mzTabs = null;
         }
     }
 
