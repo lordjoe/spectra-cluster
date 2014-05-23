@@ -6,7 +6,9 @@ import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class StableClusteringEngineTest {
         }
         originalSpectralClusters = new ArrayList<ICluster>(ce.getClusters());
 
-        clusteringEngine = new StableClusteringEngine();
+        clusteringEngine = new StableClusteringEngine(new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks()), Defaults.getSimilarityThreshold());
         unstableClusters = new ArrayList<ICluster>();
         stableClusters = new ArrayList<ICluster>();
 

@@ -25,7 +25,7 @@ public class PeakMatchClusteringEngineFactory {
     public PeakMatchClusteringEngine getPeakMatchClusteringEngine() {
         final FrankEtAlDotProduct similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         final DefaultClusterComparator comparator = new DefaultClusterComparator();
-        final ClusteringEngine clusteringEngine = new ClusteringEngine(similarityChecker, comparator);
+        final ClusteringEngine clusteringEngine = new ClusteringEngine(similarityChecker, comparator, Defaults.getSimilarityThreshold());
         return new PeakMatchClusteringEngine(similarityChecker, comparator, clusteringEngine);
     }
 }

@@ -22,6 +22,7 @@ public class IncrementalClusteringEngineFactory {
     public IIncrementalClusteringEngine getIncrementalClusteringEngine(double windowSize) {
         final FrankEtAlDotProduct similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         final DefaultClusterComparator comparator = new DefaultClusterComparator();
-        return new IncrementalClusteringEngine(similarityChecker, comparator, windowSize);
+        final double similarityThreshold = Defaults.getSimilarityThreshold();
+        return new IncrementalClusteringEngine(similarityChecker, comparator, windowSize, similarityThreshold);
     }
 }

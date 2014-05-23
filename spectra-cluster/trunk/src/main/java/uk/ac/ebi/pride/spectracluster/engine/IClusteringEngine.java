@@ -23,6 +23,14 @@ public interface IClusteringEngine {
      */
     public ISimilarityChecker getSimilarityChecker();
 
+
+    /**
+     * Get the similarity threshold used
+     *
+     * @return  similarity threshold
+     */
+    public double getSimilarityThreshold();
+
     /**
      * Get clustered clusters sorted by MZ is useful
      *

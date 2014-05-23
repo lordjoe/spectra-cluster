@@ -145,9 +145,9 @@ public class IncrementalClusteringEngineTests {
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
 
-        final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000));
+        final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000), Defaults.getSimilarityThreshold());
         IClusteringEngine incrementalEngine = new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
-        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator());
+        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), Defaults.getSimilarityThreshold());
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge
