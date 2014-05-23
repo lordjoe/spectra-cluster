@@ -59,7 +59,7 @@ public class Spectrum implements ISpectrum {
         this.peaks.clear();
         Collections.sort(inpeaks);
         this.peaks.addAll(inpeaks);
-        Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
+        Collections.sort(this.peaks, new PeakMzComparator());
 
         calculateIntensities();
     }
@@ -89,7 +89,7 @@ public class Spectrum implements ISpectrum {
 
         peaks.clear();
         peaks.addAll(inpeaks);
-        Collections.sort(this.peaks, PeakMzComparator.INSTANCE);
+        Collections.sort(this.peaks, new PeakMzComparator());
 
         calculateIntensities();
 
@@ -255,7 +255,7 @@ public class Spectrum implements ISpectrum {
      */
     protected ISpectrum buildHighestPeaks(int numberRequested) {
         List<IPeak> byIntensity = new ArrayList<IPeak>(getPeaks());
-        Collections.sort(byIntensity, PeakIntensityComparator.INSTANCE); // sort by intensity
+        Collections.sort(byIntensity, new PeakIntensityComparator()); // sort by intensity
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak iPeak : byIntensity) {
             holder.add(iPeak);
@@ -263,7 +263,7 @@ public class Spectrum implements ISpectrum {
                 break;
         }
         //noinspection UnnecessaryLocalVariable
-        PeptideSpectrumMatch ret = new PeptideSpectrumMatch(this, holder);
+        Spectrum ret = new Spectrum(this, holder);
         return ret;
     }
 

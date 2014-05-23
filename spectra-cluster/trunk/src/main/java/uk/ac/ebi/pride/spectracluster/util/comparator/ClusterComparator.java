@@ -17,7 +17,6 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusterComparator implements Comparator<ICluster> {
-    public static final Comparator<ICluster> INSTANCE = new ClusterComparator();
 
     @Override
     public int compare(ICluster o1, ICluster o2) {

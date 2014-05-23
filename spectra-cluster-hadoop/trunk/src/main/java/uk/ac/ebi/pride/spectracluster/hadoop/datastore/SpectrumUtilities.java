@@ -49,7 +49,7 @@ public class SpectrumUtilities {
      */
     public static List<IPeak> filterTop250Peaks(List<IPeak> peaks) {
         List<IPeak> copy = new ArrayList<IPeak>(peaks);
-        Collections.sort(copy, PeakIntensityComparator.INSTANCE);
+        Collections.sort(copy, new PeakIntensityComparator());
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak pk : copy) {
             holder.add(pk);

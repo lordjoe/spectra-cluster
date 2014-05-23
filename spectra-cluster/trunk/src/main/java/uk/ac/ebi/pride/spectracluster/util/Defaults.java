@@ -101,7 +101,7 @@ public class Defaults {
 
     private IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
 
-    private DefaultClusterComparator defaultSpectrumComparator = (DefaultClusterComparator)DefaultClusterComparator.INSTANCE;
+    private DefaultClusterComparator defaultSpectrumComparator = new DefaultClusterComparator();
 
     private IIntensityNormalizer normalizer = new TotalIntensityNormalizer();
 

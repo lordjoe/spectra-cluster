@@ -359,7 +359,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         // add all new peaks
         allPeaks.addAll(newPeaks);
-        Collections.sort(allPeaks, PeakMzComparator.INSTANCE);
+        Collections.sort(allPeaks, new PeakMzComparator());
     }
 
     /**
@@ -475,14 +475,14 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             if (peakBuffer.size() < 1)
                 continue;
 
-            Collections.sort(peakBuffer, PeakIntensityComparator.INSTANCE);
+            Collections.sort(peakBuffer, new PeakIntensityComparator());
 
             List<IPeak> fivePeaks = new ArrayList<IPeak>(peaksInBinToKeep);
 
             for (int i = 0; i < peaksInBinToKeep && i < peakBuffer.size(); i++)
                 fivePeaks.add(peakBuffer.get(i));
 
-            Collections.sort(fivePeaks, PeakMzComparator.INSTANCE);
+            Collections.sort(fivePeaks, new PeakMzComparator());
             filteredSpectrum.addAll(fivePeaks);
         }
 

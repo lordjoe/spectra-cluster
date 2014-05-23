@@ -3,8 +3,6 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
-import java.util.Comparator;
-
 /**
  * Compare spectrum ids in addition to ClusterComparator
  *
@@ -12,10 +10,6 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class ClusterContentComparator extends ClusterComparator {
-    public static final Comparator<ICluster> INSTANCE = new ClusterContentComparator();
-
-    private ClusterContentComparator() {
-    }
 
     @Override
     public int compare(ICluster o1, ICluster o2) {

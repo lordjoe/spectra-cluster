@@ -11,10 +11,6 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class SpectrumIDComparator implements Comparator<ISpectrum> {
-    public static final Comparator<ISpectrum> INSTANCE = new SpectrumIDComparator();
-
-    private SpectrumIDComparator() {
-    }
 
     @Override
     public int compare(ISpectrum o1, ISpectrum o2) {

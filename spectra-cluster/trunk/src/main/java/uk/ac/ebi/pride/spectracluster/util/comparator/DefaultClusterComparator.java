@@ -10,10 +10,6 @@ import java.util.Comparator;
  * @version $Id$
  */
 public class DefaultClusterComparator implements Comparator<ICluster> {
-    public static final Comparator<ICluster> INSTANCE = new DefaultClusterComparator();
-
-    private DefaultClusterComparator() {
-    }
 
     /**
      * compare with high quailty at the top
