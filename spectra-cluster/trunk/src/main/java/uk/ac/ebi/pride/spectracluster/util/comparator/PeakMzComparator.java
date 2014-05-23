@@ -10,11 +10,6 @@ import java.util.Comparator;
  */
 public class PeakMzComparator implements Comparator<IPeak> {
 
-    public final static PeakMzComparator INSTANCE = new PeakMzComparator();
-
-    private PeakMzComparator() {
-    }
-
     public int compare(IPeak o1, IPeak o2) {
         if (o1 == null) {
             return o2 == null ? 0 : -1;

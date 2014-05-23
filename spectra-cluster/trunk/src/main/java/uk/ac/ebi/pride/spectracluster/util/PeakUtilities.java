@@ -77,7 +77,7 @@ public class PeakUtilities {
                 // saves the highest intensity peaks up to  maxPerBin
                 // because the comparison is on intensity
                 hightestInBin = new PriorityQueue<IPeak>(maxPerBin,
-                        PeakIntensityComparator.INSTANCE);
+                        new PeakIntensityComparator());
                 higheseEachBin[bin] = hightestInBin;
             }
 
@@ -125,7 +125,7 @@ public class PeakUtilities {
      */
     public static List<IPeak> peaksByIntensity(ISpectrum sc) {
         List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
-        Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
+        Collections.sort(peaks, new PeakIntensityComparator());
         return peaks;
     }
 }

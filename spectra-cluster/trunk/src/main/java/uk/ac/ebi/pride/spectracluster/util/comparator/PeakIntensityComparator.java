@@ -14,11 +14,6 @@ import java.util.Comparator;
  */
 public final class PeakIntensityComparator implements Comparator<IPeak> {
 
-    public static final PeakIntensityComparator INSTANCE = new PeakIntensityComparator();
-
-    private PeakIntensityComparator() {
-    }
-
     /**
      * this version of the comparator puts the highest intensity peaks at the top
      *

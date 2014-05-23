@@ -11,12 +11,6 @@ import java.util.Comparator;
  */
 public class QualitySpectrumComparator implements Comparator<ISpectrum> {
 
-    public static final Comparator<ISpectrum> INSTANCE = new QualitySpectrumComparator();
-
-    private QualitySpectrumComparator() {
-    }
-
-
     /**
      * sort with the highest quality spectra first
      *

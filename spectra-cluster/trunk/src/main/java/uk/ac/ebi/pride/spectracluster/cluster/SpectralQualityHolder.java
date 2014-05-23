@@ -108,7 +108,7 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
                 return;
             }
 
-            Collections.sort(highestQualitySpectra, QualitySpectrumComparator.INSTANCE); // sort highest quality first
+            Collections.sort(highestQualitySpectra, new QualitySpectrumComparator()); // sort highest quality first
             if (highestQualitySpectra.size() > NUMBER_SPECTRA_FOR_CONSENSUS) {
                 List<ISpectrum> retained = new ArrayList<ISpectrum>();
                 for (int i = 0; i < NUMBER_SPECTRA_FOR_CONSENSUS; i++) {

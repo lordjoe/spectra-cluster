@@ -238,7 +238,7 @@ public class FrankEtAlDotProductOld implements ISimilarityChecker {
      * @return
      */
     private List<IPeak> getHighestPeaks(List<IPeak> peakList, int k) {
-        Collections.sort(peakList, InversePeakIntensityComparator.INSTANCE);
+        Collections.sort(peakList, new InversePeakIntensityComparator());
 
         List<IPeak> highestPeaks = new ArrayList<IPeak>(k);
 
