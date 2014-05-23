@@ -49,6 +49,8 @@ public class ExporterPrideMzTabTests {
         String filterXML = "<Filters>" +
                            "<SpectrumFilter minimumLength=\"16\"/>" +
                            "</Filters>";
+
+        // export
         TypedFilterCollection.registerHandler(SpectrumFilters.TAG, new SpectrumFilters.SpectrumFilterSaxHandler(null));
         TypedFilterCollection filters = TypedFilterCollection.parse(filterXML);
         Exporter exp = new Exporter(outputFileFolder,projectFolder,filters);
