@@ -1,0 +1,92 @@
+MTD	mzTab-version	1.0
+MTD	mzTab-mode	Complete
+MTD	mzTab-type	Identification
+MTD	mzTab-ID	12575
+MTD	title	RTXL_UniA
+MTD	description	date of export: Thu Jan 09 21:44:41 GMT 2014
+MTD	instrument[1]-name	[PRIDE, PRIDE:0000131, Instrument model, Agilent MSD trap XCT ultra]
+MTD	instrument[1]-source	[PSI, PSI:1000073, Electrospray Ionization, ]
+MTD	instrument[1]-analyzer	[PSI, PSI:1000264, Ion Trap, ]
+MTD	instrument[1]-detector	[PSI, PSI:1000253, Electron Multiplier, ]
+MTD	software[1]	[MS, MS:1001456, analysis software, CompassXport v1.3.8]
+MTD	contact[1]-name	Dr. Robert Winkler
+MTD	contact[1]-affiliation	Tecnologico de Monterrey (ITESM), Mexico
+MTD	contact[1]-email	test@bioprocess.org
+MTD	uri[1]	http://www.ebi.ac.uk/pride/experiment.do?experimentAccessionNumber=12575
+MTD	ms_run[1]-format	[MS, MS:1000564, PSI mzData file, ]
+MTD	ms_run[1]-location	ftp://ftp.ebi.ac.uk/pub/databases/pride/PRIDE_Exp_Complete_Ac_12575.xml
+MTD	ms_run[1]-id_format	[MS, MS:1000777, spectrum identifier nativeID format, ]
+MTD	sample[1]-species[1]	[NEWT, 51997, unidentified chimeric sequence, ]
+MTD	assay[1]-sample_ref	sample[1]
+MTD	assay[1]-ms_run_ref	ms_run[1]
+
+PRH	accession	description	taxid	species	database	database_version	search_engine	best_search_engine_score	search_engine_score_ms_run[1]	num_psms_ms_run[1]	num_peptides_distinct_ms_run[1]	num_peptides_unique_ms_run[1]	ambiguity_members	modifications	protein_coverage
+PRT	DB|DB00073_RTXLC|DrugBank	Rituximab Mouse-Human chimeric Anti-CD20 Light Chain	51997	unidentified chimeric sequence	customdb	null	[MS, MS:1001456, analysis software, ]	null	[, , proteinprophet score, 1.0]	40	4	null	sp|P01834|IGKC_HUMAN	null	0.67
+PRT	sp|P00761|TRYP_PIG	Trypsin OS=Sus scrofa PE=1 SV=1	51997	unidentified chimeric sequence	customdb	null	[MS, MS:1001456, analysis software, ]	null	[, , proteinprophet score, 1.0]	16	3	null	null	null	0.216
+PRT	sp|A5A6M6|K2C1_PANTR	Keratin, type II cytoskeletal 1 OS=Pan troglodytes GN=KRT1 PE=2 SV=1	51997	unidentified chimeric sequence	customdb	null	[MS, MS:1001456, analysis software, ]	null	[, , proteinprophet score, 0.9881]	4	2	null	sp|P04264|K2C1_HUMAN	null	0.068
+PRT	sp|P01749|HVM05_MOUSE	Ig heavy chain V region 3 OS=Mus musculus GN=Igh-VJ558 PE=1 SV=1	51997	unidentified chimeric sequence	customdb	null	[MS, MS:1001456, analysis software, ]	null	[, , proteinprophet score, 0.9041]	2	1	null	null	null	0.205
+
+PSH	sequence	PSM_ID	accession	unique	database	database_version	search_engine	search_engine_score	modifications	retention_time	charge	exp_mass_to_charge	calc_mass_to_charge	spectra_ref	pre	post	start	end
+PSM	VYACEVTHQGLSSPVTK	1949	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1949	null	null	null	null
+PSM	VYACEVTHQGLSSPVTK	1949	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1949	null	null	null	null
+PSM	VYACEVTHQGLSSPVTK	1952	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1952	null	null	null	null
+PSM	VYACEVTHQGLSSPVTK	1952	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1952	null	null	null	null
+PSM	VDNALQSGNSQESVTEQDSK	1589	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1589	null	null	null	null
+PSM	VDNALQSGNSQESVTEQDSK	1589	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1589	null	null	null	null
+PSM	VDNALQSGNSQESVTEQDSK	1594	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1594	null	null	null	null
+PSM	VDNALQSGNSQESVTEQDSK	1594	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1594	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1959	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1959	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1959	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1959	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1960	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1960	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1960	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1960	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1962	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1962	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1962	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1962	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1963	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1963	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1963	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1963	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1967	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1967	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1967	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1967	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1968	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1968	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1968	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1968	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1970	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1970	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1970	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1970	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1971	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1971	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1971	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1971	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1997	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1997	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1997	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1997	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1999	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1999	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	1999	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1999	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	2003	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2003	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	2003	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2003	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	2006	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2006	null	null	null	null
+PSM	TVAAPSVFIFPPSDEQLK	2006	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2006	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2069	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2069	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2069	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2069	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2077	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2077	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2077	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2077	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2084	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2084	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2084	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2084	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2093	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2093	null	null	null	null
+PSM	SGTASVVCLLNNFYPR	2093	DB|DB00073_RTXLC|DrugBank	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2093	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2016	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2016	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2016	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2016	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2021	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2021	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2021	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2021	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2045	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2045	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2045	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2045	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2057	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2057	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2057	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2057	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2602	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2602	null	null	null	null
+PSM	LGEHNIDVLEGNEQFINAAK	2602	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2602	null	null	null	null
+PSM	LSSPATLNSR	1771	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1771	null	null	null	null
+PSM	LSSPATLNSR	1771	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1771	null	null	null	null
+PSM	LSSPATLNSR	1775	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1775	null	null	null	null
+PSM	LSSPATLNSR	1775	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1775	null	null	null	null
+PSM	IITHPNFNGNTLDNDIMLIK	2114	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2114	null	null	null	null
+PSM	IITHPNFNGNTLDNDIMLIK	2114	sp|P00761|TRYP_PIG	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2114	null	null	null	null
+PSM	GGGGGGYGSGGSSYGSGGGSYGSGGGGGGGR	1582	sp|A5A6M6|K2C1_PANTR	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1582	null	null	null	null
+PSM	GGGGGGYGSGGSSYGSGGGSYGSGGGGGGGR	1582	sp|A5A6M6|K2C1_PANTR	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=1582	null	null	null	null
+PSM	SLDLDSIIAEVK	2029	sp|A5A6M6|K2C1_PANTR	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2029	null	null	null	null
+PSM	SLDLDSIIAEVK	2029	sp|A5A6M6|K2C1_PANTR	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2029	null	null	null	null
+PSM	SSSTAYMQLSSLTSEDSAVYYCAR	2600	sp|P01749|HVM05_MOUSE	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2600	null	null	null	null
+PSM	SSSTAYMQLSSLTSEDSAVYYCAR	2600	sp|P01749|HVM05_MOUSE	null	customdb	null	null	null	null	null	null	null	null	ms_run[1]:spectrum=2600	null	null	null	null
+
