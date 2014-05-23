@@ -29,7 +29,7 @@ public class FrankEtAlConsensusSpectrumBuilderTest {
             List<ISpectrum> spectra = cluster.getSpectra();
 
             // create an instance of consensus spectrum builder
-            IConsensusSpectrumBuilder consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+            IConsensusSpectrumBuilder consensusSpectrumBuilder = new ConsensusSpectrum();
             consensusSpectrumBuilder.addSpectra(spectra.toArray(new ISpectrum[spectra.size()]));
             // make a concensus in bulk
 //            List<IPeak> jpeaks;

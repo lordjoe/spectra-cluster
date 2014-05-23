@@ -18,9 +18,9 @@ public class ConsensusSpectrumBuilderTests {
 
     @Test
     public void testConsensusSpectrum() throws Exception {
-        ConcensusSpectrumBuilderFactory factory1 = JohannesConsensusSpectrum.FACTORY;
+        IConsensusSpectrumBuilder factory1 = new JohannesConsensusSpectrum();
         //     ConcensusSpectrumBuilderFactory factory2 = ConsensusSpectrum.FACTORY;
-        ConcensusSpectrumBuilderFactory factory2 = ConsensusSpectrumNew.FACTORY;
+        IConsensusSpectrumBuilder factory2 = new ConsensusSpectrumNew();
 
 
         List<IPeptideSpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();

@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.junit.Assert;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -122,7 +123,7 @@ public class ClusteringTestUtilities {
         int index = 1000;
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++));
+            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), new ConsensusSpectrum());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);

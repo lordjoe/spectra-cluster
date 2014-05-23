@@ -3,9 +3,6 @@ package uk.ac.ebi.pride.spectracluster.util;
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
@@ -107,18 +104,8 @@ public class Defaults {
 
     private ClusteringEngineFactory defaultClusteringEngineFactory;
 
-    private ConcensusSpectrumBuilderFactory consensusFactory = ConsensusSpectrum.FACTORY;
-
     private Defaults() {
 
-    }
-
-    public ConcensusSpectrumBuilderFactory getConsensusFactory() {
-        return consensusFactory;
-    }
-
-    public void setConsensusFactory(final ConcensusSpectrumBuilderFactory pConsensusFactory) {
-        consensusFactory = pConsensusFactory;
     }
 
     public int getNumberReclusteringPasses() {
@@ -175,10 +162,6 @@ public class Defaults {
 
     public void setDefaultClusteringEngineFactory(final ClusteringEngineFactory pDefaultClusteringEngineFactory) {
         defaultClusteringEngineFactory = pDefaultClusteringEngineFactory;
-    }
-
-    public IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
-        return consensusFactory.getConsensusSpectrumBuilder();
     }
 
     public Comparator<ICluster> getDefaultSpectrumComparator() {

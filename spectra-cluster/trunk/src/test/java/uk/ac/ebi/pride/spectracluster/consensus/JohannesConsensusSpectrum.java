@@ -36,25 +36,6 @@ import java.util.List;
 public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
 
 
-    @SuppressWarnings("UnusedDeclaration")
-    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
-
-    public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
-        private ConsensusSpectrumFactory() {
-        }
-
-        /**
-         * build a new instance of the cpectrum builder
-         *
-         * @return !null instance
-         */
-        @Override
-        public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-            return new JohannesConsensusSpectrum();
-        }
-    }
-
-
     private final String id;
     protected int nSpectra = 0;
     protected boolean isDirty = false;

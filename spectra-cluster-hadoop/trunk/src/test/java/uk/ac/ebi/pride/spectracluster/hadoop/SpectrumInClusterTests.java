@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -238,7 +239,7 @@ public class SpectrumInClusterTests {
      * @return
      */
     public static IPeptideSpectralCluster rebuildSerializedCluster(final List<String> ccs, boolean discardNotOnCLuster) {
-        PeptideSpectralCluster ret = new PeptideSpectralCluster();
+        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, new ConsensusSpectrum());
         for (String ccStr : ccs) {
             SpectrumInCluster cc = SpectrumInClusterUtilities.readSpectrumInCluster(ccStr);
             if (!discardNotOnCLuster || !cc.isRemoveFromCluster())
@@ -267,7 +268,7 @@ public class SpectrumInClusterTests {
      * @return
      */
     public static IPeptideSpectralCluster rebuildCluster(final List<SpectrumInCluster> ccs, boolean discardNotOnCLuster) {
-        PeptideSpectralCluster ret = new PeptideSpectralCluster();
+        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, new ConsensusSpectrum());
         for (SpectrumInCluster cc : ccs) {
             if (!discardNotOnCLuster || !cc.isRemoveFromCluster())
                 ret.addSpectra(cc.getSpectrum());

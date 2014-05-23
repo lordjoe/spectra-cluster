@@ -15,6 +15,7 @@ import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -117,7 +118,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
             int numberProcessed = 0;
 
-            PeptideSpectralCluster ret = new PeptideSpectralCluster(id);
+            PeptideSpectralCluster ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
 
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {

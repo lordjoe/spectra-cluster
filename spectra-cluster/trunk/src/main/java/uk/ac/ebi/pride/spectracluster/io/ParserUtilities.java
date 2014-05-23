@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
@@ -144,13 +145,13 @@ public class ParserUtilities {
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
-                    ret = new PeptideSpectralCluster(id);
+                    ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
                     break;
                 }
                 // naked spectrum
                 if (line.startsWith(BEGIN_IONS)) {
                     ISpectrum internal = readMGFScan(inp, line);
-                    ret = new PeptideSpectralCluster(internal.getId());
+                    ret = new PeptideSpectralCluster(internal.getId(), new ConsensusSpectrum());
                     ret.addSpectra(internal);
                     return ret;
                 }
@@ -187,7 +188,7 @@ public class ParserUtilities {
     public static ConsensusSpectraItems readConsensusSpectraItems(LineNumberReader inp, String line) {
         ConsensusSpectraItems ret = new ConsensusSpectraItems();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        IConsensusSpectrumBuilder sb = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder sb = new ConsensusSpectrum();
         ISpectrum concensus;
         try {
             if (line == null)

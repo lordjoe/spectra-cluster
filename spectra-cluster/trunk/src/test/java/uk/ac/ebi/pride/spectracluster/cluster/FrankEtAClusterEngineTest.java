@@ -31,7 +31,7 @@ public class FrankEtAClusterEngineTest {
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
-            IConsensusSpectrumBuilder consensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+            IConsensusSpectrumBuilder consensusSpectrumBuilder = new ConsensusSpectrum();
             consensusSpectrumBuilder.onSpectraAdd(consensusSpectrumBuilder, spectra.toArray(new ISpectrum[spectra.size()]));
 
             // make a concensus in bulk

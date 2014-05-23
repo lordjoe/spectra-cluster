@@ -1,11 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,18 +52,18 @@ public class ConsensusSpectrumTests {
     @Test
     public void testConsensusSpectrum() throws Exception {
 
-        IConsensusSpectrumBuilder consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder consensusSpectrumBuilder = new ConsensusSpectrum();
         consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
 
         ISpectrum consensusSpectrum1 = consensusSpectrumBuilder.getConsensusSpectrum();
 
         Collections.shuffle(filteredOriginalSpectra);
-        consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = new ConsensusSpectrum();
         consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
         ISpectrum consensusSpectrum2 = consensusSpectrumBuilder.getConsensusSpectrum();
 
         Collections.shuffle(filteredOriginalSpectra);
-        consensusSpectrumBuilder = Defaults.INSTANCE.getDefaultConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = new ConsensusSpectrum();
         consensusSpectrumBuilder.addSpectra(filteredOriginalSpectra.toArray(new ISpectrum[filteredOriginalSpectra.size()]));
         ISpectrum consensusSpectrum3 = consensusSpectrumBuilder.getConsensusSpectrum();
 

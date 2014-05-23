@@ -228,17 +228,16 @@ public class ClusteringDataUtilities {
      * @return !null list of  consensusSpectra
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<ISpectrum> buildConsensusSpectra(final List<IPeptideSpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
+    public static List<ISpectrum> buildConsensusSpectra(final List<IPeptideSpectralCluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
         for (IPeptideSpectralCluster cluster : pClusters) {
-            final IConsensusSpectrumBuilder olderCode = factory.getConsensusSpectrumBuilder();
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();
             for (ISpectrum cs : css) {
-                olderCode.addSpectra(cs);
+                consensusSpectrumBuilder.addSpectra(cs);
             }
 
-            final ISpectrum oldSpec = olderCode.getConsensusSpectrum();
+            final ISpectrum oldSpec = consensusSpectrumBuilder.getConsensusSpectrum();
             holder.add(oldSpec);
         }
 
