@@ -8,6 +8,7 @@ import com.lordjoe.utilities.ElapsedTimer;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
@@ -169,7 +170,7 @@ public class DuplicateReductionSimulator {
         public TextKeyValue[] reduce(String key, List<String> values, Properties config) {
             //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
 
-            PeptideSpectralCluster sc = new PeptideSpectralCluster();
+            PeptideSpectralCluster sc = new PeptideSpectralCluster(null, new ConsensusSpectrum());
             List<TextKeyValue> holder = new ArrayList<TextKeyValue>();
             Set<String> processedSpectrunIds = new HashSet<String>();
 

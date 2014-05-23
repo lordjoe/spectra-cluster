@@ -4,6 +4,7 @@ import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -189,7 +190,7 @@ public final class ClusterUtilities {
      * @return  a spectral cluster
      */
     public static IPeptideSpectralCluster asCluster(ISpectrum spectrum) {
-        PeptideSpectralCluster ret = new PeptideSpectralCluster();
+        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, new ConsensusSpectrum());
         ret.addSpectra(spectrum);
         return ret;
     }

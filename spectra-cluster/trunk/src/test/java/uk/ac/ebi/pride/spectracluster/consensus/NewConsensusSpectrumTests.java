@@ -36,7 +36,7 @@ public class NewConsensusSpectrumTests {
 
     @Before
     public void setUp() throws Exception {
-        consensusSpectrumBuilder = JohannesConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = new JohannesConsensusSpectrum();
         originalConsensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder();
 
         List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();

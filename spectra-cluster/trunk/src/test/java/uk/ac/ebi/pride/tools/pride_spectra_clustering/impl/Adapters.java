@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
@@ -44,7 +45,7 @@ public class Adapters {
      */
     public static IPeptideSpectralCluster fromSpectraCluster(SpectraCluster inp) {
         String id = "";
-        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id);
+        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
         final List<ClusteringSpectrum> spectra = inp.getSpectra();
 
         for (ClusteringSpectrum sc : spectra) {

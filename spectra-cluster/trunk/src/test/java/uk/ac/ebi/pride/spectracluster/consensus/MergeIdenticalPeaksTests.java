@@ -30,7 +30,7 @@ public class MergeIdenticalPeaksTests {
         peaks.add(new Peak(223.1F, 20, 1));
         peaks.add(new Peak(223.4F, 30, 1));
 
-        consensusSpectrumBuilder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+        consensusSpectrumBuilder = new ConsensusSpectrum();
     }
 
     @Test

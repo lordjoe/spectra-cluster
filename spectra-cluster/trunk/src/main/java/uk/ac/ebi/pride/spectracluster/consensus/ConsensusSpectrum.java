@@ -39,25 +39,6 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
 
     public static final float NOISE_FILTER_INCREMENT = 100;
-    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
-
-    /**
-     * always use the factory to get an instance
-     */
-    public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
-        private ConsensusSpectrumFactory() {
-        }
-
-        /**
-         * build a new instance of the cpectrum builder
-         *
-         * @return !null instance
-         */
-        @Override
-        public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-            return new ConsensusSpectrum();
-        }
-    }
 
     private final String id;
     protected int nSpectra;
@@ -112,14 +93,14 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * private to force use of the factory
      */
-    private ConsensusSpectrum() {
+    public ConsensusSpectrum() {
         this(null);
     }
 
     /**
      * private to force use of the factory
      */
-    private ConsensusSpectrum(String id) {
+    public ConsensusSpectrum(String id) {
         this.id = id;
     }
 

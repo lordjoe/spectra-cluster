@@ -22,22 +22,6 @@ public class PeptideSpectralCluster extends SpectralCluster implements IPeptideS
 
     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
 
-
-    public PeptideSpectralCluster(IPeptideSpectralCluster copied) {
-        super(copied);
-    }
-
-    /**
-     * use this when the cluster is not stable
-     */
-    public PeptideSpectralCluster() {
-        super();
-    }
-
-    public PeptideSpectralCluster(String id) {
-        super(id);
-    }
-
     public PeptideSpectralCluster(String id, IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         super(id, consensusSpectrumBuilder);
     }

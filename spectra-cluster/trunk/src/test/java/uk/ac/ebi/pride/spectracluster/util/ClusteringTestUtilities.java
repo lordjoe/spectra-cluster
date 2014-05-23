@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
 import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
@@ -203,7 +203,7 @@ public class ClusteringTestUtilities {
         int index = 1000;
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++));
+            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), new ConsensusSpectrum());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);
@@ -462,17 +462,16 @@ public class ClusteringTestUtilities {
      * @param factory   !null  ConcensusSpectrumBuilderFactory
      * @return !null list of  consensusSpectra
      */
-    public static List<ISpectrum> buildConsessusSpectra(final List<IPeptideSpectralCluster> pClusters, final ConcensusSpectrumBuilderFactory factory) {
+    public static List<ISpectrum> buildConsessusSpectra(final List<IPeptideSpectralCluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
         for (IPeptideSpectralCluster cluster : pClusters) {
-            final IConsensusSpectrumBuilder olderCode = factory.getConsensusSpectrumBuilder();
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();
             for (ISpectrum cs : css) {
-                olderCode.addSpectra(cs);
+                consensusSpectrumBuilder.addSpectra(cs);
             }
 
-            final ISpectrum oldSpec = olderCode.getConsensusSpectrum();
+            final ISpectrum oldSpec = consensusSpectrumBuilder.getConsensusSpectrum();
             holder.add(oldSpec);
         }
 

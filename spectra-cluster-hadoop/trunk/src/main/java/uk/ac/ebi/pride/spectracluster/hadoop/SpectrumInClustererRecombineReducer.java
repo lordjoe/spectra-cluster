@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.keys.*;
@@ -38,7 +39,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {
 
-        PeptideSpectralCluster sc = new PeptideSpectralCluster();
+        PeptideSpectralCluster sc = new PeptideSpectralCluster(null, new ConsensusSpectrum());
         Set<String> processedSpectrunIds = new HashSet<String>();
             // Note this will not be large so memory requirements are ok
 

@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import com.lordjoe.utilities.Util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -153,7 +154,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     protected void addToClusters(final ICluster clusterToAdd) {
         List<ICluster> myClusters = internalGetClusters();
         if (myClusters.isEmpty()) {   // no checks just add
-            myClusters.add(new SpectralCluster(clusterToAdd));
+            myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
             numberNotMerge++;
             return;
         }
@@ -202,7 +203,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             if (handlePotentialOverlap(clusterToAdd, bestMatch, highestSimilarityScore))
                 return;
         }
-        myClusters.add(new SpectralCluster(clusterToAdd));
+        myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
         numberNotMerge++;
     }
 
