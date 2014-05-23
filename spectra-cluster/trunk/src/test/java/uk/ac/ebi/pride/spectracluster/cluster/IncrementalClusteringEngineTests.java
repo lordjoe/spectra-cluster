@@ -3,12 +3,14 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import junit.framework.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import java.util.*;
 
@@ -143,9 +145,9 @@ public class IncrementalClusteringEngineTests {
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
 
-        WrappedIncrementalClusteringEngineFactory incrementalFactory = new WrappedIncrementalClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-        IClusteringEngine incrementalEngine = incrementalFactory.getClusteringEngine(new Double(1000));
-        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), Defaults.INSTANCE.getDefaultSpectrumComparator());
+        final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000));
+        IClusteringEngine incrementalEngine = new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
+        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator());
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge
@@ -156,7 +158,7 @@ public class IncrementalClusteringEngineTests {
             oldClusteringEngine.addClusters(spectralCluster);
         }
         //noinspection UnusedDeclaration,UnusedAssignment
-        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
 
         long start = System.currentTimeMillis();
         incrementalEngine.processClusters();

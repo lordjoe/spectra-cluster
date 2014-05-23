@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -24,7 +25,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
     private boolean stableClusterProcessed;
 
     public StableClusteringEngine() {
-        this(Defaults.INSTANCE.getDefaultSimilarityChecker());
+        this(new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks()));
     }
 
     public StableClusteringEngine(ISimilarityChecker similarityChecker) {

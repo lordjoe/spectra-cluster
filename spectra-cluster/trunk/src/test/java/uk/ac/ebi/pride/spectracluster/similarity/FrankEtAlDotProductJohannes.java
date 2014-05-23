@@ -81,7 +81,7 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
         return getVersion().toString();
     }
 
-    private double mzRange = Defaults.INSTANCE.getSimilarityMZRange();
+    private double mzRange = Defaults.getSimilarityMZRange();
     /**
      * The algorithm version to use. By
      * default the version described in
@@ -213,7 +213,7 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
     }
 
     protected int computeNumberComparedSpectra(ISpectrum spectrum1, ISpectrum spectrum2) {
-        int numberComparedPeaks = Defaults.INSTANCE.getNumberComparedPeaks();
+        int numberComparedPeaks = Defaults.getNumberComparedPeaks();
         float precursorMz = spectrum1.getPrecursorMz();
         float precursor2 = spectrum2.getPrecursorMz();
         switch (version) {
@@ -242,17 +242,17 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
                                Integer charge1, Integer charge2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null || charge1 == null || charge2 == null || charge1 <= 0 || charge2 <= 0)
-            return Defaults.INSTANCE.getNumberComparedPeaks();
+            return Defaults.getNumberComparedPeaks();
         ;
 
         // take 15 peaks / 1000Da peptide mass
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
-        int largeBinningRegion = Defaults.INSTANCE.getLargeBinningRegion();
-        int k = Defaults.INSTANCE.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
+        int largeBinningRegion = Defaults.getLargeBinningRegion();
+        int k = Defaults.getNumberComparedPeaks() * (int) (peptideMass / largeBinningRegion);
 
         if (peptideMass % largeBinningRegion > 0)
-            k += Defaults.INSTANCE.getNumberComparedPeaks();
+            k += Defaults.getNumberComparedPeaks();
         ;
 
         return k;
@@ -268,7 +268,7 @@ public class FrankEtAlDotProductJohannes implements ISimilarityChecker {
     private int calculateK2011(Float precursor1, Float precursor2) {
         // if any of the required values is missing, return 15
         if (precursor1 == null || precursor2 == null)
-            return Defaults.INSTANCE.getNumberComparedPeaks();
+            return Defaults.getNumberComparedPeaks();
 
         // use m/z / 50
         int k = (int) ((precursor1 / K2011_BIN_SIZE + precursor2 / K2011_BIN_SIZE) / 2);

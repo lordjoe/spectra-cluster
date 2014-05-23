@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
@@ -32,7 +34,7 @@ public class ClusteringUtilitiesTests {
         // add the second list to the first making duplicates
         list1.addAll(list2); // dupicate clusters
 
-        final ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        final ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         // now merge - should get less or equal to original list
         final List<ICluster> newClusters = ClusterUtilities.mergeClusters(new ArrayList<ICluster>(list1), similarityChecker, 1);
         // we merge at least as many as we had
@@ -64,11 +66,11 @@ public class ClusteringUtilitiesTests {
         List<ISpectrum> spectra = ClusteringTestUtilities.readConsensusSpectralItems();
 
         List<IPeptideSpectralCluster> list = ClusterUtilities.asClusters(spectra);
-        IClusteringEngine engine = Defaults.INSTANCE.getDefaultClusteringEngine();
+        IClusteringEngine engine = new ClusteringEngineFactory().getClusteringEngine();
         for (ICluster sc : list) {
             engine.addClusters(sc);
         }
-        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
+        for (int i = 0; i < Defaults.getNumberReclusteringPasses(); i++) {
             if (!engine.processClusters())
                 break;
         }
@@ -76,7 +78,7 @@ public class ClusteringUtilitiesTests {
         List<ICluster> found = (List<ICluster>) engine.getClusters();
 
 
-        final ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        final ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         final List<ICluster> newClusters = ClusterUtilities.mergeClusters(found, similarityChecker, 1);
 
         // because we just did this in the engine we expect little further merging

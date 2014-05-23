@@ -25,11 +25,6 @@ public class ClusteringEngine implements IClusteringEngine {
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
 
-    public ClusteringEngine() {
-        this.similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
-        this.spectrumComparator = Defaults.INSTANCE.getDefaultSpectrumComparator();
-    }
-
     public ClusteringEngine(ISimilarityChecker similarityChecker,
                                Comparator<ICluster> spectrumComparator) {
         this.similarityChecker = similarityChecker;

@@ -22,7 +22,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
 
     /**
      * @param out       !null open appendale
-     * @param cluster      !null cluster
+     * @param cluster   !null cluster
      * @param otherData any other cluster - implementation specific and usually blank
      * @return true if anything was appended otherwise false
      */
@@ -92,8 +92,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
         try {
             out.append("name=").append(name);
             out.append("\n");
-            Defaults defaults = Defaults.INSTANCE;
-            ISimilarityChecker similarityChecker = defaults.getDefaultSimilarityChecker();
+            ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
 
             Class<? extends ISimilarityChecker> scc = similarityChecker.getClass();
             out.append("similarity_method=").append(scc.getSimpleName());
@@ -101,10 +100,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
 
 
             double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
-            if (similarityChecker instanceof FrankEtAlDotProduct) {
-                //noinspection RedundantCast
-                defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
-            }
+
             out.append("threshold=").append(String.valueOf(defaultSimilarityThreshold));
             out.append("\n");
             out.append("fdr=0");
