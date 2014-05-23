@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
@@ -69,9 +70,9 @@ public class TestClusteringEngineMain {
         for (ICluster sc : clusters) {
             engine.addClusters(sc);
         }
-        ISimilarityChecker similarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
 
-        for (int i = 0; i < Defaults.INSTANCE.getDefaultNumberReclusteringPasses(); i++) {
+        for (int i = 0; i < Defaults.getNumberReclusteringPasses(); i++) {
             if (!engine.processClusters()) {
                 break;
             }

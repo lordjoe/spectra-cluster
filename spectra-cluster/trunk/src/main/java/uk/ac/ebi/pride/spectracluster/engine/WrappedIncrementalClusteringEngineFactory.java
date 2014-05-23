@@ -1,11 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
-
-import java.util.Comparator;
-
 /**
  * Factory for making WrappedIncrementalClusteringEngine
  *
@@ -20,16 +14,6 @@ import java.util.Comparator;
 @Deprecated
 public class WrappedIncrementalClusteringEngineFactory {
 
-    private final IncrementalClusteringEngineFactory incrementalFactory;
-
-    public WrappedIncrementalClusteringEngineFactory() {
-        incrementalFactory = new IncrementalClusteringEngineFactory(Defaults.INSTANCE.getDefaultSimilarityChecker(), Defaults.INSTANCE.getDefaultSpectrumComparator());
-    }
-
-    public WrappedIncrementalClusteringEngineFactory(final ISimilarityChecker pSimilarityChecker, final Comparator<ICluster> pSpectrumComparator) {
-        incrementalFactory = new IncrementalClusteringEngineFactory(pSimilarityChecker, pSpectrumComparator);
-    }
-
     /**
      * make a copy of the clustering engine
      *
@@ -39,6 +23,7 @@ public class WrappedIncrementalClusteringEngineFactory {
         if (otherdata.length < 1)
             throw new IllegalArgumentException("WrappedClusteringEngine needs a Double as WindowSize"); //
         double windowSize = (Double) otherdata[0];
-        return new WrappedIncrementalClusteringEngine(incrementalFactory.getIncrementalClusteringEngine(windowSize));
+        final IIncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngineFactory().getIncrementalClusteringEngine(windowSize);
+        return new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
     }
 }

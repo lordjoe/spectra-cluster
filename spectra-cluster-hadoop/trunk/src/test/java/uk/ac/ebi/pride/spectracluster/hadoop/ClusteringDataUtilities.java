@@ -132,7 +132,7 @@ public class ClusteringDataUtilities {
         if (numberMisMatchedPeaks == 0)
             return true;  // probably will nopt happen
 
-        final ISimilarityChecker checker = Defaults.INSTANCE.getDefaultSimilarityChecker();
+        final ISimilarityChecker checker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
 
 
         // well we better agree on the highest peaks

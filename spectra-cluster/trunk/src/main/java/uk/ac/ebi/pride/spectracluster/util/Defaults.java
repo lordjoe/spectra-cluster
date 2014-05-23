@@ -2,20 +2,9 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
-import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
-import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
-import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.Defaults
@@ -46,6 +35,8 @@ public class Defaults {
     private static double similarityMZRange = DEFAULT_MZ_RANGE;
 
     private static double retainThreshold = DEFAULT_RETAIN_THRESHOLD;
+
+    private static int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
     public static double getSimilarityThreshold() {
         return similarityThreshold;
@@ -87,88 +78,12 @@ public class Defaults {
         Defaults.retainThreshold = retainThreshold;
     }
 
-    /**
-     * This must be here to make sure the variables before are initialized
-     */
-    public static final Defaults INSTANCE = new Defaults();
-
-    private int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
-
-    private ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct(getSimilarityMZRange(), getNumberComparedPeaks());
-
-    private IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
-
-    private DefaultClusterComparator defaultSpectrumComparator = new DefaultClusterComparator();
-
-    private IIntensityNormalizer normalizer = new TotalIntensityNormalizer();
-
-    private ClusteringEngineFactory defaultClusteringEngineFactory;
-
-    private Defaults() {
-
-    }
-
-    public int getNumberReclusteringPasses() {
+    public static int getNumberReclusteringPasses() {
         return numberReclusteringPasses;
     }
 
-    public void setNumberReclusteringPasses(final int pNumberReclusteringPasses) {
+    public static void setNumberReclusteringPasses(final int pNumberReclusteringPasses) {
         numberReclusteringPasses = pNumberReclusteringPasses;
-    }
-
-    public IIntensityNormalizer getNormalizer() {
-        return normalizer;
-    }
-
-    public IClusteringEngine getDefaultClusteringEngine() {
-        return new ClusteringEngineFactory().getClusteringEngine();
-
-    }
-
-
-    public int getDefaultNumberReclusteringPasses() {
-        return numberReclusteringPasses;
-    }
-
-    public void setDefaultNumberReclusteringPasses(final int pNumberReclusteringPasses) {
-        numberReclusteringPasses = pNumberReclusteringPasses;
-    }
-
-    public IIntensityNormalizer getDefaultIntensityNormalizer() {
-        return normalizer;
-    }
-
-    public void setNormalizer(final IIntensityNormalizer pNormalizer) {
-        normalizer = pNormalizer;
-    }
-
-    public ISimilarityChecker getDefaultSimilarityChecker() {
-        return defaultSimilarityChecker;
-    }
-
-    public void setDefaultSimilarityChecker(final ISimilarityChecker pDefaultSimilarityChecker) {
-        defaultSimilarityChecker = pDefaultSimilarityChecker;
-    }
-
-    public void setDefaultQualityScorer(final IQualityScorer pDefaultQualityScorer) {
-        defaultQualityScorer = pDefaultQualityScorer;
-    }
-
-    public void setDefaultSpectrumComparator(final DefaultClusterComparator pDefaultSpectrumComparator) {
-        defaultSpectrumComparator = pDefaultSpectrumComparator;
-    }
-
-    public void setDefaultClusteringEngineFactory(final ClusteringEngineFactory pDefaultClusteringEngineFactory) {
-        defaultClusteringEngineFactory = pDefaultClusteringEngineFactory;
-    }
-
-    public Comparator<ICluster> getDefaultSpectrumComparator() {
-        return defaultSpectrumComparator;
-    }
-
-
-    public IQualityScorer getDefaultQualityScorer() {
-        return defaultQualityScorer;
     }
 
     /**
