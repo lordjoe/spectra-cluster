@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.spectracluster.io;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -443,6 +444,7 @@ public class ParserUtilities {
                             dcharge,
                             (float) mz,
                             holder,
+                            new SignalToNoiseChecker(),
                             title // save title - sequence as annotation
                     );
                     if (titleLine != null)

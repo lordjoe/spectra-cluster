@@ -40,26 +40,6 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
         setPeptideAnnotations(spectrum);
     }
 
-    public PeptideSpectrumMatch(String id,
-                                String peptide,
-                                int precursorCharge,
-                                float precursorMz,
-                                List<IPeak> peaks) {
-        this(id, peptide, precursorCharge, precursorMz, peaks, null);
-
-    }
-
-    public PeptideSpectrumMatch(String id,
-                                String peptide,
-                                int precursorCharge,
-                                float precursorMz,
-                                List<IPeak> peaks,
-                                String pAnnotation) {
-        super(id, precursorCharge, precursorMz, peaks);
-        this.peptide = peptide;
-        this.annotation = pAnnotation;
-    }
-
 
     public PeptideSpectrumMatch(String id,
                                 String peptide,

@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
@@ -36,14 +35,6 @@ public class Spectrum implements ISpectrum {
     private final Set<Integer> majorPeakMZ = new HashSet<Integer>();
     // the number of peaks considered as "major" when the majorPeakMZ Set was filled the last time.
     private int currentMajorPeakCount = 0;
-
-
-    public Spectrum(final String pId,
-                    final int pPrecursorCharge,
-                    final float pPrecursorMz,
-                    final List<IPeak> inpeaks) {
-        this(pId, pPrecursorCharge, pPrecursorMz, Defaults.INSTANCE.getDefaultQualityScorer(), inpeaks);
-    }
 
 
     public Spectrum(final String pId,
