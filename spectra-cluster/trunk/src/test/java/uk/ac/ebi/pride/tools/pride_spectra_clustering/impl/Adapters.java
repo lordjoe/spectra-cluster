@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -76,7 +77,9 @@ public class Adapters {
                 peptide,
                 (int) (precursorCharge + 0.5),
                 (float) precursorMZ,
-                newPeaks);
+                newPeaks,
+                new SignalToNoiseChecker(),
+                null);
 
         return ret;
     }

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
@@ -315,7 +316,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
         if (consensusPeaks.size() < 1) {
             setIsDirty(false);
             List<IPeak> empty = new ArrayList<IPeak>();
-            consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty);
+            consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty, new SignalToNoiseChecker(), null);
             return;
         }
 
@@ -329,7 +330,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
         filterNoise();
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks);
+        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks, new SignalToNoiseChecker(), null);
 
         setIsDirty(false);
     }
