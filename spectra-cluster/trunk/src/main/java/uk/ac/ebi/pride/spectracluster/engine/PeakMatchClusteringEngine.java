@@ -30,12 +30,14 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     private final List<ICluster> singleSpectrumClusters = new ArrayList<ICluster>();
     private final List<ICluster> currentClusters = new ArrayList<ICluster>();
     private final Set<ISpectrum> alreadyClustered = new HashSet<ISpectrum>();
-    private final ClusteringEngineFactory factory;
+    private final IClusteringEngine clusteringEngine;
 
-    public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker, final Comparator<ICluster> spectrumComparator) {
+    public PeakMatchClusteringEngine(final ISimilarityChecker similarityChecker,
+                                     final Comparator<ICluster> spectrumComparator,
+                                     final IClusteringEngine clusteringEngine) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
-        factory = new ClusteringEngineFactory(similarityChecker, spectrumComparator);
+        this.clusteringEngine = clusteringEngine;
     }
 
 
@@ -205,7 +207,6 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                 if (alreadyClustered.contains(theSpectrum))    // we are already in a cluster
                     continue;
                 int peak = peaks[i];
-                final IClusteringEngine engine = factory.getClusteringEngine();
                 for (int index2 = index; index2 < singleSpectrumClusters.size(); index2++) {
                     ICluster addedCluster = singleSpectrumClusters.get(index2);
                     ISpectrum addedSpectrum = readCluster.getHighestQualitySpectrum();
@@ -213,12 +214,12 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                         continue;
                     if (!addedSpectrum.containsMajorPeak(peak, MAJOR_PEAK_NUMBER))   // we do not have the peak
                         continue;
-                    engine.addClusters(addedCluster);
+                    clusteringEngine.addClusters(addedCluster);
                 }
-                if (engine.size() < 2)
+                if (clusteringEngine.size() < 2)
                     continue; // nothing to cluster
-                engine.processClusters();
-                final Collection<ICluster> clusters = engine.getClusters();
+                clusteringEngine.processClusters();
+                final Collection<ICluster> clusters = clusteringEngine.getClusters();
                 currentClusters.addAll(clusters);
                 for (ICluster cluster : clusters) {
                     alreadyClustered.addAll(cluster.getClusteredSpectra());
