@@ -69,7 +69,7 @@ public class MZTabProcessor {
         return idToProtein.get(accession);
     }
 
-    protected void handleCorrespondingMGFs(Appendable out) {
+    public void handleCorrespondingMGFs(Appendable out) {
         for (MsRun run : msRunFiles.keySet()) {
             handleMFGFile(run, out);
         }
