@@ -58,6 +58,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.44-1</version>
@@ -76,28 +82,25 @@
 
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
-          <artifactId>jmztab</artifactId>
-          <!-- based on mzTab specification version 1.0 RC5-->
-          <version>2.1.7-SNAPSHOT</version>
+            <artifactId>jmztab</artifactId>
+            <!-- based on mzTab specification version 1.0 RC5-->
+            <version>2.1.7-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.gos.logback</groupId>
+                    <artifactId>logback-classic-1.0.7</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- %^*(^%*&$&^$% needed by Spring -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.0.13</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.13</version>
-        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -148,8 +151,8 @@
             <artifactId>hbase</artifactId>
             <version>0.94.12</version>
         </dependency>
-    </dependencies>
 
+    </dependencies>
 
     <build>
         <plugins>

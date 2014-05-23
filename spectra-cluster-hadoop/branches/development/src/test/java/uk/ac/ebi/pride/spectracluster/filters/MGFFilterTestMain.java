@@ -69,10 +69,16 @@ public class MGFFilterTestMain {
                 return name.endsWith(".mgf");
              }
          });
-        if(items != null && items.length > 0)
-            return true;
-        else
+        if(items != null && items.length > 0) {
+            for (int i = 0; i < items.length; i++) {
+                File item = items[i];
+                 if(item.length() > 0)
+                     return true;
+            }
             return false;
+        } else {
+            return false;
+        }
     }
 
 
@@ -103,8 +109,9 @@ public class MGFFilterTestMain {
         for (File processedDirectory : processedDirectories) {
              String absolutePath = processedDirectory.getAbsolutePath();
             absolutePath = absolutePath.replace("\\","/");
-            absolutePath = absolutePath.replace("P:/","");
-             out.println(absolutePath);
+            absolutePath = absolutePath.replace("P://","");
+            absolutePath = absolutePath.replace("/generated","");
+              out.println(absolutePath);
         }
         out.close();
 

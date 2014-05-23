@@ -1100,21 +1100,25 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         if (REMOTE_PORT_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("port", pValue);
+            RemoteUtilities.setPort(Integer.parseInt(pValue));
             return;
         }
         if (REMOTE_USER_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("user", pValue);
+            RemoteUtilities.setUser(pValue);
             return;
         }
         if (REMOTE_JOBTRACKER_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("jobtracker", pValue);
+            RemoteUtilities.setJobTracker(pValue);
             return;
         }
         if (REMOTE_ENCRYPTED_PASSWORD_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("password", pValue);
+            RemoteUtilities.setPassword(Encrypt.decryptString(pValue));
             return;
         }
         if (REMOTE_PLAINTEXT_PASSWORD_PROPERTY.equals(pProperty)) {
