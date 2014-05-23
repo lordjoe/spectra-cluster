@@ -98,6 +98,15 @@ public class WrappedIncrementalClusteringEngine implements IClusteringEngine {
     }
 
     /**
+     * Get similarity threshold used
+     * @return
+     */
+    @Override
+    public double getSimilarityThreshold() {
+        return realEngine.getSimilarityThreshold();
+    }
+
+    /**
      * total number of clusters including queued clustersToAdd
      *
      * @return

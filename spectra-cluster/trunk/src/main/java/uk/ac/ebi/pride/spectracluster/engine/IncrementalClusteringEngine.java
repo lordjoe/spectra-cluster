@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 import javax.annotation.Nonnull;
@@ -44,14 +43,17 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
     private final double windowSize;
+    private final double similarityThreshold;
     private int currentMZAsInt;
 
     public IncrementalClusteringEngine(ISimilarityChecker sck,
                                           Comparator<ICluster> scm,
-                                          double windowSize) {
+                                          double windowSize,
+                                          double similarityThreshold) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;
+        this.similarityThreshold = similarityThreshold;
     }
 
     public double getWindowSize() {
@@ -181,7 +183,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             if (similarityScore > highestSimilarityScore) {
                 highestSimilarityScore = similarityScore;
                 bestMatch = cluster; //    track good but not great
-                if (similarityScore >= Defaults.getSimilarityThreshold()) {
+                if (similarityScore >= similarityThreshold) {
                     mostSimilarCluster = bestMatch;
                 }
 
@@ -261,7 +263,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
         // allow a bonus for overlap
         ISimilarityChecker sCheck = getSimilarityChecker();
-        if (highestSimilarityScore + BONUS_PER_OVERLAP > Defaults.getSimilarityThreshold()) {
+        if (highestSimilarityScore + BONUS_PER_OVERLAP > similarityThreshold) {
             mergeIntoCluster(cluster1, cluster2);
             return true;
 
@@ -357,6 +359,15 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     @Override
     public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
+    }
+
+    /**
+     * Get similarity threshold used
+     * @return
+     */
+    @Override
+    public double getSimilarityThreshold() {
+        return similarityThreshold;
     }
 
     /**

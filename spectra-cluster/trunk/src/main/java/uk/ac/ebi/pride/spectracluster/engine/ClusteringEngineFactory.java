@@ -22,7 +22,8 @@ public class ClusteringEngineFactory {
     public IClusteringEngine getClusteringEngine() {
         final FrankEtAlDotProduct similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         final DefaultClusterComparator comparator = new DefaultClusterComparator();
-        return new ClusteringEngine(similarityChecker, comparator);
+        final double similarityThreshold = Defaults.getSimilarityThreshold();
+        return new ClusteringEngine(similarityChecker, comparator, similarityThreshold);
     }
 
 }

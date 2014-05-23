@@ -85,6 +85,11 @@ public class PrideClusteringEngine implements IClusteringEngine {
         throw new UnsupportedOperationException("Method call not supported in this class");
     }
 
+    @Override
+    public double getSimilarityThreshold() {
+        return clustering.getSimilarityThreshold();
+    }
+
     /**
      * total number of clusters including queued clustersToAdd
      *

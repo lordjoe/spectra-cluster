@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import java.util.*;
@@ -44,6 +43,15 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
     @Override
     public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
+    }
+
+    /**
+     * Get similarity threshold used
+     * @return
+     */
+    @Override
+    public double getSimilarityThreshold() {
+        return clusteringEngine.getSimilarityThreshold();
     }
 
     /**
@@ -135,7 +143,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @param maxMZDIfference   ! maxMZ difference to look at for merging
      * @return !null list of non-merged clusters from singles
      */
-    public static List<ICluster> mergeClustersWithSingleSpectra(List<ICluster> mergable, List<ICluster> singles, ISimilarityChecker similarityChecker, double maxMZDIfference) {
+    public List<ICluster> mergeClustersWithSingleSpectra(List<ICluster> mergable, List<ICluster> singles, ISimilarityChecker similarityChecker, double maxMZDIfference) {
         List<ICluster> retainedSingleSpectra = new ArrayList<ICluster>();
         int startIndex = 0;
         // clusters need to be compared with all clusters below them
@@ -153,7 +161,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                     }
                 }
                 double distance = similarityChecker.assessSimilarity(test.getConsensusSpectrum(), cluster.getConsensusSpectrum());
-                if (distance <= Defaults.getSimilarityThreshold()) {
+                if (distance <= clusteringEngine.getSimilarityThreshold()) {
                     mergeWith = test;
                     break; // found who to merge with
                 }

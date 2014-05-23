@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -24,11 +23,14 @@ public class ClusteringEngine implements IClusteringEngine {
     private final List<ICluster> clustersToAdd = new ArrayList<ICluster>();
     private final ISimilarityChecker similarityChecker;
     private final Comparator<ICluster> spectrumComparator;
+    private final double similarityThreshold;
 
     public ClusteringEngine(ISimilarityChecker similarityChecker,
-                               Comparator<ICluster> spectrumComparator) {
+                            Comparator<ICluster> spectrumComparator,
+                            double similarityThreshold) {
         this.similarityChecker = similarityChecker;
         this.spectrumComparator = spectrumComparator;
+        this.similarityThreshold = similarityThreshold;
     }
 
     protected void guaranteeClean() {
@@ -112,7 +114,7 @@ public class ClusteringEngine implements IClusteringEngine {
 
                 double similarityScore = sCheck.assessSimilarity(consensusSpectrum, consensusSpectrum1);
 
-                if (similarityScore >= Defaults.getSimilarityThreshold() && similarityScore > highestSimilarityScore) {
+                if (similarityScore >= similarityThreshold && similarityScore > highestSimilarityScore) {
                     highestSimilarityScore = similarityScore;
                     mostSimilarCluster = cluster;
                 }
@@ -174,7 +176,7 @@ public class ClusteringEngine implements IClusteringEngine {
                     ICluster clusterI = myClusters.get(i);
                     ICluster clusterJ = myClusters.get(j);
                     double similarityScore = sCheck.assessSimilarity(clusterI.getConsensusSpectrum(), clusterJ.getConsensusSpectrum());
-                    if (similarityScore >= Defaults.getSimilarityThreshold()) {
+                    if (similarityScore >= similarityThreshold) {
                         toMerge = true;
                         modified = true;
                         ISpectrum[] clusteredSpectra = new ISpectrum[clusterI.getClusteredSpectra().size()];
@@ -235,6 +237,15 @@ public class ClusteringEngine implements IClusteringEngine {
     @Override
     public ISimilarityChecker getSimilarityChecker() {
         return similarityChecker;
+    }
+
+    /**
+     * Get similarity threshold used
+     * @return
+     */
+    @Override
+    public double getSimilarityThreshold() {
+        return similarityThreshold;
     }
 
     /**
