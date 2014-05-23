@@ -103,7 +103,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
             double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
             if (similarityChecker instanceof FrankEtAlDotProduct) {
                 //noinspection RedundantCast
-                defaultSimilarityThreshold = ((FrankEtAlDotProduct) similarityChecker).getDefaultThreshold();
+                defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
             }
             out.append("threshold=").append(String.valueOf(defaultSimilarityThreshold));
             out.append("\n");

@@ -77,27 +77,6 @@ public class FrankEtAlDotProductOld implements ISimilarityChecker {
     }
 
     /**
-     * erturn the default similarity Threshold
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultThreshold() {
-        return DEFAULT_SIMILARITY_THRESHOLD;
-    }
-
-    /**
-     * return the default similarity Threshold  this is
-     * the threshold to keep  a spectrum in a cluster
-     *
-     * @return as above
-     */
-    @Override
-    public double getDefaultRetainThreshold() {
-        return DEFAULT_SIMILARITY_THRESHOLD;
-    }
-
-    /**
      * Assesses the spectra's similarity using
      * the normalized dot-product
      */

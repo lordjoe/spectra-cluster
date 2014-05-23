@@ -110,7 +110,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         Set<ISpectrum> spectraToRemove = new HashSet<ISpectrum>();
         for (ISpectrum unstableSpectrum : unstableCluster.getClusteredSpectra()) {
             double similarity = similarityChecker.assessSimilarity(unstableSpectrum, consensusSpectrum);
-            if (similarity >= similarityChecker.getDefaultThreshold()) {
+            if (similarity >= Defaults.getSimilarityThreshold()) {
                 spectraToRemove.add(unstableSpectrum);
             }
         }

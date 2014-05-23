@@ -42,7 +42,7 @@ public class ClosestPeaksTest {
         IPeptideSpectrumMatch[] spectrums = (IPeptideSpectrumMatch[]) spectra.toArray();
 
         ISimilarityChecker checker = new FrankEtAlDotProductTester();
-        ISimilarityChecker currentChecker = new FrankEtAlDotProduct();
+        ISimilarityChecker currentChecker = new FrankEtAlDotProduct(0.5, 15);
 
         Set<String> interestingIds = new HashSet<String>();
 
@@ -95,7 +95,7 @@ public class ClosestPeaksTest {
 
         int total = 0;
         int different = 0;
-        ISimilarityChecker checker = new FrankEtAlDotProduct();
+        ISimilarityChecker checker = new FrankEtAlDotProduct(0.5, 15);
         ISimilarityChecker currentChecker = new FrankEtAlDotProductJohannes();
 
         Set<String> interestingIds = new HashSet<String>();

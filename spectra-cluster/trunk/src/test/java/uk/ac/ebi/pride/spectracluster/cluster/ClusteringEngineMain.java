@@ -165,7 +165,7 @@ public class ClusteringEngineMain {
         pOut.append("name=" + name + "\n");
         final ISimilarityChecker defaultSimilarityChecker = Defaults.INSTANCE.getDefaultSimilarityChecker();
         pOut.append("similarity_method=" + defaultSimilarityChecker.getClass().getSimpleName() + "\n");
-        pOut.append("threshold=" + defaultSimilarityChecker.getDefaultThreshold() + "\n");
+        pOut.append("threshold=" + Defaults.getSimilarityThreshold() + "\n");
         pOut.append("fdr=" + "-1" + "\n"); // todo what is this?
         pOut.append("description=" + description + "\n");
         Defaults.INSTANCE.appendAnalysisParameters(pOut);

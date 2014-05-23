@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import java.util.*;
@@ -150,7 +151,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
                     }
                 }
                 double distance = similarityChecker.assessSimilarity(test.getConsensusSpectrum(), cluster.getConsensusSpectrum());
-                if (distance <= similarityChecker.getDefaultThreshold()) {
+                if (distance <= Defaults.getSimilarityThreshold()) {
                     mergeWith = test;
                     break; // found who to merge with
                 }
