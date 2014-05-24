@@ -3,10 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
@@ -34,7 +31,7 @@ import java.util.*;
 public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
     public static final int DEFAULT_PEAKS_TO_KEEP = 5;
-    public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this all all peaks
+    public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this add all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
 
 
@@ -116,7 +113,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     }
 
 
-    @Override
+    @Override  // TODO JG this class only correctly supports normalized spectra. Make sure the spectra are normalized
     public void addSpectra(ISpectrum... merged) {
         if (merged.length < 1)
             return;
@@ -124,12 +121,13 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         for (ISpectrum spectrum : merged) {
             // TODO JG in my opinion this filtering should not be done by ConsensusSpectrum but when the spectra
             // are loaded initially
-            List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(PeakUtilities.MAX_PEAKS_TO_KEEP).getPeaks();
+            //List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(PeakUtilities.MAX_PEAKS_TO_KEEP).getPeaks();
+            List<IPeak> spectrumPeaks = spectrum.getPeaks();
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();
             sumPrecursorMz += spectrum.getPrecursorMz();
-            sumPrecursorIntens += 0; // TODO @jg: change to intensity when available
+            sumPrecursorIntens += 0;
 
             nSpectra++;
         }
@@ -151,7 +149,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
             sumCharge -= spectrum.getPrecursorCharge();
             sumPrecursorMz -= spectrum.getPrecursorMz();
-            sumPrecursorIntens -= 0; // TODO @jg: change to intensity when available
+            sumPrecursorIntens -= 0;
 
             nSpectra--;
         }
@@ -179,8 +177,6 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * @param peaksToRemove
      */
     protected void removePeaks(List<IPeak> peaksToRemove) {
-        //TODO @jg: build in a check to find if peaks are not sorted according to m/z
-
         int posAllPeaks = 0;
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < peaksToRemove.size(); i++) {
@@ -262,7 +258,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected void storeHeldPeaks(List<IPeak> peaksToAdd) {
         if (nSpectra < SIZE_TO_ADD_EVERY_TIME)
             throw new IllegalStateException("cannot add without a fairly large cluster");
-        // force one computation of we have never done this
+        // force one computation if we have never done this
         if (lowestConcensusPeak == 0)
             getConsensusSpectrum();
 
@@ -323,7 +319,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
                     break;
                 }
 
-                if (mzToAdd == MZIntensityUtilities.round(currentExistingPeak.getMz())) {
+                if (mzToAdd == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
                                     currentExistingPeak.getMz(),
                                     peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
@@ -376,7 +372,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         if (allPeaks.size() < 1) {
             List<IPeak> empty = new ArrayList<IPeak>();
-            consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty, new SignalToNoiseChecker(), null);
+            consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, new SignalToNoiseChecker(), Collections.EMPTY_LIST);
             setIsDirty(false);
             return;
         }
@@ -397,7 +393,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         lowestConcensusPeak = minimumConsensusPeak;
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks, new SignalToNoiseChecker(), null);
+        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, new SignalToNoiseChecker(), consensusPeaks);
 
         setIsDirty(false);
     }
@@ -476,11 +472,11 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * I = I * (0.95 + 0.05 * (1 + pi))^5
      * where pi is the peaks probability
      */
-    protected static List<IPeak> adaptPeakIntensities(List<IPeak> inpx, int nSpectra) {
+    protected static List<IPeak> adaptPeakIntensities(List<IPeak> inp, int nSpectra) {
 
-        int originalCount = PeakUtilities.getTotalCount(inpx);   // for debugging
+        int originalCount = PeakUtilities.getTotalCount(inp);   // for debugging
 
-        List<IPeak> ret = new ArrayList<IPeak>(inpx);
+        List<IPeak> ret = new ArrayList<IPeak>(inp);
         for (int i = 0; i < ret.size(); i++) {
             IPeak peak = ret.get(i);
             float peakProbability = (float) peak.getCount() / (float) nSpectra;
@@ -571,7 +567,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * access for test purposes
      *
-     * @return possibly null specterum
+     * @return possibly null spectrum
      */
     protected ISpectrum internalGetConcensusSpectrum() {
         return consensusSpectrum;

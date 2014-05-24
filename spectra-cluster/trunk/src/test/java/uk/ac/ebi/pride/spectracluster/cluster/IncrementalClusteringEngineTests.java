@@ -124,7 +124,7 @@ public class IncrementalClusteringEngineTests {
         // remove non-fitting
         final List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ICluster spectralCluster : clustersLeft) {
-            final List<ICluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce.getSimilarityChecker());
+            final List<ICluster> c = ClusterUtilities.removeNonFittingSpectra(spectralCluster, ce.getSimilarityChecker(), Defaults.getRetainThreshold());
             for (ICluster cluster : c) {
                 holder.add((IPeptideSpectralCluster)cluster);
             }
