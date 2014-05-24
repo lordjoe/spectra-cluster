@@ -15,9 +15,10 @@ import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -49,7 +50,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         super.setup(context);
         setBinner(StableClusterMapper.BINNER);
         ISetableParameterHolder application = getApplication();
-        StableClusterUtilities.setStableClusterSizeFromProperties(application);
+        ConfigurableProperties.setStableClusterSizeFromProperties(application);
     }
 
 
@@ -175,7 +176,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 
         // if not at end make a new engine
         if (pMzKey != null) {
-            setEngine(new StableClusteringEngine());
+            setEngine(new StableClusteringEngine(new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks()), Defaults.getSimilarityThreshold()));
             setMajorMZ(pMzKey.getPrecursorMZ());
             int bin = pMzKey.getBin();
             setCurrentBin(bin);

@@ -1,8 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import com.lordjoe.utilities.Util;
-import org.systemsbiology.hadoop.IParameterHolder;
-
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
@@ -14,23 +11,23 @@ import java.io.IOException;
  */
 public class Defaults {
 
-    private static final int DEFAULT_NUMBER_RECLUSTERING_PASSES = 2;
+    public static final int DEFAULT_NUMBER_RECLUSTERING_PASSES = 2;
 
-    private static final int NUMBER_COMPARED_PEAKS = 15;
+    public static final int DEFAULT_NUMBER_COMPARED_PEAKS = 15;
 
-    private static final double DEFAULT_MZ_RANGE = 0.5;
+    public static final double DEFAULT_MZ_RANGE = 0.5;
 
-    private static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
+    public static final double DEFAULT_SIMILARITY_THRESHOLD = 0.6;
 
-    private static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
+    public static final double DEFAULT_RETAIN_THRESHOLD = 0.5;
 
-    private static final int LARGE_BINNING_REGION = 1000;
+    public static final int DEFAULT_LARGE_BINNING_REGION = 1000;
 
     private static double similarityThreshold = DEFAULT_SIMILARITY_THRESHOLD;
 
-    private static int largeBinningRegion = LARGE_BINNING_REGION;
+    private static int largeBinningRegion = DEFAULT_LARGE_BINNING_REGION;
 
-    private static int numberComparedPeaks = NUMBER_COMPARED_PEAKS;
+    private static int numberComparedPeaks = DEFAULT_NUMBER_COMPARED_PEAKS;
 
     private static double similarityMZRange = DEFAULT_MZ_RANGE;
 
@@ -87,34 +84,20 @@ public class Defaults {
     }
 
     /**
-     * this method and the one below
-     *
-     * @param application source of parameters
-     */
-    public static void configureAnalysisParameters(@Nonnull IParameterHolder application) {
-        setLargeBinningRegion(application.getIntParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.LargeBinningRegion", LARGE_BINNING_REGION));
-        setNumberComparedPeaks(application.getIntParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.NumberComparedPeaks", NUMBER_COMPARED_PEAKS));
-        setSimilarityMZRange(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.SimilarityMZRange", DEFAULT_MZ_RANGE));
-        setRetainThreshold(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.RetainThreshold", DEFAULT_RETAIN_THRESHOLD));
-        setSimilarityThreshold(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct.SimilarityThreshold", DEFAULT_SIMILARITY_THRESHOLD));
-    }
-
-    /**
      * used to write parameters in to a data sink like a clustering file
      *
      * @param out output
      */
     public static void appendAnalysisParameters(@Nonnull Appendable out) {
         try {
-            out.append("largeBinningRegion=").append(String.valueOf(getLargeBinningRegion())).append("\n");
-            out.append("numberComparedPeaks=").append(String.valueOf(getNumberComparedPeaks())).append("\n");
-            out.append("similarityMZRange=").append(Util.formatDouble(getSimilarityMZRange(), 3)).append("\n");
-            out.append("similarityThreshold=").append(Util.formatDouble(getSimilarityThreshold(), 3)).append("\n");
-            out.append("retainThreshold=").append(Util.formatDouble(getRetainThreshold(), 3)).append("\n");
+            out.append("largeBinningRegion=").append(String.valueOf(Defaults.getLargeBinningRegion())).append("\n");
+            out.append("numberComparedPeaks=").append(String.valueOf(Defaults.getNumberComparedPeaks())).append("\n");
+            out.append("similarityMZRange=").append(NumberUtilities.formatDouble(Defaults.getSimilarityMZRange(), 3)).append("\n");
+            out.append("similarityThreshold=").append(NumberUtilities.formatDouble(Defaults.getSimilarityThreshold(), 3)).append("\n");
+            out.append("retainThreshold=").append(NumberUtilities.formatDouble(Defaults.getRetainThreshold(), 3)).append("\n");
         } catch (IOException e) {
             throw new RuntimeException(e);
 
         }
     }
-
 }

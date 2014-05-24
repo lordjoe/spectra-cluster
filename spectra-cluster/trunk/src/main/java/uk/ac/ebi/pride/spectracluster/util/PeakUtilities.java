@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import com.lordjoe.algorithms.LinearBinner;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

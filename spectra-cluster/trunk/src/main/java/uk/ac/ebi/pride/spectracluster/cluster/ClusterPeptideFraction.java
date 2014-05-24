@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import com.lordjoe.algorithms.CompareTo;
+
+import uk.ac.ebi.pride.spectracluster.util.CompareTo;
 
 import javax.annotation.Nonnull;
 

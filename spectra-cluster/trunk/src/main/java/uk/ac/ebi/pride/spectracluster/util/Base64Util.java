@@ -41,9 +41,6 @@ import java.util.zip.Inflater;
  * @proteios.modified $Date: 2009-08-26 00:26:13 -0700 (Wed, 26 Aug 2009) $
  */
 public class Base64Util {
-    private static final org.apache.log4j.Logger log = org.apache.log4j.LogManager
-            .getLogger("org.proteios.io");
-
     /**
      * Decodes Base64 coded data String
      * and returns an ArrayList<double>
@@ -95,7 +92,7 @@ public class Base64Util {
             try {
                 uncompressedArrayLength = decompresser.inflate(uncompressedByteArray);
             } catch (DataFormatException e) {
-                log.warn("DataFormatException when decompressing byte array: " + e);
+                throw new IllegalStateException("DataFormatException when decompressing byte array", e);
             }
             decompresser.end();
             // Use uncompressed byte array

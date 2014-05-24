@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.CompareTo;
+import uk.ac.ebi.pride.spectracluster.util.CompareTo;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 /**

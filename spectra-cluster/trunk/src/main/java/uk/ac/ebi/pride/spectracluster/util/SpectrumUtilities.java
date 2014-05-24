@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;

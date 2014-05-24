@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
@@ -15,7 +14,7 @@ import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterUtilities
- * a lits of stateless static functions for manipulating clusters, lists of clusters
+ * a list of stateless static functions for manipulating clusters, lists of clusters
  * and performing other common chores
  *
  * @author Steve Lewis

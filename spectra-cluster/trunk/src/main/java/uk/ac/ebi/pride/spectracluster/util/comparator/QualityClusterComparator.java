@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.util.comparator;
 
-import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.CompareTo;
 
 import java.util.Comparator;
 
