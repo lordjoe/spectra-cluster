@@ -206,7 +206,7 @@ public class ClusteringEngine implements IClusteringEngine {
         List<ICluster> myClusters = internalGetClusters();
 
         for (ICluster cluster : myClusters) {
-            List<ICluster> noneFittingSpectra = ClusterUtilities.findNoneFittingSpectra(cluster, similarityChecker, Defaults.getRetainThreshold());
+            List<ICluster> noneFittingSpectra = ClusterUtilities.findNoneFittingSpectra(cluster, similarityChecker, Defaults.getRetainThreshold()); // TODO JG change and set retain threshold through constructor
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
 
