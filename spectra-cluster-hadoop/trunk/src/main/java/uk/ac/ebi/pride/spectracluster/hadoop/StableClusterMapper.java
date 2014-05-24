@@ -52,7 +52,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
         ISetableParameterHolder application = getApplication();
-        StableClusterUtilities.setStableClusterSizeFromProperties(application);
+        ConfigurableProperties.setStableClusterSizeFromProperties(application);
         AbstractBinnedAPrioriPartitioner.setBinner(BINNER);
       }
 

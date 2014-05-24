@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import com.lordjoe.algorithms.Equivalent;
+import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 
 import java.util.List;
 

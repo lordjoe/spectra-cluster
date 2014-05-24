@@ -1,7 +1,8 @@
-package uk.ac.ebi.pride.spectracluster.io;
+package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.utilities.TypedPredicate;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.io.IClusterAppender;
 
 /**
  * uk.ac.ebi.pride.spectracluster.io.FilteredClusterAppender

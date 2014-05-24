@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.normalizer;
 
-import com.lordjoe.algorithms.CompareTo;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.util.CompareTo;
 
 import java.util.ArrayList;
 import java.util.List;

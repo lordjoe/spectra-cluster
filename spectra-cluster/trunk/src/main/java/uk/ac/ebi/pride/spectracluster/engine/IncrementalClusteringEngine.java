@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import com.lordjoe.utilities.Util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
@@ -8,6 +7,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -74,8 +74,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
             if (Math.abs(del) > MZIntensityUtilities.MZ_RESOLUTION * MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
                 throw new IllegalStateException("mz values MUST be added in order - was "
-                        + Util.formatDouble(currentMZ, 3) + " new " +
-                        Util.formatDouble(pCurrentMZ, 3) + " del  " +
+                        + NumberUtilities.formatDouble(currentMZ, 3) + " new " +
+                        NumberUtilities.formatDouble(pCurrentMZ, 3) + " del  " +
                         del
                 );
 

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import org.systemsbiology.hadoop.ISetableParameterHolder;
-
 import java.util.UUID;
 
 /**
@@ -17,22 +15,8 @@ public final class StableClusterUtilities {
 
     private StableClusterUtilities() {}
 
-    /**
-     * This is Steve's way of guarantee the uniqueness of the property
-     */
-    public static final String STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.StableClusterSize";
-    public static final String SEMI_STABLE_CLUSTER_SIZE_PROPERTY = "uk.ac.ebi.pride.spectracluster.util.ClusterUtilities.SemiStableClusterSize";
-
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
-
-
-    public static void setStableClusterSizeFromProperties(final ISetableParameterHolder pApplication) {
-        int stableClusterSize = pApplication.getIntParameter(STABLE_CLUSTER_SIZE_PROPERTY, DEFAULT_STABLE_CLUSTER_SIZE);
-        setStableClusterSize(stableClusterSize);
-        int semiStableClusterSize = pApplication.getIntParameter(SEMI_STABLE_CLUSTER_SIZE_PROPERTY, DEFAULT_SEMI_STABLE_CLUSTER_SIZE);
-        setSemiStableClusterSize(semiStableClusterSize);
-    }
 
 
     public static final String STABLE_CLUSTER_PREFIX = "SC";
