@@ -128,6 +128,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param precursorMz new Mz
      * @return !null list of clusters to remove
      */
+    // TODO JG discuss whether parameter precursorMz is sensible or if the currentPrecurorMz should be used
     protected List<ICluster> findClustersTooLow(double precursorMz) {
         double defaultThreshold1 = getWindowSize();
         double lowestMZ = precursorMz - defaultThreshold1;
