@@ -79,15 +79,15 @@ public final class ClusterUtilities {
      *
      * @return !null Cluster
      */
-    public static List<ICluster> findNoneFittingSpectra(ICluster cluster, ISimilarityChecker similarityChecker) {
+    public static List<ICluster> findNoneFittingSpectra(ICluster cluster, ISimilarityChecker similarityChecker, double threshold) {
         List<ICluster> noneFittingSpectra = new ArrayList<ICluster>();
 
         if (cluster.getClusteredSpectra().size() > 1) {
             for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
                 final ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
                 final double similarityScore = similarityChecker.assessSimilarity(consensusSpectrum, spectrum);
-                final double defaultThreshold = Defaults.getRetainThreshold();  // use a lower threshold to keep as to add
-                if (similarityScore < defaultThreshold) {
+
+                if (similarityScore < threshold) {
                     noneFittingSpectra.add(ClusterUtilities.asCluster(spectrum));
                 }
             }
@@ -103,8 +103,8 @@ public final class ClusterUtilities {
      * @return !null List<ISpectralCluster
      */
     @Nonnull
-    public static List<ICluster> removeNonFittingSpectra(@Nonnull ICluster cluster, @Nonnull ISimilarityChecker similarityChecker) {
-        final List<ICluster> allClusters = findNoneFittingSpectra(cluster, similarityChecker);
+    public static List<ICluster> removeNonFittingSpectra(@Nonnull ICluster cluster, @Nonnull ISimilarityChecker similarityChecker, double threshold) {
+        final List<ICluster> allClusters = findNoneFittingSpectra(cluster, similarityChecker, threshold);
         List<ICluster> holder = new ArrayList<ICluster>();
         if (!allClusters.isEmpty()) {
             for (ICluster removedCluster : allClusters) {

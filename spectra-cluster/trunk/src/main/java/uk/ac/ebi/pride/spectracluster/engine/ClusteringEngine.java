@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -205,7 +206,7 @@ public class ClusteringEngine implements IClusteringEngine {
         List<ICluster> myClusters = internalGetClusters();
 
         for (ICluster cluster : myClusters) {
-            List<ICluster> noneFittingSpectra = ClusterUtilities.findNoneFittingSpectra(cluster, similarityChecker);
+            List<ICluster> noneFittingSpectra = ClusterUtilities.findNoneFittingSpectra(cluster, similarityChecker, Defaults.getRetainThreshold());
             if (!noneFittingSpectra.isEmpty()) {
                 noneFittingSpectraFound = true;
 
