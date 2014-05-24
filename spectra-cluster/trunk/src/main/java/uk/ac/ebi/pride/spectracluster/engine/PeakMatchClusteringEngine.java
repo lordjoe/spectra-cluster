@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
 import java.util.*;
@@ -189,12 +190,46 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
 
 
     /**
+     * merge clusters among themselves returning a list of surviving clusters which will replace mergable
+     *
      * @param mergable
      * @return
      */
     protected List<ICluster> mergeClusters(List<ICluster> mergable) {
-        // let a shared function do all the dirty work so other engines can share code
-        return ClusterUtilities.mergeClusters(mergable, internalGetSimilarityChecker(), MAXIMUM_MERGE_MZ_DIFFERENCE);
+        List<ICluster> retained = new ArrayList<ICluster>();
+        // clusters need to be compared with all clusters below them
+        for (ICluster cluster : mergable) {
+            double currentMZ = cluster.getPrecursorMz();
+            double minimimMergableMZ = currentMZ - MAXIMUM_MERGE_MZ_DIFFERENCE;
+            ICluster mergeWith = null;
+            if (retained.isEmpty()) {   // start with the first cluster
+                retained.add(cluster);
+                continue;
+            }
+
+            // start at the top mz cluster
+            for (int index = retained.size() - 1; index >= 0; index--) {
+                ICluster test = retained.get(index);
+                if (test.getPrecursorMz() < minimimMergableMZ)
+                    break; // no more to consider
+                final ISpectrum cs1 = test.getConsensusSpectrum();
+                double similarity = similarityChecker.assessSimilarity(cs1, cluster.getConsensusSpectrum());
+                if (similarity >= Defaults.getSimilarityThreshold()) {
+                    mergeWith = test;
+                    break; // found who to merge with
+                }
+
+            }
+            if (mergeWith == null) {
+                retained.add(cluster); // nothing to merge with so keep the cluster
+            } else {  // merge with a close enough cluster
+                final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                mergeWith.addSpectra(clusteredSpectra.toArray(new ISpectrum[clusteredSpectra.size()]));
+            }
+        }
+        // make sure the retained are still in mz order
+        Collections.sort(retained);
+        return retained;
     }
 
     /**
