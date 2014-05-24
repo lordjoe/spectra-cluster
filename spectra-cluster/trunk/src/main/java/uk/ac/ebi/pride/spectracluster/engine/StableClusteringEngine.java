@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.spectracluster.engine;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
 import java.util.*;
 
@@ -118,7 +117,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
         Set<ISpectrum> spectraToRemove = new HashSet<ISpectrum>();
         for (ISpectrum unstableSpectrum : unstableCluster.getClusteredSpectra()) {
             double similarity = similarityChecker.assessSimilarity(unstableSpectrum, consensusSpectrum);
-            if (similarity >= Defaults.getSimilarityThreshold()) {
+            if (similarity >= similarityThreshold) {
                 spectraToRemove.add(unstableSpectrum);
             }
         }
