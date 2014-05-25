@@ -163,7 +163,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
         //  handle the case of subsets and almost subsets
-        if (handleFullContainment(clusterToAdd))
+        if (handleFullContainment(clusterToAdd))    // TODO JG this should not be necessary. Clusters with subsets should be similar enough to be merged by the clustering step anyway
             return; // no need to add we are contained
 
 
@@ -201,7 +201,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             return;
         }
 
-        // maybe a lot of overlap here
+        // maybe a lot of overlap here // TODO JG evaluate if this approach is sensible
         if (bestMatch != null) {
             if (handlePotentialOverlap(clusterToAdd, bestMatch, highestSimilarityScore))
                 return;
@@ -318,7 +318,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             // choose the better cluster
             double ss1 = sCheck.assessSimilarity(cs1, spc);
             double ss2 = sCheck.assessSimilarity(cs2, spc);
-            if (ss1 > ss2)
+            if (ss1 > ss2) // TODO JG shouldn't this be the other way round? We remove from cluster one if similarity to cluster 1 is higher?
                 cluster1.removeSpectra(spc);
             else
                 cluster2.removeSpectra(spc);
