@@ -227,6 +227,11 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         return psms;
     }
 
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             usage();

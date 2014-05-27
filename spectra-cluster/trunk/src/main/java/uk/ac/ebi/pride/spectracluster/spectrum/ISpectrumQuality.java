@@ -8,17 +8,17 @@ import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
  * @author Rui Wang
  * @version $Id$
  */
-interface ISpectrumQuality {
+public interface ISpectrumQuality {
 
     /**
      * Get the quality measure of a spectrum
      */
-    double getQualityScore();
+    public double getQualityScore();
 
 
     /**
      * Get the quality scorer used
      * @return  quality scorer
      */
-    IQualityScorer getQualityScorer();
+    public IQualityScorer getQualityScorer();
 }
