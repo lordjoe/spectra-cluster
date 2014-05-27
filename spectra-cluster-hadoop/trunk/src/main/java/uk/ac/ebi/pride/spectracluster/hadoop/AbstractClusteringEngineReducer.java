@@ -43,7 +43,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
-        Defaults.configureAnalysisParameters(getApplication());
+        ConfigurableProperties.configureAnalysisParameters(getApplication());
         HadoopDefaults.configureAnalysisParameters(getApplication());
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param cluster !null cluster
      */
     protected final void writeCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
-        final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker());
+        final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker(),Defaults.getRetainThreshold());
         if (!allClusters.isEmpty()) {
             for (ICluster removedCluster : allClusters) {
 

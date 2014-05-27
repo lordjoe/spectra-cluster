@@ -15,6 +15,7 @@ import java.util.List;
  * <p/>
  * combine clusters for a single spectrum
  */
+@Deprecated
 public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
 
     private boolean spectrumInBestCluster;
@@ -24,6 +25,7 @@ public class SpectrumInClusterReducer extends AbstractParameterizedReducer {
 
         ISetableParameterHolder application = getApplication();
         spectrumInBestCluster = application.getBooleanParameter(SpectrumInClusterUtilities.PLACE_SPECTRUM_IN_BEST_CLUSTER,false);
+        throw new UnsupportedOperationException("This Does not work");
     }
 
 

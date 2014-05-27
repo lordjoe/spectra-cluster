@@ -158,7 +158,8 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             SpectrumInCluster test = pClusters.get(i);
             if (toRemove.contains(test))
                 continue;
-            Set<String> testIds = test.getCluster().getSpectralIds();
+            final IPeptideSpectralCluster cluster1 = test.getCluster();
+            Set<String> testIds = cluster1.getSpectralIds();
             for (int j = i + 1; j < bySize.size(); j++) {
                 SpectrumInCluster test2 = pClusters.get(i);
                 Set<String> testIds2 = test2.getCluster().getSpectralIds();

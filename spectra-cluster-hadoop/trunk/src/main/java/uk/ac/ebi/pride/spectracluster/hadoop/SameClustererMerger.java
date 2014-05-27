@@ -94,7 +94,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
         @Override
         protected void setup(final Context context) throws IOException, InterruptedException {
             super.setup(context);
-            Defaults.configureAnalysisParameters(getApplication());
+            ConfigurableProperties.configureAnalysisParameters(getApplication());
             HadoopDefaults.configureAnalysisParameters(getApplication());
          }
 
@@ -151,7 +151,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
          * @param cluster !null cluster
          */
         protected void writeCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
-            final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker());
+            final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker(),Defaults.getRetainThreshold());
             if (!allClusters.isEmpty()) {
                 for (ICluster removedCluster : allClusters) {
 
