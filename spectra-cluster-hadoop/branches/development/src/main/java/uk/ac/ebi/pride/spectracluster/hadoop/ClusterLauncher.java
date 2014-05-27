@@ -974,7 +974,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     private static String gParamsFile;
-    private static String gPassedBaseDirctory = System.getProperty("user.dir");
+    private static String gPassedBaseDirctoryX = System.getProperty("user.dir");
     private static boolean gTaskIsLocal = true;
 
     public static String getParamsFile() {
@@ -988,9 +988,13 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     public static String getPassedBaseDirctory() {
-        if (gPassedBaseDirctory == null)
+        if (gPassedBaseDirctoryX == null)
             return null;
-        return gPassedBaseDirctory.replace("\\", "/");
+        return gPassedBaseDirctoryX.replace("\\", "/");
+    }
+
+    public static void setPassedBaseDirctory(String pb) {
+         gPassedBaseDirctoryX = pb;
     }
 
     // params=tandem.params   remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample
@@ -1028,7 +1032,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
                 if (file != null) {
                     String path = file.getPath();
                     String replace = path.replace("\\", "/");
-                    gPassedBaseDirctory = RemoteUtilities.getDefaultPath() + "/" + replace;
+                    final String pb = RemoteUtilities.getDefaultPath() + "/" + replace;
+                    setPassedBaseDirctory(pb);
                 }
 
                 InputStream is = new FileInputStream(paramsFile);
@@ -1054,7 +1059,8 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             return;
         }
         if (pArg.startsWith("remoteBaseDirectory=")) {
-            gPassedBaseDirctory = pArg.substring("remoteBaseDirectory=".length());
+            final String pb = pArg.substring("remoteBaseDirectory=".length());
+            setPassedBaseDirctory(pb);
         }
         else {
             throw new IllegalArgumentException("wrong argument provided: " + pArg);
@@ -1100,25 +1106,21 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
         if (REMOTE_PORT_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("port", pValue);
-            RemoteUtilities.setPort(Integer.parseInt(pValue));
             return;
         }
         if (REMOTE_USER_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("user", pValue);
-            RemoteUtilities.setUser(pValue);
             return;
         }
         if (REMOTE_JOBTRACKER_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("jobtracker", pValue);
-            RemoteUtilities.setJobTracker(pValue);
             return;
         }
         if (REMOTE_ENCRYPTED_PASSWORD_PROPERTY.equals(pProperty)) {
             Preferences prefs = Preferences.userNodeForPackage(RemoteUtilities.class);
             prefs.put("password", pValue);
-            RemoteUtilities.setPassword(Encrypt.decryptString(pValue));
             return;
         }
         if (REMOTE_PLAINTEXT_PASSWORD_PROPERTY.equals(pProperty)) {
@@ -1146,7 +1148,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             String oldBaseDir = RemoteUtilities.getDefaultPath();
             RemoteUtilities.setDefaultPath(defaultDir);
 
-            gPassedBaseDirctory = baseDir;
+            setPassedBaseDirctory(baseDir);
             return;
         }
         if (MAX_REDUCE_TASKS_PROPERTY.equals(pProperty)) {
@@ -1465,8 +1467,14 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
 
 
     // Call with
-    // config=Launcher.properties  params=sample.properties
+    // params=tandem.params remoteHost=Glados remoteBaseDirectory=/user/howdah/JXTandem/data/largeSample
+    //
     public static void main(final String[] args) throws Exception {
+
+
+        RemoteUtilities.readResourceProperties();
+
+        String passedBaseDirctory = System.getProperty("user.dir");
         // reset globals
         SpectraHadoopMain.resetInstance();
 
