@@ -63,13 +63,14 @@ public final class ClusterUtilities {
      * @param added    cluster
      * @return non-null if we can use the return as an enclosing cluster
      */
-    @Deprecated
+    @Deprecated // TODO JG function highly similar to IncrementalClusteringEngine::getSpectraOverlap
     public static double clusterFullyContainsScore(@Nonnull ICluster existing, @Nonnull ICluster added) {
         Set<String> spectralIds1 = existing.getSpectralIds();
         Set<String> spectralIds2 = added.getSpectralIds();
         double minSize = Math.min(spectralIds1.size(), spectralIds2.size());
 
-        Set<String> common = new HashSet<String>(spectralIds1); // TODO JG something seems to be missing here. This is not checking whether the ids are common!
+        Set<String> common = new HashSet<String>(spectralIds1);
+        common.retainAll(spectralIds2);
 
         return (double) common.size() / minSize;
     }
