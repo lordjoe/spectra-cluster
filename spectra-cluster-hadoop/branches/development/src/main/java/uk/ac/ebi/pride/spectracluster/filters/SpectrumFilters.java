@@ -83,6 +83,38 @@ public class SpectrumFilters {
     }
 
 
+    public static final float MINIMUM_PRECURSOR_CHARGE = 10F;
+    /**
+     * return true of a ISpectrum  has known precursor mz and charge
+     * @param length max allowed length
+     * @return
+     */
+    public static ITypedFilter<ISpectrum> getWithPrecursorsFilter() {
+        return new AbstractSpectrumTypedFilter() {
+            /**
+             * return 0 if it passes the filter otherwise return null
+             *
+             * @param testObject
+             * @return as above
+             */
+            @Override
+            public ISpectrum passes(@Nonnull ISpectrum testObject) {
+                if (testObject instanceof IPeptideSpectrumMatch) {
+                    IPeptideSpectrumMatch ps = (IPeptideSpectrumMatch) testObject;
+                    if (ps.getPrecursorCharge() == 0)
+                        return null; // fails
+                    // really testing 0 but this works
+                    if (ps.getPrecursorMz() < MINIMUM_PRECURSOR_CHARGE )
+                          return null; // fails
+                      return testObject; // passes
+
+                }
+                throw new UnsupportedOperationException("Fix This"); // ToDo
+            }
+        };
+    }
+
+
     /**
      * com.lordjoe.filters.FilterCollectionSaxHandler
      * reads xml document <Filters></Filters>
@@ -105,15 +137,18 @@ public class SpectrumFilters {
             String value;
 
             value = attributes.getValue("identified");
-
             if (value != null) {
                 setElementObject(getIdentifiedFilter());
                 return;
             }
 
+            value = attributes.getValue("withPrecursors");
+            if ("true".equals(value)) {
+                setElementObject(getWithPrecursorsFilter());
+                return;
+            }
+
             value = attributes.getValue("minimumLength");
-
-
             if (value != null) {
                 int length = Integer.parseInt(value);
                 setElementObject(getMinimumLengthFilter(length));

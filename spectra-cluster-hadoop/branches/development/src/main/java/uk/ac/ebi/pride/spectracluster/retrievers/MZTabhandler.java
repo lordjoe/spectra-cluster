@@ -25,9 +25,12 @@ public class MZTabhandler {
 
     private MZTabFile mzTabs;
 
+    public static final int LOTS_OF_ERRORS = 100000;
     public MZTabhandler(File inp) {
         try {
-            MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream());
+            // maybe info means do not report
+            // specify  LOTS_OF_ERRORS since the constructor containing level has a bug
+            MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream(), MZTabErrorType.Level.Info,LOTS_OF_ERRORS);
             mzTabs = parser.getMZTabFile();
             if (mzTabs == null)
                 return;
