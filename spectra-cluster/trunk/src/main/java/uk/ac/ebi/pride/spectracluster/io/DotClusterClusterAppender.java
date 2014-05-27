@@ -46,7 +46,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
             out.append("consensus_intens=").append(SpectrumUtilities.buildIntensityString(cluster.getConsensusSpectrum()));
             out.append("\n");
 
-            Collections.sort(clusteredSpectra1, new SpectrumIDComparator());   // sort by id
+            Collections.sort(clusteredSpectra1, SpectrumIDComparator.INSTANCE);   // sort by id
             for (ISpectrum spec : clusteredSpectra1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("SPEC\t");

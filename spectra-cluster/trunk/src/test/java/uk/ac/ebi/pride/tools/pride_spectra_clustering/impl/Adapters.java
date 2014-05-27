@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.impl.ParamGroup;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder;
@@ -79,7 +80,7 @@ public class Adapters {
                 (int) (precursorCharge + 0.5),
                 (float) precursorMZ,
                 newPeaks,
-                new SignalToNoiseChecker(),
+                Defaults.getDefaultQualityScorer(),
                 null);
 
         return ret;

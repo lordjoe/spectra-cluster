@@ -12,6 +12,10 @@ import java.util.Comparator;
  */
 public class QualityClusterComparator implements Comparator<ICluster> {
 
+    public static QualityClusterComparator INSTANCE = new QualityClusterComparator();
+    private QualityClusterComparator() {
+    }
+
     @Override
     public int compare(ICluster cluster1, ICluster cluster2) {
         if (cluster1 == cluster2)

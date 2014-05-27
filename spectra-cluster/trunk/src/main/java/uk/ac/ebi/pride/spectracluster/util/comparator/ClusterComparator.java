@@ -18,6 +18,9 @@ import java.util.Comparator;
  */
 public class ClusterComparator implements Comparator<ICluster> {
 
+    public static ClusterComparator INSTANCE = new ClusterComparator();
+    protected ClusterComparator() {
+    }
     @Override
     public int compare(ICluster o1, ICluster o2) {
         int ret = CompareTo.compare(o1.getPrecursorMz(), o2.getPrecursorMz());

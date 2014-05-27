@@ -10,6 +10,10 @@ import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
  * @version $Id$
  */
 public class ClusterContentComparator extends ClusterComparator {
+    public static ClusterContentComparator INSTANCE = new ClusterContentComparator();
+
+    private ClusterContentComparator() {
+    }
 
     @Override
     public int compare(ICluster o1, ICluster o2) {

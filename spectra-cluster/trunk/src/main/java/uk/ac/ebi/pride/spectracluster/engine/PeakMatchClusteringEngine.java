@@ -238,7 +238,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
      * @return always true something is dome
      */
     protected boolean clusterUsingPeaks() {
-        Collections.sort(singleSpectrumClusters, new QualityClusterComparator());   // sort by quality
+        Collections.sort(singleSpectrumClusters, QualityClusterComparator.INSTANCE);   // sort by quality
         for (int index = 0; index < singleSpectrumClusters.size(); index++) {
             ICluster readCluster = singleSpectrumClusters.get(index);
             if (readCluster.getClusteredSpectraCount() != 1)

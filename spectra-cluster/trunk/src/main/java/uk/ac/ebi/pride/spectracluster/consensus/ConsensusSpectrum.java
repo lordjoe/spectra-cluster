@@ -4,8 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -372,7 +371,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         if (allPeaks.size() < 1) {
             List<IPeak> empty = new ArrayList<IPeak>();
-            consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, new SignalToNoiseChecker(), Collections.EMPTY_LIST);
+            consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), Collections.EMPTY_LIST);
             setIsDirty(false);
             return;
         }
@@ -393,7 +392,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         lowestConcensusPeak = minimumConsensusPeak;
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, new SignalToNoiseChecker(), consensusPeaks);
+        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz,  Defaults.getDefaultQualityScorer(), consensusPeaks);
 
         setIsDirty(false);
     }
