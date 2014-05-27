@@ -202,10 +202,12 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
         }
 
         // maybe a lot of overlap here // TODO JG evaluate if this approach is sensible
+        /*
         if (bestMatch != null) {
             if (handlePotentialOverlap(clusterToAdd, bestMatch, highestSimilarityScore))
                 return;
         }
+        */
         myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
         numberNotMerge++;
     }
@@ -246,6 +248,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
+    @Deprecated // TODO JG Reevaluate the usage of this function
     protected boolean handlePotentialOverlap(final ICluster cluster1, final ICluster cluster2, double highestSimilarityScore) {
         if (highestSimilarityScore < MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
             return false;     // we did nothing
@@ -285,6 +288,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     public static
     @Nonnull
+    @Deprecated // TODO JG function highly similar to ClusterUtilities::clusterFullyContainsScore
     Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(firstIds);
         ret.retainAll(c2.getSpectralIds());
@@ -306,6 +310,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      * @param cluster2
      * @return
      */
+    @Deprecated // TODO JG Clusters that overlap to a significant portion should be merged completely and not fragmented
     protected boolean assignOverlapsToBestCluster(final ICluster cluster1, final ICluster cluster2, Set<String> spectraOverlap) {
         List<ISpectrum> clusteredSpectra1 = cluster1.getClusteredSpectra();
         // I am not sure here but I think we let duplicates move to the best cluster
@@ -318,7 +323,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
             // choose the better cluster
             double ss1 = sCheck.assessSimilarity(cs1, spc);
             double ss2 = sCheck.assessSimilarity(cs2, spc);
-            if (ss1 > ss2) // TODO JG shouldn't this be the other way round? We remove from cluster one if similarity to cluster 1 is higher?
+            if (ss1 < ss2)
                 cluster1.removeSpectra(spc);
             else
                 cluster2.removeSpectra(spc);
