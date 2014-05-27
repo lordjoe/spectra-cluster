@@ -339,6 +339,12 @@ public class PSMUtilities {
         }
     }
 
+    /**
+     *  /user/rwang/clustering/cptac/ConsolidatedClusters     retrieved/cptacFromRui.clustering
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             usage();
