@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -297,7 +297,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
         if (consensusPeaks.size() < 1) {
             setIsDirty(false);
             List<IPeak> empty = new ArrayList<IPeak>();
-            consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty, new SignalToNoiseChecker(), null);
+            consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, empty, Defaults.getDefaultQualityScorer(), null);
             return;
         }
 
@@ -311,7 +311,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
         filterNoise();
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks, new SignalToNoiseChecker(), null);
+        consensusSpectrum = new PeptideSpectrumMatch(id, null, averageCharge, averagePrecursorMz, consensusPeaks, Defaults.getDefaultQualityScorer(), null);
 
         setIsDirty(false);
     }

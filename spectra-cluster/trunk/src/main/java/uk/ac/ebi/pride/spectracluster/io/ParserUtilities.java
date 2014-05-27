@@ -445,7 +445,7 @@ public class ParserUtilities {
                             dcharge,
                             (float) mz,
                             holder,
-                            new SignalToNoiseChecker(),
+                            Defaults.getDefaultQualityScorer(),
                             title // save title - sequence as annotation
                     );
                     if (titleLine != null)

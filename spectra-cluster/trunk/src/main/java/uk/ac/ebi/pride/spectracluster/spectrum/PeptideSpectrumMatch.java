@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.List;
 
@@ -40,6 +41,15 @@ public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMa
         setPeptideAnnotations(spectrum);
     }
 
+
+    public PeptideSpectrumMatch(String id,
+                                String peptide,
+                                int precursorCharge,
+                                float precursorMz,
+                                List<IPeak> peaks
+                                 ) {
+        this(id, peptide, precursorCharge, precursorMz, peaks, Defaults.getDefaultQualityScorer(),null);
+     }
 
     public PeptideSpectrumMatch(String id,
                                 String peptide,

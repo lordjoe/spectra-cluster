@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -126,7 +127,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
         String peptide = SpringJDBCUtilities.trimIfNotNUll(rs.getString("peptide"));
         List<IPeak> peaks = SpectrumUtilities.dataStringToPeaks(peaksStr);
 
-        ISpectrum ret = new PeptideSpectrumMatch(id, peptide, precursor_charge, precursor_mz, peaks, new SignalToNoiseChecker(), annotation);
+        ISpectrum ret = new PeptideSpectrumMatch(id, peptide, precursor_charge, precursor_mz, peaks,  Defaults.getDefaultQualityScorer(), annotation);
         return ret;
     }
 

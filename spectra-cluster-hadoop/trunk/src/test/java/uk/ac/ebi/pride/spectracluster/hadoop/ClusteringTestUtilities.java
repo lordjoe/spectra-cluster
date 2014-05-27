@@ -37,7 +37,7 @@ public class ClusteringTestUtilities {
      * @param pScs2
      */
     public static void assertEquivalentClusters(final List<IPeptideSpectralCluster> pScs, final List<IPeptideSpectralCluster> pScs2) {
-        final ClusterContentComparator comparator = new ClusterContentComparator();
+        final ClusterContentComparator comparator = ClusterContentComparator.INSTANCE;
         Collections.sort(pScs, comparator);
         Collections.sort(pScs2, comparator);
         Assert.assertEquals(pScs.size(), pScs2.size());

@@ -1,5 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
+import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
@@ -81,6 +85,36 @@ public class Defaults {
 
     public static void setNumberReclusteringPasses(final int pNumberReclusteringPasses) {
         numberReclusteringPasses = pNumberReclusteringPasses;
+    }
+
+    private static IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder = new ConsensusSpectrum();
+
+    public static IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
+        return defaultConsensusSpectrumBuilder;
+    }
+
+    public static void setDefaultConsensusSpectrumBuilder(IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder) {
+        Defaults.defaultConsensusSpectrumBuilder = defaultConsensusSpectrumBuilder;
+    }
+
+    private static ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct(getSimilarityMZRange(), getNumberComparedPeaks());
+
+    public static ISimilarityChecker getDefaultSimilarityChecker() {
+        return defaultSimilarityChecker;
+    }
+
+    public static void setDefaultSimilarityChecker(ISimilarityChecker defaultSimilarityChecker) {
+        Defaults.defaultSimilarityChecker = defaultSimilarityChecker;
+    }
+
+    private static IQualityScorer defaultQualityScorer = new SignalToNoiseChecker();
+
+    public static IQualityScorer getDefaultQualityScorer() {
+        return defaultQualityScorer;
+    }
+
+    public static void setDefaultQualityScorer(IQualityScorer defaultQualityScorer) {
+        Defaults.defaultQualityScorer = defaultQualityScorer;
     }
 
     /**
