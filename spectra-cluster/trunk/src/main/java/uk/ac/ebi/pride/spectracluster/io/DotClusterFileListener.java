@@ -36,7 +36,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
     }
 
     /**
-     * creat with an output file
+     * create with an output file
      *
      * @param inp - !null creatable filename
      */
