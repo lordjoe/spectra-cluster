@@ -27,7 +27,7 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
     @Override
     protected void setup(final Context context) throws IOException, InterruptedException {
         super.setup(context);
-        Defaults.configureAnalysisParameters(getApplication());
+        ConfigurableProperties.configureAnalysisParameters(getApplication());
         HadoopDefaults.configureAnalysisParameters(getApplication());
     }
 
