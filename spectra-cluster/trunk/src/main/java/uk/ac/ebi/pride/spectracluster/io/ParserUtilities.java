@@ -649,7 +649,7 @@ public class ParserUtilities {
             for (int j = 0; j < scs.length; j++) {
                 IPeptideSpectralCluster sc = scs[j];
                 StringBuilder sb = new StringBuilder();
-                final MGFSpectrumAppender spectrumAppender = new MGFSpectrumAppender();
+                final MGFSpectrumAppender spectrumAppender = MGFSpectrumAppender.INSTANCE;
                 if (isMGF) {
                     spectrumAppender.appendSpectrum(sb, sc.getConsensusSpectrum());
                 }else {

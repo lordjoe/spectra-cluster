@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.*;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -115,6 +116,16 @@ public class Defaults {
 
     public static void setDefaultQualityScorer(IQualityScorer defaultQualityScorer) {
         Defaults.defaultQualityScorer = defaultQualityScorer;
+    }
+
+    private static ClusterComparator defaultSpectrumComparator = ClusterComparator.INSTANCE;
+
+    public static ClusterComparator getDefaultSpectrumComparator() {
+        return defaultSpectrumComparator;
+    }
+
+    public static void setDefaultSpectrumComparator(ClusterComparator dc) {
+        defaultSpectrumComparator = dc;
     }
 
     /**

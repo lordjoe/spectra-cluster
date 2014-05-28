@@ -244,7 +244,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
             out.append("removeFromCluster=" + isRemoveFromCluster() + "\n");
             out.append("distance=" + getDistance() + "\n");
             out.append("NumPeaks: " + getSpectrum().getPeaks().size() + "\n");
-            final MGFSpectrumAppender spectrumAppender = new MGFSpectrumAppender();
+            final MGFSpectrumAppender spectrumAppender = MGFSpectrumAppender.INSTANCE;
             spectrumAppender.appendSpectrum(out, getSpectrum());
             final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
             clusterAppender.appendCluster(out, getCluster());

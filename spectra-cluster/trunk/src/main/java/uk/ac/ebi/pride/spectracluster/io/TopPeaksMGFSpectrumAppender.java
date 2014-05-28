@@ -10,6 +10,10 @@ import java.io.IOException;
  * @version $Id$
  */
 public class TopPeaksMGFSpectrumAppender extends MGFSpectrumAppender {
+    public static TopPeaksMGFSpectrumAppender INSTANCE = new TopPeaksMGFSpectrumAppender();
+
+    protected TopPeaksMGFSpectrumAppender() {
+    }
 
     public static final int MAX_PEAKS_TO_KEEP = 100;
 

@@ -84,7 +84,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
         clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
@@ -119,7 +119,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
           }
           // if not at end make a new engine
           if (pMzKey != null) {
-              setEngine(getFactory().getIncrementalClusteringEngine( getMajorPeakWindowSize()));
+              setEngine(getFactory().getIncrementalClusteringEngine( (float)getMajorPeakWindowSize()));
               setMajorPeak(pMzKey.getPeakMZ());
               setCurrentCharge(pMzKey.getCharge());
           }

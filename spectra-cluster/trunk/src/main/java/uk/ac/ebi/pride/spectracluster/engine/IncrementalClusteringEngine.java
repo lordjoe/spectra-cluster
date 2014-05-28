@@ -48,7 +48,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     public IncrementalClusteringEngine(ISimilarityChecker sck,
                                           Comparator<ICluster> scm,
-                                          double windowSize,
+                                          float windowSize,
                                           double similarityThreshold) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;

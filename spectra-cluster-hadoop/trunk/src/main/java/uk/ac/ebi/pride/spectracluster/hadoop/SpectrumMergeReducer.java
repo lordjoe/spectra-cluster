@@ -153,7 +153,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
         clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
@@ -179,7 +179,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
-            setEngine(getFactory().getIncrementalClusteringEngine(getSpectrumMergeWindowSize()));
+            setEngine(getFactory().getIncrementalClusteringEngine((float)getSpectrumMergeWindowSize()));
             setMajorPeak(pMzKey.getPrecursorMZ());
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());

@@ -68,6 +68,38 @@
             <type>jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+             <groupId>uk.ac.ebi.pride</groupId>
+             <artifactId>jmztab</artifactId>
+             <!-- based on mzTab specification version 1.0 RC5-->
+             <version>2.1.7-SNAPSHOT</version>
+             <exclusions>
+                 <exclusion>
+                         <groupId>org.slf4j</groupId>
+                         <artifactId>slf4j-nop</artifactId>
+                     </exclusion>
+                     <exclusion>
+                         <groupId>org.slf4j</groupId>
+                         <artifactId>slf4j-api</artifactId>
+                      </exclusion>
+                      <exclusion>
+                          <groupId>org.slf4j</groupId>
+                          <artifactId>jcl-over-slf4j</artifactId>
+                      </exclusion>
+                 <exclusion>
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>slf4j-log4j12</artifactId>
+                 </exclusion>
+                 <exclusion>
+                     <groupId>ch.gos.logback</groupId>
+                     <artifactId>logback-classic-1.0.7</artifactId>
+                 </exclusion>
+                 <exclusion>
+                     <groupId>log4j</groupId>
+                     <artifactId>log4j</artifactId>
+                 </exclusion>
+             </exclusions>
+         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride.tools</groupId>
@@ -83,6 +115,17 @@
             <artifactId>concurrenttools</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+        <dependency>
+              <groupId>commons-dbcp</groupId>
+              <artifactId>commons-dbcp</artifactId>
+              <version>1.2.2</version>
+          </dependency>
 
 
         <dependency>
