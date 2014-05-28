@@ -15,7 +15,7 @@ import java.util.*;
 public class HighestNPeakFilter implements IPeakFilter {
 
     public static final int DEFAULT_MAX_PEAKS = 100;
-    public static final Comparator<IPeak> INTENSITY_COMPARATOR =    new PeakIntensityComparator();
+    public static final Comparator<IPeak> INTENSITY_COMPARATOR =   PeakIntensityComparator.INSTANCE;
 
     private final int maxPeaks;
 
