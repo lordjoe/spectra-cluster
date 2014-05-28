@@ -246,7 +246,7 @@ public class Spectrum implements ISpectrum {
      */
     protected ISpectrum buildHighestPeaks(int numberRequested) {
         List<IPeak> byIntensity = new ArrayList<IPeak>(getPeaks());
-        Collections.sort(byIntensity, new PeakIntensityComparator()); // sort by intensity
+        Collections.sort(byIntensity,  PeakIntensityComparator.INSTANCE); // sort by intensity
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak iPeak : byIntensity) {
             holder.add(iPeak);

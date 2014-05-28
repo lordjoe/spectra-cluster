@@ -350,7 +350,7 @@ public class JohannesConsensusSpectrum implements IConsensusSpectrumBuilder {
             if (peakBuffer.size() < 1)
                 continue;
 
-            Collections.sort(peakBuffer, new PeakIntensityComparator());
+            Collections.sort(peakBuffer,  PeakIntensityComparator.INSTANCE);
 
             List<IPeak> fivePeaks = new ArrayList<IPeak>(5);
 
