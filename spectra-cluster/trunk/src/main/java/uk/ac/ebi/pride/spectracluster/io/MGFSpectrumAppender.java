@@ -13,6 +13,9 @@ import java.io.IOException;
  * @version $Id$
  */
 public class MGFSpectrumAppender implements ISpectrumAppender {
+    public static MGFSpectrumAppender INSTANCE = new MGFSpectrumAppender();
+    protected MGFSpectrumAppender() {
+    }
 
     @Override
     public void appendSpectrum(Appendable out, ISpectrum spectrum, Object... otherData) {

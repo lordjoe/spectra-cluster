@@ -57,7 +57,7 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
             throw new IllegalStateException("ClusterIdentity ust operate on stable and semistable clusters");
         }
         StringBuilder sb = new StringBuilder();
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
         clusterAppender.appendCluster(sb, mainCluster);
         writeKeyValue(id, sb.toString(), context);
     }

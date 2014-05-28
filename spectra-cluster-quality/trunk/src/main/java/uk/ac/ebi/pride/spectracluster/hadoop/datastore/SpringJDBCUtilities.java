@@ -241,6 +241,7 @@ public class SpringJDBCUtilities {
     }
 
     public static final String DATA_HOST_PARAMETER = "org.systemsbiology.xtandem.Datasource.Host";
+    public static final String DATA_PORT_PARAMETER = "org.systemsbiology.xtandem.Datasource.Port";
     public static final String DATA_DATABASE_PARAMETER = "org.systemsbiology.xtandem.Datasource.Database";
     public static final String DATA_USER_PARAMETER = "org.systemsbiology.xtandem.Datasource.User";
     public static final String DATA_PASSWORD_PARAMETER = "org.systemsbiology.xtandem.Datasource.Password";

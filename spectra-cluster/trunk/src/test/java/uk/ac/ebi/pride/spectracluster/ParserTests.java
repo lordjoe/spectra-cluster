@@ -442,7 +442,7 @@ public class ParserTests {
         IPeptideSpectralCluster sc = scs[0];
 
         StringBuilder sb = new StringBuilder();
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+        final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
         clusterAppender.appendCluster(sb, sc);
         String sc2Str = sb.toString();
         is = new LineNumberReader(new StringReader(sc2Str));

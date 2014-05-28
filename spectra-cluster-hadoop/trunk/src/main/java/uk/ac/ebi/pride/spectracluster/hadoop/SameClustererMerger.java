@@ -86,7 +86,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
         public IIncrementalClusteringEngine getEngine() {
             if (engine == null) {
-                engine = factory.getIncrementalClusteringEngine(HadoopDefaults.getSameClusterMergeMZWindowSize());
+                engine = factory.getIncrementalClusteringEngine((float)HadoopDefaults.getSameClusterMergeMZWindowSize());
             }
             return engine;
         }
@@ -180,7 +180,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             String keyStr = key.toString();
 
             StringBuilder sb = new StringBuilder();
-            final CGFClusterAppender clusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+            final CGFClusterAppender clusterAppender = new CGFClusterAppender( MGFSpectrumAppender.INSTANCE);
             clusterAppender.appendCluster(sb, cluster);
             String string = sb.toString();
 

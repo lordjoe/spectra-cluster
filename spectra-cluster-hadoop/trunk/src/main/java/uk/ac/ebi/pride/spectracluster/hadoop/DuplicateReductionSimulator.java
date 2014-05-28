@@ -203,7 +203,7 @@ public class DuplicateReductionSimulator {
                 return TextKeyValue.EMPTY_ARRAY;
             String id = sc.getSpectralId();
             StringBuffer sb = new StringBuffer();
-            final CGFClusterAppender cgfClusterAppender = new CGFClusterAppender(new MGFSpectrumAppender());
+            final CGFClusterAppender cgfClusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
             cgfClusterAppender.appendCluster(sb, sc);
             TextKeyValue sumCount = new TextKeyValue(id, sb.toString());
             holder.add(sumCount);

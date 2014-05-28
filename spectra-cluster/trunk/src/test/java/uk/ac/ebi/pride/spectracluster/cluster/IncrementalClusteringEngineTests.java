@@ -7,9 +7,7 @@ import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 import java.util.*;
@@ -38,7 +36,7 @@ public class IncrementalClusteringEngineTests {
     @Test
     public void testIncrementalClusteringEngine() throws Exception {
         final IncrementalClusteringEngineFactory cf = new IncrementalClusteringEngineFactory();
-        final IIncrementalClusteringEngine ce = cf.getIncrementalClusteringEngine(WINDOW_SIZE);
+        final IIncrementalClusteringEngine ce = EngineFactories.buildIncrementalClusteringEngineFactory(WINDOW_SIZE).buildInstance();
         List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
         final List<IPeptideSpectralCluster> clusters = getRunEngine(ce, originalSpectra);
@@ -144,8 +142,12 @@ public class IncrementalClusteringEngineTests {
 
         // these MUST be in ascending mz order
         Collections.sort(originalSpectra);
-
-        final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000), Defaults.getSimilarityThreshold());
+        final IDefaultingFactory<IIncrementalClusteringEngine> factory = EngineFactories.buildIncrementalClusteringEngineFactory(new FrankEtAlDotProductOld(),
+                Defaults.getDefaultSpectrumComparator(),
+                Defaults.getSimilarityThreshold(),
+                new Float(1000));
+        IIncrementalClusteringEngine incrementalClusteringEngine = factory.buildInstance();
+   //     final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000), Defaults.getSimilarityThreshold());
         IClusteringEngine incrementalEngine = new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
         ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), Defaults.getSimilarityThreshold());
 
