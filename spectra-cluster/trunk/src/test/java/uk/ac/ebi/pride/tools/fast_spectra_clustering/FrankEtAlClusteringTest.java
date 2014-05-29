@@ -3,8 +3,7 @@ package uk.ac.ebi.pride.tools.fast_spectra_clustering;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.FrankEtAlClustering;
@@ -26,7 +25,7 @@ public class FrankEtAlClusteringTest {
         clustering.setClusteringRounds(2);
         clustering.setSimilarityThreshold(0.7);
 
-        List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource();
+        List<Spectrum> spectra = JMZTabUtilities.readSpectrumsFromResource();
         // do the clustering
         //noinspection UnusedDeclaration
         long start = System.currentTimeMillis();
@@ -72,7 +71,7 @@ public class FrankEtAlClusteringTest {
         clustering.setClusteringRounds(2);
         clustering.setSimilarityThreshold(0.8);
 
-        List<Spectrum> spectra = ClusteringTestUtilities.readSpectrumsFromResource();
+        List<Spectrum> spectra = JMZTabUtilities.readSpectrumsFromResource();
         // do the clustering
         //noinspection UnusedDeclaration
         long start = System.currentTimeMillis();

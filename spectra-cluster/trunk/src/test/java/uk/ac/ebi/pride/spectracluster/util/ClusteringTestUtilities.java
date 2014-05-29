@@ -12,11 +12,9 @@ import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
-import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
-import uk.ac.ebi.pride.tools.mgf_parser.MgfFile;
-import uk.ac.ebi.pride.tools.mgf_parser.model.Ms2Query;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+
+
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 
 import java.io.File;
@@ -124,15 +122,6 @@ public class ClusteringTestUtilities {
         return Arrays.asList(mgfSpectra);
     }
 
-    /**
-     * read a resource mgf as a list of spectra
-     *
-     * @return
-     */
-    public static List<Spectrum> readSpectrumsFromResource() {
-        return readSpectrumsFromResource(SAMPLE_MGF_FILE);
-    }
-
 
     public static LineNumberReader getResourceClusteringReader() {
         return getResourceClusteringReader(SAMPLE_CLUSTERING_FILE);
@@ -150,43 +139,6 @@ public class ClusteringTestUtilities {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-    }
-
-    /**
-     * read a resource mgf as a list of spectra
-     *
-     * @param resName
-     * @return
-     */
-    public static List<Spectrum> readSpectrumsFromResource(String resName) {
-        try {
-            File specFile;
-            MgfFile mgfFile;
-            List<Spectrum> spectra;
-            URL testFile = ClusteringTestUtilities.class.getClassLoader().getResource(resName);
-
-            assert testFile != null;
-            specFile = new File(testFile.toURI());
-
-            mgfFile = new MgfFile(specFile);
-
-            spectra = new ArrayList<Spectrum>(mgfFile.getMs2QueryCount());
-            Iterator<Ms2Query> it = mgfFile.getMs2QueryIterator();
-            while (it.hasNext()) {
-                Ms2Query query = it.next();
-                if (query.getPrecursorIntensity() == null)
-                    query.setPeptideIntensity(1.0);
-
-                spectra.add(query);
-            }
-            return spectra;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        } catch (JMzReaderException e) {
-            throw new RuntimeException(e);
-        }
-
 
     }
 
