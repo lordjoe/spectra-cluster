@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import junit.framework.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.Peak;
 
@@ -28,7 +28,7 @@ public class MergeIdenticalPeaksComparisonTests {
                 originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();
 
         List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
-        List<Spectrum> originalSpectra = ClusteringTestUtilities.readSpectrumsFromResource();
+        List<Spectrum> originalSpectra = JMZTabUtilities.readSpectrumsFromResource();
 
         Assert.assertEquals(spectra.size(), originalSpectra.size());
 

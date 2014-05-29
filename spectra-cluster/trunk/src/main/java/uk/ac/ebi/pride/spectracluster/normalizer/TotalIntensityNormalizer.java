@@ -26,11 +26,14 @@ public class TotalIntensityNormalizer implements IIntensityNormalizer {
 
     private final double totalIntensity;
 
+    public static final IIntensityNormalizer DEFAULT = new TotalIntensityNormalizer();
+
     /**
      * Use Defaults which builds with reflection
      * Set the class with Defaults.setNormalizerClass
+     * use DEFAULT
      */
-    public TotalIntensityNormalizer() {
+    private TotalIntensityNormalizer() {
         this(DEFAULT_TOTAL_INTENSITY);
     }
 

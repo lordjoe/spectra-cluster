@@ -18,9 +18,11 @@ public class BinnedHighestNPeakFilter implements IPeakFilter {
 
     public static final int MINIMUM_BINNED_MZ = MZIntensityUtilities.LOWEST_USABLE_MZ;
     public static final int MAXIMUM_BINNED_MZ = MZIntensityUtilities.HIGHEST_USABLE_MZ;
-    public static final int DEFAULT_MAX_PEAKS_PER_BIN = 6;
+    public static final int DEFAULT_MAX_PEAKS_PER_BIN = 8;
     public static final int DEFAULT_BIN_SIZE = 100;
     public static final int DEFAULT_BIN_OVERLAP = DEFAULT_BIN_SIZE / 2;
+
+    public static final IPeakFilter DEFAULT = new BinnedHighestNPeakFilter(DEFAULT_MAX_PEAKS_PER_BIN,DEFAULT_BIN_SIZE,DEFAULT_BIN_OVERLAP);
 
     public static final Comparator<IPeak> INTENSITY_COMPARATOR = PeakIntensityComparator.INSTANCE;
 
@@ -75,8 +77,10 @@ public class BinnedHighestNPeakFilter implements IPeakFilter {
         for (; index < allpeaks.size(); index++) {
             IPeak test = allpeaks.get(index);
             final float testMz = test.getMz();
-            if (testMz < binEnd)
-                nextBin = 1; // keep building next bin
+            if(testMz < binBottom)
+                continue;
+            if (testMz < nextBinStartMZ)
+                nextBin = index; // keep building next bin
 
             if (testMz > binEnd)
                 break; // done with this bin
@@ -86,12 +90,14 @@ public class BinnedHighestNPeakFilter implements IPeakFilter {
           // now sort highest intensity first
         Collections.sort(byIntensity, INTENSITY_COMPARATOR);
         // add highest maxPeaks to retained
+        int numberAdded = 0;
         for (IPeak iPeak : byIntensity) {
             retained.add(iPeak);
-            if (retained.size() >= maxPeaks)
+
+            if (++numberAdded >= maxPeaks)
                 break;
         }
-        if(index >= allpeaks.size())
+        if(nextBin >= allpeaks.size())
             return Integer.MAX_VALUE; // finished all peaks - lets quit;
        return nextBin;
 
