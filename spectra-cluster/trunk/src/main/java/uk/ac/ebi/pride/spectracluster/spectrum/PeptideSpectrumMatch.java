@@ -14,6 +14,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
+@Deprecated
 public class PeptideSpectrumMatch extends Spectrum implements IPeptideSpectrumMatch {
 
 
