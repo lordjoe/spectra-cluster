@@ -104,6 +104,10 @@ public class Defaults {
         Defaults.consensusFactory = consensusFactory;
     }
 
+    /**
+     * this is the way to get a ConsensusSpectrumBuilder
+     * @return
+     */
     public static IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
            return consensusFactory.getConsensusSpectrumBuilder();
     }

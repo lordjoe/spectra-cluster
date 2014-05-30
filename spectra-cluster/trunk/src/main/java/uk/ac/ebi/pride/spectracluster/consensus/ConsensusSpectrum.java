@@ -36,22 +36,22 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
 
     /**
-       * always use the factory to get an instance
-       */
-      private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
-          private ConsensusSpectrumFactory() {
-          }
+     * always use the factory to get an instance
+     */
+    private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
+        private ConsensusSpectrumFactory() {
+        }
 
-          /**
-           * build a new instance of the cpectrum builder
-           *
-           * @return !null instance
-           */
-          @Override
-          public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-              return new ConsensusSpectrum();
-          }
-      }
+        /**
+         * build a new instance of the spectrum builder
+         *
+         * @return !null instance
+         */
+        @Override
+        public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+            return new ConsensusSpectrum();
+        }
+    }
 
     public static final float NOISE_FILTER_INCREMENT = 100;
 
@@ -84,7 +84,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * Defines whether m/z values should be rounded. Thereby, more peaks are considered identical
      * without reducing accuracy.
      */
-    public final static boolean USE_ROUNDING = false;
+    public final static boolean USE_ROUNDING = true;
     /**
      * Defines the precision used if rounding is enabled.
      */
@@ -215,9 +215,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToRemove == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                                    currentExistingPeak.getMz(),
-                                    currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
-                                    currentExistingPeak.getCount() - 1)
+                            currentExistingPeak.getMz(),
+                            currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
+                            currentExistingPeak.getCount() - 1)
                     );
 
                     posAllPeaks = j;
@@ -339,9 +339,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToAdd == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                                    currentExistingPeak.getMz(),
-                                    peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
-                                    currentExistingPeak.getCount() + peakToAdd.getCount())
+                            currentExistingPeak.getMz(),
+                            peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
+                            currentExistingPeak.getCount() + peakToAdd.getCount())
                     );
                     posAllPeaks = j;
                     wasAdded = true;
@@ -411,7 +411,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         lowestConcensusPeak = minimumConsensusPeak;
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz,  Defaults.getDefaultQualityScorer(), consensusPeaks);
+        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), consensusPeaks);
 
         setIsDirty(false);
     }
@@ -471,7 +471,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             if (peakBuffer.size() < 1)
                 continue;
 
-            Collections.sort(peakBuffer,  PeakIntensityComparator.INSTANCE);
+            Collections.sort(peakBuffer, PeakIntensityComparator.INSTANCE);
 
             List<IPeak> fivePeaks = new ArrayList<IPeak>(peaksInBinToKeep);
 
