@@ -191,7 +191,7 @@ public final class ClusterUtilities {
      * @return  a spectral cluster
      */
     public static IPeptideSpectralCluster asCluster(ISpectrum spectrum) {
-        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, new ConsensusSpectrum());
+        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, Defaults.getDefaultConsensusSpectrumBuilder());
         ret.addSpectra(spectrum);
         return ret;
     }

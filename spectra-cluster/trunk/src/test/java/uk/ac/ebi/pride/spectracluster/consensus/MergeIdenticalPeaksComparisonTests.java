@@ -22,7 +22,7 @@ public class MergeIdenticalPeaksComparisonTests {
     public void testSpectrumBuilderComparison() throws Exception {
 
         //noinspection UnusedDeclaration
-        IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder = new ConsensusSpectrum();
+        IConsensusSpectrumBuilder frankEtAlConsensusSpectrumBuilder = Defaults.getDefaultConsensusSpectrumBuilder();
         //noinspection UnusedDeclaration
         uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder        //noinspection UnusedDeclaration
                 originalFrankEtAlConsensusSpectrumBuilder = new uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.impl.FrankEtAlConsensusSpectrumBuilder();

@@ -10,6 +10,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 @Deprecated
 public interface IPeptideSpectrumMatch extends ISpectrum {
 
+    public static final IPeptideSpectrumMatch[] EMPTY_ARRAY = {};
     /**
      * return scored peptide - maybe null
      */

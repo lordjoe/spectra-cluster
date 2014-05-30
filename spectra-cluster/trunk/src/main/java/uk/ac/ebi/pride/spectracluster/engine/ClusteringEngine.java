@@ -126,7 +126,7 @@ public class ClusteringEngine implements IClusteringEngine {
                 ISpectrum[] clusteredSpectra = new ISpectrum[clusterToAdd.getClusteredSpectra().size()];
                 mostSimilarCluster.addSpectra(clusterToAdd.getClusteredSpectra().toArray(clusteredSpectra));
             } else {
-                myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
+                myClusters.add(new SpectralCluster(clusterToAdd, Defaults.getDefaultConsensusSpectrumBuilder()));
             }
         }
 

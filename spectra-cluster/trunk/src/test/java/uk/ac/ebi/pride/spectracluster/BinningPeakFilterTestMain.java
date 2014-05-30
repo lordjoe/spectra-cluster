@@ -35,7 +35,7 @@ public class BinningPeakFilterTestMain {
 
     private static void testClusterConcensusSpectrum(IPeptideSpectralCluster cluster) {
         final ISpectrum oldConcensusSpectrum = cluster.getConsensusSpectrum();
-        FilteredConsensusSpectrum builder = new FilteredConsensusSpectrum();
+        final IConsensusSpectrumBuilder builder = FilteredConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
             builder.addSpectra(spec);
         }

@@ -118,7 +118,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
             int numberProcessed = 0;
 
-            PeptideSpectralCluster ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
+            PeptideSpectralCluster ret = new PeptideSpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
 
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {

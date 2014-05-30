@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class MergeIdenticalPeaksTests {
         peaks.add(new Peak(223.1F, 20, 1));
         peaks.add(new Peak(223.4F, 30, 1));
 
-        consensusSpectrumBuilder = new ConsensusSpectrum();
+        consensusSpectrumBuilder = Defaults.getDefaultConsensusSpectrumBuilder();
     }
 
     @Test

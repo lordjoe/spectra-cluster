@@ -95,12 +95,13 @@ public class ParserUtilities {
         for (SpectrumCreateListener lstn : listerners) {
             lstn.onSpectrumStarted();
         }
-        ISpectrum cls = readMGFScan(inp, null);
+        ISpectrum cls = readFilteredMGFScan(inp);  // filter peaks
+
         while (cls != null) {
             for (SpectrumCreateListener lstn : listerners) {
                 lstn.onSpectrumCreate(cls);
             }
-            cls = readMGFScan(inp, null);
+            cls = readFilteredMGFScan(inp);
         }
 
         for (SpectrumCreateListener lstn : listerners) {
@@ -145,13 +146,16 @@ public class ParserUtilities {
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
-                    ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
+                    ret = new PeptideSpectralCluster(id, Defaults.getDefaultConsensusSpectrumBuilder());
                     break;
                 }
                 // naked spectrum
                 if (line.startsWith(BEGIN_IONS)) {
-                    ISpectrum internal = readMGFScan(inp, line);
-                    ret = new PeptideSpectralCluster(internal.getId(), new ConsensusSpectrum());
+                    ISpectrum internalComplete = readMGFScan(inp, line);
+                    final List<IPeak> peaks = internalComplete.getPeaks();
+                    final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
+                    ISpectrum internal = new PeptideSpectrumMatch(internalComplete, filteredPeaks);
+                    ret = new PeptideSpectralCluster(internal.getId(), Defaults.getDefaultConsensusSpectrumBuilder());
                     ret.addSpectra(internal);
                     return ret;
                 }
@@ -188,7 +192,7 @@ public class ParserUtilities {
     public static ConsensusSpectraItems readConsensusSpectraItems(LineNumberReader inp, String line) {
         ConsensusSpectraItems ret = new ConsensusSpectraItems();
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        IConsensusSpectrumBuilder sb = new ConsensusSpectrum();
+        IConsensusSpectrumBuilder sb = Defaults.getDefaultConsensusSpectrumBuilder();
         ISpectrum concensus;
         try {
             if (line == null)
@@ -320,6 +324,21 @@ public class ParserUtilities {
         }
 
         return holder;
+    }
+
+
+    /**
+     * filter peaks list
+     *
+     * @param inp
+     * @return
+     */
+    public static IPeptideSpectrumMatch readFilteredMGFScan(LineNumberReader inp) {
+        IPeptideSpectrumMatch cls = readMGFScan(inp);
+        final List<IPeak> peaks = cls.getPeaks();
+        final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
+        cls = new PeptideSpectrumMatch(cls, filteredPeaks);
+        return cls;
     }
 
 
@@ -652,7 +671,7 @@ public class ParserUtilities {
                 final MGFSpectrumAppender spectrumAppender = MGFSpectrumAppender.INSTANCE;
                 if (isMGF) {
                     spectrumAppender.appendSpectrum(sb, sc.getConsensusSpectrum());
-                }else {
+                } else {
                     final CGFClusterAppender clusterAppender = new CGFClusterAppender(spectrumAppender);
                     clusterAppender.appendCluster(sb, sc);
                 }

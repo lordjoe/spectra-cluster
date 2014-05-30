@@ -52,5 +52,9 @@ public interface ISpectrumDataStore {
      */
     public Iterable<? extends ISpectrum> getByPeptide(String peptide);
 
-
+    /**
+     * count the spectra
+     * @return
+     */
+    public int getSpectrumCount();
 }

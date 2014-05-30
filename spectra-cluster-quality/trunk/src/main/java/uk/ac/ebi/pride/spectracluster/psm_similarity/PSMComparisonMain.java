@@ -2,14 +2,14 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 
 import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.TypedVisitor;
+import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterPeptidePurity;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterSimilarityUtilities;
-import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterSet;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.cluster.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.PSMClusterDecoyChart;
+import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.*;
@@ -55,13 +55,15 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
     protected void handleProperties() {
 
-        String decoyFileName = getProperty("Decoys");
-        File decoyFile = new File(decoyFileName);
-        String path = decoyFile.getAbsolutePath();
-        boolean exists = decoyFile.exists();
-        ClusterSimilarityUtilities.readPSMDecoySpectra(decoyFile, psms);
-        int totalPSMs = psms.getPSMSpectrumCount();
-        int totalDecoys = psms.getDecoyCount();
+        if (false) {
+            String decoyFileName = getProperty("Decoys");
+            File decoyFile = new File(decoyFileName);
+            String path = decoyFile.getAbsolutePath();
+            boolean exists = decoyFile.exists();
+            ClusterSimilarityUtilities.readPSMDecoySpectra(decoyFile, psms);
+            int totalPSMs = psms.getPSMSpectrumCount();
+            int totalDecoys = psms.getDecoyCount();
+        }
 
 
         String tsvFileName = getProperty("SpectraFile");
@@ -69,13 +71,18 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         ClusterSimilarityUtilities.buildFromTSVFile(tsvFile, psms);
 
         String analysisProperties = getProperty("AnalysisProperties");
-        File aps = new File(analysisProperties);
         Properties devProps = new Properties();
-        try {
-            devProps.load(new FileReader(aps));
-            properties.putAll(devProps);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        if(analysisProperties != null)  {
+            File aps = new File(analysisProperties);
+            if (aps.exists()) {
+                try {
+                    devProps.load(new FileReader(aps));
+                    properties.putAll(devProps);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
     }
@@ -231,12 +238,11 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         return psms;
     }
 
-    public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            usage();
-            return;
-        }
-
+    /**
+     * @param args
+     * @throws IOException
+     */
+    private static void handleClusteringFiles(String[] args) throws IOException {
         PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
 
         PSMComparisonMain mainClass = new PSMComparisonMain();
@@ -269,8 +275,59 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         mainClass.generateReports();
 
         PSMUtilities.closeClusterSaver();
-
     }
 
+    private static void handleCgfDirectories(String[] args) throws IOException {
+        PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
+
+        PSMComparisonMain mainClass = new PSMComparisonMain();
+
+        ElapsedTimer et = new ElapsedTimer();
+
+        for (int i = 0; i < args.length; i++) {
+            SimpleClusterSet cs = new SimpleClusterSet();
+            final String arg = args[i];
+            File f = new File(arg);
+            if (!f.isDirectory())
+                throw new UnsupportedOperationException("Bad file " + arg);
+            final File[] files = f.listFiles();
+            for (int j = 0; j < files.length; j++) {
+                File file = files[j];
+                if (j % 50 == 0)
+                    System.out.print(".");
+                final IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(file);
+                cs.addClusters(Arrays.asList(clusters));
+            }
+            System.out.println("done" + arg);
+
+            showClusterSizesAndCounts(arg, cs);
+
+            showClusterSizesAndCounts(arg, cs);
+            cs.setName(arg);
+            mainClass.addClustering(cs);
+            // showChart(cs);
+        }
+        et.formatElapsed("Cluster Sets");
+
+
+        mainClass.showFDRCharts(mainClass.getProperty("name"));
+        mainClass.generateReports();
+
+        // PSMUtilities.closeClusterSaver();
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length < 2) {
+            usage();
+            return;
+        }
+
+        XYDataset ds = null; // Slewis - force the compiler to add
+        // why am I having issues loading jfreechart
+        final Class<?> aClass = Class.forName("org.jfree.data.xy.XYDataset");
+        // handleCgfDirectories(args);
+        handleClusteringFiles(args);
+
+    }
 
 }

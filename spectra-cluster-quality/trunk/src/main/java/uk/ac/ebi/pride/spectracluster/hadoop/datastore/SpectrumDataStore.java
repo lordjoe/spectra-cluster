@@ -98,6 +98,7 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
         return db.queryForDatabase(query, getDataBaseName());
     }
 
+
     /**
      * iterate over all spectra in the database
      *
@@ -190,6 +191,22 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
             }
         }
     }
+
+    /**
+     * count the spectra
+     *
+     * @return
+     */
+    @Override
+    public int getSpectrumCount() {
+        String query = queryForDatabase(SpectrumMapper.SELECT_SPECTRA_COUNT_STATEMENT);
+        final IWorkingClusterDatabase database1 = getDatabase();
+        final String[] strings = SpringJDBCUtilities.queryForStrings(database1.getTemplate(),query);
+        if(strings.length == 0)
+            return 0;
+        return Integer.parseInt(strings[0]);
+    }
+
 
     /**
      * return all spectra mapped tp a specific peptide

@@ -44,7 +44,13 @@ public class PSM_Holder {
     }
 
     public Set<PSMSpectrum> getPSMSpectrums(String id) {
-        return idToPSMSpectrum.get(id);
+        Set<PSMSpectrum> psmSpectrums = idToPSMSpectrum.get(id);
+        if (psmSpectrums == null) {
+            psmSpectrums = new HashSet<PSMSpectrum>();
+            psmSpectrums.add(PSMSpectrum.getSpectrum(id));
+            idToPSMSpectrum.put(id, psmSpectrums);
+        }
+        return psmSpectrums;
     }
 
     public Set<PSMSpectrum> getAllSpectrums() {

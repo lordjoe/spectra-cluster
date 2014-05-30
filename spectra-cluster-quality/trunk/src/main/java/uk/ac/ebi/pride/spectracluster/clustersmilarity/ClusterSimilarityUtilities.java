@@ -136,6 +136,12 @@ public class ClusterSimilarityUtilities {
         return simpleClusterSet;
     }
 
+    /**
+     * build a TSV file  holding   id, mz, charge and peptide
+     *
+     * @param file
+     * @param spectrumRetriever
+     */
     public static void buildFromMgfFile(File file, IMutableSpectrumRetriever spectrumRetriever) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -243,9 +249,11 @@ public class ClusterSimilarityUtilities {
                 while ((line = lineNumberReader.readLine()) != null) {
                     IPeptideSpectrumMatch pp = constructPeptideSpectrumMatch(line);
                     List<PSMSpectrum> holder = new ArrayList<PSMSpectrum>();
-                    for (PSMSpectrum psm : spectrumRetriever.getPSMSpectrums(pp.getId())) {
+                    final Set<PSMSpectrum> psmSpectrums = spectrumRetriever.getPSMSpectrums(pp.getId());
+                    for (PSMSpectrum psm : psmSpectrums) {
                         psm.setPrecursorCharge(pp.getPrecursorCharge());
                         psm.setPrecursorMz(pp.getPrecursorMz());
+                        psm.setPeptide(pp.getPeptide());
                         holder.add(psm);
                     }
                     for (PSMSpectrum psm : holder) {
@@ -367,8 +375,7 @@ public class ClusterSimilarityUtilities {
      * @return set of common ids
      */
     public static
-    @Nonnull
-    Set<String> getSpectraOverlap(@Nonnull final ICluster c1, @Nonnull final ICluster c2) {
+    @Nonnull Set<String> getSpectraOverlap(@Nonnull final ICluster c1, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(c1.getSpectralIds());
         ret.retainAll(c2.getSpectralIds());
         return ret;
@@ -381,8 +388,7 @@ public class ClusterSimilarityUtilities {
      * @return set of common ids
      */
     public static
-    @Nonnull
-    Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
+    @Nonnull Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(firstIds);
         ret.retainAll(c2.getSpectralIds());
         return ret;

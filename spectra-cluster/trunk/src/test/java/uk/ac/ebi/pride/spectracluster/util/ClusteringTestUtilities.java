@@ -156,7 +156,7 @@ public class ClusteringTestUtilities {
         int index = 1000;
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), new ConsensusSpectrum());
+            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);

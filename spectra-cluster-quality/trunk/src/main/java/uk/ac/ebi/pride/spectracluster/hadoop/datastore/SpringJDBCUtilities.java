@@ -250,8 +250,9 @@ public class SpringJDBCUtilities {
 
     public static String buildConnectionString(final Map<String, String> holder) {
         String host = holder.get(DATA_HOST_PARAMETER);
-        String database = holder.get(DATA_DATABASE_PARAMETER);
-        String connString = "jdbc:mysql://" + host + "/";
+        String port = holder.get(DATA_PORT_PARAMETER);
+         String database = holder.get(DATA_DATABASE_PARAMETER);
+        String connString = "jdbc:mysql://" + host + ":" + port + "/";
         if (database != null)
             connString += database;
         return connString;

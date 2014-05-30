@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.consensus.*;
+import uk.ac.ebi.pride.spectracluster.filter.*;
 import uk.ac.ebi.pride.spectracluster.quality.*;
 import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.*;
@@ -76,6 +77,9 @@ public class Defaults {
         Defaults.similarityMZRange = similarityMZRange;
     }
 
+
+
+
     public static void setRetainThreshold(double retainThreshold) {
         Defaults.retainThreshold = retainThreshold;
     }
@@ -88,15 +92,22 @@ public class Defaults {
         numberReclusteringPasses = pNumberReclusteringPasses;
     }
 
-    private static IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder = new ConsensusSpectrum();
+    private static IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder = null;
+
+    private static ConcensusSpectrumBuilderFactory consensusFactory = FilteredConsensusSpectrum.FACTORY;
+
+    public static ConcensusSpectrumBuilderFactory getConsensusFactory() {
+        return consensusFactory;
+    }
+
+    public static void setConsensusFactory(ConcensusSpectrumBuilderFactory consensusFactory) {
+        Defaults.consensusFactory = consensusFactory;
+    }
 
     public static IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
-        return defaultConsensusSpectrumBuilder;
+           return consensusFactory.getConsensusSpectrumBuilder();
     }
 
-    public static void setDefaultConsensusSpectrumBuilder(IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder) {
-        Defaults.defaultConsensusSpectrumBuilder = defaultConsensusSpectrumBuilder;
-    }
 
     private static ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct(getSimilarityMZRange(), getNumberComparedPeaks());
 
@@ -126,6 +137,16 @@ public class Defaults {
 
     public static void setDefaultSpectrumComparator(ClusterComparator dc) {
         defaultSpectrumComparator = dc;
+    }
+
+    public static IPeakFilter defaultPeakFilter =  BinnedHighestNPeakFilter.DEFAULT;
+
+    public static IPeakFilter getDefaultPeakFilter() {
+        return defaultPeakFilter;
+    }
+
+    public static void setDefaultPeakFilter(IPeakFilter defaultPeakFilter) {
+        Defaults.defaultPeakFilter = defaultPeakFilter;
     }
 
     /**

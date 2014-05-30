@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -123,7 +123,7 @@ public class ClusteringTestUtilities {
         int index = 1000;
         List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), new ConsensusSpectrum());
+            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);

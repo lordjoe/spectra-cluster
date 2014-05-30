@@ -46,7 +46,7 @@ public class Adapters {
      */
     public static IPeptideSpectralCluster fromSpectraCluster(SpectraCluster inp) {
         String id = "";
-        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id, new ConsensusSpectrum());
+        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
         final List<ClusteringSpectrum> spectra = inp.getSpectra();
 
         for (ClusteringSpectrum sc : spectra) {

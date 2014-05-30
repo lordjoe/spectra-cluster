@@ -23,13 +23,14 @@ public class WorkingClusteringDatabase implements IWorkingClusterDatabase {
     /**
      * @return a data source ot talk to cluster database
      */
-    public static @Nonnull DataSource buildClusterDataSource() {
+    public static @Nonnull DataSource buildClusterDataSource(String database) {
         Map<String, String> holder = new HashMap<String, String>();
         final String host = "mysql-pride-projects";
         holder.put(SpringJDBCUtilities.DATA_HOST_PARAMETER, host);
         holder.put(SpringJDBCUtilities.DATA_PORT_PARAMETER, "4285");
         holder.put(SpringJDBCUtilities.DATA_USER_PARAMETER, "pride_q_ro");
-        String pw = "Pride_Q_RO";
+        holder.put(SpringJDBCUtilities.DATA_DATABASE_PARAMETER, database);
+         String pw = "Pride_Q_RO";
         holder.put(SpringJDBCUtilities.DATA_PASSWORD_PARAMETER, pw);
         holder.put(SpringJDBCUtilities.DATA_DRIVER_CLASS_PARAMETER, "com.mysql.jdbc.Driver");
         DataSource ds = SpringJDBCUtilities.buildDataSource(holder);

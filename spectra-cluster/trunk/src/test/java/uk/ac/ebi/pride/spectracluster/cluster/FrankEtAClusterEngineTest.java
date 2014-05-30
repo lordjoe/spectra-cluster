@@ -6,9 +6,7 @@ import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ConsensusSpectraItems;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,7 @@ public class FrankEtAClusterEngineTest {
         for (ConsensusSpectraItems cluster : consensusSpectraItems) {
             ISpectrum consensusSpectrum = cluster.getConcensus();
             List<ISpectrum> spectra = cluster.getSpectra();
-            IConsensusSpectrumBuilder consensusSpectrumBuilder = new ConsensusSpectrum();
+            IConsensusSpectrumBuilder consensusSpectrumBuilder = Defaults.getDefaultConsensusSpectrumBuilder();
             consensusSpectrumBuilder.onSpectraAdd(consensusSpectrumBuilder, spectra.toArray(new ISpectrum[spectra.size()]));
 
             // make a concensus in bulk
