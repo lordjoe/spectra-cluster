@@ -28,6 +28,27 @@ import java.util.*;
  */
 public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
 
+    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
+
+    /**
+       * always use the factory to get an instance
+       */
+      public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
+          private ConsensusSpectrumFactory() {
+          }
+
+          /**
+           * build a new instance of the cpectrum builder
+           *
+           * @return !null instance
+           */
+          @Override
+          public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+              return new FilteredConsensusSpectrum();
+          }
+      }
+
+
     public static final int DEFAULT_PEAKS_TO_KEEP = 5;
     public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this add all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
@@ -89,14 +110,14 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * private to force use of the factory
      */
-    public FilteredConsensusSpectrum() {
+    private FilteredConsensusSpectrum() {
         this(null);
     }
 
     /**
      * private to force use of the factory
      */
-    public FilteredConsensusSpectrum(String id) {
+    private FilteredConsensusSpectrum(String id) {
 
         this.id = id;
         filter = BinnedHighestNPeakFilter.DEFAULT;

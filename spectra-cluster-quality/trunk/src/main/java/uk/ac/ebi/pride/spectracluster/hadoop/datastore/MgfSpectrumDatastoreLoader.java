@@ -1,9 +1,11 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
+import uk.ac.ebi.pride.spectracluster.export.*;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.SpectrumCreateListener;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
+import javax.sql.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -84,20 +86,20 @@ public class MgfSpectrumDatastoreLoader {
         }
     }
 
-//    public static void main(String[] args) throws IOException, IllegalAccessException {
-//        if (args.length != 0) {
-//            System.out.println("Usage: [MGF file or directory]");
-//            System.exit(1);
-//        }
-//
-//        DataSource source = HBaseUtilities.getHBaseDataSource();
-//        Defaults.INSTANCE.setDefaultDataSource(source);
-//        Defaults.INSTANCE.setDatabaseFactory(PhoenixWorkingClusterDatabase.FACTORY);
-//
-//        SQLDataStore db = new SQLDataStore("test", source);
-//
-//        MgfClusterDatabaseLoader mgfClusterDatabaseLoader = new MgfClusterDatabaseLoader(db);
-//        mgfClusterDatabaseLoader.load(new File(args[0]));
-//    }
+    public static void main(String[] args) throws IOException, IllegalAccessException {
+        if (args.length < 2) {
+            System.out.println("Usage: database MGFDirectory");
+            System.exit(1);
+        }
+
+        DataSource source = WorkingClusteringDatabase.buildClusterDataSource("");
+        DataSourceDefaults.INSTANCE.setDefaultDataSource(source);
+        DataSourceDefaults.INSTANCE.setDatabaseFactory(WorkingClusterDatabase.FACTORY);
+
+        SpectrumDataStore spectrumDataStore = new SpectrumDataStore(args[0],source);
+
+        MgfSpectrumDatastoreLoader mgfClusterDatabaseLoader = new MgfSpectrumDatastoreLoader(spectrumDataStore);
+        mgfClusterDatabaseLoader.load(new File(args[1]));
+    }
 
 }

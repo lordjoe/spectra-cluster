@@ -167,6 +167,15 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
         return holder;
     }
 
+    /**
+     * count the spectra
+     *
+     * @return
+     */
+    @Override
+    public int getSpectrumCount() {
+          return idToSpectrum.size();
+    }
 
     /**
      * delete ALL data - use with caution

@@ -23,6 +23,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
 
 
     public static final String SELECT_ALL_SPECTRA_STATEMENT = "SELECT * FROM <database>.spectrums  ";
+    public static final String SELECT_SPECTRA_COUNT_STATEMENT = "SELECT count(*) FROM <database>.spectrums  ";
     public static final String SELECT_WITH_PEPTIDE = "SELECT * FROM <database>.spectrums WHERE peptide = ? ORDERBY precursor_mz ";
     @SuppressWarnings("UnusedDeclaration")
     public static final String SELECT_WITH_CHARGE = "SELECT * FROM <database>.spectrums WHERE precursor_charge = ?  ";
@@ -52,7 +53,7 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                     "  peptide VARCHAR(" + MAX_PEPTIDE_LENGTH + ")   NULL,\n" +
                     "  annotation VARCHAR(" + MAX_ANNOTATION_LENGTH + ")   NULL,\n" +
                     //         "  peaks VARCHAR(" + WorkingClusterDatabase.MAX_PEAKS_STRING_LENGTH + ") NOT NULL\n" +
-                    "  peaks VARCHAR  NOT NULL\n" +
+                    "  peaks VARCHAR(2048) NOT NULL\n" +
                     //    "  peaks VARBINARY NOT NULL\n" +
                     //         "  PRIMARY KEY (id)\n" +
                     ")"

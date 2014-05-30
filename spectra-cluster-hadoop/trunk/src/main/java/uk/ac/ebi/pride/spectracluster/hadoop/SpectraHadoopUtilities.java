@@ -250,7 +250,7 @@ public class SpectraHadoopUtilities {
     public static IPeptideSpectralCluster mergeTheSameCluster(String key, Iterable<Text> values,
                                                        Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId, new ConsensusSpectrum());
+        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         //noinspection LoopStatementThatDoesntLoop
@@ -291,7 +291,7 @@ public class SpectraHadoopUtilities {
     public static IPeptideSpectralCluster deMergeTheSameCluster(String key, Iterable<Text> values,
                                                          Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId, new ConsensusSpectrum());
+        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         boolean pass1 = true;

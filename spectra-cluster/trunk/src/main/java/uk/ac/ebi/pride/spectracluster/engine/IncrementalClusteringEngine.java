@@ -5,9 +5,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -157,7 +155,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     protected void addToClusters(final ICluster clusterToAdd) {
         List<ICluster> myClusters = internalGetClusters();
         if (myClusters.isEmpty()) {   // no checks just add
-            myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
+            myClusters.add(new SpectralCluster(clusterToAdd, Defaults.getDefaultConsensusSpectrumBuilder()));
             numberNotMerge++;
             return;
         }
@@ -208,7 +206,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
                 return;
         }
         */
-        myClusters.add(new SpectralCluster(clusterToAdd, new ConsensusSpectrum()));
+        myClusters.add(new SpectralCluster(clusterToAdd, Defaults.getDefaultConsensusSpectrumBuilder()));
         numberNotMerge++;
     }
 

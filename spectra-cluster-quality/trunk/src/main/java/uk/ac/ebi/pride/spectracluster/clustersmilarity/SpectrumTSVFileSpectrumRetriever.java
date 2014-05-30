@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -28,9 +28,13 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
     @Override
     public void addSpectra(IPeptideSpectrumMatch... spectra) {
 
-
+        /**
+         * take out the spectra to save memory
+         */
         for (IPeptideSpectrumMatch spectrumMatch : spectra) {
-            addSpectrum(spectrumMatch);
+            IPeptideSpectrumMatch emptySpectrum =
+                    new PeptideSpectrumMatch(spectrumMatch, Arrays.asList(IPeak.EMPTY_ARRAY));
+            addSpectrum(emptySpectrum);
         }
 
     }
@@ -68,6 +72,11 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
         writer.close();
     }
 
+    /**
+     * command line cptacRetreiver.tsv cptac_spectra
+     * directory cptac
+     * @param args
+     */
     public static void main(String[] args) {
         SpectrumTSVFileSpectrumRetriever spectrumRetriever = new SpectrumTSVFileSpectrumRetriever(new File(args[0]));
         ClusterSimilarityUtilities.buildFromMgfFile(new File(args[1]), spectrumRetriever);

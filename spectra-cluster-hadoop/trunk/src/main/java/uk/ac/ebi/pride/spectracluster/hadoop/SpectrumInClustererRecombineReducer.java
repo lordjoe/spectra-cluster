@@ -39,7 +39,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {
 
-        PeptideSpectralCluster sc = new PeptideSpectralCluster(null, new ConsensusSpectrum());
+        PeptideSpectralCluster sc = new PeptideSpectralCluster(null,Defaults.getDefaultConsensusSpectrumBuilder());
         Set<String> processedSpectrunIds = new HashSet<String>();
             // Note this will not be large so memory requirements are ok
 

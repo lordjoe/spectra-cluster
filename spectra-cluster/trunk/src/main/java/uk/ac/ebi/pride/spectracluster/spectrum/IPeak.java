@@ -11,6 +11,8 @@ import uk.ac.ebi.pride.spectracluster.util.Equivalent;
  */
 public interface IPeak extends Equivalent<IPeak>, Comparable<IPeak> {
 
+    public static final IPeak[] EMPTY_ARRAY = {};
+
     /**
      * Peak m/z
      */

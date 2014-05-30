@@ -33,6 +33,25 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this add all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
 
+    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
+
+    /**
+       * always use the factory to get an instance
+       */
+      private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
+          private ConsensusSpectrumFactory() {
+          }
+
+          /**
+           * build a new instance of the cpectrum builder
+           *
+           * @return !null instance
+           */
+          @Override
+          public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+              return new ConsensusSpectrum();
+          }
+      }
 
     public static final float NOISE_FILTER_INCREMENT = 100;
 
@@ -89,14 +108,14 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     /**
      * private to force use of the factory
      */
-    public ConsensusSpectrum() {
+    private ConsensusSpectrum() {
         this(null);
     }
 
     /**
      * private to force use of the factory
      */
-    public ConsensusSpectrum(String id) {
+    private ConsensusSpectrum(String id) {
         this.id = id;
     }
 
