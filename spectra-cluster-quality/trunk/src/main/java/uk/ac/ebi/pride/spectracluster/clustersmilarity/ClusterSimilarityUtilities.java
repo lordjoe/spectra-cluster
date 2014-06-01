@@ -1,18 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedMap;
-import com.lordjoe.utilities.ElapsedTimer;
-import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
+import com.lordjoe.filters.*;
+import com.lordjoe.utilities.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -29,7 +27,7 @@ public class ClusterSimilarityUtilities {
 
     public static CountedMap<String> getCountedMap(IClusterSet cl) {
         CountedMap<String> ret = new CountedMap<String>();
-        for (IPeptideSpectralCluster sc : cl.getClusters()) {
+        for (ICluster sc : cl.getClusters()) {
             Set<String> c1SpectralIds = sc.getSpectralIds();
             for (String c1SpectralId : c1SpectralIds) {
                 ret.add(c1SpectralId);
@@ -38,7 +36,16 @@ public class ClusterSimilarityUtilities {
         return ret;
     }
 
-    public static Set<String> allSpectralIds(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
+    public static  List<String> getClusterPeptides(ICluster cluster)
+    {
+        List<String> holder = new ArrayList<String>();
+
+        if(true)
+            throw new IllegalStateException("problem"); // ToDo change
+        return holder;
+    }
+
+    public static Set<String> allSpectralIds(ICluster c1, ICluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
         Set<String> c2SpectralIds = c2.getSpectralIds();
 
@@ -47,7 +54,7 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static Set<String> commonSpectralIds(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
+    public static Set<String> commonSpectralIds(ICluster c1, ICluster c2) {
         Set<String> c1SpectralIds = c1.getSpectralIds();
         Set<String> c2SpectralIds = c2.getSpectralIds();
 
@@ -56,18 +63,18 @@ public class ClusterSimilarityUtilities {
         return all;
     }
 
-    public static Set<String> commonPeptides(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
-        List<String> c1SpectralIds = c1.getPeptides();
-        List<String> c2SpectralIds = c2.getPeptides();
+    public static Set<String> commonPeptides(ICluster c1, ICluster c2) {
+        List<String> c1SpectralIds = getClusterPeptides(c1);
+        List<String> c2SpectralIds =  getClusterPeptides(c2);
 
         Set<String> all = new HashSet<String>(c1SpectralIds);
         all.retainAll(c2SpectralIds);
         return all;
     }
 
-    public static Set<String> allPeptides(IPeptideSpectralCluster c1, IPeptideSpectralCluster c2) {
-        List<String> c1SpectralIds = c1.getPeptides();
-        List<String> c2SpectralIds = c2.getPeptides();
+    public static Set<String> allPeptides(ICluster c1, ICluster c2) {
+        List<String> c1SpectralIds =  getClusterPeptides(c1);
+        List<String> c2SpectralIds =  getClusterPeptides(c2);
 
         Set<String> all = new HashSet<String>(c1SpectralIds);
         all.addAll(c2SpectralIds);
@@ -115,7 +122,7 @@ public class ClusterSimilarityUtilities {
                         simpleClusterSet.setHeader(header);
                     }
 
-                    IPeptideSpectralCluster[] clusters = ClusterParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
+                    ICluster[] clusters = ClusterParserUtilities.readClustersFromClusteringFile(lineNumberReader, spectrumRetriever);
                     simpleClusterSet.addClusters(Arrays.asList(clusters));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -125,7 +132,7 @@ public class ClusterSimilarityUtilities {
                 try {
                     LineNumberReader rdr = new LineNumberReader(new FileReader(file));
 
-                    IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+                    ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
                     simpleClusterSet.addClusters(Arrays.asList(clusters));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -154,7 +161,7 @@ public class ClusterSimilarityUtilities {
             try {
                 System.out.println(file.getName());
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
-                IPeptideSpectrumMatch[] spectra = ParserUtilities.readMGFScans(lineNumberReader);
+                ISpectrum[] spectra = ParserUtilities.readMGFScans(lineNumberReader);
                 spectrumRetriever.addSpectra(spectra);
                 lineNumberReader.close();
             } catch (IOException e) {
@@ -221,7 +228,7 @@ public class ClusterSimilarityUtilities {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
                 String line;
                 while ((line = lineNumberReader.readLine()) != null) {
-                    IPeptideSpectrumMatch peptideSpectrumMatch = constructPeptideSpectrumMatch(line);
+                    ISpectrum peptideSpectrumMatch = constructPeptideSpectrumMatch(line);
                     spectrumRetriever.addSpectra(peptideSpectrumMatch);
                 }
 
@@ -247,13 +254,13 @@ public class ClusterSimilarityUtilities {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
                 String line;
                 while ((line = lineNumberReader.readLine()) != null) {
-                    IPeptideSpectrumMatch pp = constructPeptideSpectrumMatch(line);
+                    ISpectrum pp = constructPeptideSpectrumMatch(line);
                     List<PSMSpectrum> holder = new ArrayList<PSMSpectrum>();
                     final Set<PSMSpectrum> psmSpectrums = spectrumRetriever.getPSMSpectrums(pp.getId());
                     for (PSMSpectrum psm : psmSpectrums) {
                         psm.setPrecursorCharge(pp.getPrecursorCharge());
                         psm.setPrecursorMz(pp.getPrecursorMz());
-                        psm.setPeptide(pp.getPeptide());
+                        psm.setPeptide(pp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY));
                         holder.add(psm);
                     }
                     for (PSMSpectrum psm : holder) {
@@ -314,7 +321,7 @@ public class ClusterSimilarityUtilities {
 
     }
 
-    private static IPeptideSpectrumMatch constructPeptideSpectrumMatch(String line) {
+    private static ISpectrum constructPeptideSpectrumMatch(String line) {
         String[] parts = line.split("\t");
         if (parts.length < 4)
             throw new IllegalArgumentException("bad line");
@@ -324,7 +331,10 @@ public class ClusterSimilarityUtilities {
         String peptide = parts[3];
 
         //noinspection unchecked
-        return new PeptideSpectrumMatch(spectrumId, peptide, precursorCharge, precursorMz, Collections.EMPTY_LIST);
+        final Spectrum spectrum = new Spectrum(spectrumId, precursorCharge, precursorMz,Defaults.getDefaultQualityScorer(),
+                Arrays.asList(IPeak.EMPTY_ARRAY));
+        spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
+        return spectrum;
     }
 
     /**
@@ -334,9 +344,9 @@ public class ClusterSimilarityUtilities {
      * @return !null list of clusters
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeptideSpectralCluster> nonSingleClusters(List<IPeptideSpectralCluster> clusters) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster cluster : clusters) {
+    public static List<ICluster> nonSingleClusters(List<ICluster> clusters) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        for (ICluster cluster : clusters) {
             if (cluster.getClusteredSpectraCount() > 1)
                 holder.add(cluster);
         }
@@ -350,9 +360,9 @@ public class ClusterSimilarityUtilities {
      * @return !null list of clusters
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeptideSpectralCluster> singleClusters(List<IPeptideSpectralCluster> clusters) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster cluster : clusters) {
+    public static List<ICluster> singleClusters(List<ICluster> clusters) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        for (ICluster cluster : clusters) {
             if (cluster.getClusteredSpectraCount() == 1)
                 holder.add(cluster);
         }
@@ -399,16 +409,16 @@ public class ClusterSimilarityUtilities {
      *
      * @param cps
      */
-    public static void testNotClustered(final List<IPeptideSpectralCluster> cps) {
+    public static void testNotClustered(final List<ICluster> cps) {
         int compareCount = 0;
         ISimilarityChecker sCheck = Defaults.getDefaultSimilarityChecker();
 
         for (int i = 0; i < cps.size() - 1; i++) {
-            IPeptideSpectralCluster cluster = cps.get(i);
+            ICluster cluster = cps.get(i);
             Set<String> ids = cluster.getSpectralIds();
             ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
             for (int j = i + 1; j < cps.size(); j++) {
-                IPeptideSpectralCluster c2 = cps.get(j);
+                ICluster c2 = cps.get(j);
 
                 Set<String> overlap = ClusterSimilarityUtilities.getSpectraOverlap(cluster, c2);
                 boolean majorOverlap = hasMajorOverlap(cluster, c2);
@@ -454,6 +464,21 @@ public class ClusterSimilarityUtilities {
 
     }
 
+
+    public static List<ClusterPeptideFraction>  getPeptidePurity(ICluster cluster,Object huhu)  {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    public static List<ClusterPeptideFraction>  getPeptidePurity(ICluster cluster,IDecoyDiscriminator discriminator) {
+         throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+    public static String  getPeptideString(ISpectrum sp) {
+          String ret = sp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY) ;
+          if(ret == null)
+              ret = "";
+         return ret   ;
+     }
 
     /**
      * read a file looking like
@@ -512,12 +537,12 @@ public class ClusterSimilarityUtilities {
      * @param clusterToAdd
      * @param myClusters
      */
-    public static void testAddToClusters(final IPeptideSpectralCluster clusterToAdd, Collection<IPeptideSpectralCluster> myClusters) {
-        String mcpIn = clusterToAdd.getMostCommonPeptide();
-        Map<String, List<IPeptideSpectralCluster>> clusterPeptides = mapByMostCommonPeptide(myClusters);
+    public static void testAddToClusters(final ICluster clusterToAdd, Collection<ICluster> myClusters) {
+        String mcpIn = getMostCommonPeptide(clusterToAdd);
+        Map<String, List<ICluster>> clusterPeptides = mapByMostCommonPeptide(myClusters);
 
         for (String mostCommonPeptide : clusterPeptides.keySet()) {
-            List<IPeptideSpectralCluster> cps = clusterPeptides.get(mostCommonPeptide);
+            List<ICluster> cps = clusterPeptides.get(mostCommonPeptide);
             if (cps.size() > 1)
                 testNotClustered(cps);
         }
@@ -526,18 +551,18 @@ public class ClusterSimilarityUtilities {
 
     }
 
-    public static void examineIndividualSpectra(final IPeptideSpectralCluster clusterToAdd, final Collection<IPeptideSpectralCluster> myClusters, final String pMcpIn) {
+    public static void examineIndividualSpectra(final ICluster clusterToAdd, final Collection<ICluster> myClusters, final String pMcpIn) {
         ISimilarityChecker sCheck = Defaults.getDefaultSimilarityChecker();
 
         double highestSimilarityScore = 0;
         int compareCount = 0;
 
-        IPeptideSpectralCluster mostSimilarCluster = null;
+        ICluster mostSimilarCluster = null;
         ISpectrum consensusSpectrum1 = clusterToAdd.getConsensusSpectrum();  // subspectra are really only one spectrum clusters
         // find the cluster with the highest similarity score
-        for (IPeptideSpectralCluster cluster : myClusters) {
+        for (ICluster cluster : myClusters) {
 
-            String mostCommonPeptide = cluster.getMostCommonPeptide();
+            String mostCommonPeptide = getMostCommonPeptide(cluster);
 
             ISpectrum consensusSpectrum = cluster.getConsensusSpectrum();
 
@@ -555,13 +580,19 @@ public class ClusterSimilarityUtilities {
         }
     }
 
-    public static Map<String, List<IPeptideSpectralCluster>> mapByMostCommonPeptide(final Collection<IPeptideSpectralCluster> myClusters) {
-        Map<String, List<IPeptideSpectralCluster>> clusterPeptides = new HashMap<String, List<IPeptideSpectralCluster>>();
-        for (IPeptideSpectralCluster cluster : myClusters) {
-            String mostCommonPeptide = cluster.getMostCommonPeptide();
-            List<IPeptideSpectralCluster> cps = clusterPeptides.get(mostCommonPeptide);
+    public static  String getMostCommonPeptide(ICluster cluster)
+    {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
+
+
+    public static Map<String, List<ICluster>> mapByMostCommonPeptide(final Collection<ICluster> myClusters) {
+        Map<String, List<ICluster>> clusterPeptides = new HashMap<String, List<ICluster>>();
+        for (ICluster cluster : myClusters) {
+            String mostCommonPeptide = getMostCommonPeptide(cluster);
+            List<ICluster> cps = clusterPeptides.get(mostCommonPeptide);
             if (cps == null) {
-                cps = new ArrayList<IPeptideSpectralCluster>();
+                cps = new ArrayList<ICluster>();
                 clusterPeptides.put(mostCommonPeptide, cps);
             }
             cps.add(cluster);
@@ -576,7 +607,7 @@ public class ClusterSimilarityUtilities {
      * @param c2 cluster2
      * @return true if over half of the spectra in the lower cluster overlap
      */
-    public static boolean hasMajorOverlap(@Nonnull final IPeptideSpectralCluster c1, @Nonnull final IPeptideSpectralCluster c2) {
+    public static boolean hasMajorOverlap(@Nonnull final ICluster c1, @Nonnull final ICluster c2) {
         int size1 = c1.getClusteredSpectraCount();
         int size2 = c2.getClusteredSpectraCount();
         Set<String> spectraOverlap = getSpectraOverlap(c1, c2);
@@ -592,17 +623,26 @@ public class ClusterSimilarityUtilities {
      * @return true if the same
      */
     public static boolean compareSpectralRetrievers(@Nonnull SimpleSpectrumRetriever r1, @Nonnull SimpleSpectrumRetriever r2) {
-        List<IPeptideSpectrumMatch> spectra = r1.getSpectra();
-        for (IPeptideSpectrumMatch ps : spectra) {
-            IPeptideSpectrumMatch p2 = r2.retrieve(ps.getId());
+        List<ISpectrum> spectra = r1.getSpectra();
+        for (ISpectrum ps : spectra) {
+            ISpectrum p2 = r2.retrieve(ps.getId());
             if (p2 == null)
                 return false;
             if (p2.getPrecursorCharge() != ps.getPrecursorCharge())
                 return false;
             if (Math.abs(p2.getPrecursorMz() - ps.getPrecursorMz()) > 0.1)
                 return false;
-            if (!p2.getPeptide().equals(ps.getPeptide()))
+
+            final Set<String> properties = ps.getProperties().stringPropertyNames();
+            final Set<String> properties2 = p2.getProperties().stringPropertyNames();
+            if(properties.size() != properties2.size())
                 return false;
+             for (String s : properties) {
+                String pi =  ps.getProperty(s);
+                String px2 = p2.getProperty(s);
+                if(!pi.equals(px2))
+                    return false;
+            }
 
         }
         return true;
@@ -659,8 +699,8 @@ public class ClusterSimilarityUtilities {
 //        SimpleSpectrumRetriever spectrumRetriever = new SimpleSpectrumRetriever();
 //        File tsvFile = new File(johannesTSV);
 //        ClusterSimilarityUtilities.buildFromTSVFile( tsvFile,spectrumRetriever);
-//        List<IPeptideSpectrumMatch> spectra = spectrumRetriever.getSpectra();
-//        for (IPeptideSpectrumMatch sm : spectra) {
+//        List<ISpectrum> spectra = spectrumRetriever.getSpectra();
+//        for (ISpectrum sm : spectra) {
 //            if(sm.isDecoy()) {
 //                String peptide = sm.getPeptide();
 //                if(!decoys.contains(peptide))
@@ -672,7 +712,7 @@ public class ClusterSimilarityUtilities {
         Set<PSMSpectrum> spectra = psms.getAllSpectrums();
         for (IDecoyPeptideSpectrumMatch sm : spectra) {
             if (sm.isDecoy()) {
-                String peptide = sm.getPeptide();
+                String peptide = sm.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
                 if (!decoys.contains(peptide))
                     System.out.println("not listed decoy " + peptide);
             }

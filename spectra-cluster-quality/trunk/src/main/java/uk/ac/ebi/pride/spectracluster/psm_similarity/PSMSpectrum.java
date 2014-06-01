@@ -5,9 +5,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -142,23 +140,7 @@ public class PSMSpectrum implements IDecoyPeptideSpectrumMatch {
         throw new UnsupportedOperationException("Fix This");
     }
 
-    /**
-     * return scored peptide - maybe null
-     */
-    @Override
-    public String getPeptide() {
-        return peptide;
-    }
-
-    /**
-     * return text in the id not peptide or id
-     */
-    @Override
-    public String getAnnotation() {
-        throw new UnsupportedOperationException("Fix This");
-    }
-
-    @Override
+      @Override
     public int[] asMajorPeakMZs(int majorPeakCount) {
         throw new UnsupportedOperationException("Fix This");
     }
@@ -173,5 +155,40 @@ public class PSMSpectrum implements IDecoyPeptideSpectrumMatch {
         throw new UnsupportedOperationException("Fix This");
     }
 
+    /**
+     * return a property of null if none exists
+     * look in ISpectrum for known keys
+     *
+     * @param key
+     * @return
+     */
+    @Override
+    public String getProperty(String key) {
+        if (true) throw new UnsupportedOperationException("Fix This");
+        return null;
+    }
 
+    /**
+     * look in ISpectrum for known keys
+     *
+     * @param key
+     * @param value
+     */
+    @Override
+    public void setProperty(String key, String value) {
+        if (true) throw new UnsupportedOperationException("Fix This");
+
+    }
+
+    /**
+     * Only for internal use in copy constructor
+     * Note this is not safe
+     * This is not really deprecated but it warns only for
+     * internal use
+     */
+    @Override
+    public Properties getProperties() {
+        if (true) throw new UnsupportedOperationException("Fix This");
+        return null;
+    }
 }

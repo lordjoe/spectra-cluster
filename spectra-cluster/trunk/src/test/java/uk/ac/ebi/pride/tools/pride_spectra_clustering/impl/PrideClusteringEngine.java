@@ -1,15 +1,12 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.SpectraClustering;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.ClusteringSpectrum;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.SpectraCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.*;
+import uk.ac.ebi.pride.tools.pride_spectra_clustering.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implement a clustering Engine using the original johannes code
@@ -73,7 +70,7 @@ public class PrideClusteringEngine implements IClusteringEngine {
         clusters.clear();
         clustersFound = clustering.clusterConvertedSpectra(addedSpectra);
         for (SpectraCluster cluster : clustersFound) {
-            final IPeptideSpectralCluster spectralCluster = Adapters.fromSpectraCluster(cluster);
+            final ICluster spectralCluster = Adapters.fromSpectraCluster(cluster);
             clusters.add(spectralCluster);
         }
 

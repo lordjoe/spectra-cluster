@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Collection;
@@ -29,26 +29,26 @@ public class ReliableIdentificationStatistics {
     public ReliableIdentificationStatistics(IClusterSet cst, int tminCluster) {
         count_by_purity = new int[reverse_cummulativePurityPoints.length];
         mimumumClusterSize = tminCluster;
-        List<IPeptideSpectralCluster> clusters = cst.getClusters();
-        Map<ISpectrum, HashSet<IPeptideSpectralCluster>> idToMap = ClusterPeptidePurity.getSpectraToClusterMap(clusters);
-        Map<IPeptideSpectralCluster, ClusterPeptidePurity> purities = ClusterPeptidePurity.getPuritiesMap(clusters);
+        List<ICluster> clusters = cst.getClusters();
+        Map<ISpectrum, HashSet<ICluster>> idToMap = ClusterPeptidePurity.getSpectraToClusterMap(clusters);
+        Map<ICluster, ClusterPeptidePurity> purities = ClusterPeptidePurity.getPuritiesMap(clusters);
         for (ISpectrum s : idToMap.keySet()) {
             total_spectra++;
-            HashSet<IPeptideSpectralCluster> spectrunClusters = idToMap.get(s);
-            IPeptideSpectralCluster usedCluster = getBiggestCluster(spectrunClusters);
+            HashSet<ICluster> spectrunClusters = idToMap.get(s);
+            ICluster usedCluster = getBiggestCluster(spectrunClusters);
             double purity = handleClusterPurity(purities, s, usedCluster);
             addPurity(purity);
         }
     }
 
-    public double handleClusterPurity(final Map<IPeptideSpectralCluster, ClusterPeptidePurity> pPurities, final ISpectrum s, final IPeptideSpectralCluster pUsedCluster) {
+    public double handleClusterPurity(final Map<ICluster, ClusterPeptidePurity> pPurities, final ISpectrum s, final ICluster pUsedCluster) {
         ClusterPeptidePurity purity = pPurities.get(pUsedCluster);
         if (purity.getNumberSpectra() < mimumumClusterSize) {
             totalClusterTooSmall++;
             return 0;
         }
-        if (s instanceof IPeptideSpectrumMatch) {
-            String peptide = ((IPeptideSpectrumMatch) s).getPeptide();
+        if (s instanceof ISpectrum) {
+            String peptide = ((ISpectrum) s).getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null) {
                 totalNoPeptide++;
                 return 0;
@@ -59,13 +59,13 @@ public class ReliableIdentificationStatistics {
             }
             return purity.getFractionMostCommon();
         }
-        throw new IllegalArgumentException("should always be a IPeptideSpectrumMatch");
+        throw new IllegalArgumentException("should always be a ISpectrum");
     }
 
 
-    protected IPeptideSpectralCluster getBiggestCluster(Collection<IPeptideSpectralCluster> clusters) {
-        IPeptideSpectralCluster ret = null;
-        for (IPeptideSpectralCluster cluster : clusters) {
+    protected ICluster getBiggestCluster(Collection<ICluster> clusters) {
+        ICluster ret = null;
+        for (ICluster cluster : clusters) {
             if (ret == null) {
                 ret = cluster;
                 continue;

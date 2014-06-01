@@ -26,26 +26,26 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
     }
 
     @Override
-    public void addSpectra(IPeptideSpectrumMatch... spectra) {
+    public void addSpectra(ISpectrum... spectra) {
 
         /**
          * take out the spectra to save memory
          */
-        for (IPeptideSpectrumMatch spectrumMatch : spectra) {
-            IPeptideSpectrumMatch emptySpectrum =
-                    new PeptideSpectrumMatch(spectrumMatch, Arrays.asList(IPeak.EMPTY_ARRAY));
+        for (ISpectrum spectrumMatch : spectra) {
+            ISpectrum emptySpectrum =
+                    new Spectrum(spectrumMatch, Arrays.asList(IPeak.EMPTY_ARRAY));
             addSpectrum(emptySpectrum);
         }
 
     }
 
-    public void addSpectrum(IPeptideSpectrumMatch spectrumMatch) {
+    public void addSpectrum(ISpectrum spectrumMatch) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(spectrumMatch.getId()).append("\t")
                 .append(spectrumMatch.getPrecursorCharge()).append("\t")
                 .append(spectrumMatch.getPrecursorMz()).append("\t")
-                .append(spectrumMatch.getPeptide());
+                .append(ClusterSimilarityUtilities.getPeptideString(spectrumMatch));
 
         writer.println(sb.toString());
         if (count++ % 100 == 0) {
@@ -59,12 +59,12 @@ public class SpectrumTSVFileSpectrumRetriever implements IMutableSpectrumRetriev
     }
 
     @Override
-    public IPeptideSpectrumMatch retrieve(String spectrumId) {
+    public ISpectrum retrieve(String spectrumId) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
-    public List<IPeptideSpectrumMatch> retrieveAll() {
+    public List<ISpectrum> retrieveAll() {
         throw new UnsupportedOperationException("Not supported");
     }
 

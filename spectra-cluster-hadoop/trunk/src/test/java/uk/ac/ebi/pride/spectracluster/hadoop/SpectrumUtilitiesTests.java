@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.datastore.SpectrumUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ public class SpectrumUtilitiesTests {
      */
     @Test
     public void testPeaks() throws Exception {
-        List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
-        for (IPeptideSpectrumMatch spc : originalSpectra) {
+        List<ISpectrum> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        for (ISpectrum spc : originalSpectra) {
             validateEncode(spc);
         }
 
@@ -35,7 +35,7 @@ public class SpectrumUtilitiesTests {
      *
      * @param spc !null spactrum
      */
-    protected void validateEncode(IPeptideSpectrumMatch spc) {
+    protected void validateEncode(ISpectrum spc) {
         List<IPeak> peaks = spc.getPeaks();
         if (peaks.size() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
             List<IPeak> copy = new ArrayList<IPeak>(peaks);

@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.Spectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.IOException;
@@ -95,8 +95,8 @@ public class ClusterParserUtilities {
      * @param inp
      * @return
      */
-    public static IPeptideSpectralCluster[] readClustersFromClusteringFile(LineNumberReader inp, ISpectrumRetriever spectrumRetriever) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+    public static ICluster[] readClustersFromClusteringFile(LineNumberReader inp, ISpectrumRetriever spectrumRetriever) {
+        List<ICluster> holder = new ArrayList<ICluster>();
 
         try {
             String line = inp.readLine();
@@ -109,7 +109,7 @@ public class ClusterParserUtilities {
             while (line != null) {
                 if (line.startsWith(BEGIN_CLUSTERING)) {
                     if (!clusterContent.isEmpty()) {
-                        IPeptideSpectralCluster cluster = processIntoCluster(clusterContent, spectrumRetriever);
+                        ICluster cluster = processIntoCluster(clusterContent, spectrumRetriever);
                         if (cluster != null) {
                             holder.add(cluster);
                         }
@@ -123,7 +123,7 @@ public class ClusterParserUtilities {
             }
 
             if (!clusterContent.isEmpty()) {
-                IPeptideSpectralCluster cluster = processIntoCluster(clusterContent, spectrumRetriever);
+                ICluster cluster = processIntoCluster(clusterContent, spectrumRetriever);
                 if (cluster != null) {
                     holder.add(cluster);
                 }
@@ -132,12 +132,12 @@ public class ClusterParserUtilities {
             throw new IllegalStateException("Failed to read ", ioe);
         }
 
-        IPeptideSpectralCluster[] ret = new IPeptideSpectralCluster[holder.size()];
+        ICluster[] ret = new ICluster[holder.size()];
         holder.toArray(ret);
         return ret;
     }
 
-    protected static IPeptideSpectralCluster processIntoCluster(List<String> clusterLines, ISpectrumRetriever spectrumRetriever) {
+    protected static ICluster processIntoCluster(List<String> clusterLines, ISpectrumRetriever spectrumRetriever) {
 
         LazyLoadedSpectralCluster cluster = new LazyLoadedSpectralCluster();
 
@@ -162,7 +162,7 @@ public class ClusterParserUtilities {
                 cluster.addPeptides(peptideSequence);
             } else if (clusterLine.startsWith(SPECTRUM_ID)) {
                 String[] parts = clusterLine.split("\t");
-                //     IPeptideSpectrumMatch spectrum = PSMSpectrum.getSpectrum(id );
+                //     ISpectrum spectrum = PSMSpectrum.getSpectrum(id );
                 LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
                 cluster.addSpectra(spectrum);
             } else //noinspection StatementWithEmptyBody
@@ -181,7 +181,7 @@ public class ClusterParserUtilities {
         List<IPeak> peaks = buildPeaks(consensusMzLine, consensusIntensityLine);
         if (peaks == null)
             return null;
-        PeptideSpectrumMatch consensusSpectrum = new PeptideSpectrumMatch(null, null, 0, cluster.getPrecursorMz(), peaks, Defaults.getDefaultQualityScorer(),null);
+        Spectrum consensusSpectrum = new Spectrum(null,  0, cluster.getPrecursorMz(), Defaults.getDefaultQualityScorer(), peaks);
         cluster.setConsensusSpectrum(consensusSpectrum);
 
         return cluster;

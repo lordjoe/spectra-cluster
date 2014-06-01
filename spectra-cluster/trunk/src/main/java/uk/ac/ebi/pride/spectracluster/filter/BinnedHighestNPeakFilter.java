@@ -68,6 +68,14 @@ public class BinnedHighestNPeakFilter implements IPeakFilter {
         return ret;
     }
 
+    /**
+     * we generate
+     * @param allpeaks
+     * @param startpeak
+     * @param retained
+     * @param binBottom
+     * @return
+     */
     protected int handleBin(List<IPeak> allpeaks, int startpeak, Set<IPeak> retained, double binBottom) {
         List<IPeak> byIntensity = new ArrayList<IPeak>();
         int nextBin = startpeak;

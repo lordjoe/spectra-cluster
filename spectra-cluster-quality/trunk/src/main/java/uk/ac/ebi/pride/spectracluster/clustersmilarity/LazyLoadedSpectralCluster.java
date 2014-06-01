@@ -4,7 +4,7 @@ import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
@@ -20,7 +20,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
+public class LazyLoadedSpectralCluster implements ICluster {
 
     protected static class DataFromDatabase {
         private final String id;
@@ -117,8 +117,8 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
     protected void buildPeptidePurities(IDecoyDiscriminator dd) {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
-            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            String peptide = sc1.getPeptide();
+            ISpectrum sc1 = (ISpectrum) iSpectrum;
+            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (peptide != null) {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
@@ -132,8 +132,8 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
         // debug bad case
         if (spectral_peptides.size() == 0) {
             for (ISpectrum iSpectrum : clusteredSpectra) {
-                IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-                String peptide = sc1.getPeptide();
+                ISpectrum sc1 = (ISpectrum) iSpectrum;
+                String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
                 if (peptide != null)
                     spectral_peptides.add(peptide);
             }
@@ -159,8 +159,8 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
         }
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
-            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            String value = sc1.getPeptide();
+            ISpectrum sc1 = (ISpectrum) iSpectrum;
+            String value = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (value == null)
                 continue;
             String[] peptides = value.split(";");
@@ -188,7 +188,7 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IDecoyPeptideSpectrumMatch sc1 = (IDecoyPeptideSpectrumMatch) iSpectrum;
-            String peptide = sc1.getPeptide();
+            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
@@ -218,7 +218,7 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
             AllSpectraCount++;
             IDecoyPeptideSpectrumMatch sc1 = (IDecoyPeptideSpectrumMatch) iSpectrum;
             boolean decoy = sc1.isDecoy();
-            String peptide = sc1.getPeptide();
+            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
@@ -295,14 +295,12 @@ public class LazyLoadedSpectralCluster implements IPeptideSpectralCluster {
         return precursorCharge;
     }
 
-    @Override
-    public List<String> getPeptides() {
+     public List<String> getPeptides() {
         guaranteeCachedRead();
         return new ArrayList<String>(peptides);
     }
 
-    @Override
-    public String getMostCommonPeptide() {
+     public String getMostCommonPeptide() {
         List<String> peptideStrings = getPeptides();
         if (!peptideStrings.isEmpty()) {
             return peptideStrings.get(0);

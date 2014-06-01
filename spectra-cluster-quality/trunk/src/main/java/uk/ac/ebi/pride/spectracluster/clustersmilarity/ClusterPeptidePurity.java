@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CompareTo;
 import com.lordjoe.algorithms.CountedString;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
@@ -16,17 +16,17 @@ import java.util.*;
 public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
 
     public static List<ClusterPeptidePurity> getPurities(IClusterSet clusters) {
-        List<IPeptideSpectralCluster> clusters1 = clusters.getClusters();
+        List<ICluster> clusters1 = clusters.getClusters();
         return getPurities(clusters1);
     }
 
-    public static Map<ISpectrum, HashSet<IPeptideSpectralCluster>> getSpectraToClusterMap(final List<IPeptideSpectralCluster> pClusters1) {
-        Map<ISpectrum, HashSet<IPeptideSpectralCluster>> ret = new HashMap<ISpectrum, HashSet<IPeptideSpectralCluster>>();
-        for (IPeptideSpectralCluster spc : pClusters1) {
+    public static Map<ISpectrum, HashSet<ICluster>> getSpectraToClusterMap(final List<ICluster> pClusters1) {
+        Map<ISpectrum, HashSet<ICluster>> ret = new HashMap<ISpectrum, HashSet<ICluster>>();
+        for (ICluster spc : pClusters1) {
             for (ISpectrum spec : spc.getClusteredSpectra()) {
-                HashSet<IPeptideSpectralCluster> set = ret.get(spec);
+                HashSet<ICluster> set = ret.get(spec);
                 if (set == null) {
-                    set = new HashSet<IPeptideSpectralCluster>();
+                    set = new HashSet<ICluster>();
                     ret.put(spec, set);
                 }
                 set.add(spc);
@@ -35,18 +35,18 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         return ret;
     }
 
-    public static Map<IPeptideSpectralCluster, ClusterPeptidePurity> getPuritiesMap(final List<IPeptideSpectralCluster> pClusters1) {
-        Map<IPeptideSpectralCluster, ClusterPeptidePurity> ret = new HashMap<IPeptideSpectralCluster, ClusterPeptidePurity>();
-        for (IPeptideSpectralCluster spc : pClusters1) {
+    public static Map<ICluster, ClusterPeptidePurity> getPuritiesMap(final List<ICluster> pClusters1) {
+        Map<ICluster, ClusterPeptidePurity> ret = new HashMap<ICluster, ClusterPeptidePurity>();
+        for (ICluster spc : pClusters1) {
             ClusterPeptidePurity purity = new ClusterPeptidePurity(spc);
             ret.put(spc, purity);
         }
         return ret;
     }
 
-    public static List<ClusterPeptidePurity> getPurities(final List<IPeptideSpectralCluster> pClusters1) {
+    public static List<ClusterPeptidePurity> getPurities(final List<ICluster> pClusters1) {
         List<ClusterPeptidePurity> ret = new ArrayList<ClusterPeptidePurity>();
-        for (IPeptideSpectralCluster spc : pClusters1) {
+        for (ICluster spc : pClusters1) {
             ClusterPeptidePurity purity = new ClusterPeptidePurity(spc);
             ret.add(purity);
         }
@@ -54,28 +54,26 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         return ret;
     }
 
-    private final IPeptideSpectralCluster cluster;
+    private final ICluster cluster;
     private String mostCommonPeptide;
     private double fractionMostCommon;
     private double fractionNextMostCommon;
     private int numberPeptides;
     private int numberSpectra;
 
-    public ClusterPeptidePurity(final IPeptideSpectralCluster pCluster) {
+    public ClusterPeptidePurity(final ICluster pCluster) {
         cluster = pCluster;
         generateStatistics();
     }
 
     private void generateStatistics() {
         List<String> peptides = new ArrayList<String>();
-        IPeptideSpectralCluster cluster1 = getCluster();
+        ICluster cluster1 = getCluster();
         List<ISpectrum> clusteredSpectra = cluster1.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
-            if (spc instanceof IPeptideSpectrumMatch) {
-                String peptide = ((IPeptideSpectrumMatch) spc).getPeptide();
+                 String peptide =  spc.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
                 peptides.add(peptide);
-            }
-        }
+          }
         numberSpectra = peptides.size();
         CountedString[] sortedPeptides = CountedString.getCountedStrings(peptides);
         numberPeptides = sortedPeptides.length;
@@ -88,7 +86,7 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         fractionNextMostCommon = sortedPeptides[1].getCount() / (double) peptides.size();
     }
 
-    public IPeptideSpectralCluster getCluster() {
+    public ICluster getCluster() {
         return cluster;
     }
 

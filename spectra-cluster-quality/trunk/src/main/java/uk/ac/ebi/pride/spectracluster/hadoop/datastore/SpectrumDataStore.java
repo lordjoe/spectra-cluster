@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -133,15 +132,10 @@ public class SpectrumDataStore implements IMutableSpectrumDataStore {
         values[index++] = stored.getId();    // 1
         values[index++] = stored.getPrecursorCharge();     // 2
         values[index++] = stored.getPrecursorMz();       // 3
-        if (stored instanceof PeptideSpectrumMatch) {
-            values[index++] = ((PeptideSpectrumMatch) stored).getPeptide();   // peptide 4
-
-        } else {
-            values[index++] = null;   // peptide 4
-
-        }
-        values[index++] = null;   // annotation  5
-        final List<IPeak> peaks = stored.getPeaks();
+        values[index++] = stored.getPrecursorMz();       // 3
+        values[index++] = stored.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);   // peptide  4
+        values[index++] =  stored.getProperty(ISpectrum.ANNOTATION_KEY);   // annotation  5
+         final List<IPeak> peaks = stored.getPeaks();
 
 //        if(peaks.size() > WorkingClusterDatabase.MAX_PEAKS_PER_SPECTRUM)    {
 //            throw new UnsupportedOperationException("Fix This"); // ToDo sort and use the highest WorkingClusterDatabase.MAX_PEAKS_PER_SPECTRUM (512)

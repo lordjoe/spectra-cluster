@@ -29,7 +29,7 @@ public class ClusteringEngineTests {
     @Test
     public void testClusteringEngine() throws Exception {
 
-        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         List<ISpectrum> originalSpectra = ClusterUtilities.extractSpectra(originalSpectralClusters);
         IClusteringEngine clusteringEngine = new ClusteringEngineFactory().getClusteringEngine();
         IClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), Defaults.getSimilarityThreshold());

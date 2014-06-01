@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.utilities.TypedVisitor;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class ClusterStatistics implements TypedVisitor<IPeptideSpectralCluster> {
+public class ClusterStatistics implements TypedVisitor<ICluster> {
     private final List<IClusterStatistics> clusterStatisticses = new ArrayList<IClusterStatistics>();
     private final IClusterSet clusters;
     private final ISpectrumRetriever spectra;
@@ -34,8 +34,8 @@ public class ClusterStatistics implements TypedVisitor<IPeptideSpectralCluster> 
     }
 
     public void gatherData() {
-        List<IPeptideSpectralCluster> clusters1 = clusters.getClusters();
-        for (IPeptideSpectralCluster sc : clusters1) {
+        List<ICluster> clusters1 = clusters.getClusters();
+        for (ICluster sc : clusters1) {
             visit(sc);
         }
     }
@@ -53,7 +53,7 @@ public class ClusterStatistics implements TypedVisitor<IPeptideSpectralCluster> 
     }
 
     @Override
-    public void visit(@Nonnull IPeptideSpectralCluster pT) {
+    public void visit(@Nonnull ICluster pT) {
         for (IClusterStatistics visitor : clusterStatisticses) {
             visitor.visit(pT);
         }

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class InMemoryDatastoreTests {
 
     @Test
     public void testSpectrumStore() throws Exception {
-        final List<IPeptideSpectrumMatch> spectrums = loadDataStrore();
+        final List<ISpectrum> spectrums = loadDataStrore();
 
         // make sure we have them
-        for (IPeptideSpectrumMatch spectrum : spectrums) {
+        for (ISpectrum spectrum : spectrums) {
             ISpectrum test = ds.getSpectrumById(spectrum.getId());
             Assert.assertTrue(test.equivalent(spectrum));
         }
@@ -38,7 +38,7 @@ public class InMemoryDatastoreTests {
 
     @Test
     public void testSpectrumRemove() throws Exception {
-        final List<IPeptideSpectrumMatch> spectrums = loadDataStrore();
+        final List<ISpectrum> spectrums = loadDataStrore();
 
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
 
@@ -62,7 +62,7 @@ public class InMemoryDatastoreTests {
 
     @Test
     public void testClear() throws Exception {
-        final List<IPeptideSpectrumMatch> spectrums = loadDataStrore();
+        final List<ISpectrum> spectrums = loadDataStrore();
 
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
 
@@ -83,10 +83,10 @@ public class InMemoryDatastoreTests {
 
     }
 
-    protected List<IPeptideSpectrumMatch> loadDataStrore() {
-        final List<IPeptideSpectrumMatch> spectrums = ClusteringTestUtilities.readISpectraFromResource();
+    protected List<ISpectrum> loadDataStrore() {
+        final List<ISpectrum> spectrums = ClusteringTestUtilities.readISpectraFromResource();
         // add then all
-        for (IPeptideSpectrumMatch spectrum : spectrums) {
+        for (ISpectrum spectrum : spectrums) {
             ds.storeSpectrum(spectrum);
         }
         return spectrums;

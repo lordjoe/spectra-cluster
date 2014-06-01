@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.IClusterRetriever;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterRetriever;
 
@@ -21,26 +21,26 @@ import java.util.List;
 public class ClusterMatchAndRetrieverTests {
 
     protected IClusterRetriever buildRetriever() {
-        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
         return new SimpleClusterRetriever(originalSpectralClusters);
     }
 
 
     @Test
     public void testRetriever() throws Exception {
-        List<IPeptideSpectralCluster> start = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> start = ClusteringTestUtilities.readSpectraClustersFromResource();
         IClusterRetriever retriever = buildRetriever();
 
         // make sure we can retrieve all clusters with retrieve
-        for (IPeptideSpectralCluster sc : start) {
+        for (ICluster sc : start) {
             final String id = sc.getSpectralId();
-            IPeptideSpectralCluster retrieve = retriever.retrieve(id);
+            ICluster retrieve = retriever.retrieve(id);
             Assert.assertTrue(retrieve.equivalent(sc));
         }
 
         // make sure we can retrieve all clusters with retrieve (minMZ,MaxMZ)
-        Collection<IPeptideSpectralCluster> retrieve = retriever.retrieve(0, 10000);
-        List<IPeptideSpectralCluster> retrieved = new ArrayList<IPeptideSpectralCluster>(retrieve);
+        Collection<ICluster> retrieve = retriever.retrieve(0, 10000);
+        List<ICluster> retrieved = new ArrayList<ICluster>(retrieve);
         Assert.assertEquals(retrieved.size(), start.size());
 
         Collections.sort(retrieved);
@@ -50,8 +50,8 @@ public class ClusterMatchAndRetrieverTests {
             Assert.assertTrue(retrieved.get(i).equivalent(start.get(i)));
         }
 
-        Collection<IPeptideSpectralCluster> ret400 = retriever.retrieve(400, 401);
-        for (IPeptideSpectralCluster sc : ret400) {
+        Collection<ICluster> ret400 = retriever.retrieve(400, 401);
+        for (ICluster sc : ret400) {
             double mz = sc.getPrecursorMz();
             Assert.assertTrue(mz >= 400);
             Assert.assertTrue(mz <= 401);

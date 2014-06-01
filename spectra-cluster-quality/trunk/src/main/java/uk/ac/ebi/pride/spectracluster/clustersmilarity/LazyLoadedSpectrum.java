@@ -4,10 +4,10 @@ import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -16,7 +16,8 @@ import java.util.List;
 public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
     private final String id;
     private final uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever;
-    private IPeptideSpectrumMatch internalSpectrum;
+    private ISpectrum internalSpectrum;
+    private final Properties properties = new Properties();
     private Double selfDotProduct;
 
     public LazyLoadedSpectrum(String id, uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever) {
@@ -104,22 +105,20 @@ public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
     /**
      * return scored peptide - maybe null
      */
-    @Override
-    public String getPeptide() {
+      public String getPeptide() {
         if (getRetriever() == null)
             return null;
-        IPeptideSpectrumMatch internalSpectrum1 = getInternalSpectrum();
+        ISpectrum internalSpectrum1 = getInternalSpectrum();
         if (internalSpectrum1 == null)
             return null;
-        return internalSpectrum1.getPeptide();
+        return internalSpectrum1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
     }
 
     /**
      * return text in the id not peptide or id
      */
-    @Override
-    public String getAnnotation() {
-        return getInternalSpectrum().getAnnotation();
+       public String getAnnotation() {
+        return getInternalSpectrum().getProperty(ISpectrum.ANNOTATION_KEY);
     }
 
     @Override
@@ -127,16 +126,16 @@ public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
         return getInternalSpectrum().asMajorPeakMZs(majorPeakCount);
     }
 
-    protected IPeptideSpectrumMatch getInternalSpectrum() {
+    protected ISpectrum getInternalSpectrum() {
         if (internalSpectrum == null) {
             uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever1 = getRetriever();
-            internalSpectrum = (IPeptideSpectrumMatch) retriever1.retrieve(getId());
+            internalSpectrum = (ISpectrum) retriever1.retrieve(getId());
         }
         return internalSpectrum;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    protected void setInternalSpectrum(IPeptideSpectrumMatch internalSpectrumx) {
+    protected void setInternalSpectrum(ISpectrum internalSpectrumx) {
         internalSpectrum = internalSpectrumx;
     }
 
@@ -153,5 +152,40 @@ public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
     public String toString() {
         return getId();
     }
+
+    /**
+       * return a property of null if none exists
+       *     See ISpectrum for known property names
+       * @param key
+       * @return possible null value
+       */
+      @Override
+      public String getProperty(String key) {
+            return properties.getProperty(key);
+      }
+
+
+      /**
+       *
+       * @param key
+       * @param value
+       */
+      @Override
+      public void setProperty(String key,String value) {
+              properties.setProperty(key,value);
+      }
+
+
+    /**
+     * Only for internal use in copy constructor
+     * Note this is not safe
+     * This is not really deprecated but it warns only for
+     * internal use
+     */
+    @Override
+    public Properties getProperties() {
+        return properties;
+    }
+
 
 }

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
 import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Comparator;
 
@@ -49,7 +49,7 @@ public class SpectrumClusteringData implements Comparable<SpectrumClusteringData
     private final float precursor_mz;
     private final int[] top_peaks;
 
-    public SpectrumClusteringData(IPeptideSpectrumMatch spec) {
+    public SpectrumClusteringData(ISpectrum spec) {
         id = spec.getId();
         charge = spec.getPrecursorCharge();
         quality = (float) spec.getQualityScore();

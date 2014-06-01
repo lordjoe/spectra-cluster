@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 import com.lordjoe.utilities.TypedCounter;
 import com.lordjoe.utilities.TypedPredicateCounter;
 import com.lordjoe.utilities.TypedVisitor;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +32,7 @@ public class PSM_Holder {
             holder.add(added);
             idToPSMSpectrum.put(id, holder);
         }
-        String peptide = added.getPeptide();
+        String peptide = added.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
 
         if (peptideToPSMSpectrum.containsKey(peptide)) {
             peptideToPSMSpectrum.get(peptide).add(added);

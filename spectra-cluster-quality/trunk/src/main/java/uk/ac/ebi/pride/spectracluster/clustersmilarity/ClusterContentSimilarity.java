@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.comparator.QualityClusterComparator;
 
@@ -34,7 +34,7 @@ public class ClusterContentSimilarity {
      * @param s2 - entering lists of spectral clusters - exit unmatched clusters
      * @return matched clusters from set 1
      */
-    public List<IPeptideSpectralCluster> identicalClusters(List<IPeptideSpectralCluster> s1, List<IPeptideSpectralCluster> s2) {
+    public List<ICluster> identicalClusters(List<ICluster> s1, List<ICluster> s2) {
         IClusterDistance dm = getDistanceMeasure();
 
         Collections.sort(s1, QualityClusterComparator.INSTANCE); // sort by hishest quality
@@ -42,9 +42,9 @@ public class ClusterContentSimilarity {
         Collections.sort(s2, QualityClusterComparator.INSTANCE); // sort by hishest quality
 
 
-        List<IPeptideSpectralCluster> identical = new ArrayList<IPeptideSpectralCluster>();
-        List<IPeptideSpectralCluster> matched1 = new ArrayList<IPeptideSpectralCluster>();
-        List<IPeptideSpectralCluster> matched2 = new ArrayList<IPeptideSpectralCluster>();
+        List<ICluster> identical = new ArrayList<ICluster>();
+        List<ICluster> matched1 = new ArrayList<ICluster>();
+        List<ICluster> matched2 = new ArrayList<ICluster>();
 
 
         final int nPK1 = s1.size();
@@ -57,9 +57,9 @@ public class ClusterContentSimilarity {
         int t = 0;
         int e = 0;
         while (t < nPK1 && e < nPK2) {
-            IPeptideSpectralCluster sc1 = s1.get(t);
+            ICluster sc1 = s1.get(t);
             ISpectrum q1 = sc1.getHighestQualitySpectrum();
-            IPeptideSpectralCluster sc2 = s2.get(e);
+            ICluster sc2 = s2.get(e);
             ISpectrum q2 = sc2.getHighestQualitySpectrum();
 
             double quality_difference = q1.getQualityScore() - q2.getQualityScore();

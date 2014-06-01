@@ -4,8 +4,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.SpectrumUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import java.io.IOException;
@@ -36,11 +35,11 @@ public class DotClusterClusterAppender implements IClusterAppender {
             out.append("\n");
 
 
-            List<ISpectrum> clusteredSpectra1 = cluster.getClusteredSpectra();
-//            String s = ClusterUtilities.mostCommonPeptides(clusteredSpectra1);
-//            out.append("sequence=[" + s + "]");
-//            out.append("\n");
+            String s = ClusterUtilities.mostCommonPeptides(cluster);
+           out.append("sequence=[" + s + "]");
+           out.append("\n");
 
+            List<ISpectrum> clusteredSpectra1 = cluster.getClusteredSpectra();
             out.append("consensus_mz=").append(SpectrumUtilities.buildMZString(cluster.getConsensusSpectrum()));
             out.append("\n");
             out.append("consensus_intens=").append(SpectrumUtilities.buildIntensityString(cluster.getConsensusSpectrum()));

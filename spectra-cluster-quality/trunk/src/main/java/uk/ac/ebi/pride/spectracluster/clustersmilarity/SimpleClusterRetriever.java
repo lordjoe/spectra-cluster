@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 
 import java.util.*;
 
@@ -15,12 +14,12 @@ import java.util.*;
  */
 public class SimpleClusterRetriever implements IClusterRetriever {
 
-    private final Map<String, IPeptideSpectralCluster> clusterById = new HashMap<String, IPeptideSpectralCluster>();
-    private final List<IPeptideSpectralCluster> sortedClusters = new ArrayList<IPeptideSpectralCluster>();
+    private final Map<String, ICluster> clusterById = new HashMap<String, ICluster>();
+    private final List<ICluster> sortedClusters = new ArrayList<ICluster>();
     private int numberDuplicateClusters;
 
-    public SimpleClusterRetriever(Collection<IPeptideSpectralCluster> cluaters) {
-        for (IPeptideSpectralCluster cluater : cluaters) {
+    public SimpleClusterRetriever(Collection<ICluster> cluaters) {
+        for (ICluster cluater : cluaters) {
             addCluster(cluater);
         }
     }
@@ -37,9 +36,9 @@ public class SimpleClusterRetriever implements IClusterRetriever {
     /**
      * Get sorted clusters
      */
-    public List<IPeptideSpectralCluster> getClusters() {
+    public List<ICluster> getClusters() {
         if (sortedClusters.isEmpty()) {
-            ArrayList<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>(clusterById.values());
+            ArrayList<ICluster> clusters = new ArrayList<ICluster>(clusterById.values());
             sortedClusters.addAll(clusters);
             try {
                 Collections.sort(sortedClusters);
@@ -54,7 +53,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return sortedClusters;
     }
 
-    public void addCluster(IPeptideSpectralCluster cluster) {
+    public void addCluster(ICluster cluster) {
         try {
             guaranteeClusterId(cluster);
         } catch (Exception e) {
@@ -71,7 +70,7 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         sortedClusters.clear();
     }
 
-    public void guaranteeClusterId(IPeptideSpectralCluster cluster) {
+    public void guaranteeClusterId(ICluster cluster) {
         if (cluster.getId() != null) {
             return;
         }
@@ -79,15 +78,16 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         buildAndSetIdForClusterWithoutId(cluster);
     }
 
-    protected void buildAndSetIdForClusterWithoutId(IPeptideSpectralCluster cluster) {
+    protected void buildAndSetIdForClusterWithoutId(ICluster cluster) {
         String id = cluster.toString();
+
 
         if (cluster instanceof LazyLoadedSpectralCluster) {
             ((LazyLoadedSpectralCluster) cluster).setId(id);
             return;
         }
-        if (cluster instanceof PeptideSpectralCluster) {
-            ((PeptideSpectralCluster) cluster).setId(id);
+        if (cluster instanceof SpectralCluster) {
+            ((SpectralCluster) cluster).setId(id);
             return;
         }
         throw new IllegalStateException("cannot guarantee non-null id");
@@ -100,19 +100,19 @@ public class SimpleClusterRetriever implements IClusterRetriever {
         return "GenId" + clusterIdCounter++;
     }
 
-    public SimpleClusterRetriever(IPeptideSpectralCluster... cluaters) {
+    public SimpleClusterRetriever(ICluster... cluaters) {
         this(Arrays.asList(cluaters));
     }
 
     @Override
-    public IPeptideSpectralCluster retrieve(String clusterId) {
+    public ICluster retrieve(String clusterId) {
         return clusterById.get(clusterId);
     }
 
     @Override
-    public List<IPeptideSpectralCluster> retrieve(double minMz, double maxMz) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster cluster : clusterById.values()) {
+    public List<ICluster> retrieve(double minMz, double maxMz) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        for (ICluster cluster : clusterById.values()) {
             double mz = cluster.getPrecursorMz();
             if (mz < minMz)
                 continue;

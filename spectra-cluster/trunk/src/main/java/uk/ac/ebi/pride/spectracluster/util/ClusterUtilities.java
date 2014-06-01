@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.*;
 import java.util.*;
 
 
@@ -25,6 +21,11 @@ public final class ClusterUtilities {
     private ClusterUtilities() {
     }
 
+
+    public static void getPeptidePurity(ICluster cluster)
+    {
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+    }
     /**
      * return non-null if c1 contains all spactra in c2 or vice
      * versa
@@ -133,7 +134,7 @@ public final class ClusterUtilities {
      * @param copied should be non-empty array
      * @return !null spectrum unless copied is empty
      */
-    public static ISpectrum getHighestQualitySpectrum(IPeptideSpectralCluster... copied) {
+    public static ISpectrum getHighestQualitySpectrum(ICluster... copied) {
         if (copied.length == 0)
             return null;
         ISpectrum ret = copied[0].getHighestQualitySpectrum();
@@ -190,8 +191,8 @@ public final class ClusterUtilities {
      * @param spectrum  given spectrum
      * @return  a spectral cluster
      */
-    public static IPeptideSpectralCluster asCluster(ISpectrum spectrum) {
-        PeptideSpectralCluster ret = new PeptideSpectralCluster(null, Defaults.getDefaultConsensusSpectrumBuilder());
+    public static ICluster asCluster(ISpectrum spectrum) {
+        ICluster ret = new SpectralCluster((String)null, Defaults.getDefaultConsensusSpectrumBuilder());
         ret.addSpectra(spectrum);
         return ret;
     }
@@ -203,8 +204,8 @@ public final class ClusterUtilities {
      * @param spectra !null list of spectra
      * @return !null list of spectra
      */
-    public static List<IPeptideSpectralCluster> asClusters(List<ISpectrum> spectra) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+    public static List<ICluster> asClusters(List<ISpectrum> spectra) {
+        List<ICluster> holder = new ArrayList<ICluster>();
         for (ISpectrum spectrum : spectra) {
             holder.add(asCluster(spectrum));
         }
@@ -218,7 +219,7 @@ public final class ClusterUtilities {
      *
      * @return as above
      */
-    public static String mostCommonPeptides(IPeptideSpectralCluster cluster) {
+    public static String mostCommonPeptides(ICluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         String petides = SpectrumUtilities.mostCommonPeptides(clusteredSpectra);
@@ -228,7 +229,7 @@ public final class ClusterUtilities {
 
 
 
-    public static String[] getMostCommonPeptides(IPeptideSpectralCluster cluster) {
+    public static String[] getMostCommonPeptides(ICluster cluster) {
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         final List<String> peptideList = SpectrumUtilities.getPeptideList(clusteredSpectra);
@@ -245,9 +246,9 @@ public final class ClusterUtilities {
      * @param clusters !null list of clusters
      * @return !null list of spectra
      */
-    public static List<ISpectrum> extractSpectra(List<IPeptideSpectralCluster> clusters) {
+    public static List<ISpectrum> extractSpectra(List<ICluster> clusters) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (IPeptideSpectralCluster cluster : clusters) {
+        for (ICluster cluster : clusters) {
             holder.addAll(cluster.getClusteredSpectra());
         }
         Collections.sort(holder);

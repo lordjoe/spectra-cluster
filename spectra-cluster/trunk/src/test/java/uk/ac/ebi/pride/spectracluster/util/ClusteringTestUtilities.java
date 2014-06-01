@@ -1,22 +1,20 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
-import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 
+import javax.annotation.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -104,7 +102,7 @@ public class ClusteringTestUtilities {
      *
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
+    public static List<ISpectrum> readISpectraFromResource() {
         return readISpectraFromResource(SAMPLE_MGF_FILE);
     }
 
@@ -114,11 +112,11 @@ public class ClusteringTestUtilities {
      * @param resName
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
+    public static List<ISpectrum> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
         File inputFile = getSpectrumFile(resName);
 
-        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
         return Arrays.asList(mgfSpectra);
     }
 
@@ -142,21 +140,127 @@ public class ClusteringTestUtilities {
 
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource() {
+    public static List<ICluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
 
-    public static List<IPeptideSpectralCluster> readSecondSpectraClustersFromResource() {
+    public static List<ICluster> readSecondSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_SECOND_CGF_FILE);
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<ICluster> readSpectraClustersFromResource(String resName) {
         List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(resName);
         int index = 1000;
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        List<ICluster> holder = new ArrayList<ICluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder());
+            ICluster cluster = new SpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder()) {
+                @Override
+                public String getId() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Override
+                public String getSpectralId() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Override
+                public float getPrecursorMz() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return 0;
+                }
+
+                @Override
+                public int getPrecursorCharge() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return 0;
+                }
+
+                @Override
+                public ISpectrum getConsensusSpectrum() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Override
+                public ISpectrum getHighestQualitySpectrum() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Nonnull
+                @Override
+                public List<ISpectrum> getHighestQualitySpectra() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Nonnull
+                @Override
+                public List<ISpectrum> getClusteredSpectra() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Override
+                public int getClusteredSpectraCount() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return 0;
+                }
+
+                @Nonnull
+                @Override
+                public Set<String> getSpectralIds() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return null;
+                }
+
+                @Override
+                public int compareTo(ICluster o) {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return 0;
+                }
+
+                @Override
+                public boolean equivalent(ICluster other) {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return false;
+                }
+
+                @Override
+                public void addSpectra(ISpectrum... merged) {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+
+                }
+
+                @Override
+                public boolean isRemoveSupported() {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+                    return false;
+                }
+
+                @Override
+                public void removeSpectra(ISpectrum... removed) {
+                    if (true) throw new UnsupportedOperationException("Fix This");
+
+                }
+
+
+//                @Override
+//                public void addSpectrumHolderListener(SpectrumHolderListener added) {
+//                    if (true) throw new UnsupportedOperationException("Fix This");
+//
+//                }
+
+//                @Override
+//                public void removeSpectrumHolderListener(SpectrumHolderListener removed) {
+//                    if (true) throw new UnsupportedOperationException("Fix This");
+//
+//                }
+            };
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);
@@ -415,9 +519,9 @@ public class ClusteringTestUtilities {
      * @param factory   !null  ConcensusSpectrumBuilderFactory
      * @return !null list of  consensusSpectra
      */
-    public static List<ISpectrum> buildConsessusSpectra(final List<IPeptideSpectralCluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
+    public static List<ISpectrum> buildConsessusSpectra(final List<ICluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (IPeptideSpectralCluster cluster : pClusters) {
+        for (ICluster cluster : pClusters) {
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();
             for (ISpectrum cs : css) {

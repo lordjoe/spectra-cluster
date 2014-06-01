@@ -1,17 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
@@ -36,7 +32,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectralCluster[] readSpectralCluster(String inp) {
+    public static ICluster[] readSpectralCluster(String inp) {
         return readSpectralCluster(new File(inp));
     }
 
@@ -46,7 +42,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectralCluster[] readSpectralCluster(File inp) {
+    public static ICluster[] readSpectralCluster(File inp) {
         try {
             return readSpectralCluster(new LineNumberReader(new FileReader(inp)));
         } catch (FileNotFoundException e) {
@@ -68,7 +64,7 @@ public class ParserUtilities {
         for (ClusterCreateListener lstn : listerners) {
             lstn.onClusterStarted();
         }
-        IPeptideSpectralCluster cls = readSpectralCluster(inp, null);
+        ICluster cls = readSpectralCluster(inp, null);
         while (cls != null) {
             for (ClusterCreateListener lstn : listerners) {
                 lstn.onClusterCreate(cls);
@@ -115,15 +111,15 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectralCluster[] readSpectralCluster(LineNumberReader inp) {
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        IPeptideSpectralCluster cls = readSpectralCluster(inp, null);
+    public static ICluster[] readSpectralCluster(LineNumberReader inp) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        ICluster cls = readSpectralCluster(inp, null);
         while (cls != null) {
             holder.add(cls);
             cls = readSpectralCluster(inp, null);
         }
 
-        IPeptideSpectralCluster[] ret = new IPeptideSpectralCluster[holder.size()];
+        ICluster[] ret = new ICluster[holder.size()];
         holder.toArray(ret);
         return ret;
     }
@@ -136,8 +132,8 @@ public class ParserUtilities {
      * @param line
      * @return
      */
-    public static IPeptideSpectralCluster readSpectralCluster(LineNumberReader inp, String line) {
-        IPeptideSpectralCluster ret = null;
+    public static ICluster readSpectralCluster(LineNumberReader inp, String line) {
+        ICluster ret = null;
         try {
             if (line == null)
                 line = inp.readLine();
@@ -146,7 +142,7 @@ public class ParserUtilities {
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     int charge = chargeFromClusterLine(line);
                     String id = idFromClusterLine(line);
-                    ret = new PeptideSpectralCluster(id, Defaults.getDefaultConsensusSpectrumBuilder());
+                    ret = new SpectralCluster(id, Defaults.getDefaultConsensusSpectrumBuilder());
                     break;
                 }
                 // naked spectrum
@@ -154,8 +150,8 @@ public class ParserUtilities {
                     ISpectrum internalComplete = readMGFScan(inp, line);
                     final List<IPeak> peaks = internalComplete.getPeaks();
                     final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
-                    ISpectrum internal = new PeptideSpectrumMatch(internalComplete, filteredPeaks);
-                    ret = new PeptideSpectralCluster(internal.getId(), Defaults.getDefaultConsensusSpectrumBuilder());
+                    ISpectrum internal = new Spectrum(internalComplete, filteredPeaks);
+                    ret = new SpectralCluster(internal.getId(), Defaults.getDefaultConsensusSpectrumBuilder());
                     ret.addSpectra(internal);
                     return ret;
                 }
@@ -283,14 +279,14 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectrumMatch[] readMGFScans(LineNumberReader inp) {
-        List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
-        IPeptideSpectrumMatch spectrum = readMGFScan(inp);
+    public static ISpectrum[] readMGFScans(LineNumberReader inp) {
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
+        ISpectrum spectrum = readMGFScan(inp);
         while (spectrum != null) {
             holder.add(spectrum);
             spectrum = readMGFScan(inp);
         }
-        IPeptideSpectrumMatch[] ret = new IPeptideSpectrumMatch[holder.size()];
+        ISpectrum[] ret = new ISpectrum[holder.size()];
         holder.toArray(ret);
         return ret;
     }
@@ -299,7 +295,7 @@ public class ParserUtilities {
      * @param inp !null existing file
      * @return !null array of spectra
      */
-    public static IPeptideSpectrumMatch[] readMGFScans(File inp) {
+    public static ISpectrum[] readMGFScans(File inp) {
         try {
             return readMGFScans(new LineNumberReader(new FileReader(inp)));
         } catch (FileNotFoundException e) {
@@ -313,13 +309,13 @@ public class ParserUtilities {
      * @param inp !null existing file
      * @return !null array of spectra
      */
-    public static List<IPeptideSpectralCluster> readMGFClusters(File inp) {
-        IPeptideSpectrumMatch[] scans = readMGFScans(inp);
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+    public static List<ICluster> readMGFClusters(File inp) {
+        ISpectrum[] scans = readMGFScans(inp);
+        List<ICluster> holder = new ArrayList<ICluster>();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < scans.length; i++) {
-            IPeptideSpectrumMatch scan = scans[i];
-            final IPeptideSpectralCluster e = ClusterUtilities.asCluster(scan);
+            ISpectrum scan = scans[i];
+            final ICluster e = ClusterUtilities.asCluster(scan);
             holder.add(e);
         }
 
@@ -333,11 +329,11 @@ public class ParserUtilities {
      * @param inp
      * @return
      */
-    public static IPeptideSpectrumMatch readFilteredMGFScan(LineNumberReader inp) {
-        IPeptideSpectrumMatch cls = readMGFScan(inp);
+    public static ISpectrum readFilteredMGFScan(LineNumberReader inp) {
+        ISpectrum cls = readMGFScan(inp);
         final List<IPeak> peaks = cls.getPeaks();
         final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
-        cls = new PeptideSpectrumMatch(cls, filteredPeaks);
+        cls = new Spectrum(cls, filteredPeaks);
         return cls;
     }
 
@@ -346,7 +342,7 @@ public class ParserUtilities {
      * @param inp !null reader
      * @return
      */
-    public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp) {
+    public static ISpectrum readMGFScan(LineNumberReader inp) {
         return readMGFScan(inp, null);
     }
 
@@ -356,7 +352,7 @@ public class ParserUtilities {
      * @return
      */
     @SuppressWarnings("ConstantConditions")
-    public static IPeptideSpectrumMatch readMGFScan(LineNumberReader inp, String line) {
+    public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
@@ -458,15 +454,16 @@ public class ParserUtilities {
                     String peptide = sequence;
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     sequence = null;
-                    PeptideSpectrumMatch spectrum = new PeptideSpectrumMatch(
+                    ISpectrum spectrum = new Spectrum(
                             title,
-                            peptide,
                             dcharge,
                             (float) mz,
-                            holder,
                             Defaults.getDefaultQualityScorer(),
-                            title // save title - sequence as annotation
+                            holder
                     );
+
+                    spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY, peptide);
+                    spectrum.setProperty(ISpectrum.ANNOTATION_KEY, title);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
@@ -500,7 +497,7 @@ public class ParserUtilities {
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected static void handleTitleLine(Spectrum spectrum, String titleLine) {
+    protected static void handleTitleLine(ISpectrum spectrum, String titleLine) {
         String tl = titleLine.substring("Title=".length());
         String[] items = tl.split(",");
         //noinspection ForLoopReplaceableByForEach
@@ -663,10 +660,10 @@ public class ParserUtilities {
 
             }
 
-            IPeptideSpectralCluster[] scs = readSpectralCluster(arg);
+            ICluster[] scs = readSpectralCluster(arg);
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < scs.length; j++) {
-                IPeptideSpectralCluster sc = scs[j];
+                ICluster sc = scs[j];
                 StringBuilder sb = new StringBuilder();
                 final MGFSpectrumAppender spectrumAppender = MGFSpectrumAppender.INSTANCE;
                 if (isMGF) {

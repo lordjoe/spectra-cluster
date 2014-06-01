@@ -125,7 +125,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
      * be protected but is in the interface to form an event cluster
      *
      */
-    public void notifyClusterCreateListeners(IPeptideSpectralCluster cluster) {
+    public void notifyClusterCreateListeners(ICluster cluster) {
         for (ClusterCreateListener listener : m_ClusterCreateListeners) {
             listener.onClusterCreate(cluster);
         }
@@ -263,7 +263,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 //
             // now write the big clusters
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             notifyClusterCreateListeners(cluster);
 //

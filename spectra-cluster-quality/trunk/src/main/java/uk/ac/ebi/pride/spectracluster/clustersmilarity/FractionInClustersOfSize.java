@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
@@ -17,11 +17,11 @@ import java.util.Set;
 public class FractionInClustersOfSize {
     public static final int[] TEST_SIZES = {0, 2, 8, 30};
 
-    private final List<IPeptideSpectralCluster> clusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<ICluster> clusters = new ArrayList<ICluster>();
 
     public int getNumberInClusterOfSize(int clusterSize) {
         Set<String> clusterIds = new HashSet<String>();
-        for (IPeptideSpectralCluster cluster : clusters) {
+        for (ICluster cluster : clusters) {
             List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
             if (clusteredSpectra.size() < clusterSize)
                 continue;
@@ -34,7 +34,7 @@ public class FractionInClustersOfSize {
     }
 
 
-    public void addCluster(@Nonnull IPeptideSpectralCluster pT) {
+    public void addCluster(@Nonnull ICluster pT) {
         clusters.add(pT);
     }
 

@@ -17,8 +17,8 @@ public class ClusteringUtilitiesTests {
 //        // read Spectra
 //
 //        // make two identical lists
-//        List<IPeptideSpectralCluster> list1 = ClusterUtilities.asClusters(spectra);
-//        List<IPeptideSpectralCluster> list2 = ClusterUtilities.asClusters(spectra);
+//        List<ICluster> list1 = ClusterUtilities.asClusters(spectra);
+//        List<ICluster> list2 = ClusterUtilities.asClusters(spectra);
 //
 //        // add the second list to the first making duplicates
 //        list1.addAll(list2); // dupicate clusters
@@ -54,7 +54,7 @@ public class ClusteringUtilitiesTests {
     public void testMerge() throws Exception {
 //        List<ISpectrum> spectra = ClusteringTestUtilities.readConsensusSpectralItems();
 //
-//        List<IPeptideSpectralCluster> list = ClusterUtilities.asClusters(spectra);
+//        List<ICluster> list = ClusterUtilities.asClusters(spectra);
 //        IClusteringEngine engine = new ClusteringEngineFactory().getClusteringEngine();
 //        for (ICluster sc : list) {
 //            engine.addClusters(sc);

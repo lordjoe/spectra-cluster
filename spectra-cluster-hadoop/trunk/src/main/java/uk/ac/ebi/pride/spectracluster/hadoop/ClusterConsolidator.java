@@ -44,11 +44,11 @@ public class ClusterConsolidator extends ConfiguredJobRunner implements IJobRunn
                 return;
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             // should be only one
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < clusters.length; i++) {
-                IPeptideSpectralCluster cluster = clusters[i];
+                ICluster cluster = clusters[i];
                 MZKey mzkey = new MZKey(cluster.getPrecursorMz());
                 final String keyStr = mzkey.toString();
                 writeKeyValue(keyStr, text, context);

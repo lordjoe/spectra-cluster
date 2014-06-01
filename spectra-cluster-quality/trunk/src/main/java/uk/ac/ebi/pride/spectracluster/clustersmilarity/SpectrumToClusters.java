@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class SpectrumToClusters {
-    private final Map<String, List<IPeptideSpectralCluster>> clustersWithSpectra = new HashMap<String, List<IPeptideSpectralCluster>>();
+    private final Map<String, List<ICluster>> clustersWithSpectra = new HashMap<String, List<ICluster>>();
     private int numberOfEmptyCluster = 0;
     private int numberOfDuplicatedSpectra = 0;
     private int numberOfSpectra = 0;
@@ -28,9 +28,9 @@ public class SpectrumToClusters {
     }
 
     public List<ISpectrum> getUnusedSpectra(ISpectrumRetriever spc) {
-        List<IPeptideSpectrumMatch> all = spc.retrieveAll();
+        List<ISpectrum> all = spc.retrieveAll();
         List<ISpectrum> ret = new ArrayList<ISpectrum>();
-        for (IPeptideSpectrumMatch spec : all) {
+        for (ISpectrum spec : all) {
             if (!clustersWithSpectra.containsKey(spec.getId()))
                 ret.add(spec);
         }
@@ -40,9 +40,9 @@ public class SpectrumToClusters {
 
 
     public List<ISpectrum> getUsedSpectra(ISpectrumRetriever spc) {
-        List<IPeptideSpectrumMatch> all = spc.retrieveAll();
+        List<ISpectrum> all = spc.retrieveAll();
         List<ISpectrum> ret = new ArrayList<ISpectrum>();
-        for (IPeptideSpectrumMatch spec : all) {
+        for (ISpectrum spec : all) {
             if (clustersWithSpectra.containsKey(spec.getId()))
                 ret.add(spec);
         }
@@ -58,11 +58,11 @@ public class SpectrumToClusters {
         return numberOfDuplicatedSpectra;
     }
 
-    public Map<String, List<IPeptideSpectralCluster>> getClustersWithSpectra() {
+    public Map<String, List<ICluster>> getClustersWithSpectra() {
         return clustersWithSpectra;
     }
 
-    public void addCluster(IPeptideSpectralCluster cluster) {
+    public void addCluster(ICluster cluster) {
         List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
 
         if (clusteredSpectra.isEmpty()) {
@@ -75,10 +75,10 @@ public class SpectrumToClusters {
         }
     }
 
-    private void addSpectrumCluster(String spectrumId, IPeptideSpectralCluster cluster, Map<String, List<IPeptideSpectralCluster>> clusters) {
-        List<IPeptideSpectralCluster> existingClusters = clusters.get(spectrumId);
+    private void addSpectrumCluster(String spectrumId, ICluster cluster, Map<String, List<ICluster>> clusters) {
+        List<ICluster> existingClusters = clusters.get(spectrumId);
         if (existingClusters == null) {
-            existingClusters = new ArrayList<IPeptideSpectralCluster>();
+            existingClusters = new ArrayList<ICluster>();
             clusters.put(spectrumId, existingClusters);
         } else {
             numberOfDuplicatedSpectra++;

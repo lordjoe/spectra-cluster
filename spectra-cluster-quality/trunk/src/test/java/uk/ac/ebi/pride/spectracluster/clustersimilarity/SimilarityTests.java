@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 
 import java.util.ArrayList;
@@ -30,10 +30,10 @@ public class SimilarityTests {
     };
 
 
-    private IPeptideSpectralCluster chooseOtherCluster(List<IPeptideSpectralCluster> originalSpectralClusters, IPeptideSpectralCluster notMe) {
+    private ICluster chooseOtherCluster(List<ICluster> originalSpectralClusters, ICluster notMe) {
         if (originalSpectralClusters.size() < 2)
             throw new IllegalArgumentException("Only works of at least 2 clusters");
-        IPeptideSpectralCluster choice = originalSpectralClusters.get(RND.nextInt(originalSpectralClusters.size()));
+        ICluster choice = originalSpectralClusters.get(RND.nextInt(originalSpectralClusters.size()));
         while (choice == notMe)
             choice = originalSpectralClusters.get(RND.nextInt(originalSpectralClusters.size()));
         return choice;
@@ -50,9 +50,9 @@ public class SimilarityTests {
 
     @Test
     public void testSelfSimilarity() throws Exception {
-        List<IPeptideSpectralCluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
 
-            for (IPeptideSpectralCluster sc1 : originalSpectralClusters) {
+            for (ICluster sc1 : originalSpectralClusters) {
                 for (int i = 0; i < measures.length; i++) {
                     IClusterDistance measure = measures[i];
                     double distance = measure.distance(sc1, sc1);
@@ -60,7 +60,7 @@ public class SimilarityTests {
                         distance = measure.distance(sc1, sc1); //  break here
                         Assert.assertEquals(0, distance, MAXIMUM_SELF_DISTANCE);    // every cluster is similar to itself
                     }
-                    IPeptideSpectralCluster other = chooseOtherCluster(originalSpectralClusters, sc1);
+                    ICluster other = chooseOtherCluster(originalSpectralClusters, sc1);
                     distance = measure.distance(sc1, other);
                     if (distance < MINIMUM_NON_SELF_DISTANCE) {
                         distance = measure.distance(sc1, sc1); //  break here
@@ -82,16 +82,16 @@ public class SimilarityTests {
      */
     @Test
     public void testGroupSimilarity() throws Exception {
-        final List<IPeptideSpectralCluster> originalCLuster = ClusteringTestUtilities.readSpectraClustersFromResource();
+        final List<ICluster> originalCLuster = ClusteringTestUtilities.readSpectraClustersFromResource();
         Collections.sort(originalCLuster);
-        List<IPeptideSpectralCluster> l1 = new ArrayList<IPeptideSpectralCluster>(originalCLuster);
+        List<ICluster> l1 = new ArrayList<ICluster>(originalCLuster);
 
-        final List<IPeptideSpectralCluster> originalCLuster2 = ClusteringTestUtilities.readSpectraClustersFromResource();
+        final List<ICluster> originalCLuster2 = ClusteringTestUtilities.readSpectraClustersFromResource();
         Collections.sort(originalCLuster2);
-        List<IPeptideSpectralCluster> l2 = new ArrayList<IPeptideSpectralCluster>(originalCLuster2);
+        List<ICluster> l2 = new ArrayList<ICluster>(originalCLuster2);
 
         ClusterListSimilarity cd = new ClusterListSimilarity(distanceMeasure);
-        final List<IPeptideSpectralCluster> identical = cd.identicalClusters(l1, l2);
+        final List<ICluster> identical = cd.identicalClusters(l1, l2);
 
         Assert.assertEquals(originalCLuster.size(), identical.size());
         Assert.assertTrue(l1.isEmpty());

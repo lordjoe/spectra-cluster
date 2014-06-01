@@ -3,9 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import org.apache.hadoop.io.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
+import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -39,7 +37,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
     public void reduceNormal(Text key, Iterable<Text> values,
                              Context context) throws IOException, InterruptedException {
 
-        PeptideSpectralCluster sc = new PeptideSpectralCluster(null,Defaults.getDefaultConsensusSpectrumBuilder());
+        ICluster sc = new SpectralCluster((String)null,Defaults.getDefaultConsensusSpectrumBuilder());
         Set<String> processedSpectrunIds = new HashSet<String>();
             // Note this will not be large so memory requirements are ok
 
@@ -47,7 +45,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
             String value = tv.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(value)));
             SpectrumInCluster sci2 = SpectrumInClusterUtilities.readSpectrumInCluster(rdr);
-            IPeptideSpectrumMatch spectrum = sci2.getSpectrum();
+            ISpectrum spectrum = sci2.getSpectrum();
             String id = spectrum.getId();
             if (!sci2.isRemoveFromCluster()) {
                 sc.addSpectra(spectrum);
@@ -55,7 +53,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
             else {
                 // handle spectra kicked out
                 if (!processedSpectrunIds.contains(id)) {
-                    IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(spectrum);
+                    ICluster cluster = ClusterUtilities.asCluster(spectrum);
                       writeOneVettedCluster(context, cluster);
                 }
                 else {
@@ -80,7 +78,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
      * @throws IOException
      * @throws InterruptedException
      */
-    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+    protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final ICluster cluster) throws IOException, InterruptedException {
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 

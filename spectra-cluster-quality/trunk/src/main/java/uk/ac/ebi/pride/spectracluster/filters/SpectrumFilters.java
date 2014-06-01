@@ -70,9 +70,9 @@ public class SpectrumFilters {
              */
             @Override
             public ISpectrum passes(@Nonnull ISpectrum testObject) {
-                if (testObject instanceof IPeptideSpectrumMatch) {
-                    IPeptideSpectrumMatch ps = (IPeptideSpectrumMatch) testObject;
-                    if (ps.getPeptide() != null)
+                if (testObject instanceof ISpectrum) {
+                    ISpectrum ps = (ISpectrum) testObject;
+                    if (ps.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY) != null)
                         return testObject; // passes
                     return null; // fails
 
@@ -99,8 +99,8 @@ public class SpectrumFilters {
              */
             @Override
             public ISpectrum passes(@Nonnull ISpectrum testObject) {
-                if (testObject instanceof IPeptideSpectrumMatch) {
-                    IPeptideSpectrumMatch ps = (IPeptideSpectrumMatch) testObject;
+                if (testObject instanceof ISpectrum) {
+                    ISpectrum ps = (ISpectrum) testObject;
                     if (ps.getPrecursorCharge() == 0)
                         return null; // fails
                     // really testing 0 but this works

@@ -3,11 +3,11 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.cluster.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
@@ -20,7 +20,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class PSMSpectralCluster implements IPeptideSpectralCluster {
+public class PSMSpectralCluster implements ICluster {
 
 
     private String id;
@@ -43,8 +43,8 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
     protected void buildPeptidePurities() {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
-            IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-            String peptide = sc1.getPeptide();
+            ISpectrum sc1 = (ISpectrum) iSpectrum;
+            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             if (peptide != null) {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
@@ -60,8 +60,8 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
         // debug bad case
         if (spectral_peptides.size() == 0) {
             for (ISpectrum iSpectrum : clusteredSpectra) {
-                IPeptideSpectrumMatch sc1 = (IPeptideSpectrumMatch) iSpectrum;
-                String peptide = sc1.getPeptide();
+                ISpectrum sc1 = (ISpectrum) iSpectrum;
+                String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
                 if (peptide != null)
                     spectral_peptides.add(peptide);
             }
@@ -89,7 +89,7 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
-            String peptide = sc1.getPeptide();
+            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
             boolean decoy = sc1.isDecoy();
             if (peptides.contains(";")) {
                 MultipleSpectraCount++;
@@ -169,13 +169,11 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
         return precursorCharge;
     }
 
-    @Override
-    public List<String> getPeptides() {
+      public List<String> getPeptides() {
         return new ArrayList<String>(peptides);
     }
 
-    @Override
-    public String getMostCommonPeptide() {
+      public String getMostCommonPeptide() {
         List<String> peptideStrings = getPeptides();
         if (!peptideStrings.isEmpty()) {
 
@@ -194,8 +192,7 @@ public class PSMSpectralCluster implements IPeptideSpectralCluster {
      *
      * @return list ordered bu purity
      */
-    @Override
-    public
+      public
     @Nonnull
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator igonred) {
         if (byPurity.size() == 0)

@@ -29,7 +29,7 @@ public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
         switch (clusters.length) {
             case 0:
                 return;
@@ -47,7 +47,7 @@ public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
      * @param text
      * @param context
      */
-    protected void handleCluster(IPeptideSpectralCluster cluster,String text, Context context) {
+    protected void handleCluster(ICluster cluster,String text, Context context) {
         if(clusterStabilityAssessor.isStable(cluster))   {
             String id = StableClusterUtilities.getStableClusterId();
             writeKeyValue(id,text,context);

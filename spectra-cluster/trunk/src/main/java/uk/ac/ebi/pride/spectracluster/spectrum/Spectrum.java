@@ -9,10 +9,11 @@ import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 import java.util.*;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.PeaksSpectrum
+ * uk.ac.ebi.pride.spectracluster.spectrum.Spectrum
+ *
  * @author Steve Lewis
  * @author Rui Wang
- * Date: 6/20/13
+ *         Date: 6/20/13
  */
 public class Spectrum implements ISpectrum {
 
@@ -22,6 +23,7 @@ public class Spectrum implements ISpectrum {
     private final int precursorCharge;
     private final float precursorMz;
     private final List<IPeak> peaks = new ArrayList<IPeak>();
+    private final Properties properties = new Properties();
 
     private double totalIntensity;
     private double sumSquareIntensity;
@@ -68,7 +70,7 @@ public class Spectrum implements ISpectrum {
      * copy with different peaks
      *
      * @param spectrum base used for charge, mz
-     * @param inpeaks    new peaks
+     * @param inpeaks  new peaks
      */
     public Spectrum(final ISpectrum spectrum,
                     final List<IPeak> inpeaks) {
@@ -81,7 +83,8 @@ public class Spectrum implements ISpectrum {
         peaks.clear();
         peaks.addAll(inpeaks);
         Collections.sort(this.peaks, new PeakMzComparator());
-
+        // Note deprecation is a warning - use only in constructors
+        properties.putAll(spectrum.getProperties());
         calculateIntensities();
 
     }
@@ -246,7 +249,7 @@ public class Spectrum implements ISpectrum {
      */
     protected ISpectrum buildHighestPeaks(int numberRequested) {
         List<IPeak> byIntensity = new ArrayList<IPeak>(getPeaks());
-        Collections.sort(byIntensity,  PeakIntensityComparator.INSTANCE); // sort by intensity
+        Collections.sort(byIntensity, PeakIntensityComparator.INSTANCE); // sort by intensity
         List<IPeak> holder = new ArrayList<IPeak>();
         for (IPeak iPeak : byIntensity) {
             holder.add(iPeak);
@@ -285,6 +288,38 @@ public class Spectrum implements ISpectrum {
 
     }
 
+    /**
+     * return a property of null if none exists
+     * See ISpectrum for known property names
+     *
+     * @param key
+     * @return possible null value
+     */
+    @Override
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+
+    /**
+     * @param key
+     * @param value
+     */
+    @Override
+    public void setProperty(String key, String value) {
+        properties.setProperty(key, value);
+    }
+
+    /**
+     * Only for internal use in copy constructor
+     * Note this is not safe
+     * This is not really deprecated but it warns only for
+     * internal use
+     */
+    @Override
+    public Properties getProperties() {
+        return properties;
+    }
 
     /**
      * like equals but weaker - says other is equivalent to this
@@ -321,6 +356,17 @@ public class Spectrum implements ISpectrum {
             IPeak pk0 = peaks[i];
             IPeak pk1 = peaks1[i];
             if (!pk0.equivalent(pk1))
+                return false;
+        }
+
+        final Set<String> properties = getProperties().stringPropertyNames();
+        final Set<String> properties2 = o.getProperties().stringPropertyNames();
+        if(properties.size() != properties2.size())
+            return false;
+         for (String s : properties) {
+            String pi = getProperty(s);
+            String p2 = getProperty(s);
+            if(!pi.equals(p2))
                 return false;
         }
 

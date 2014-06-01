@@ -87,7 +87,7 @@ public class MZTabProcessor {
              MSRunProcessor processor = idToProcessor.get(run.getId());
             File file = msRunFiles.get(run);
             LineNumberReader rdr = new LineNumberReader(new FileReader(file));
-             IPeptideSpectrumMatch psm = ParserUtilities.readMGFScan(rdr);
+             ISpectrum psm = ParserUtilities.readMGFScan(rdr);
             while (psm != null) {
                 if(processPSM(psm,processor, out))
                     totalWritten++ ;
@@ -109,7 +109,7 @@ public class MZTabProcessor {
         return psm;
     }
 
-    protected boolean processPSM(IPeptideSpectrumMatch spectrum,MSRunProcessor processor, Appendable out) {
+    protected boolean processPSM(ISpectrum spectrum,MSRunProcessor processor, Appendable out) {
         final String id = spectrum.getId();
 
         PSM peptide = getPSM(id,processor);
@@ -117,7 +117,7 @@ public class MZTabProcessor {
             return false; // not written
 
         final TypedFilterCollection filters = getExporter().getFilters();
-        IPeptideSpectrumMatch passed = (IPeptideSpectrumMatch)filters.passes(spectrum);
+        ISpectrum passed = (ISpectrum)filters.passes(spectrum);
         final boolean ret = passed != null;
         if(ret)
             MGFSpectrumAppender.INSTANCE.appendSpectrum(out,spectrum);

@@ -1,12 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility methods for Spectrum
@@ -86,10 +82,8 @@ public final class SpectrumUtilities {
     public static List<String> getPeptideList(List<ISpectrum> spectra) {
         List<String> peptides = new ArrayList<String>();
         for (ISpectrum spec : spectra) {
-            if (spec instanceof IPeptideSpectrumMatch) {
-                String peptide = ((IPeptideSpectrumMatch) spec).getPeptide();
-                if (peptide == null || peptide.length() == 0)
-                    continue;
+            String peptide = spec.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            if (peptide != null && peptide.length() > 0) {
                 String[] items = peptide.split(";");
                 peptides.addAll(Arrays.asList(items));
             }

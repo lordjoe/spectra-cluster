@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
 
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumIterable;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.sql.DataSource;
@@ -81,8 +81,8 @@ public class DatabaseReadMain {
             start = System.currentTimeMillis();
             while (itr.hasNext()) {
                 final ISpectrum next = itr.next();
-                if (next instanceof IPeptideSpectrumMatch) {
-                    spectraData.add(new SpectrumClusteringData((IPeptideSpectrumMatch) next));
+                if (next instanceof ISpectrum) {
+                    spectraData.add(new SpectrumClusteringData((ISpectrum) next));
                 }
             }
             end = System.currentTimeMillis();
@@ -157,7 +157,7 @@ public class DatabaseReadMain {
 
         int nSpectra = 0;
         for (ISpectrum spc : db.getAllSpectra()) {
-            SpectrumClusteringData clus = new SpectrumClusteringData((IPeptideSpectrumMatch) spc);
+            SpectrumClusteringData clus = new SpectrumClusteringData((ISpectrum) spc);
             mainClusterer.internalGetSpectraData().add(clus);
             nSpectra++;
         }

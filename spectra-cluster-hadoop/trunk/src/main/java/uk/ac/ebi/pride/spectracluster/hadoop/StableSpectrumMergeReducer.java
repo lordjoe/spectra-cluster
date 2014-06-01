@@ -6,7 +6,7 @@ import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -84,7 +84,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
             String valStr = val.toString();
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null && stableClusteringEngine != null) {  // todo why might this happen
                 if (!clusterStabilityAssessor.isStable(cluster)) {

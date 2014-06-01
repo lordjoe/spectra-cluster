@@ -34,16 +34,16 @@ public class ClusterIdentityMergeReducer extends AbstractParameterizedReducer {
     @Override
     protected void reduceNormal(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         String id = key.toString();
-        IPeptideSpectralCluster mainCluster = null;
+        ICluster mainCluster = null;
         for (Text value : values) {
             String text = value.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             if (clusters.length == 0)
                 continue;
             if (clusters.length > 1)
                 throw new IllegalStateException("we should never get more than one");
-            IPeptideSpectralCluster thisCluster = clusters[0];
+            ICluster thisCluster = clusters[0];
             if (mainCluster == null) {
                 mainCluster = thisCluster;
             } else {
