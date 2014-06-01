@@ -26,14 +26,14 @@ public class BinningPeakFilterTestMain {
     private static int numberWayOFF = 0;
 
     private static void processCGFFile(File file) {
-        final IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(file);
+        final ICluster[] clusters = ParserUtilities.readSpectralCluster(file);
         for (int i = 0; i < clusters.length; i++) {
-            IPeptideSpectralCluster cluster = clusters[i];
+            ICluster cluster = clusters[i];
             testClusterConcensusSpectrum(cluster);
         }
     }
 
-    private static void testClusterConcensusSpectrum(IPeptideSpectralCluster cluster) {
+    private static void testClusterConcensusSpectrum(ICluster cluster) {
         final ISpectrum oldConcensusSpectrum = cluster.getConsensusSpectrum();
         final IConsensusSpectrumBuilder builder = FilteredConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
@@ -63,7 +63,7 @@ public class BinningPeakFilterTestMain {
     }
 
 
-    public static void validateCluster(IPeptideSpectralCluster cluster) {
+    public static void validateCluster(ICluster cluster) {
         for (ISpectrum spectrum : cluster.getClusteredSpectra()) {
             final List<IPeak> oldPeaks = spectrum.getPeaks();
             final List<IPeak> newPeaks = BinnedHighestNPeakFilter.DEFAULT.filter(oldPeaks);
@@ -117,7 +117,7 @@ public class BinningPeakFilterTestMain {
     }
 
 
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("usage CGFFile CGFile ...");
         }

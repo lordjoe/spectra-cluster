@@ -19,8 +19,8 @@ public class BinningPeakFilterTest {
      @Test
     public void testBinningPeakFilterTest()
      {
-         List<IPeptideSpectrumMatch> spectra  = ClusteringTestUtilities.readISpectraFromResource();
-         for (IPeptideSpectrumMatch spectrum : spectra) {
+         List<ISpectrum> spectra  = ClusteringTestUtilities.readISpectraFromResource();
+         for (ISpectrum spectrum : spectra) {
              final List<IPeak> oldPeaks = spectrum.getPeaks();
              final List<IPeak> newPeaks = BinnedHighestNPeakFilter.DEFAULT.filter(oldPeaks);
              testFilteredPeaks(oldPeaks,newPeaks);

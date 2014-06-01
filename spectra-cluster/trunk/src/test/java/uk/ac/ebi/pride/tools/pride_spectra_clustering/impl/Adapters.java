@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.impl.ParamGroup;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.consensus_spectrum_builder.ConsensusSpectrumBuilder;
@@ -44,9 +40,9 @@ public class Adapters {
      * @param inp !null cluster
      * @return !null equivalent cluster
      */
-    public static IPeptideSpectralCluster fromSpectraCluster(SpectraCluster inp) {
+    public static ICluster fromSpectraCluster(SpectraCluster inp) {
         String id = "";
-        IPeptideSpectralCluster ret = new PeptideSpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
+        ICluster ret = new SpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
         final List<ClusteringSpectrum> spectra = inp.getSpectra();
 
         for (ClusteringSpectrum sc : spectra) {
@@ -75,14 +71,13 @@ public class Adapters {
         }
         Collections.sort(newPeaks); // sort by mz
 
-        ISpectrum ret = new PeptideSpectrumMatch(id,
-                peptide,
-                (int) (precursorCharge + 0.5),
+        ISpectrum ret = new Spectrum(id,
+                 (int) (precursorCharge + 0.5),
                 (float) precursorMZ,
-                newPeaks,
-                Defaults.getDefaultQualityScorer(),
-                null);
+                 Defaults.getDefaultQualityScorer(),
+                newPeaks);
 
+        ret.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
         return ret;
     }
 
@@ -173,10 +168,8 @@ public class Adapters {
                 (int) precursorCharge,
                 newPeaks);
 
-        if (inp instanceof IPeptideSpectrumMatch) {
-            ret.setPeptide(((IPeptideSpectrumMatch) inp).getPeptide());
-        }
-        return ret;
+              ret.setPeptide(inp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY));
+         return ret;
     }
 
 

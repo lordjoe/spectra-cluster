@@ -1,22 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
-import org.junit.Assert;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities
@@ -36,14 +29,14 @@ public class ClusteringTestUtilities {
      * @param pScs
      * @param pScs2
      */
-    public static void assertEquivalentClusters(final List<IPeptideSpectralCluster> pScs, final List<IPeptideSpectralCluster> pScs2) {
+    public static void assertEquivalentClusters(final List<ICluster> pScs, final List<ICluster> pScs2) {
         final ClusterContentComparator comparator = ClusterContentComparator.INSTANCE;
         Collections.sort(pScs, comparator);
         Collections.sort(pScs2, comparator);
         Assert.assertEquals(pScs.size(), pScs2.size());
         for (int i = 0; i < pScs.size(); i++) {
-            IPeptideSpectralCluster cl1 = pScs.get(i);
-            IPeptideSpectralCluster cl2 = pScs2.get(i);
+            ICluster cl1 = pScs.get(i);
+            ICluster cl2 = pScs2.get(i);
             boolean equivalent = cl1.equivalent(cl2);
             Assert.assertTrue(equivalent);
 
@@ -55,7 +48,7 @@ public class ClusteringTestUtilities {
      *
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
+    public static List<ISpectrum> readISpectraFromResource() {
         return readISpectraFromResource(SAMPLE_MGF_FILE);
     }
 
@@ -65,11 +58,11 @@ public class ClusteringTestUtilities {
      * @param resName
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
+    public static List<ISpectrum> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
         File inputFile = getSpectrumFile(resName);
 
-        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
         return Arrays.asList(mgfSpectra);
     }
 
@@ -114,16 +107,16 @@ public class ClusteringTestUtilities {
         return inputFile;
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource() {
+    public static List<ICluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<ICluster> readSpectraClustersFromResource(String resName) {
         List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(resName);
         int index = 1000;
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        List<ICluster> holder = new ArrayList<ICluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder());
+            ICluster cluster = new SpectralCluster(Integer.toString(index++), Defaults.getDefaultConsensusSpectrumBuilder());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);
             holder.add(cluster);

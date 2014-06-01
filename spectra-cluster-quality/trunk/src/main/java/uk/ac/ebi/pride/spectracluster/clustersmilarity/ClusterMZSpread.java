@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.annotation.Nonnull;
@@ -53,7 +53,7 @@ public class ClusterMZSpread implements Comparable<ClusterMZSpread> {
 
     public static int number_pure_decoy = 0;
 
-    public ClusterMZSpread(IPeptideSpectralCluster cluster) {
+    public ClusterMZSpread(ICluster cluster) {
         double maxmz = Double.MIN_VALUE;
         double minmz = Double.MAX_VALUE;
         ;

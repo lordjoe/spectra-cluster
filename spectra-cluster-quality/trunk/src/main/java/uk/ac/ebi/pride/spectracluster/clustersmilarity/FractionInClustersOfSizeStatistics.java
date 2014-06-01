@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import javax.annotation.Nonnull;
 
@@ -39,7 +39,7 @@ public class FractionInClustersOfSizeStatistics implements IClusterStatistics<Fr
     }
 
     @Override
-    public void visit(@Nonnull IPeptideSpectralCluster pT) {
+    public void visit(@Nonnull ICluster pT) {
         spectrumToClusters.addCluster(pT);
     }
 }

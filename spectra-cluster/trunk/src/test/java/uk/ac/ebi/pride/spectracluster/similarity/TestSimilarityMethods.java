@@ -4,7 +4,7 @@ import junit.framework.*;
 import org.junit.*;
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 
@@ -539,10 +539,10 @@ public class TestSimilarityMethods {
             "END IONS";
 
 
-    private IPeptideSpectrumMatch spectrum1;
-    private IPeptideSpectrumMatch spectrum2;
+    private ISpectrum spectrum1;
+    private ISpectrum spectrum2;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    private IPeptideSpectrumMatch spectrum3;
+    private ISpectrum spectrum3;
 
     @Before
     public void setUp() throws Exception {
@@ -596,13 +596,13 @@ public class TestSimilarityMethods {
 
     @Test
     public void testInterestingSpectra() throws Exception {
-        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
         ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
         ISimilarityChecker newSimilarity = new FrankEtAlDotProduct(0.5, 15);
 
-        for (IPeptideSpectrumMatch s1 : spectra) {
-            for (IPeptideSpectrumMatch s2 : spectra) {
+        for (ISpectrum s1 : spectra) {
+            for (ISpectrum s2 : spectra) {
                 if (s1.getId().equals("44905") && s2.getId().equals("67027")) {
                     double oldDP = oldSimilarity.assessSimilarity(s1, s2);
                     double newDP = newSimilarity.assessSimilarity(s1, s2);
@@ -623,13 +623,13 @@ public class TestSimilarityMethods {
     public void testManySpectra() throws Exception {
         FrankEtAlDotProductJohannes.CHECK_BEST_PEAK_SPEC1 = false;
 
-        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
         ISimilarityChecker oldSimilarity = new FrankEtAlDotProductOld();
         ISimilarityChecker newSimilarity = new FrankEtAlDotProductJohannes();
 
-        for (IPeptideSpectrumMatch s1 : spectra) {
-            for (IPeptideSpectrumMatch s2 : spectra) {
+        for (ISpectrum s1 : spectra) {
+            for (ISpectrum s2 : spectra) {
                 double oldDP = oldSimilarity.assessSimilarity(s1, s2);
                 double newDP = newSimilarity.assessSimilarity(s1, s2);
 

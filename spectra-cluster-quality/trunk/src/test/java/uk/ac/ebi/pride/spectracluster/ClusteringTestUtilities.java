@@ -1,22 +1,14 @@
 package uk.ac.ebi.pride.spectracluster;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.LineNumberReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities
@@ -38,7 +30,7 @@ public class ClusteringTestUtilities {
      *
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
+    public static List<ISpectrum> readISpectraFromResource() {
         return readISpectraFromResource(SAMPLE_MGF_FILE);
     }
 
@@ -48,11 +40,11 @@ public class ClusteringTestUtilities {
      * @param resName
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
+    public static List<ISpectrum> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
         File inputFile = getSpectrumFile(resName);
 
-        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
+        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(inputFile);
         return Arrays.asList(mgfSpectra);
     }
 
@@ -115,20 +107,20 @@ public class ClusteringTestUtilities {
         }
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource() {
+    public static List<ICluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
-    public static List<IPeptideSpectralCluster> readSecondSpectraClustersFromResource() {
+    public static List<ICluster> readSecondSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_SECOND_CGF_FILE);
     }
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<ICluster> readSpectraClustersFromResource(String resName) {
         List<ConsensusSpectraItems> items = readConsensusSpectraItemsFromResource(resName);
         int index = 1000;
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
+        List<ICluster> holder = new ArrayList<ICluster>();
         for (ConsensusSpectraItems si : items) {
-            IPeptideSpectralCluster cluster = new PeptideSpectralCluster(Integer.toString(index++),
+            ICluster cluster = new SpectralCluster(Integer.toString(index++),
                     Defaults.getDefaultConsensusSpectrumBuilder());
             for (ISpectrum sr : si.getSpectra())
                 cluster.addSpectra(sr);

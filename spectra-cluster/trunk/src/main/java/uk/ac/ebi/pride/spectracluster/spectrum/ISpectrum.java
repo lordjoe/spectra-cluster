@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
@@ -15,46 +15,51 @@ import java.util.List;
  */
 public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
+    // Known properties keys
+    public static final String IDENTIFIED_PEPTIDE_KEY = "identifiedPeptide";
+
+    public static final String ANNOTATION_KEY = "annotation";
+
     /**
      * globally unique id
      *
      * @return !null id
      */
-    String getId();
+    public String getId();
 
     /**
      * get precursor m/z
      */
-    float getPrecursorMz();
+    public float getPrecursorMz();
 
     /**
      * get charge - mixed charge
      */
-    int getPrecursorCharge();
+    public int getPrecursorCharge();
 
     /**
      * return the sum of all intensities
      */
-    double getTotalIntensity();
+    public double getTotalIntensity();
 
     /**
      * return the sum  Square of all intensities
      */
-    double getSumSquareIntensity();
+    public double getSumSquareIntensity();
 
     /**
      * return unmodifiable peaks sorted by MZ
      *
      * @return !null array of peaks
      */
-    List<IPeak> getPeaks();
+    public List<IPeak> getPeaks();
 
     /**
      * return number of peaks
      *
      * @return count
      */
-    int getPeaksCount();
+    public int getPeaksCount();
 
     /**
      * get the highest intensity peaks sorted by MZ - this value may be cached
@@ -62,7 +67,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      * @param numberRequested number peaks requested
      * @return Peaks spectrum
      */
-    ISpectrum getHighestNPeaks(int numberRequested);
+    public ISpectrum getHighestNPeaks(int numberRequested);
 
     /**
      * return as a spectrum the highest n peaks as defined in majorPeakCount
@@ -70,7 +75,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      * @param majorPeakCount The number of highest peaks to consider "major"
      * @return
      */
-    int[] asMajorPeakMZs(int majorPeakCount);
+    public int[] asMajorPeakMZs(int majorPeakCount);
 
     /**
      * does the spectrum contain this is a major peak
@@ -79,6 +84,32 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
      * @param majorPeakCount The number of highest peaks to consider "major"
      * @return true if so
      */
-    boolean containsMajorPeak(final int mz, int majorPeakCount);
+    public boolean containsMajorPeak(final int mz, int majorPeakCount);
+
+    /**
+     * return a property of null if none exists
+     * look in ISpectrum for known keys
+     * @param key
+     * @return
+     */
+    public String getProperty(String key);
+
+    /**
+     * look in ISpectrum for known keys
+      *
+      * @param key
+      * @param value
+      */
+     public void setProperty(String key,String value);
+
+    /**
+         Only for internal use in copy constructor
+          Note this is not safe
+         This is not really deprecated but it warns only for
+         internal use
+        */
+      @Deprecated
+       public Properties getProperties();
+
 
 }

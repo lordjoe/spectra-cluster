@@ -10,7 +10,7 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class DecoyPeptideSpectrumMatch extends PeptideSpectrumMatch implements IDecoyPeptideSpectrumMatch {
+public class DecoyPeptideSpectrumMatch extends Spectrum implements IDecoyPeptideSpectrumMatch {
 
     public DecoyPeptideSpectrumMatch(ISpectrum spectrum) {
         super(spectrum);
@@ -21,16 +21,21 @@ public class DecoyPeptideSpectrumMatch extends PeptideSpectrumMatch implements I
     }
 
     public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge, float precursorMz, List<IPeak> peaks) {
-        super(id, peptide, precursorCharge, precursorMz, peaks);
-    }
+        super(id, precursorCharge, precursorMz,Defaults.getDefaultQualityScorer(), peaks);
+     }
 
     public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge, float precursorMz, List<IPeak> peaks, String pAnnotation) {
-        super(id, peptide, precursorCharge, precursorMz, peaks, Defaults.getDefaultQualityScorer(),pAnnotation);
+        super(id,  precursorCharge, precursorMz, Defaults.getDefaultQualityScorer(), peaks);
+        setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
+        setProperty(ISpectrum.ANNOTATION_KEY,pAnnotation);
     }
 
-    public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge, float precursorMz, List<IPeak> peaks, IQualityScorer qualityScorer, String pAnnotation) {
-        super(id, peptide, precursorCharge, precursorMz, peaks, qualityScorer, pAnnotation);
-    }
+    public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge,
+                                     float precursorMz, List<IPeak> peaks, IQualityScorer qualityScorer, String pAnnotation) {
+        super(id,  precursorCharge, precursorMz, qualityScorer, peaks);
+        setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
+        setProperty(ISpectrum.ANNOTATION_KEY,pAnnotation);
+     }
 
     /**
      * true if we know this is a decoy

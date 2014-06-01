@@ -18,17 +18,15 @@ public interface ICluster extends ISpectrumHolder,
     /**
      * Get cluster id
      */
-    String getId();
+    public String getId();
 
     /**
      * build an id from spectral ids
      *
      * @return
      *
-     * todo: for development, Steve is feeling strong about this
-     */
-    @Deprecated
-    String getSpectralId();
+      */
+    public String getSpectralId();
 
     /**
      * concensus spectrum MZ. If not available (ie. no spectra in cluster)
@@ -36,7 +34,7 @@ public interface ICluster extends ISpectrumHolder,
      *
      * @return
      */
-    float getPrecursorMz();
+    public float getPrecursorMz();
 
     /**
      * concensus spectrum Charge. If not available (ie. no spectra in cluster)
@@ -44,12 +42,12 @@ public interface ICluster extends ISpectrumHolder,
      *
      * @return
      */
-    int getPrecursorCharge();
+    public int getPrecursorCharge();
 
     /**
      * Get consensus spectrum
      */
-    ISpectrum getConsensusSpectrum();
+    public ISpectrum getConsensusSpectrum();
 
     /**
      * real spectrum with the highest quality - this is a
@@ -57,28 +55,26 @@ public interface ICluster extends ISpectrumHolder,
      *
      * @return !null spectrum
      */
-    ISpectrum getHighestQualitySpectrum();
+    public ISpectrum getHighestQualitySpectrum();
 
     /**
      * all internally spectrum
      *
-     * todo: for development
-     */
-    @Deprecated
-    @Nonnull
-    List<ISpectrum> getHighestQualitySpectra();
+       */
+      @Nonnull
+    public List<ISpectrum> getHighestQualitySpectra();
 
     /**
      * all internally spectrum
      */
     @Nonnull
-    List<ISpectrum> getClusteredSpectra();
+    public List<ISpectrum> getClusteredSpectra();
 
 
     /**
      * count of internal spectrum
      */
-    int getClusteredSpectraCount();
+    public int getClusteredSpectraCount();
 
 
     /**
@@ -87,5 +83,5 @@ public interface ICluster extends ISpectrumHolder,
      * @return
      */
     @Nonnull
-    Set<String> getSpectralIds();
+    public Set<String> getSpectralIds();
 }

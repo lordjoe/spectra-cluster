@@ -8,7 +8,7 @@ import org.systemsbiology.hadoop.AbstractParameterizedMapper;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
@@ -111,7 +111,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
 
         switch (clusters.length) {
             case 0:
@@ -125,7 +125,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         }
     }
 
-    protected void handleCluster(IPeptideSpectralCluster cluster, String value, Context context) {
+    protected void handleCluster(ICluster cluster, String value, Context context) {
         IWideBinner binner = BINNER;
 
         //noinspection ForLoopReplaceableByForEach

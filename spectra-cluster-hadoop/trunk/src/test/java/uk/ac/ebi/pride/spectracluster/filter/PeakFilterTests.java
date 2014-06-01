@@ -22,7 +22,7 @@ public class PeakFilterTests {
      @Test
      public void testPeaks() throws Exception {
          IPeakFilter filter = new BinnedHighestNPeakFilter() ;
-         List<IPeptideSpectrumMatch> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
+         List<ISpectrum> originalSpectra = ClusteringTestUtilities.readISpectraFromResource();
          for (ISpectrum spc : originalSpectra) {
              validateFilteredPeaks(spc,filter);
          }

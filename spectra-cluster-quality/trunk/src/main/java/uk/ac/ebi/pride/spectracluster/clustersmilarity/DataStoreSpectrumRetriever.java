@@ -21,35 +21,35 @@ public class DataStoreSpectrumRetriever implements IMutableSpectrumRetriever {
     }
 
 
-    public List<IPeptideSpectrumMatch> getSpectra() {
+    public List<ISpectrum> getSpectra() {
         throw new UnsupportedOperationException("Bad idea from a database");
     }
 
     @Override
-    public void addSpectra(IPeptideSpectrumMatch... spectra) {
-        for (IPeptideSpectrumMatch spectrum : spectra) {
+    public void addSpectra(ISpectrum... spectra) {
+        for (ISpectrum spectrum : spectra) {
             datastore.storeSpectrum(spectrum);
         }
     }
 
 
     @Override
-    public IPeptideSpectrumMatch retrieve(String spectrumId) {
-        return (IPeptideSpectrumMatch) datastore.getSpectrumById(spectrumId);
+    public ISpectrum retrieve(String spectrumId) {
+        return (ISpectrum) datastore.getSpectrumById(spectrumId);
     }
 
-    public List<IPeptideSpectrumMatch> retrieveByPeptide(String peptide) {
-        List<IPeptideSpectrumMatch> holder = new ArrayList<IPeptideSpectrumMatch>();
+    public List<ISpectrum> retrieveByPeptide(String peptide) {
+        List<ISpectrum> holder = new ArrayList<ISpectrum>();
 
         for (ISpectrum iSpectrum : datastore.getByPeptide(peptide)) {
-            holder.add((IPeptideSpectrumMatch) iSpectrum);
+            holder.add((ISpectrum) iSpectrum);
         }
         return holder;
     }
 
 
     @Override
-    public List<IPeptideSpectrumMatch> retrieveAll() {
+    public List<ISpectrum> retrieveAll() {
         throw new UnsupportedOperationException("Bad idea from a database");
     }
 

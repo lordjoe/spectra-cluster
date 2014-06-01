@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.sql.DataSource;
@@ -45,7 +45,7 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     }
 
     @Override
-    public void storeCluster(IPeptideSpectralCluster clusterToStore) {
+    public void storeCluster(ICluster clusterToStore) {
         String sql = "INSERT INTO " + tableName +
                 " (id,precursor_charge,precursor_mz,peaks,spectrum_ids) VALUES (:clusterId, :precursorCharge, :precursorMz, :peaks, :spectrumIds)";
 
@@ -77,7 +77,7 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     /**
      * Get a concatenated spectrum ids separated by SPECTRUM_ID_SEPARATOR
      */
-    private String getSpectrumIds(IPeptideSpectralCluster clusterToStore) {
+    private String getSpectrumIds(ICluster clusterToStore) {
         StringBuilder sb = new StringBuilder();
 
         for (ISpectrum spectrum : clusterToStore.getClusteredSpectra()) {
@@ -88,14 +88,14 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     }
 
     @Override
-    public void storeClusters(Collection<IPeptideSpectralCluster> clustersToStore) {
-        for (IPeptideSpectralCluster cluster : clustersToStore) {
+    public void storeClusters(Collection<ICluster> clustersToStore) {
+        for (ICluster cluster : clustersToStore) {
             storeCluster(cluster);
         }
     }
 
     @Override
-    public void removeCluster(IPeptideSpectralCluster clusterToRemove) {
+    public void removeCluster(ICluster clusterToRemove) {
         String sql = "DELETE FROM " + tableName + " WHERE id=:clusterId";
 
         sql = queryFormatter.format(sql);
@@ -107,7 +107,7 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     }
 
     @Override
-    public IPeptideSpectralCluster getById(String id) {
+    public ICluster getById(String id) {
         String sql = "SELECT * FROM " + tableName + " WHERE id=:clusterId";
 
         sql = queryFormatter.format(sql);
@@ -115,13 +115,13 @@ public class ClusterDataStore implements IMutableClusterDataStore {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("clusterId", id);
 
-        List<IPeptideSpectralCluster> results = namedParameterJdbcTemplate.query(sql, params, clusterMapper);
+        List<ICluster> results = namedParameterJdbcTemplate.query(sql, params, clusterMapper);
 
         return results == null ? null : results.get(0);
     }
 
     @Override
-    public Iterable<? extends IPeptideSpectralCluster> getClusterByMz(double minMz, double maxMz) {
+    public Iterable<? extends ICluster> getClusterByMz(double minMz, double maxMz) {
         String sql = "SELECT * FROM " + tableName + " WHERE precursor_mz >= :minMz AND precursor_mz <= :maxMz";
 
         sql = queryFormatter.format(sql);
@@ -134,12 +134,12 @@ public class ClusterDataStore implements IMutableClusterDataStore {
     }
 
     @Override
-    public Iterable<? extends IPeptideSpectralCluster> getClusterByMzAndCharge(double minMz, double maxMz, int charge) {
+    public Iterable<? extends ICluster> getClusterByMzAndCharge(double minMz, double maxMz, int charge) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Iterable<? extends IPeptideSpectralCluster> getClustersByPeptide(String peptide) {
+    public Iterable<? extends ICluster> getClustersByPeptide(String peptide) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

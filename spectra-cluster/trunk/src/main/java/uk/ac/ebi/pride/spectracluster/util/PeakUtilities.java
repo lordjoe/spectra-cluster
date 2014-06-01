@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
@@ -106,7 +106,7 @@ public class PeakUtilities {
      * @param cluster !null cluster
      * @return !null list of peaks
      */
-    public static List<IPeak> getAllPeaks(IPeptideSpectralCluster cluster) {
+    public static List<IPeak> getAllPeaks(ICluster cluster) {
         List<IPeak> holder = new ArrayList<IPeak>();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
             final List<IPeak> peaks = spec.getPeaks();

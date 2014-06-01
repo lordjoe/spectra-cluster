@@ -4,7 +4,7 @@ import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.TypedVisitor;
 import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.cluster.IDecoyDiscriminator;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.chart.CummulativeFDR;
@@ -125,7 +125,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeData(IClusterSet cs, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<IPeptideSpectralCluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize);
+        TypedVisitor<ICluster> tv = new CummulativeFDR.AccumulateClusterPeptideFractionVisitor(decoys, minimumSize);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -135,7 +135,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeDecoyData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> decoys = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<IPeptideSpectralCluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize, discriminator);
+        TypedVisitor<ICluster> tv = new CummulativeFDR.AccumulateDecoyVisitor(decoys, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv);
         Collections.sort(decoys);
@@ -144,7 +144,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
 
     public static List<ClusterPeptideFraction> getCumulativeTargetData(IClusterSet cs, IDecoyDiscriminator discriminator, int minimumSize) {
         List<ClusterPeptideFraction> targets = new ArrayList<ClusterPeptideFraction>();
-        TypedVisitor<IPeptideSpectralCluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize, discriminator);
+        TypedVisitor<ICluster> tv2 = new CummulativeFDR.AccumulateTargetVisitor(targets, minimumSize, discriminator);
         //noinspection unchecked
         cs.visitClusters(tv2);
         Collections.sort(targets);
@@ -216,7 +216,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         long totalSpectra = 0;
         long totalStableClusters = 0;
         Set<String> uniqueIds = new HashSet<String>();
-        for (IPeptideSpectralCluster scs : pCs.getClusters()) {
+        for (ICluster scs : pCs.getClusters()) {
             for (ISpectrum spec : scs.getClusteredSpectra()) {
                 uniqueIds.add(spec.getId());
             }
@@ -227,7 +227,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         double v = ((double) uniqueSpectra) / 30000000;
         double stableClusterSize = Math.max(16, 64.0 * v);
 
-        for (IPeptideSpectralCluster scs : pCs.getClusters()) {
+        for (ICluster scs : pCs.getClusters()) {
             if (scs.getClusteredSpectraCount() >= stableClusterSize)
                 totalStableClusters++;
         }
@@ -295,7 +295,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
                 File file = files[j];
                 if (j % 50 == 0)
                     System.out.print(".");
-                final IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(file);
+                final ICluster[] clusters = ParserUtilities.readSpectralCluster(file);
                 cs.addClusters(Arrays.asList(clusters));
             }
             System.out.println("done" + arg);

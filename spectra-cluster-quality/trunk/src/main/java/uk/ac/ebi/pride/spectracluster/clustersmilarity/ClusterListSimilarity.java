@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
@@ -28,11 +28,11 @@ public class ClusterListSimilarity {
      * @param s2 - entering lists of spectral clusters - exit unmatched clusters
      * @return matched clusters from set 1
      */
-    public List<IPeptideSpectralCluster> identicalClusters(List<IPeptideSpectralCluster> s1, List<IPeptideSpectralCluster> s2) {
+    public List<ICluster> identicalClusters(List<ICluster> s1, List<ICluster> s2) {
         IClusterDistance dm = getDistanceMeasure();
-        List<IPeptideSpectralCluster> identical = new ArrayList<IPeptideSpectralCluster>();
-        List<IPeptideSpectralCluster> matched1 = new ArrayList<IPeptideSpectralCluster>();
-        List<IPeptideSpectralCluster> matched2 = new ArrayList<IPeptideSpectralCluster>();
+        List<ICluster> identical = new ArrayList<ICluster>();
+        List<ICluster> matched1 = new ArrayList<ICluster>();
+        List<ICluster> matched2 = new ArrayList<ICluster>();
 
         Collections.sort(s1);   // sort by mz
         Collections.sort(s2);   // sort by mz
@@ -49,13 +49,13 @@ public class ClusterListSimilarity {
         double oldSC1MZ = Double.MIN_VALUE;
         double oldSC2MZ = Double.MIN_VALUE;
 
-        IPeptideSpectralCluster oldSc1 = null;
-        Set<IPeptideSpectralCluster> alreadyMatched = new HashSet<IPeptideSpectralCluster>();
+        ICluster oldSc1 = null;
+        Set<ICluster> alreadyMatched = new HashSet<ICluster>();
 
         while (t < nPK1 && e < nPK2) {
-            IPeptideSpectralCluster sc1 = s1.get(t);
+            ICluster sc1 = s1.get(t);
 
-            IPeptideSpectralCluster sc2 = s2.get(e);
+            ICluster sc2 = s2.get(e);
 
             final ISpectrum spc1 = sc1.getConsensusSpectrum();
             final ISpectrum spc2 = sc2.getConsensusSpectrum();

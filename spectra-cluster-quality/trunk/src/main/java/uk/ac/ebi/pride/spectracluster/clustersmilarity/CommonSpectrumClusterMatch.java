@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +14,10 @@ import java.util.Set;
  */
 public class CommonSpectrumClusterMatch extends AbstractClusterMatch {
 
-    private final Set<IPeptideSpectralCluster> allSpectra = new HashSet<IPeptideSpectralCluster>();
-    private final Set<IPeptideSpectralCluster> commonSpectra = new HashSet<IPeptideSpectralCluster>();
+    private final Set<ICluster> allSpectra = new HashSet<ICluster>();
+    private final Set<ICluster> commonSpectra = new HashSet<ICluster>();
 
-    public CommonSpectrumClusterMatch(IPeptideSpectralCluster source, IPeptideSpectralCluster target) {
+    public CommonSpectrumClusterMatch(ICluster source, ICluster target) {
         super(source, target);
 
     }

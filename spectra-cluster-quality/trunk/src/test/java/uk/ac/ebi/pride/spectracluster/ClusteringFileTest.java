@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterParserUtilities;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.LazyLoadedSpectralCluster;
 
@@ -20,7 +20,7 @@ public class ClusteringFileTest {
     public void testParseClusteringFile() {
         LineNumberReader inp = ClusteringTestUtilities.getResourceClusteringReader();
 
-        IPeptideSpectralCluster[] clusters = ClusterParserUtilities.readClustersFromClusteringFile(inp, null);
+        ICluster[] clusters = ClusterParserUtilities.readClustersFromClusteringFile(inp, null);
 
         Assert.assertEquals(48, clusters.length);
 

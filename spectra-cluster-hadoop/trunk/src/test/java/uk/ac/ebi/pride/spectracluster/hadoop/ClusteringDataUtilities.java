@@ -61,7 +61,7 @@ public class ClusteringDataUtilities {
      * @return !null list
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource() {
+    public static List<ISpectrum> readISpectraFromResource() {
         return readISpectraFromResource(SAMPLE_MGF_FILE);
     }
 
@@ -71,7 +71,7 @@ public class ClusteringDataUtilities {
      * @param resName
      * @return
      */
-    public static List<IPeptideSpectrumMatch> readISpectraFromResource(String resName) {
+    public static List<ISpectrum> readISpectraFromResource(String resName) {
         // load a file contains a list of clusters
         final InputStream resourceAsStream;
         final ClassLoader classLoader;
@@ -81,7 +81,7 @@ public class ClusteringDataUtilities {
             throw new IllegalStateException("no input found!");
         }
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(resourceAsStream));
-        IPeptideSpectrumMatch[] mgfSpectra = ParserUtilities.readMGFScans(rdr);
+        ISpectrum[] mgfSpectra = ParserUtilities.readMGFScans(rdr);
         return Arrays.asList(mgfSpectra);
     }
 
@@ -228,9 +228,9 @@ public class ClusteringDataUtilities {
      * @return !null list of  consensusSpectra
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static List<ISpectrum> buildConsensusSpectra(final List<IPeptideSpectralCluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
+    public static List<ISpectrum> buildConsensusSpectra(final List<ICluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
         List<ISpectrum> holder = new ArrayList<ISpectrum>();
-        for (IPeptideSpectralCluster cluster : pClusters) {
+        for (ICluster cluster : pClusters) {
 
             final List<ISpectrum> css = cluster.getClusteredSpectra();
             for (ISpectrum cs : css) {
@@ -247,12 +247,12 @@ public class ClusteringDataUtilities {
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource() {
+    public static List<ICluster> readSpectraClustersFromResource() {
         return readSpectraClustersFromResource(SAMPLE_CGF_FILE);
     }
 
 
-    public static List<IPeptideSpectralCluster> readSpectraClustersFromResource(String resName) {
+    public static List<ICluster> readSpectraClustersFromResource(String resName) {
         // load a file contains a list of clusters
         final InputStream resourceAsStream;
         final ClassLoader classLoader;
@@ -263,9 +263,9 @@ public class ClusteringDataUtilities {
         }
         LineNumberReader rdr = new LineNumberReader(new InputStreamReader(resourceAsStream));
 
-        IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+        ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
         //noinspection UnnecessaryLocalVariable
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>(Arrays.asList(clusters));
+        List<ICluster> holder = new ArrayList<ICluster>(Arrays.asList(clusters));
 
         return holder;
     }

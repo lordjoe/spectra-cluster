@@ -4,8 +4,7 @@ import com.lordjoe.utilities.CollectionUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.hadoop.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -95,7 +94,7 @@ public class SpringJDBCTests {
         for (int i = 0; i < holder.size(); i++) {
             ISpectrum orig = originalSpectra.get(i);
             if (orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
-                orig = new PeptideSpectrumMatch(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
+                orig = new Spectrum(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
             }
             ISpectrum read = holder.get(i);
             Assert.assertTrue(orig.equivalent(read));
@@ -121,7 +120,7 @@ public class SpringJDBCTests {
         DataSource ds = DataSourceDefaults.INSTANCE.getDefaultDataSource();
         SpectrumDataStore db = new SpectrumDataStore("test", ds);
 
-        // the returns list is a List<IPeptideSpectrumMatch>
+        // the returns list is a List<ISpectrum>
         List<ISpectrum> originalSpectra = (List<ISpectrum>) ((List) ClusteringTestUtilities.readISpectraFromResource());
         List<ISpectrum> holder = getAllSpectra(db);
 
@@ -184,7 +183,7 @@ public class SpringJDBCTests {
         for (int i = 0; i < holder.size(); i++) {
             ISpectrum orig = (ISpectrum) originalSpectra.get(i);
             if (orig.getPeaksCount() > SpectrumUtilities.MAXIMUM_ENCODED_PEAKS) {
-                orig = new PeptideSpectrumMatch(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
+                orig = new Spectrum(orig, SpectrumUtilities.filterTop250Peaks(orig.getPeaks()));
             }
             ISpectrum read = holder.get(i);
             final boolean equivalent = orig.equivalent(read);

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.ClusterDistanceItem;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.SimpleClusterSet;
 
@@ -22,10 +22,10 @@ public class ClusterDistanceTests {
 
     public static final Random RND = new Random();
 
-    public List<ClusterDistanceItem> buildDistances(IPeptideSpectralCluster me, List<IPeptideSpectralCluster> other, int size) {
+    public List<ClusterDistanceItem> buildDistances(ICluster me, List<ICluster> other, int size) {
         List<ClusterDistanceItem> holder = new ArrayList<ClusterDistanceItem>();
         for (int i = 0; i < size; i++) {
-            IPeptideSpectralCluster otherCluster = chooseCluster(other, me);
+            ICluster otherCluster = chooseCluster(other, me);
             ClusterDistanceItem clusterDistanceItem = new ClusterDistanceItem(me, otherCluster, RND.nextDouble());
             holder.add(clusterDistanceItem);
         }
@@ -34,9 +34,9 @@ public class ClusterDistanceTests {
     }
 
 
-    private IPeptideSpectralCluster chooseCluster(List<IPeptideSpectralCluster> clusters, IPeptideSpectralCluster me) {
+    private ICluster chooseCluster(List<ICluster> clusters, ICluster me) {
 
-        IPeptideSpectralCluster iPeptideSpectralCluster = clusters.get(RND.nextInt(clusters.size()));
+        ICluster iPeptideSpectralCluster = clusters.get(RND.nextInt(clusters.size()));
         while (iPeptideSpectralCluster == me)
             iPeptideSpectralCluster = clusters.get(RND.nextInt(clusters.size()));
         return iPeptideSpectralCluster;
@@ -44,11 +44,11 @@ public class ClusterDistanceTests {
 
     @Test
     public void testSort() throws Exception {
-        List<IPeptideSpectralCluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
-        List<IPeptideSpectralCluster> clusters2 =
+        List<ICluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> clusters2 =
                 ClusteringTestUtilities.readSpectraClustersFromResource(ClusteringTestUtilities.SAMPLE_SECOND_CGF_FILE);
 
-        IPeptideSpectralCluster me = chooseCluster(clusters, null);
+        ICluster me = chooseCluster(clusters, null);
         List<ClusterDistanceItem> distances = buildDistances(me, clusters2, 6);
         Collections.sort(distances);
         for (int i = 1; i < distances.size(); i++) {
@@ -59,8 +59,8 @@ public class ClusterDistanceTests {
         SimpleClusterSet sc1 = new SimpleClusterSet(clusters);
         SimpleClusterSet sc2 = new SimpleClusterSet(clusters2);
 
-        List<IPeptideSpectralCluster> bestMatchingClusters = sc2.getBestMatchingClusters(me, 3);
-        for (IPeptideSpectralCluster bestMatchingCluster : bestMatchingClusters) {
+        List<ICluster> bestMatchingClusters = sc2.getBestMatchingClusters(me, 3);
+        for (ICluster bestMatchingCluster : bestMatchingClusters) {
             //           System.out.println(bestMatchingCluster);
         }
 

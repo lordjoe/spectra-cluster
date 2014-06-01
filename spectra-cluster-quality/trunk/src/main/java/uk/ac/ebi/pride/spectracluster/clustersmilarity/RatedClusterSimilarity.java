@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CompareTo;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 
@@ -72,8 +72,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
 
         }
 
-        IPeptideSpectralCluster source = m1.getSource();
-        IPeptideSpectralCluster target = m1.getTarget();
+        ICluster source = m1.getSource();
+        ICluster target = m1.getTarget();
 
         similarityDistance = similarity.assessSimilarity(source.getConsensusSpectrum(), target.getConsensusSpectrum());
 
@@ -90,8 +90,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
                 problems.add(ClusterSimilarityProblem.UnevenSize);
             }
         }
-        String peptide = source.getMostCommonPeptide();
-        String p2 = target.getMostCommonPeptide();
+        String peptide = ClusterSimilarityUtilities.getMostCommonPeptide(source);
+        String p2 = ClusterSimilarityUtilities.getMostCommonPeptide(target);;
         if (!peptide.equals(p2))
             problems.add(ClusterSimilarityProblem.DifferentBestPeptide);
 
@@ -137,8 +137,8 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
             appendable.append(getRating().toString());
             appendable.append("\t");
             if (bestMatch != null) {
-                IPeptideSpectralCluster source = bestMatch.getSource();
-                IPeptideSpectralCluster target = bestMatch.getTarget();
+                ICluster source = bestMatch.getSource();
+                ICluster target = bestMatch.getTarget();
                 appendable.append(source.getId());
                 appendable.append("\t");
                 appendable.append(target.getId());
@@ -157,12 +157,12 @@ public class RatedClusterSimilarity implements Comparable<RatedClusterSimilarity
                 appendable.append(distStr);
                 appendable.append("\t");
 
-                String mostCommonPeptide = source.getMostCommonPeptide();
+                String mostCommonPeptide =  ClusterSimilarityUtilities.getMostCommonPeptide(source);
                 //         if (!hasProblem(ClusterSimilarityProblem.DifferentBestPeptide))
                 appendable.append(mostCommonPeptide);
                 appendable.append("\t");
 
-                String mostCommonTargetPeptide = target.getMostCommonPeptide();
+                String mostCommonTargetPeptide =  ClusterSimilarityUtilities.getMostCommonPeptide(target);
                 appendable.append(mostCommonTargetPeptide);
                 appendable.append("\t");
 

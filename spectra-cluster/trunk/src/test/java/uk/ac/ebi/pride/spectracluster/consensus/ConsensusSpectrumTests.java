@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -38,7 +38,7 @@ public class ConsensusSpectrumTests {
 
     @Before
     public void setUp() throws Exception {
-        List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
 
         for (ISpectrum originalSpectrum : mgfSpectra) {

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import com.lordjoe.algorithms.IWideBinner;
 import org.apache.hadoop.io.Text;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -78,7 +78,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             String valStr = val.toString();
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             if (cluster != null) {  // todo why might this happen
                 if (engine != null) {     // todo why might this happen
@@ -119,8 +119,8 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 //    protected static boolean isInterestingCluster(ICluster test) {
 //        List<ISpectrum> clusteredSpectra = test.getClusteredSpectra();
 //        for (ISpectrum spc : clusteredSpectra) {
-//            if (spc instanceof IPeptideSpectrumMatch) {
-//                String peptide = ((IPeptideSpectrumMatch) spc).getPeptide();
+//            if (spc instanceof ISpectrum) {
+//                String peptide = ((ISpectrum) spc).getPeptide();
 //                if (peptide != null && INTERESTING_IDS.contains(peptide))
 //                    return true;
 //            }

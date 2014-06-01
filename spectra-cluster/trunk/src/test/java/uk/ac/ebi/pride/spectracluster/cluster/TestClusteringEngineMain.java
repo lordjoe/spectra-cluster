@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.PrideClusteringEngine;
@@ -47,7 +48,7 @@ public class TestClusteringEngineMain {
             return; // not an mgf
 
         long start = System.currentTimeMillis();
-        List<IPeptideSpectralCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
+        List<ICluster> clusters = ParserUtilities.readMGFClusters(inputFile);
 
         /**
          * Add your favorite clustering engine here
@@ -58,6 +59,7 @@ public class TestClusteringEngineMain {
         final long readTIme = end - start;
         addReadTimeMillisec(readTIme);
         double seconds = (readTIme / 1000);
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         double min = seconds / 60;
         System.out.println("read " + inputFile + " with " + clusters.size() + " spectra in " + String.format("%10.3f", seconds).trim());
 

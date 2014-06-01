@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
  * @author Steve Lewis
  * @version $Id$
  */
-@Deprecated
+
 public class ClusterPeptideFraction implements Comparable<ClusterPeptideFraction> {
 
     @SuppressWarnings("UnusedDeclaration")

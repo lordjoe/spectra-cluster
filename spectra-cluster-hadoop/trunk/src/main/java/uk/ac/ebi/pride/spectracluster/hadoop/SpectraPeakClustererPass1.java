@@ -52,7 +52,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
                 return;
             // ready to read test as one MGF
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
+            final ISpectrum match = ParserUtilities.readMGFScan(rdr);
             if (match == null) {
                 System.err.println("No Match fount in text\n" + text);
                 return;

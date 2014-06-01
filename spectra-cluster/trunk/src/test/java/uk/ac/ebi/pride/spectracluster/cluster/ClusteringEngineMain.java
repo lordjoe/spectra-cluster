@@ -52,7 +52,7 @@ public class ClusteringEngineMain {
             return; // not an mgf
 
         long start = System.currentTimeMillis();
-        List<IPeptideSpectralCluster> clusters = ParserUtilities.readMGFClusters(inputFile);
+        List<ICluster> clusters = ParserUtilities.readMGFClusters(inputFile);
 
         /**
          * Add your favorite clustering engine here
@@ -114,8 +114,8 @@ public class ClusteringEngineMain {
         try {
             out = new PrintWriter(new FileWriter(outName));
             final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
-            for (ICluster iPeptideSpectralCluster : pClusters1) {
-                clusterAppender.appendCluster(out, iPeptideSpectralCluster);
+            for (ICluster ICluster : pClusters1) {
+                clusterAppender.appendCluster(out, ICluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -144,8 +144,8 @@ public class ClusteringEngineMain {
             appendClusteringHeaders(out);
 
             final DotClusterClusterAppender clusterAppender = new DotClusterClusterAppender();
-            for (ICluster iPeptideSpectralCluster : pClusters1) {
-                clusterAppender.appendCluster(out, iPeptideSpectralCluster);
+            for (ICluster ICluster : pClusters1) {
+                clusterAppender.appendCluster(out, ICluster);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

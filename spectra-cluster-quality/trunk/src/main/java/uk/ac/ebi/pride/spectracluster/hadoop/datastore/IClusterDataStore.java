@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 
 /**
@@ -18,14 +18,14 @@ public interface IClusterDataStore {
      * @param id !null id
      * @return possibly null cluster
      */
-    public IPeptideSpectralCluster getById(String id);
+    public ICluster getById(String id);
 
     /**
      * @param minMz >0 <= maxMz  clusters returned have mz >= this
      * @param mazMz >= minMZ clusters returned have mz < this unless it == minMz
      * @return !null iterable
      */
-    public Iterable<? extends IPeptideSpectralCluster> getClusterByMz(double minMz, double mazMz);
+    public Iterable<? extends ICluster> getClusterByMz(double minMz, double mazMz);
 
     /**
      * @param minMz  >0 <= maxMz  clusters returned have mz >= this
@@ -33,7 +33,7 @@ public interface IClusterDataStore {
      * @param charge 0 meaqns all charges otherwise a specific charge is called for
      * @return !null iterable
      */
-    public Iterable<? extends IPeptideSpectralCluster> getClusterByMzAndCharge(double minMz, double mazMz, int charge);
+    public Iterable<? extends ICluster> getClusterByMzAndCharge(double minMz, double mazMz, int charge);
 
 
     /**
@@ -42,6 +42,6 @@ public interface IClusterDataStore {
      * @param peptide !null !empty peptide
      * @return !null iterable
      */
-    public Iterable<? extends IPeptideSpectralCluster> getClustersByPeptide(String peptide);
+    public Iterable<? extends ICluster> getClustersByPeptide(String peptide);
 
 }

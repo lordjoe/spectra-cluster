@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener;
 
 import java.io.*;
@@ -10,7 +10,6 @@ import java.io.*;
  * User: Steve
  * Date: 9/23/13
  */
-@Deprecated
 public class DotClusterFileListener implements ClusterCreateListener {
 
 
@@ -63,7 +62,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
      * @param cluster
      */
     @Override
-    public void onClusterCreate(final IPeptideSpectralCluster cluster, Object... otherData) {
+    public void onClusterCreate(final ICluster cluster, Object... otherData) {
         appender.appendCluster(outWriter, cluster);
     }
 

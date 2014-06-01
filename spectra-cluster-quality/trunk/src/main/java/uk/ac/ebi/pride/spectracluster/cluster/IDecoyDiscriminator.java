@@ -5,9 +5,9 @@ package uk.ac.ebi.pride.spectracluster.cluster;
  * User: Steve
  * Date: 1/24/14
  *
- * todo: development
+ * todo: move to similarity
  */
-@Deprecated
+
 public interface IDecoyDiscriminator {
 
 

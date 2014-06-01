@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.utilities.ElapsedTimer;
 import com.lordjoe.utilities.FileUtilities;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.io.*;
 import java.util.*;
@@ -14,10 +14,10 @@ import java.util.*;
  */
 public class MostSimilarClusterSet {
 
-    private final Map<IPeptideSpectralCluster, MostSimilarClusters> clusterToSimilarity =
-            new HashMap<IPeptideSpectralCluster, MostSimilarClusters>();
-    private final Map<IPeptideSpectralCluster, Integer> timesClusterIsBestMatch =
-            new HashMap<IPeptideSpectralCluster, Integer>();
+    private final Map<ICluster, MostSimilarClusters> clusterToSimilarity =
+            new HashMap<ICluster, MostSimilarClusters>();
+    private final Map<ICluster, Integer> timesClusterIsBestMatch =
+            new HashMap<ICluster, Integer>();
     private final IClusterSet baseSet;
     private final IClusterDistance clusterDistance;
     private final List<RatedClusterSimilarity> byRating = new ArrayList<RatedClusterSimilarity>();
@@ -33,8 +33,8 @@ public class MostSimilarClusterSet {
      * private final because this is called in the constructor
      */
     private final void buildSimilaritySets() {
-        List<IPeptideSpectralCluster> clusters = baseSet.getClusters();
-        for (IPeptideSpectralCluster cluster : clusters) {
+        List<ICluster> clusters = baseSet.getClusters();
+        for (ICluster cluster : clusters) {
             clusterToSimilarity.put(cluster, new MostSimilarClusters(cluster, clusterDistance));
         }
     }
@@ -44,7 +44,7 @@ public class MostSimilarClusterSet {
      */
     public void addOtherSet(IClusterSet otherSet) {
 //        int count = 0 ;
-        List<IPeptideSpectralCluster> clusters = otherSet.getClusters();
+        List<ICluster> clusters = otherSet.getClusters();
         for (MostSimilarClusters similarClusters : clusterToSimilarity.values()) {
             similarClusters.addClusters(clusters);
 //            if(count++ %1000 == 0)
@@ -60,7 +60,7 @@ public class MostSimilarClusterSet {
         return clusterDistance;
     }
 
-    public MostSimilarClusters getMostSimilarClusters(IPeptideSpectralCluster cluster) {
+    public MostSimilarClusters getMostSimilarClusters(ICluster cluster) {
         return clusterToSimilarity.get(cluster);
     }
 
@@ -81,7 +81,7 @@ public class MostSimilarClusterSet {
     public void buildQualityGroups() {
         Arrays.fill(countByRating, 0);
         byRating.clear();
-        for (IPeptideSpectralCluster cluster : baseSet.getClusters()) {
+        for (ICluster cluster : baseSet.getClusters()) {
             MostSimilarClusters mostSimilarClusters = getMostSimilarClusters(cluster);
             RatedClusterSimilarity rateed = new RatedClusterSimilarity(mostSimilarClusters);
             byRating.add(rateed);
@@ -199,10 +199,10 @@ public class MostSimilarClusterSet {
         System.out.println(report);
 
 
-        List<IPeptideSpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+        List<ICluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
         newClusterSet = new SimpleClusterSet(stableClusters);
 
-        List<IPeptideSpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+        List<ICluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
         Appendable out = System.out;
@@ -258,10 +258,10 @@ public class MostSimilarClusterSet {
 
             System.out.println("==============================================================");
 
-            List<IPeptideSpectralCluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+            List<ICluster> stableClusters = newClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
             newClusterSet = new SimpleClusterSet(stableClusters);
 
-            List<IPeptideSpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+            List<ICluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
             originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
             MostSimilarClusterSet mostSimilarClusterSet = new MostSimilarClusterSet(newClusterSet, ConcensusSpectrumDistance.INSTANCE);
@@ -286,7 +286,7 @@ public class MostSimilarClusterSet {
      * @param clusters
      * @param out
      */
-    public static void makePurityReport(List<IPeptideSpectralCluster> clusters, Appendable out) {
+    public static void makePurityReport(List<ICluster> clusters, Appendable out) {
         List<ClusterPeptidePurity> purities = ClusterPeptidePurity.getPurities(clusters);
         double total = purities.size();
         int nextIndex = 0;
@@ -324,7 +324,7 @@ public class MostSimilarClusterSet {
 
 
         System.out.println("Number Clusters " + originalClusterSet.getClusterCount());
-        List<IPeptideSpectralCluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+        List<ICluster> semiStableClusters = originalClusterSet.getMatchingClusters(new SemiStableClusterPredicate(new CountBasedClusterStabilityAssessor()));
         System.out.println("Number SemiStable Clusters " + originalClusterSet.getClusterCount());
         originalClusterSet = new SimpleClusterSet(semiStableClusters);
 
@@ -339,7 +339,7 @@ public class MostSimilarClusterSet {
 
         System.out.println("Number NonDuplicate SemiStable Clusters " + originalClusterSet.getClusterCount());
 
-        List<IPeptideSpectralCluster> stableClusters = originalClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
+        List<ICluster> stableClusters = originalClusterSet.getMatchingClusters(new StableClusterPredicate(new CountBasedClusterStabilityAssessor()));
         IClusterSet newClusterSet = new SimpleClusterSet(stableClusters);
 
 

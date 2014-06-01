@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 
 import java.io.*;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * User: Steve
  * Date: 7/19/13
  */
-public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
+public class CGFSpectrumIterable implements Iterable<ICluster> {
 
     protected static LineNumberReader fileToLineNumberReader(File f) {
         try {
@@ -27,13 +27,14 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
 
     private final LineNumberReader reader;
     private final MGFSpectrumIterator one_time_iterator;
-    private IPeptideSpectralCluster nextCluster;
+    private ICluster nextCluster;
 
     /**
      * build with an existing readable file
      *
      * @param f !null existing non-directory mgf file
      */
+    @SuppressWarnings("UnusedDeclaration")
     public CGFSpectrumIterable(File f) {
         this(fileToLineNumberReader(f));
     }
@@ -43,6 +44,7 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
      *
      * @param rdr !null open input stream
      */
+    @SuppressWarnings("UnusedDeclaration")
     public CGFSpectrumIterable(InputStream rdr) {
         this(new LineNumberReader(new InputStreamReader(rdr)));
     }
@@ -52,6 +54,7 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
      *
      * @param rdr !null open reader
      */
+    @SuppressWarnings("UnusedDeclaration")
     public CGFSpectrumIterable(Reader rdr) {
         this(new LineNumberReader(rdr));
     }
@@ -75,12 +78,12 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
      * @return an Iterator.
      */
     @Override
-    public Iterator<IPeptideSpectralCluster> iterator() {
+    public Iterator<ICluster> iterator() {
         return one_time_iterator;
     }
 
 
-    protected class MGFSpectrumIterator implements Iterator<IPeptideSpectralCluster> {
+    protected class MGFSpectrumIterator implements Iterator<ICluster> {
         /**
          * Returns <tt>true</tt> if the iteration has more elements. (In other
          * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -100,8 +103,8 @@ public class CGFSpectrumIterable implements Iterable<IPeptideSpectralCluster> {
          * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         @Override
-        public IPeptideSpectralCluster next() {
-            IPeptideSpectralCluster ret = nextCluster;
+        public ICluster next() {
+            ICluster ret = nextCluster;
             nextCluster = ParserUtilities.readSpectralCluster(reader, null);
             return ret;
         }

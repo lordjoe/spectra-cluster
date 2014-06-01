@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster;
 
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.CGFSpectrumIterable;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
@@ -413,10 +413,10 @@ public class ParserTests {
     @Test
     public void testClusterParse() throws Exception {
         LineNumberReader is = new LineNumberReader(new StringReader(CLUSTER_STRING));
-        IPeptideSpectralCluster[] scs = ParserUtilities.readSpectralCluster(is);
+        ICluster[] scs = ParserUtilities.readSpectralCluster(is);
         is.close();
         Assert.assertEquals(1, scs.length);
-        IPeptideSpectralCluster sc = scs[0];
+        ICluster sc = scs[0];
         Assert.assertEquals("1234", sc.getId());
         Assert.assertEquals(2, sc.getPrecursorCharge(), 0.001);
         Assert.assertEquals(2, sc.getClusteredSpectraCount());
@@ -436,10 +436,10 @@ public class ParserTests {
     @Test
     public void testClusterWrite() throws Exception {
         LineNumberReader is = new LineNumberReader(new StringReader(CLUSTER_STRING));
-        IPeptideSpectralCluster[] scs = ParserUtilities.readSpectralCluster(is);
+        ICluster[] scs = ParserUtilities.readSpectralCluster(is);
         is.close();
         Assert.assertEquals(1, scs.length);
-        IPeptideSpectralCluster sc = scs[0];
+        ICluster sc = scs[0];
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
@@ -449,7 +449,7 @@ public class ParserTests {
         scs = ParserUtilities.readSpectralCluster(is);
         is.close();
         Assert.assertEquals(1, scs.length);
-        IPeptideSpectralCluster sc2 = scs[0];
+        ICluster sc2 = scs[0];
 
 
         boolean equivalent = sc.equivalent(sc2);
@@ -463,21 +463,21 @@ public class ParserTests {
     @Test
     public void testClusterIterator() throws Exception {
         LineNumberReader is = new LineNumberReader(new StringReader(CLUSTER_STRING));
-        IPeptideSpectralCluster[] scs = ParserUtilities.readSpectralCluster(is);
+        ICluster[] scs = ParserUtilities.readSpectralCluster(is);
         is.close();
         Assert.assertEquals(1, scs.length);
 
 
         is = new LineNumberReader(new StringReader(CLUSTER_STRING));
         CGFSpectrumIterable mgi = new CGFSpectrumIterable(is);
-        List<IPeptideSpectralCluster> holder = new ArrayList<IPeptideSpectralCluster>();
-        for (IPeptideSpectralCluster sc : mgi) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        for (ICluster sc : mgi) {
             holder.add(sc);
         }
         Assert.assertEquals(1, holder.size());
 
-        IPeptideSpectralCluster sc = scs[0];
-        IPeptideSpectralCluster sc2 = holder.get(0);
+        ICluster sc = scs[0];
+        ICluster sc2 = holder.get(0);
 
         boolean equivalent = sc.equivalent(sc2);
         Assert.assertTrue(equivalent);

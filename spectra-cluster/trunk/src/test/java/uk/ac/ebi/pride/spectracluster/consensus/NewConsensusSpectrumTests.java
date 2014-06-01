@@ -39,7 +39,7 @@ public class NewConsensusSpectrumTests {
         consensusSpectrumBuilder = new JohannesConsensusSpectrum();
         originalConsensusSpectrumBuilder = new FrankEtAlConsensusSpectrumBuilder();
 
-        List<IPeptideSpectrumMatch> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> mgfSpectra = ClusteringTestUtilities.readISpectraFromResource();
 
         for (ISpectrum originalSpectrum : mgfSpectra) {
             allOriginalSpectra.add(originalSpectrum);

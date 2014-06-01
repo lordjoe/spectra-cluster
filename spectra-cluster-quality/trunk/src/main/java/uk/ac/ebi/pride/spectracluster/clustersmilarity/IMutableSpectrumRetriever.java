@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 /**
  * @author Rui Wang
@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
  */
 public interface IMutableSpectrumRetriever extends ISpectrumRetriever {
 
-    public void addSpectra(IPeptideSpectrumMatch... spectra);
+    public void addSpectra(ISpectrum... spectra);
 
 
 }

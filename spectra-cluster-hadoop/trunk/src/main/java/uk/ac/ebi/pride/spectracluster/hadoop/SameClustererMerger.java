@@ -1,37 +1,24 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.*;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
+import org.apache.hadoop.mapreduce.lib.output.*;
+import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.cluster.PeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngineFactory;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -60,10 +47,10 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-            IPeptideSpectralCluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
+            ICluster[] clusters = ParserUtilities.readSpectralCluster(rdr);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < clusters.length; i++) {
-                IPeptideSpectralCluster cluster = clusters[i];
+                ICluster cluster = clusters[i];
 
                 // cluster becomes cgf
                 StringBuilder sb = new StringBuilder();
@@ -118,14 +105,14 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
 
             int numberProcessed = 0;
 
-            PeptideSpectralCluster ret = new PeptideSpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
+            ICluster ret = new SpectralCluster(id,Defaults.getDefaultConsensusSpectrumBuilder());
 
             //noinspection LoopStatementThatDoesntLoop
             for (Text val : values) {
                 String valStr = val.toString();
 
                 LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-                final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+                final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
                 if (cluster == null) {  // todo why might this happen
                     continue;
@@ -150,7 +137,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
          * @param context !null context
          * @param cluster !null cluster
          */
-        protected void writeCluster(final Context context, final IPeptideSpectralCluster cluster) throws IOException, InterruptedException {
+        protected void writeCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
             final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker(),Defaults.getRetainThreshold());
             if (!allClusters.isEmpty()) {
                 for (ICluster removedCluster : allClusters) {

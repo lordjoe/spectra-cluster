@@ -30,7 +30,8 @@ public class MZTabhandler {
         try {
             // maybe info means do not report
             // specify  LOTS_OF_ERRORS since the constructor containing level has a bug
-            MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream(), MZTabErrorType.Level.Info,LOTS_OF_ERRORS);
+            // todo Does this work SLewis
+             MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream(), MZTabErrorType.Level.Info);
             mzTabs = parser.getMZTabFile();
             if (mzTabs == null)
                 return;

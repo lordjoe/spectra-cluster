@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.HashSet;
@@ -55,7 +55,7 @@ public class ClusterContentDistance implements IClusterDistance {
      * @return distance >= 0
      */
     @Override
-    public double distance(final IPeptideSpectralCluster c1, final IPeptideSpectralCluster c2) {
+    public double distance(final ICluster c1, final ICluster c2) {
         final ISpectrum s1 = c1.getHighestQualitySpectrum();
         final ISpectrum s2 = c2.getHighestQualitySpectrum();
 

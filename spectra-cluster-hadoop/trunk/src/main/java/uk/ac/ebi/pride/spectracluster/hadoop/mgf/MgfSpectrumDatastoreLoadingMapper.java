@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.hadoop.datastore.SpectrumDataStore;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.HBaseUtilities;
 import uk.ac.ebi.pride.spectracluster.hadoop.hbase.PhoenixWorkingClusterDatabase;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class MgfSpectrumDatastoreLoadingMapper extends AbstractParameterizedMapp
             return;
 
         LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
-        final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
+        final ISpectrum match = ParserUtilities.readMGFScan(rdr);
         if(match == null)
             spectrumDataStore.storeSpectrum(match);
     }

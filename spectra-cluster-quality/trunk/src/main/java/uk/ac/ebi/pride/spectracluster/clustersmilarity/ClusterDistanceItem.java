@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.io.IOException;
 import java.util.Set;
@@ -12,11 +12,11 @@ import java.util.Set;
  * @date 12/11/13
  */
 public class ClusterDistanceItem implements IClusterMatch {
-    private final IPeptideSpectralCluster source;
-    private final IPeptideSpectralCluster target;
+    private final ICluster source;
+    private final ICluster target;
     private final double distance;
 
-    public ClusterDistanceItem(IPeptideSpectralCluster baseCluster, IPeptideSpectralCluster otherCluster, double distance) {
+    public ClusterDistanceItem(ICluster baseCluster, ICluster otherCluster, double distance) {
         this.source = baseCluster;
         this.target = otherCluster;
         this.distance = distance;
@@ -76,7 +76,7 @@ public class ClusterDistanceItem implements IClusterMatch {
      * @return
      */
     @Override
-    public IPeptideSpectralCluster getTarget() {
+    public ICluster getTarget() {
         return target;
     }
 
@@ -86,7 +86,7 @@ public class ClusterDistanceItem implements IClusterMatch {
      * @return
      */
     @Override
-    public IPeptideSpectralCluster getSource() {
+    public ICluster getSource() {
         return source;
     }
 
@@ -123,12 +123,12 @@ public class ClusterDistanceItem implements IClusterMatch {
         try {
             sb.append("Source id " + source.getId());
             sb.append(" size " + source.getClusteredSpectraCount());
-            sb.append(" most peptide " + source.getMostCommonPeptide());
+            sb.append(" most peptide " + ClusterSimilarityUtilities.getMostCommonPeptide(source));
             sb.append("\n");
 
             sb.append("Target id " + target.getId());
             sb.append(" size " + target.getClusteredSpectraCount());
-            sb.append(" most peptide " + target.getMostCommonPeptide());
+            sb.append(" most peptide " +  ClusterSimilarityUtilities.getMostCommonPeptide(target));
             sb.append("\n");
 
             sb.append(String.format("Distance %8.3f", getDistance()));

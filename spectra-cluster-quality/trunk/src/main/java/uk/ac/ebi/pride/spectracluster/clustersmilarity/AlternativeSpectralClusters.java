@@ -17,11 +17,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version $Id$
  */
 
-public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
+public class AlternativeSpectralClusters implements ICluster {
 
-    protected static String concensusId(IPeptideSpectralCluster... copied) {
+    protected static String concensusId(ICluster... copied) {
         StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectralCluster sc : copied) {
+        for (ICluster sc : copied) {
             if (sb.length() > 0)
                 sb.append(":");
             sb.append(sc.getId());
@@ -31,7 +31,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(IPeptideSpectralCluster... copied) {
+    protected static IConsensusSpectrumBuilder getCommonConsensusSpectrumBuilder(ICluster... copied) {
         //noinspection UnnecessaryLocalVariable
         IConsensusSpectrumBuilder ret = Defaults.getDefaultConsensusSpectrumBuilder();
 //        for (int i = 1; i < copied.length; i++) {
@@ -50,21 +50,21 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
     // quality spectra - these can be use to build a concensus of quality
     // Note all adds and removes are done by registering as a SpectrumHolderListener
     private final SpectralQualityHolder qualityHolder;
-    private final List<IPeptideSpectralCluster> constitutingClusters = new ArrayList<IPeptideSpectralCluster>();
+    private final List<ICluster> constitutingClusters = new ArrayList<ICluster>();
     @SuppressWarnings("FieldCanBeLocal")
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final List<SpectrumHolderListener> m_SpectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private boolean locked;
 
-    public AlternativeSpectralClusters(IPeptideSpectralCluster... copied) {
+    public AlternativeSpectralClusters(ICluster... copied) {
         this.id = concensusId(copied);
         constitutingClusters.addAll(Arrays.asList(copied));
         qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
         this.consensusSpectrumBuilder = Defaults.getDefaultConsensusSpectrumBuilder();
         Set<ISpectrum> holder = new HashSet<ISpectrum>();
-        for (IPeptideSpectralCluster sc : copied) {
+        for (ICluster sc : copied) {
             holder.addAll(sc.getClusteredSpectra());
         }
         final ArrayList<ISpectrum> merged = new ArrayList<ISpectrum>(holder);
@@ -117,7 +117,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public List<IPeptideSpectralCluster> getConstitutingClusters() {
+    public List<ICluster> getConstitutingClusters() {
         return Collections.unmodifiableList(constitutingClusters);
     }
 
@@ -190,28 +190,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
         return getConsensusSpectrum().getPrecursorCharge();
     }
 
-    @Override
-    public List<String> getPeptides() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
 
-    @Override
-    public String getMostCommonPeptide() {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
-
-    /**
-     * get peptides with statistics
-     *
-     * @param dd
-     * @return list ordered bu purity
-     */
-    @Nonnull
-    @Override
-    public List<ClusterPeptideFraction> getPeptidePurity(final IDecoyDiscriminator dd) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
 
     /**
      * real spectrum with the highest quality - this is a
@@ -366,7 +345,7 @@ public class AlternativeSpectralClusters implements IPeptideSpectralCluster {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (IPeptideSpectralCluster constitutingCluster : constitutingClusters) {
+        for (ICluster constitutingCluster : constitutingClusters) {
             if (sb.length() > 0)
                 sb.append(",");
             sb.append(constitutingCluster);

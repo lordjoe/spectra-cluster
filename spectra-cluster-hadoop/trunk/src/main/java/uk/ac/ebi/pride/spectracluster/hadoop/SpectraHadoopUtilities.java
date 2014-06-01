@@ -8,8 +8,7 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -247,17 +246,17 @@ public class SpectraHadoopUtilities {
      * @throws InterruptedException
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static IPeptideSpectralCluster mergeTheSameCluster(String key, Iterable<Text> values,
+    public static ICluster mergeTheSameCluster(String key, Iterable<Text> values,
                                                        Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
+        ICluster merged = new SpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
             String valStr = val.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
             String clusterId = cluster.getId();
             if (!clusterId.equals(permId)) {
@@ -288,10 +287,10 @@ public class SpectraHadoopUtilities {
      * @throws InterruptedException
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static IPeptideSpectralCluster deMergeTheSameCluster(String key, Iterable<Text> values,
+    public static ICluster deMergeTheSameCluster(String key, Iterable<Text> values,
                                                          Reducer.Context context) throws IOException, InterruptedException {
         String permId = keyToPermanentId(key);
-        IPeptideSpectralCluster merged = new PeptideSpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
+        ICluster merged = new SpectralCluster(permId,Defaults.getDefaultConsensusSpectrumBuilder());
 
         Map<String, ISpectrum> spectraById = new HashMap<String, ISpectrum>();
         boolean pass1 = true;
@@ -299,7 +298,7 @@ public class SpectraHadoopUtilities {
         for (Text val : values) {
             String valStr = val.toString();
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectralCluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
+            final ICluster cluster = ParserUtilities.readSpectralCluster(rdr, null);
 
 
             String clusterId = cluster.getId();

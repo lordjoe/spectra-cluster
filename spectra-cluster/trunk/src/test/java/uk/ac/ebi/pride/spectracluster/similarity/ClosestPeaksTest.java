@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.spectracluster.similarity;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 
 import java.util.*;
@@ -37,24 +37,25 @@ public class ClosestPeaksTest {
      */
     @Test
     public void showHandledPeaksForInterestingCases() {
-        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        IPeptideSpectrumMatch[] spectrums = (IPeptideSpectrumMatch[]) spectra.toArray();
+        ISpectrum[] spectrums = (ISpectrum[]) spectra.toArray();
 
         ISimilarityChecker checker = new FrankEtAlDotProductTester();
         ISimilarityChecker currentChecker = new FrankEtAlDotProduct(0.5, 15);
 
+        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         Set<String> interestingIds = new HashSet<String>();
 
 
         for (int i = 0; i < spectrums.length; i++) {
-            IPeptideSpectrumMatch psm1 = spectrums[i];
+            ISpectrum psm1 = spectrums[i];
             String id1 = psm1.getId();
             if (!INTERESTING_ID_SET.contains(id1))
                 continue; // not an interesting case
 
             for (int j = i + 1; j < spectrums.length; j++) {
-                IPeptideSpectrumMatch psm2 = spectrums[j];
+                ISpectrum psm2 = spectrums[j];
 
                 String id2 = psm2.getId();
                 if (!INTERESTING_ID_SET.contains(id2))
@@ -64,7 +65,7 @@ public class ClosestPeaksTest {
 
                 StringBuilder usedPeaksTester = new StringBuilder();
 
-
+                 //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                 double dotOrg = checker.assessSimilarity(psm1, psm2);
 
                 //         System.out.println("Peaks compared original Frank Et Al (when the code is written)");
@@ -89,9 +90,9 @@ public class ClosestPeaksTest {
      */
     // @Test  not sure this always works todo
     public void testDifferentDotProducts() {
-        List<IPeptideSpectrumMatch> spectra = ClusteringTestUtilities.readISpectraFromResource();
+        List<ISpectrum> spectra = ClusteringTestUtilities.readISpectraFromResource();
 
-        IPeptideSpectrumMatch[] spectrums = (IPeptideSpectrumMatch[]) spectra.toArray();
+        ISpectrum[] spectrums = (ISpectrum[]) spectra.toArray();
 
         int total = 0;
         int different = 0;
@@ -102,9 +103,9 @@ public class ClosestPeaksTest {
 
 
         for (int i = 0; i < spectrums.length; i++) {
-            IPeptideSpectrumMatch psm1 = spectrums[i];
+            ISpectrum psm1 = spectrums[i];
             for (int j = i + 1; j < spectrums.length; j++) {
-                IPeptideSpectrumMatch psm2 = spectrums[j];
+                ISpectrum psm2 = spectrums[j];
                 double dotOrg = checker.assessSimilarity(psm1, psm2);
                 double dotNew = currentChecker.assessSimilarity(psm1, psm2);
 

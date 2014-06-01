@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 public class MGFSpectrumAppender implements ISpectrumAppender {
     public static MGFSpectrumAppender INSTANCE = new MGFSpectrumAppender();
+
     protected MGFSpectrumAppender() {
     }
 
@@ -54,11 +55,9 @@ public class MGFSpectrumAppender implements ISpectrumAppender {
      */
     private void appendTitle(final ISpectrum spectrum, final Appendable out) throws IOException {
         out.append("TITLE=id=").append(spectrum.getId());
-        if (spectrum instanceof IPeptideSpectrumMatch) {
-            final String peptide = ((IPeptideSpectrumMatch) spectrum).getPeptide();
-            if (peptide != null && peptide.length() > 0)
-                out.append(",sequence=").append(peptide);
-        }
+        final String peptide = spectrum.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        if (peptide != null && peptide.length() > 0)
+            out.append(",sequence=").append(peptide);
     }
 
     protected void appendPeaks(final ISpectrum spectrum, final Appendable out) throws IOException {

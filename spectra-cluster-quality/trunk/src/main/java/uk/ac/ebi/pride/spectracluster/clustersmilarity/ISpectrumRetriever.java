@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface ISpectrumRetriever {
 
-    public IPeptideSpectrumMatch retrieve(String spectrumId);
+    public ISpectrum retrieve(String spectrumId);
 
 
-    public List<IPeptideSpectrumMatch> retrieveAll();
+    public List<ISpectrum> retrieveAll();
 
 }

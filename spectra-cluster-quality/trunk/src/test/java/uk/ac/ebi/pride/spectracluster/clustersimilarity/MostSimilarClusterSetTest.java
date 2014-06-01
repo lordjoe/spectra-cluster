@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersimilarity;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 
 import java.util.List;
@@ -16,8 +16,8 @@ public class MostSimilarClusterSetTest {
 
     @Test
     public void testMostSimilarClusterSet() throws Exception {
-        List<IPeptideSpectralCluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
-        List<IPeptideSpectralCluster> secondClusters = ClusteringTestUtilities.readSecondSpectraClustersFromResource();
+        List<ICluster> spectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        List<ICluster> secondClusters = ClusteringTestUtilities.readSecondSpectraClustersFromResource();
 
         SimpleClusterSet clusterSet1 = new SimpleClusterSet(spectralClusters);
         SimpleClusterSet clusterSet2 = new SimpleClusterSet(secondClusters);

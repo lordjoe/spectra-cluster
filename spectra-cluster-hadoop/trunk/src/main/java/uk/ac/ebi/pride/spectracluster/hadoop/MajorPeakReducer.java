@@ -1,24 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import org.apache.hadoop.io.Text;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IPeptideSpectralCluster;
-import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.ChargePeakMZKey;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.Collection;
+import javax.annotation.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakReducer
@@ -59,10 +52,10 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
 
 
             LineNumberReader rdr = new LineNumberReader((new StringReader(valStr)));
-            final IPeptideSpectrumMatch match = ParserUtilities.readMGFScan(rdr);
+            final ISpectrum match = ParserUtilities.readMGFScan(rdr);
             if (match == null)
                 continue; // not sure why this happens but nothing seems like the thing to do
-            final IPeptideSpectralCluster cluster = ClusterUtilities.asCluster(match);
+            final ICluster cluster = ClusterUtilities.asCluster(match);
 
 
             final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
