@@ -273,13 +273,6 @@ public class SpectraHadoopMain extends AbstractParameterHolder {
         return m_OutputResults;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void process() {
-
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
-
 
     /**
      * read the parameters dscribed in the bioml file

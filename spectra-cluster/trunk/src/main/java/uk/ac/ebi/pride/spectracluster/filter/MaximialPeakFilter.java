@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.filter;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -14,7 +15,7 @@ import java.util.*;
  */
 public class MaximialPeakFilter implements IPeakFilter {
 
-    public static final int DEFAULT_MAX_PEAKS = 100;
+    public static final int DEFAULT_MAX_PEAKS = 128;
 
     public static final int FIRST_BIN_MAX = 12;
 
@@ -40,7 +41,27 @@ public class MaximialPeakFilter implements IPeakFilter {
 
     public static final int[] SPECTRUM_SIZE_COUNTS = new int[200];
 
-    public int NumberOverMax;
+    public static int NumberOverMax;
+
+    public static void showStatistics(Appendable out) {
+        try {
+            final int[] filterUseCounts = MaximialPeakFilter.FILTER_USE_COUNTS;
+
+            int total = 0;
+            final int[] sizeCounts = MaximialPeakFilter.SPECTRUM_SIZE_COUNTS;
+            for (int i = 0; i < sizeCounts.length; i++) {
+                int sizeCount = sizeCounts[i];
+                total += sizeCount;
+                out.append("" + 10 * i + " - " + 10 * (i + 1) + "\t" + sizeCount + "\n");
+            }
+
+
+            out.append("Total spectra " + total + "\n");
+            out.append("Number unfiltered " + MaximialPeakFilter.NumberOverMax + "\n");
+           } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 
     //============================================================
 
@@ -67,8 +88,10 @@ public class MaximialPeakFilter implements IPeakFilter {
         SPECTRUM_SIZE_COUNTS[startBin]++; // count size distribution in bins of 10;
         while (ret.size() > maxPeaks) {
             ret = DECREASING_BINS[filterUsed++].filter(ret);
-            if (filterUsed >= DECREASING_BINS.length)
+            if (filterUsed >= DECREASING_BINS.length) {
+                NumberOverMax++; // we ran out of filters to apply
                 break;
+            }
         }
 
         FILTER_USE_COUNTS[filterUsed]++; // which filter did we use 0 is none

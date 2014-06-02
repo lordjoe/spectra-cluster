@@ -255,17 +255,10 @@ public class SpectralCluster implements ICluster {
                 return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
             }
 
-            ISpectrum highestQualitySpectrum1 = getHighestQualitySpectrum();
-            ISpectrum highestQualitySpectrum2 = o.getHighestQualitySpectrum();
-            if (highestQualitySpectrum1 != highestQualitySpectrum2) {
-                if (highestQualitySpectrum1 == null || highestQualitySpectrum2 == null) {
-                    //noinspection UnusedAssignment
-                    highestQualitySpectrum1 = getHighestQualitySpectrum();
-                    throw new IllegalStateException("problem"); // ToDo change
-                }
+            String spectra = getSpectralId();
+            String otherSpectra = o.getSpectralId();
+            return spectra.compareTo(otherSpectra);
 
-                return highestQualitySpectrum1.getQualityScore() < highestQualitySpectrum2.getQualityScore() ? -1 : 1;
-            }
         } catch (IllegalStateException e) {
             //  give up use hash code
         }

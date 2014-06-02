@@ -336,6 +336,8 @@ public class ParserUtilities {
      */
     public static ISpectrum readFilteredMGFScan(LineNumberReader inp) {
         ISpectrum cls = readMGFScan(inp);
+        if(cls == null)
+            return cls;
         final List<IPeak> peaks = cls.getPeaks();
         final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
         cls = new Spectrum(cls, filteredPeaks);
@@ -459,6 +461,11 @@ public class ParserUtilities {
                     String peptide = sequence;
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     sequence = null;
+
+                    // Filter peaks
+                    holder = Defaults.getDefaultPeakFilter().filter(holder);
+
+
                     ISpectrum spectrum = new Spectrum(
                             title,
                             dcharge,
@@ -467,8 +474,10 @@ public class ParserUtilities {
                             holder
                     );
 
-                    spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY, peptide);
-                    spectrum.setProperty(ISpectrum.ANNOTATION_KEY, title);
+                    if(peptide != null)
+                         spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY, peptide);
+                    if(peptide != null)
+                       spectrum.setProperty(ISpectrum.ANNOTATION_KEY, title);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;

@@ -24,10 +24,6 @@ public final class ClusterUtilities {
     }
 
 
-    public static void getPeptidePurity(ICluster cluster) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
     /**
      * return non-null if c1 contains all spactra in c2 or vice
      * versa

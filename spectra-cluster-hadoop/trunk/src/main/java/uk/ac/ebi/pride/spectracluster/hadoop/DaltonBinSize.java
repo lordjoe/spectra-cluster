@@ -78,7 +78,7 @@ public class DaltonBinSize {
 //        } catch (IOException e) {
 //            throw new UnsupportedOperationException(e);
 //        }
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented for now"); // ToDo
     }
 
 
@@ -98,7 +98,7 @@ public class DaltonBinSize {
 //        } catch (IOException e) {
 //            throw new UnsupportedOperationException(e);
 //        }
-         throw new UnsupportedOperationException("Fix This"); // ToDo
+         throw new UnsupportedOperationException("Unimplemented Fix This"); // ToDo
     }
 
     protected static boolean populateMapFromCounters(Configuration conf, FileSystem fileSystem) {

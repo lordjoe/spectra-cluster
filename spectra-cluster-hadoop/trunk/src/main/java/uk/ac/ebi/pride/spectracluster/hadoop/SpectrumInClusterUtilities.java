@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
@@ -26,13 +27,13 @@ public final class SpectrumInClusterUtilities {
     public static final String END_CLUSTER = "END CLUSTER";
     public static final String BEGIN_CLUSTERING = "=Cluster=";
 
-
-    public static final String AVERAGE_PRECURSOR_MZ = "av_precursor_mz=";
-    public static final String AVERAGE_PRECURSOR_INTENSITY = "av_precursor_intens=";
-    public static final String PEPTIDE_SEQUENCE = "sequence=";
-    public static final String CONSENSUS_MZ = "consensus_mz=";
-    public static final String CONSENSUS_INTENSITY = "consensus_intens=";
-    public static final String SPECTRUM_ID = "SPEC";
+//
+//    public static final String AVERAGE_PRECURSOR_MZ = "av_precursor_mz=";
+//    public static final String AVERAGE_PRECURSOR_INTENSITY = "av_precursor_intens=";
+//    public static final String PEPTIDE_SEQUENCE = "sequence=";
+//    public static final String CONSENSUS_MZ = "consensus_mz=";
+//    public static final String CONSENSUS_INTENSITY = "consensus_intens=";
+//    public static final String SPECTRUM_ID = "SPEC";
     
     private SpectrumInClusterUtilities() {
     }
@@ -62,7 +63,7 @@ public final class SpectrumInClusterUtilities {
             while (line != null) {
                 if (line.startsWith(BEGIN_CLUSTERING)) {
                     if (!clusterContent.isEmpty()) {
-                        ICluster cluster = processIntoCluster(clusterContent );
+                        ICluster cluster = processIntoCluster(clusterContent,null );
                         if (cluster != null) {
                             holder.add(cluster);
                         }
@@ -77,7 +78,7 @@ public final class SpectrumInClusterUtilities {
             }
 
             if (!clusterContent.isEmpty()) {
-                ICluster cluster = processIntoCluster(clusterContent);
+                ICluster cluster = processIntoCluster(clusterContent,null);
                 if (cluster != null) {
                     holder.add(cluster);
                 }
@@ -92,61 +93,60 @@ public final class SpectrumInClusterUtilities {
         return ret;
     }
 
-    protected static ICluster processIntoCluster(List<String> clusterLines) {
-         throw new UnsupportedOperationException("Fix This"); // ToDo
-//        I cluster = new LazyLoadedSpectralCluster();
-//
-//        String consensusMzLine = null;
-//        String consensusIntensityLine = null;
-//        for (String clusterLine : clusterLines) {
-//            if(clusterLine.length() == 0)
-//                break;
-//            if (clusterLine.startsWith("name=")) {
-//                break; // start of a new file
-//            }
-//            if (clusterLine.startsWith(AVERAGE_PRECURSOR_MZ)) {
-//                float precursorMz = Float.parseFloat(clusterLine.replace(AVERAGE_PRECURSOR_MZ, ""));
-//                cluster.setPrecursorMz(precursorMz);
-//            }
-//            else if (clusterLine.startsWith(CONSENSUS_MZ)) {
-//                consensusMzLine = clusterLine.replace(CONSENSUS_MZ, "");
-//            }
-//            else if (clusterLine.startsWith(CONSENSUS_INTENSITY)) {
-//                consensusIntensityLine = clusterLine.replace(CONSENSUS_INTENSITY, "");
-//            }
-//            else if (clusterLine.startsWith(PEPTIDE_SEQUENCE)) {
-//                String peptideSequence = clusterLine.replace(PEPTIDE_SEQUENCE, "");
-//                peptideSequence = peptideSequence.replace("[", "").replace("]", "");
-//                cluster.addPeptides(peptideSequence);
-//            }
-//            else if (clusterLine.startsWith(SPECTRUM_ID)) {
-//                String[] parts = clusterLine.split("\t");
-//                String id = parts[1];
-//           //     ISpectrum spectrum = PSMSpectrum.getSpectrum(id );
-//                LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
-//                 cluster.addSpectra(spectrum);
-//            }
-//            else //noinspection StatementWithEmptyBody
-//                if (clusterLine.startsWith(AVERAGE_PRECURSOR_INTENSITY)) {
-//                    // do nothing here
-//                }
-//                else {
-//                    if (clusterLine.length() > 0) {
-//                        throw new IllegalArgumentException("cannot process line " + clusterLine);
-//                    }
-//                }
-//        }
-//
-//        if (consensusIntensityLine == null)
-//            return null;
-//
-//        List<IPeak> peaks = buildPeaks(consensusMzLine, consensusIntensityLine);
-//        if (peaks == null)
-//            return null;
-//        PeptideSpectrumMatch consensusSpectrum = new PeptideSpectrumMatch(null, null, 0, cluster.getPrecursorMz(), peaks);
-//        cluster.setConsensusSpectrum(consensusSpectrum);
-//
-//        return cluster;
+    protected static ICluster processIntoCluster(List<String> clusterLines,ISpectrumRetriever spectrumRetriever) {
+          LazyLoadedSpectralCluster cluster = new LazyLoadedSpectralCluster();
+
+        String consensusMzLine = null;
+        String consensusIntensityLine = null;
+        for (String clusterLine : clusterLines) {
+            if(clusterLine.length() == 0)
+                break;
+            if (clusterLine.startsWith("name=")) {
+                break; // start of a new file
+            }
+            if (clusterLine.startsWith(ClusterParserUtilities.AVERAGE_PRECURSOR_MZ)) {
+                float precursorMz = Float.parseFloat(clusterLine.replace(ClusterParserUtilities.AVERAGE_PRECURSOR_MZ, ""));
+                cluster.setPrecursorMz(precursorMz);
+            }
+            else if (clusterLine.startsWith(ClusterParserUtilities.CONSENSUS_MZ)) {
+                consensusMzLine = clusterLine.replace(ClusterParserUtilities.CONSENSUS_MZ, "");
+            }
+            else if (clusterLine.startsWith(ClusterParserUtilities.CONSENSUS_INTENSITY)) {
+                consensusIntensityLine = clusterLine.replace(ClusterParserUtilities.CONSENSUS_INTENSITY, "");
+            }
+            else if (clusterLine.startsWith(ClusterParserUtilities.PEPTIDE_SEQUENCE)) {
+                String peptideSequence = clusterLine.replace(ClusterParserUtilities.PEPTIDE_SEQUENCE, "");
+                peptideSequence = peptideSequence.replace("[", "").replace("]", "");
+                cluster.addPeptides(peptideSequence);
+            }
+            else if (clusterLine.startsWith(ClusterParserUtilities.SPECTRUM_ID)) {
+                String[] parts = clusterLine.split("\t");
+                String id = parts[1];
+           //     ISpectrum spectrum = PSMSpectrum.getSpectrum(id );
+                LazyLoadedSpectrum spectrum = new LazyLoadedSpectrum(parts[1], spectrumRetriever);
+                 cluster.addSpectra(spectrum);
+            }
+            else //noinspection StatementWithEmptyBody
+                if (clusterLine.startsWith(ClusterParserUtilities.AVERAGE_PRECURSOR_INTENSITY)) {
+                    // do nothing here
+                }
+                else {
+                    if (clusterLine.length() > 0) {
+                        throw new IllegalArgumentException("cannot process line " + clusterLine);
+                    }
+                }
+        }
+
+        if (consensusIntensityLine == null)
+            return null;
+
+        List<IPeak> peaks = buildPeaks(consensusMzLine, consensusIntensityLine);
+        if (peaks == null)
+            return null;
+        ISpectrum consensusSpectrum = new Spectrum(null,  cluster.getPrecursorCharge(),  cluster.getPrecursorMz(),Defaults.getDefaultQualityScorer(), peaks);
+        cluster.setConsensusSpectrum(consensusSpectrum);
+
+        return cluster;
     }
 
     public static List<IPeak> buildPeaks(String commaDelimitecMZ, String commaDelimitedIntensity) {

@@ -29,13 +29,15 @@ import java.util.List;
 public class PhoenixTests {
 
 
-    public static final boolean SKIP_DATABASE_TESTS = false; // these tests are long and not critical
+    public static final boolean SKIP_DATABASE_TESTS = true; // these tests are long and not critical
 
     private DataSource m_Source;
 
     @Before
     // make sure we are using Pohenix/hbase as a datasource
     public void setDataStore() {
+        if (SKIP_DATABASE_TESTS)
+            return;
         if (m_Source == null) {
             // use hard coded HBase connection
             DataSource source = HBaseUtilities.getHBaseDataSource();

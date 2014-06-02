@@ -28,7 +28,7 @@ public class ClusterMapper implements ParameterizedRowMapper<ICluster> {
 
     @Override
     public ICluster mapRow(final ResultSet rs, final int i) throws SQLException {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented Fix This"); // ToDo
 //        String id = rs.getString("id");
 //        int precursor_charge = rs.getInt("precursor_charge");
 //        float precursor_mz = (float)rs.getDouble("precursor_mz");

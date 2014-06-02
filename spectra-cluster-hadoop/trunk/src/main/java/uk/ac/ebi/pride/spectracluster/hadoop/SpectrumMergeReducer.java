@@ -225,7 +225,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      */
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     protected void writeParseParameters(final Context context) throws IOException {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+       throw new UnsupportedOperationException("Unimplemented June 2 This"); // ToDo
 //        Configuration cfg = context.getConfiguration();
 //        HadoopTandemMain application = getApplication();
 //        TaskAttemptID tid = context.getTaskAttemptID();

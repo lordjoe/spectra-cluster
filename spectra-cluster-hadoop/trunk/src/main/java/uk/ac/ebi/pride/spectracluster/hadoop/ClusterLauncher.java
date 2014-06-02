@@ -1139,9 +1139,7 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             int value = Integer.parseInt(pValue);
             HadoopUtilities.setMaxReduceTasks(value);  // todo fix
             //noinspection ConstantIfStatement
-            if (false)
-                throw new UnsupportedOperationException("Fix This"); // ToDo
-            //            HadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
+                 //            HadoopUtilities.setMaxReduceTasks(value,HadoopUtilities.getJobSize());
             return;
         }
 
@@ -1472,7 +1470,6 @@ public class ClusterLauncher implements IStreamOpener { //extends AbstractParame
             //noinspection ConstantConditions
             if (!isVersion1)
                 throw new IllegalStateException("This Code will not work under Version 0.2");
-            throw new UnsupportedOperationException("Fix This"); // ToDo
 
 //            // by using reflection the class is never loaded when running
 //            //noinspection unchecked

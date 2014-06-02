@@ -77,8 +77,9 @@ public class Adapters {
                  Defaults.getDefaultQualityScorer(),
                 newPeaks);
 
+        ret.setProperty(ISpectrum.ANNOTATION_KEY,peptide);
         ret.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
-        return ret;
+         return ret;
     }
 
     /**
