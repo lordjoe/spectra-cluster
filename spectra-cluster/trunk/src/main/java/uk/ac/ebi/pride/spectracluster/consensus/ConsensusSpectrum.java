@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.filter.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
@@ -43,7 +44,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * always use the factory to get an instance
      */
     private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
+        private final IPeakFilter filter = Defaults.getDefaultPeakFilter();
         private ConsensusSpectrumFactory() {
+
         }
 
         /**
@@ -53,7 +56,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
          */
         @Override
         public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-            return new ConsensusSpectrum();
+            return new ConsensusSpectrum(filter);
         }
     }
 
@@ -108,20 +111,22 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      */
     private final List<IPeak> consensusPeaks = new ArrayList<IPeak>();
 
+    private final IPeakFilter filter;
 
     /**
      * private to force use of the factory
      */
-    private ConsensusSpectrum() {
-        this(null);
+    private ConsensusSpectrum(IPeakFilter filter) {
+        this(filter,null);
     }
 
     /**
      * private to force use of the factory
      */
-    private ConsensusSpectrum(String id) {
+    private ConsensusSpectrum(IPeakFilter filter,String id) {
+        this.filter = filter;
         this.id = id;
-    }
+      }
 
 
     /**
@@ -134,6 +139,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         return consensusPeaks;
     }
 
+    public IPeakFilter getFilter() {
+        return filter;
+    }
 
     @Override  // TODO JG this class only correctly supports normalized spectra. Make sure the spectra are normalized
     public void addSpectra(ISpectrum... merged) {
@@ -145,6 +153,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             // are loaded initially
             //List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(PeakUtilities.MAX_PEAKS_TO_KEEP).getPeaks();
             List<IPeak> spectrumPeaks = spectrum.getPeaks();
+            spectrumPeaks = getFilter().filter(spectrumPeaks); // maybe do some filtering
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();

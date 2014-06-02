@@ -89,7 +89,7 @@ public class Spectrum implements ISpectrum {
 
     }
 
-    private void calculateIntensities() {
+    protected void calculateIntensities() {
         double totalIntensityX = 0;
         double sumSquareIntensityX = 0;
         for (IPeak peak : peaks) {
@@ -106,7 +106,7 @@ public class Spectrum implements ISpectrum {
      * who knows why Johannes does this but we can as well
      * todo @rw: double check this wit Johannes
      */
-    double convertIntensity(IPeak p1) {
+    protected double convertIntensity(IPeak p1) {
         double intensity = p1.getIntensity();
         if (intensity == 0)
             return 0;
