@@ -3,8 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.FilteredConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.filter.BinnedHighestNPeakFilter;
-import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
+import uk.ac.ebi.pride.spectracluster.filter.*;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
@@ -97,6 +96,9 @@ public class Defaults {
 
     private static IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder = null;
 
+    /**
+     * filter to use a consensus spectrum
+     */
     private static ConcensusSpectrumBuilderFactory consensusFactory = FilteredConsensusSpectrum.FACTORY;
 
     public static ConcensusSpectrumBuilderFactory getConsensusFactory() {
@@ -147,7 +149,10 @@ public class Defaults {
         defaultSpectrumComparator = dc;
     }
 
-    public static IPeakFilter defaultPeakFilter = BinnedHighestNPeakFilter.DEFAULT;
+    /**
+     * filter sees that we dont pass more then MaximialPeakFilter.DEFAULT_MAX_PEAKS peaks (100)
+     */
+    public static IPeakFilter defaultPeakFilter = new MaximialPeakFilter(MaximialPeakFilter.DEFAULT_MAX_PEAKS);
 
     public static IPeakFilter getDefaultPeakFilter() {
         return defaultPeakFilter;

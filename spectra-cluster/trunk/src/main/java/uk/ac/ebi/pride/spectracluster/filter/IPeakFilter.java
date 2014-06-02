@@ -11,7 +11,14 @@ import java.util.List;
  * @version $Id$
  */
 public interface IPeakFilter {
-
+    /**
+     * a version of the filter that does nothing
+     */
+    public static final IPeakFilter NULL_FILTER = new IPeakFilter() {
+        @Override public List<IPeak> filter(List<IPeak> peaks) {
+                return peaks;
+        }
+    };
     /**
      * Filter a given list of peaks
      *
