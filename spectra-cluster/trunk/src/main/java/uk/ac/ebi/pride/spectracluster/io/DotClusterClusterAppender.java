@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
@@ -93,7 +92,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
         try {
             out.append("name=").append(name);
             out.append("\n");
-            ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+            ISimilarityChecker similarityChecker = Defaults.getDefaultSimilarityChecker();
 
             Class<? extends ISimilarityChecker> scc = similarityChecker.getClass();
             out.append("similarity_method=").append(scc.getSimpleName());

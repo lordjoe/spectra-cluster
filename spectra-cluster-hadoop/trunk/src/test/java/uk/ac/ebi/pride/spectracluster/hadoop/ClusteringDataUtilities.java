@@ -132,7 +132,7 @@ public class ClusteringDataUtilities {
         if (numberMisMatchedPeaks == 0)
             return true;  // probably will nopt happen
 
-        final ISimilarityChecker checker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+        final ISimilarityChecker checker = Defaults.getDefaultSimilarityChecker();
 
 
         // well we better agree on the highest peaks
@@ -224,7 +224,6 @@ public class ClusteringDataUtilities {
      * create a list of consensusSpectra from a list of clusters
      *
      * @param pClusters !null cluster list
-     * @param factory   !null  ConcensusSpectrumBuilderFactory
      * @return !null list of  consensusSpectra
      */
     @SuppressWarnings("UnusedDeclaration")

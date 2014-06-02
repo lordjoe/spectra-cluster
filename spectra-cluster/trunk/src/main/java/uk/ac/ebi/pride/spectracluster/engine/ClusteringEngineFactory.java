@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 /**
  * Factory for making ClusteringEngine
@@ -20,8 +20,8 @@ public class ClusteringEngineFactory {
      * @return
      */
     public IClusteringEngine getClusteringEngine() {
-        final FrankEtAlDotProduct similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
-        final DefaultClusterComparator comparator = new DefaultClusterComparator();
+        final ISimilarityChecker similarityChecker = Defaults.getDefaultSimilarityChecker();
+        final ClusterComparator comparator = Defaults.getDefaultSpectrumComparator();
         final double similarityThreshold = Defaults.getSimilarityThreshold();
         return new ClusteringEngine(similarityChecker, comparator, similarityThreshold);
     }

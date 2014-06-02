@@ -5,9 +5,9 @@ import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Rui Wang
@@ -18,7 +18,6 @@ public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
     private final uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever;
     private ISpectrum internalSpectrum;
     private final Properties properties = new Properties();
-    private Double selfDotProduct;
 
     public LazyLoadedSpectrum(String id, uk.ac.ebi.pride.spectracluster.clustersmilarity.ISpectrumRetriever retriever) {
         this.id = id;

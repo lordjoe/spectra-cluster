@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.IDefaultingFactory;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 /**
  * Factory for making PeakMatchClusteringEngine
@@ -23,9 +24,10 @@ public class PeakMatchClusteringEngineFactory {
      * @return
      */
     public PeakMatchClusteringEngine getPeakMatchClusteringEngine() {
-        final FrankEtAlDotProduct similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
-        final DefaultClusterComparator comparator = new DefaultClusterComparator();
-        final ClusteringEngine clusteringEngine = new ClusteringEngine(similarityChecker, comparator, Defaults.getSimilarityThreshold());
+        final ISimilarityChecker similarityChecker = Defaults.getDefaultSimilarityChecker();
+        final ClusterComparator comparator = Defaults.getDefaultSpectrumComparator();
+        final IDefaultingFactory<IClusteringEngine> engineIDefaultingFactory = EngineFactories.buildClusteringEngineFactory(similarityChecker, comparator, Defaults.getSimilarityThreshold());
+        final IClusteringEngine clusteringEngine = engineIDefaultingFactory.buildInstance();
         return new PeakMatchClusteringEngine(similarityChecker, comparator, clusteringEngine);
     }
 }

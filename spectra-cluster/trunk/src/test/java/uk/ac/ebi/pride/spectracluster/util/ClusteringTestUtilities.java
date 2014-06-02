@@ -1,20 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
+import uk.ac.ebi.pride.spectracluster.cluster.ClusteringEngineMgfTests;
+import uk.ac.ebi.pride.spectracluster.cluster.FrankEtAClusterEngineTest;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-
-
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -349,7 +347,7 @@ public class ClusteringTestUtilities {
         if (numberMisMatchedPeaks == 0)
             return true;  // probably will nopt happen
 
-        final ISimilarityChecker checker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+        final ISimilarityChecker checker = Defaults.getDefaultSimilarityChecker();
 
 
         // well we better agree on the highest peaks
@@ -516,7 +514,6 @@ public class ClusteringTestUtilities {
      * create a list of consensusSpectra from a list of clusters
      *
      * @param pClusters !null cluster list
-     * @param factory   !null  ConcensusSpectrumBuilderFactory
      * @return !null list of  consensusSpectra
      */
     public static List<ISpectrum> buildConsessusSpectra(final List<ICluster> pClusters, final IConsensusSpectrumBuilder consensusSpectrumBuilder) {
