@@ -13,7 +13,7 @@ public interface ISpectrumAppender {
     /**
      * Add spectrum
      *
-     * @param out   !!null open appendable
+     * @param out       !!null open appendable
      * @param spectrum  !null cluster
      * @param otherData any other data - implementation specific and usually blank
      */

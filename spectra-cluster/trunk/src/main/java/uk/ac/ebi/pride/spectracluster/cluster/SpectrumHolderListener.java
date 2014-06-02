@@ -20,8 +20,8 @@ public interface SpectrumHolderListener {
     /**
      * handle notification of removing spectra
      *
-     * @param holder !null holder
-     * @param removed  removed spectra
+     * @param holder  !null holder
+     * @param removed removed spectra
      */
     void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed);
 

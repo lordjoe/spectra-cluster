@@ -124,7 +124,7 @@ public class PeakUtilities {
      */
     public static List<IPeak> peaksByIntensity(ISpectrum sc) {
         List<IPeak> peaks = new ArrayList<IPeak>(sc.getPeaks());
-        Collections.sort(peaks,  PeakIntensityComparator.INSTANCE);
+        Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
         return peaks;
     }
 }

@@ -18,7 +18,8 @@ public interface ISpectrumQuality {
 
     /**
      * Get the quality scorer used
-     * @return  quality scorer
+     *
+     * @return quality scorer
      */
     public IQualityScorer getQualityScorer();
 }

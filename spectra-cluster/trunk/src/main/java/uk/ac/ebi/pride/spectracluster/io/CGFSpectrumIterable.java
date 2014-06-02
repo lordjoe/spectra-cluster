@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 import java.io.*;
 import java.util.Iterator;

@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 /**
  * Factory for making IncrementalClusteringEngine
- *
+ * <p/>
  * The only reason to keep this factory class is for the default configuration
  *
  * @author Rui Wang

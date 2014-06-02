@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.io;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.io.IOException;
 

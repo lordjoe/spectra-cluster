@@ -13,8 +13,8 @@ import java.util.Set;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
- *
- * todo: development
+ *          <p/>
+ *          todo: development
  */
 @Deprecated
 public class UnStableClusteringEngine implements IUnStableClusteringEngine {
@@ -30,7 +30,7 @@ public class UnStableClusteringEngine implements IUnStableClusteringEngine {
 
     public UnStableClusteringEngine(ISimilarityChecker similarityChecker, double similarityThreshold) {
         this.similarityChecker = similarityChecker;
-        this.similarityThreshold =similarityThreshold;
+        this.similarityThreshold = similarityThreshold;
     }
 
     @Override

@@ -1,11 +1,19 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.filter.*;
-import uk.ac.ebi.pride.spectracluster.normalizer.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.spectracluster.util.comparator.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.filter.BinnedHighestNPeakFilter;
+import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
+import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.spectrum.Spectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
+import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
 import java.util.*;
 
@@ -31,22 +39,22 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
     public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
 
     /**
-       * always use the factory to get an instance
-       */
-      public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
-          private ConsensusSpectrumFactory() {
-          }
+     * always use the factory to get an instance
+     */
+    public static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
+        private ConsensusSpectrumFactory() {
+        }
 
-          /**
-           * build a new instance of the cpectrum builder
-           *
-           * @return !null instance
-           */
-          @Override
-          public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
-              return new FilteredConsensusSpectrum();
-          }
-      }
+        /**
+         * build a new instance of the cpectrum builder
+         *
+         * @return !null instance
+         */
+        @Override
+        public IConsensusSpectrumBuilder getConsensusSpectrumBuilder() {
+            return new FilteredConsensusSpectrum();
+        }
+    }
 
 
     public static final int DEFAULT_PEAKS_TO_KEEP = 5;
@@ -148,18 +156,17 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
             List<IPeak> oldSpectrumPeaks = spectrum.getPeaks();
 
             // filter the peaks by bin
-            List<IPeak> filteredPeaks =  filter.filter(oldSpectrumPeaks);
+            List<IPeak> filteredPeaks = filter.filter(oldSpectrumPeaks);
             filteredPeaks = TotalIntensityNormalizer.DEFAULT.normalizePeaks(filteredPeaks);
             // add the filtered peaks
             addPeaks(filteredPeaks);
 
-            filtered[i] = new Spectrum(spectrum,filteredPeaks);
+            filtered[i] = new Spectrum(spectrum, filteredPeaks);
             sumCharge += spectrum.getPrecursorCharge();
             sumPrecursorMz += spectrum.getPrecursorMz();
             sumPrecursorIntens += 0;
 
             nSpectra++;
-
 
 
         }
@@ -425,7 +432,7 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
         lowestConcensusPeak = minimumConsensusPeak;
 
         // create the ConsensusSpectrum object
-        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz,  Defaults.getDefaultQualityScorer(), consensusPeaks);
+        consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), consensusPeaks);
 
         setIsDirty(false);
     }
@@ -485,7 +492,7 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
             if (peakBuffer.size() < 1)
                 continue;
 
-            Collections.sort(peakBuffer,  PeakIntensityComparator.INSTANCE);
+            Collections.sort(peakBuffer, PeakIntensityComparator.INSTANCE);
 
             List<IPeak> fivePeaks = new ArrayList<IPeak>(peaksInBinToKeep);
 

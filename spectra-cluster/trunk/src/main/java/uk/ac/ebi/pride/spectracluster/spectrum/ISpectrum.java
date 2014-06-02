@@ -2,16 +2,17 @@ package uk.ac.ebi.pride.spectracluster.spectrum;
 
 import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.IPeaksSpectrum
  * used by Spectra like get highest peaks which are incomplete
  * spectra
+ *
  * @author Steve Lewis
  * @author Rui Wang
- * Date: 6/20/13
- *
+ *         Date: 6/20/13
  */
 public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
@@ -72,6 +73,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
     /**
      * return as a spectrum the highest n peaks as defined in majorPeakCount
      * this follows Frank et all suggestion that all spectra in a cluster will share at least one of these
+     *
      * @param majorPeakCount The number of highest peaks to consider "major"
      * @return
      */
@@ -80,7 +82,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
     /**
      * does the spectrum contain this is a major peak
      *
-     * @param mz peak as int
+     * @param mz             peak as int
      * @param majorPeakCount The number of highest peaks to consider "major"
      * @return true if so
      */
@@ -89,6 +91,7 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
     /**
      * return a property of null if none exists
      * look in ISpectrum for known keys
+     *
      * @param key
      * @return
      */
@@ -96,20 +99,20 @@ public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comp
 
     /**
      * look in ISpectrum for known keys
-      *
-      * @param key
-      * @param value
-      */
-     public void setProperty(String key,String value);
+     *
+     * @param key
+     * @param value
+     */
+    public void setProperty(String key, String value);
 
     /**
-         Only for internal use in copy constructor
-          Note this is not safe
-         This is not really deprecated but it warns only for
-         internal use
-        */
-      @Deprecated
-       public Properties getProperties();
+     * Only for internal use in copy constructor
+     * Note this is not safe
+     * This is not really deprecated but it warns only for
+     * internal use
+     */
+    @Deprecated
+    public Properties getProperties();
 
 
 }

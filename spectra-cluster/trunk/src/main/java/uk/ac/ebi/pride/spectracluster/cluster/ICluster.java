@@ -12,8 +12,8 @@ import java.util.Set;
  * @version $Id$
  */
 public interface ICluster extends ISpectrumHolder,
-                                          Equivalent<ICluster>,
-                                          Comparable<ICluster>{
+        Equivalent<ICluster>,
+        Comparable<ICluster> {
 
     /**
      * Get cluster id
@@ -24,8 +24,7 @@ public interface ICluster extends ISpectrumHolder,
      * build an id from spectral ids
      *
      * @return
-     *
-      */
+     */
     public String getSpectralId();
 
     /**
@@ -59,9 +58,8 @@ public interface ICluster extends ISpectrumHolder,
 
     /**
      * all internally spectrum
-     *
-       */
-      @Nonnull
+     */
+    @Nonnull
     public List<ISpectrum> getHighestQualitySpectra();
 
     /**

@@ -1,10 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
-import javax.annotation.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 
@@ -22,10 +24,10 @@ public final class ClusterUtilities {
     }
 
 
-    public static void getPeptidePurity(ICluster cluster)
-    {
+    public static void getPeptidePurity(ICluster cluster) {
         throw new UnsupportedOperationException("Fix This"); // ToDo
     }
+
     /**
      * return non-null if c1 contains all spactra in c2 or vice
      * versa
@@ -188,11 +190,12 @@ public final class ClusterUtilities {
 
     /**
      * convert a spectrum into cluster
-     * @param spectrum  given spectrum
-     * @return  a spectral cluster
+     *
+     * @param spectrum given spectrum
+     * @return a spectral cluster
      */
     public static ICluster asCluster(ISpectrum spectrum) {
-        ICluster ret = new SpectralCluster((String)null, Defaults.getDefaultConsensusSpectrumBuilder());
+        ICluster ret = new SpectralCluster((String) null, Defaults.getDefaultConsensusSpectrumBuilder());
         ret.addSpectra(spectrum);
         return ret;
     }
@@ -225,8 +228,6 @@ public final class ClusterUtilities {
         String petides = SpectrumUtilities.mostCommonPeptides(clusteredSpectra);
         return petides;
     }
-
-
 
 
     public static String[] getMostCommonPeptides(ICluster cluster) {

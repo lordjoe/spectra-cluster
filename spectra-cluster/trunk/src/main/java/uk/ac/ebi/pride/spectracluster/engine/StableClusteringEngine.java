@@ -10,8 +10,8 @@ import java.util.*;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
- *
- * todo: development
+ *          <p/>
+ *          todo: development
  */
 @Deprecated
 public class StableClusteringEngine implements IStableClusteringEngine {
@@ -68,6 +68,7 @@ public class StableClusteringEngine implements IStableClusteringEngine {
 
     /**
      * Get similarity threshold used
+     *
      * @return
      */
     @Override
