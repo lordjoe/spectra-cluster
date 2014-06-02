@@ -128,22 +128,22 @@ public class LazyLoadedSpectralCluster implements ICluster {
 
         }
         double numberSpectra = getClusteredSpectraCount();
-
-        // debug bad case
-        if (spectral_peptides.size() == 0) {
-            for (ISpectrum iSpectrum : clusteredSpectra) {
-                ISpectrum sc1 = (ISpectrum) iSpectrum;
-                String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
-                if (peptide != null)
-                    spectral_peptides.add(peptide);
-            }
-            int n = Bad_SpectraCount++;
-            Bad_SpectraCount = n; // so we can look
-            if (true)
-                return;
-            throw new UnsupportedOperationException("Fix This"); // ToDo
-        }
-        // end bad case
+//
+//        // debug bad case
+//        if (spectral_peptides.size() == 0) {
+//            for (ISpectrum iSpectrum : clusteredSpectra) {
+//                ISpectrum sc1 = (ISpectrum) iSpectrum;
+//                String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+//                if (peptide != null)
+//                    spectral_peptides.add(peptide);
+//            }
+//            int n = Bad_SpectraCount++;
+//            Bad_SpectraCount = n; // so we can look
+//            if (true)
+//                return;
+//            throw new UnsupportedOperationException("Huh"); // ToDo
+//        }
+//        // end bad case
 
         CountedString[] items = CountedString.getCountedStrings(spectral_peptides);
         Map<String, Double> peptideToFraction = new HashMap<String, Double>();
@@ -224,7 +224,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
             spectral_peptides.add(peptide);
             Double purity = peptideToFraction.get(peptide);
             if (purity == null)
-                throw new UnsupportedOperationException("Fix This"); // ToDo
+                throw new UnsupportedOperationException("Never get here  ");
             if (decoy && purity > 0.8) {
                 pureDecoy = peptide;
                 purityStr = String.format("%8.2f", purity).trim();

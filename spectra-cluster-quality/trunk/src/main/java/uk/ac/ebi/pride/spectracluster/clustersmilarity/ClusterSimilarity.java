@@ -35,7 +35,7 @@ public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet>
      */
     @Override
     public ClusterDistanceSet getStatistics() {
-        if (true) throw new UnsupportedOperationException("Fix This");
+        if (true) throw new UnsupportedOperationException("Unimplemented This");
         return null;
     }
 
@@ -46,7 +46,7 @@ public class ClusterSimilarity implements IClusterStatistics<ClusterDistanceSet>
      */
     @Override
     public String generateDefaultReport() {
-        if (true) throw new UnsupportedOperationException("Fix This");
+        if (true) throw new UnsupportedOperationException("Unimplemented This");
         return null;
     }
 

@@ -37,7 +37,7 @@ public class ClusterIdentityMapper extends AbstractParameterizedMapper<Text> {
                 handleCluster(clusters[0],text,context);
                 return;
             default:
-                throw new UnsupportedOperationException("Fix This"); // ToDo
+                throw new UnsupportedOperationException("Should never get here");
         }
     }
 

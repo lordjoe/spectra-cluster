@@ -307,6 +307,13 @@ public class Spectrum implements ISpectrum {
      */
     @Override
     public void setProperty(String key, String value) {
+        if(key == null)
+            return;
+        if( value == null)   {
+            properties.remove(key);
+            return;
+        }
+
         properties.setProperty(key, value);
     }
 

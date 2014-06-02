@@ -75,12 +75,12 @@ public class APrioriBinning<T> {
     }
 
     public double aprorioriProbability(double mz) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented Fix This"); // ToDo
     }
 
 
     public double cummulativeAprorioriProbability(double mz) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented Fix This"); // ToDo
     }
 
 }

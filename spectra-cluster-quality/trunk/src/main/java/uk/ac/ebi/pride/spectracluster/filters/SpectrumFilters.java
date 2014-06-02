@@ -70,22 +70,21 @@ public class SpectrumFilters {
              */
             @Override
             public ISpectrum passes(@Nonnull ISpectrum testObject) {
-                if (testObject instanceof ISpectrum) {
-                    ISpectrum ps = (ISpectrum) testObject;
-                    if (ps.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY) != null)
-                        return testObject; // passes
-                    return null; // fails
+                ISpectrum ps = (ISpectrum) testObject;
+                if (ps.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY) != null)
+                    return testObject; // passes
+                return null; // fails
 
-                }
-                throw new UnsupportedOperationException("Fix This"); // ToDo
             }
         };
     }
 
 
     public static final float MINIMUM_PRECURSOR_CHARGE = 10F;
+
     /**
      * return true of a ISpectrum  has known precursor mz and charge
+     *
      * @param length max allowed length
      * @return
      */
@@ -99,18 +98,15 @@ public class SpectrumFilters {
              */
             @Override
             public ISpectrum passes(@Nonnull ISpectrum testObject) {
-                if (testObject instanceof ISpectrum) {
-                    ISpectrum ps = (ISpectrum) testObject;
+                      ISpectrum ps = (ISpectrum) testObject;
                     if (ps.getPrecursorCharge() == 0)
                         return null; // fails
                     // really testing 0 but this works
-                    if (ps.getPrecursorMz() < MINIMUM_PRECURSOR_CHARGE )
-                          return null; // fails
-                      return testObject; // passes
+                    if (ps.getPrecursorMz() < MINIMUM_PRECURSOR_CHARGE)
+                        return null; // fails
+                    return testObject; // passes
 
-                }
-                throw new UnsupportedOperationException("Fix This"); // ToDo
-            }
+             }
         };
     }
 

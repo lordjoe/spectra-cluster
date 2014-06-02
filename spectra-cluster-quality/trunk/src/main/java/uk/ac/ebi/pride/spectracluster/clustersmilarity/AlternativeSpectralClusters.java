@@ -138,7 +138,7 @@ public class AlternativeSpectralClusters implements ICluster {
      */
     @Override
     public Set<String> getSpectralIds() {
-        if (true) throw new UnsupportedOperationException("Fix This");
+        if (true) throw new UnsupportedOperationException("Unimplemented This");
         return null;
     }
 
@@ -284,7 +284,7 @@ public class AlternativeSpectralClusters implements ICluster {
 
         //noinspection ConstantIfStatement
         if (true)
-            throw new UnsupportedOperationException("Fix This"); // This should never happen
+            throw new UnsupportedOperationException("This should never happen"); // This should never happen
         return 0;
     }
 

@@ -191,7 +191,7 @@ public class ClusterComparisonMain implements IDecoyDiscriminator {
 
     @SuppressWarnings("UnusedDeclaration")
     public List<ClusterPeptidePurity> getCummulativeDecoy(IClusterSet cs) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented This"); // ToDo
 
     }
 

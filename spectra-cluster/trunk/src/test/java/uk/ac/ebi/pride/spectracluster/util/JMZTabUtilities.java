@@ -18,8 +18,6 @@ import java.util.*;
  * @date 29/05/2014
  */
 public class JMZTabUtilities {
-    public static JMZTabUtilities[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = JMZTabUtilities.class;
 
     /**
      * read a resource mgf as a list of spectra

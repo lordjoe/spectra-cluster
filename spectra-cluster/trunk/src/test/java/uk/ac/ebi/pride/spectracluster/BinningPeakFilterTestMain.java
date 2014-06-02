@@ -27,6 +27,7 @@ public class BinningPeakFilterTestMain {
 
     private static void processCGFFile(File file) {
         final ICluster[] clusters = ParserUtilities.readSpectralCluster(file);
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < clusters.length; i++) {
             ICluster cluster = clusters[i];
             testClusterConcensusSpectrum(cluster);
@@ -121,19 +122,21 @@ public class BinningPeakFilterTestMain {
         if (args.length == 0) {
             System.out.println("usage CGFFile CGFile ...");
         }
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             File udir = new File(arg);
+            //noinspection ForLoopReplaceableByForEach
             for (File file : udir.listFiles()) {
                 System.out.println(file);
                 processCGFFile(file);
             }
         }
 
-         final int[] filterUseCounts = MaximialPeakFilter.FILTER_USE_COUNTS;
-
-         final int[] sizeCounts = MaximialPeakFilter.SPECTRUM_SIZE_COUNTS;
+         MaximialPeakFilter.showStatistics(System.out);
 
          System.out.println("Good " + numberOK + " off " + numberSlightlyOFF + " bad " + numberOFF + " very bad " + numberWayOFF);
      }
+
+
 }

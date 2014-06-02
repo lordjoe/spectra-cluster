@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.export;
 
 import com.lordjoe.filters.*;
+import uk.ac.ebi.pride.spectracluster.filter.*;
 import uk.ac.ebi.pride.spectracluster.retrievers.*;
 import uk.ac.ebi.pride.spectracluster.filters.*;
 
@@ -100,6 +101,7 @@ public class Exporter {
             exp.exportDirectory();
 
         }
+        MaximialPeakFilter.showStatistics(System.out);
 
     }
 

@@ -58,7 +58,10 @@ public class AdapterTests {
             }
 
             ISpectrum adapted = Adapters.fromSpectrum(readClusteringSpectrum);
-            Assert.assertTrue(readISpectrum.equivalent(adapted));
+            boolean equivalent = readISpectrum.equivalent(adapted);
+            if(!equivalent)
+                equivalent = readISpectrum.equivalent(adapted); // break here
+            Assert.assertTrue(equivalent);
 
         }
 
