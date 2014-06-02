@@ -19,7 +19,7 @@ public interface IClusteringEngine {
     /**
      * Get the similarity check used
      *
-     * @return  an instance of similarity checker
+     * @return an instance of similarity checker
      */
     public ISimilarityChecker getSimilarityChecker();
 
@@ -27,7 +27,7 @@ public interface IClusteringEngine {
     /**
      * Get the similarity threshold used
      *
-     * @return  similarity threshold
+     * @return similarity threshold
      */
     public double getSimilarityThreshold();
 

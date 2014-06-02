@@ -7,13 +7,14 @@ import java.util.UUID;
  *
  * @author Rui Wang
  * @version $Id$
- *
- * todo: development
+ *          <p/>
+ *          todo: development
  */
 @Deprecated
 public final class StableClusterUtilities {
 
-    private StableClusterUtilities() {}
+    private StableClusterUtilities() {
+    }
 
     public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
     public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;

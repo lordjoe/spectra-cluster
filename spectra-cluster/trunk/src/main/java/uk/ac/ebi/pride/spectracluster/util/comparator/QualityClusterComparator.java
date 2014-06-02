@@ -13,6 +13,7 @@ import java.util.Comparator;
 public class QualityClusterComparator implements Comparator<ICluster> {
 
     public static QualityClusterComparator INSTANCE = new QualityClusterComparator();
+
     private QualityClusterComparator() {
     }
 

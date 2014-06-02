@@ -10,7 +10,7 @@ import java.io.IOException;
  * @author Rui Wang
  * @version $Id$
  */
-public class TSVClusterAppender implements IClusterAppender{
+public class TSVClusterAppender implements IClusterAppender {
 
     @Override
     public void appendCluster(Appendable out, ICluster cluster, Object... otherData) {

@@ -17,7 +17,7 @@ import java.util.*;
  * <p/>
  * User: Steve
  * Date: 6/28/13
- *
+ * <p/>
  * todo: development
  */
 
@@ -48,6 +48,7 @@ public class PeakMatchClusteringEngine implements IClusteringEngine {
 
     /**
      * Get similarity threshold used
+     *
      * @return
      */
     @Override

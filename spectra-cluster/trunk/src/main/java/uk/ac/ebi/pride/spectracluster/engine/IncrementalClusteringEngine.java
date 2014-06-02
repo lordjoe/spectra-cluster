@@ -2,10 +2,12 @@ package uk.ac.ebi.pride.spectracluster.engine;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -45,9 +47,9 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     private int currentMZAsInt;
 
     public IncrementalClusteringEngine(ISimilarityChecker sck,
-                                          Comparator<ICluster> scm,
-                                          float windowSize,
-                                          double similarityThreshold) {
+                                       Comparator<ICluster> scm,
+                                       float windowSize,
+                                       double similarityThreshold) {
         this.similarityChecker = sck;
         this.spectrumComparator = scm;
         this.windowSize = windowSize;
@@ -286,7 +288,8 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
      */
     public static
     @Nonnull
-    @Deprecated // TODO JG function highly similar to ClusterUtilities::clusterFullyContainsScore
+    @Deprecated
+    // TODO JG function highly similar to ClusterUtilities::clusterFullyContainsScore
     Set<String> getSpectraOverlap(@Nonnull final Set<String> firstIds, @Nonnull final ICluster c2) {
         Set<String> ret = new HashSet<String>(firstIds);
         ret.retainAll(c2.getSpectralIds());
@@ -332,9 +335,6 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
 
-
-
-
     /**
      * clusters are merged in the internal collection
      *
@@ -367,6 +367,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
     /**
      * Get similarity threshold used
+     *
      * @return
      */
     @Override

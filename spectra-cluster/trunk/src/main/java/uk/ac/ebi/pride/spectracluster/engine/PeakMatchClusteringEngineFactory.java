@@ -6,13 +6,13 @@ import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
 
 /**
  * Factory for making PeakMatchClusteringEngine
- *
+ * <p/>
  * The only reason to keep this factory class is for the default configuration
  *
  * @author Rui Wang
  * @version $Id$
- *
- * todo: development
+ *          <p/>
+ *          todo: development
  */
 @Deprecated
 public class PeakMatchClusteringEngineFactory {

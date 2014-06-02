@@ -237,7 +237,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
         double peptideMass = (precursor1 * charge1 + precursor2 * charge2) / 2;
 
         int largeBinningRegion = numberOfPeaksToCompare;
-        int k = numberOfPeaksToCompare* (int) (peptideMass / largeBinningRegion);
+        int k = numberOfPeaksToCompare * (int) (peptideMass / largeBinningRegion);
 
         if (peptideMass % largeBinningRegion > 0)
             k += numberOfPeaksToCompare;

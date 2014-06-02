@@ -1,10 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.filter.*;
-import uk.ac.ebi.pride.spectracluster.quality.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.comparator.*;
+import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
+import uk.ac.ebi.pride.spectracluster.consensus.FilteredConsensusSpectrum;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.filter.BinnedHighestNPeakFilter;
+import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
+import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
+import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -78,8 +83,6 @@ public class Defaults {
     }
 
 
-
-
     public static void setRetainThreshold(double retainThreshold) {
         Defaults.retainThreshold = retainThreshold;
     }
@@ -106,10 +109,11 @@ public class Defaults {
 
     /**
      * this is the way to get a ConsensusSpectrumBuilder
+     *
      * @return
      */
     public static IConsensusSpectrumBuilder getDefaultConsensusSpectrumBuilder() {
-           return consensusFactory.getConsensusSpectrumBuilder();
+        return consensusFactory.getConsensusSpectrumBuilder();
     }
 
 
@@ -143,7 +147,7 @@ public class Defaults {
         defaultSpectrumComparator = dc;
     }
 
-    public static IPeakFilter defaultPeakFilter =  BinnedHighestNPeakFilter.DEFAULT;
+    public static IPeakFilter defaultPeakFilter = BinnedHighestNPeakFilter.DEFAULT;
 
     public static IPeakFilter getDefaultPeakFilter() {
         return defaultPeakFilter;

@@ -16,7 +16,6 @@ import java.util.Collection;
 public interface IIncrementalClusteringEngine extends IClusteringEngine {
 
 
-
     /**
      * add one cluster and return any clusters which are too far in mz from further consideration
      * NOTE clusters MUST be added in ascending MZ order

@@ -7,13 +7,14 @@ import java.text.NumberFormat;
  * @version $Id$
  */
 public class NumberUtilities {
-    private NumberUtilities() {}
+    private NumberUtilities() {
+    }
 
     /**
      * convert a double into a String with a given precision
      * default double formatting is not very pretty
      *
-     * @param in  int to convert
+     * @param in        int to convert
      * @param precision positive precision
      * @return non-null formatted string
      */
@@ -30,7 +31,7 @@ public class NumberUtilities {
      * convert a double into a String with a given precision
      * default double formatting is not very pretty
      *
-     * @param in  non-null Double to convert
+     * @param in        non-null Double to convert
      * @param precision positive precision
      * @return non-null formatted string
      */
@@ -42,7 +43,7 @@ public class NumberUtilities {
      * convert a double into a String with a given precision
      * default double formatting is not very pretty
      *
-     * @param in  double to convert
+     * @param in        double to convert
      * @param precision positive precision
      * @return non-null formatted string
      */

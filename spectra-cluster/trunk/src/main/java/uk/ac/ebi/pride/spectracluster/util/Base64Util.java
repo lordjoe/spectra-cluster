@@ -55,7 +55,7 @@ public class Base64Util {
      */
     public static List<Double> decode(boolean doublePrecision, boolean bigEndian, String dataString) {
         /*
-		 * Decode the data and put it into byte array
+         * Decode the data and put it into byte array
 		 */
         boolean zLibCompression = false;
         /*

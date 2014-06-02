@@ -9,7 +9,8 @@ package uk.ac.ebi.pride.spectracluster.util;
 public interface IDefaultingFactory<T> {
     /**
      * create an object of type T using defaults
+     *
      * @return
      */
-      public T buildInstance(Object... input);
+    public T buildInstance(Object... input);
 }

@@ -1,11 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.engine;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.similarity.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.spectracluster.util.comparator.*;
-
-import java.util.*;
+import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.IDefaultingFactory;
+import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.engine.EngineFactories
@@ -67,8 +65,8 @@ public class EngineFactories {
     /**
      * make a clustering engine assuming the defaults are used  for all but window size
      */
-      public static IDefaultingFactory<IIncrementalClusteringEngine> buildIncrementalClusteringEngineFactory(
-              float windowSize) {
+    public static IDefaultingFactory<IIncrementalClusteringEngine> buildIncrementalClusteringEngineFactory(
+            float windowSize) {
         return new IncrementalClusteringEngineFactory(Defaults.getDefaultSimilarityChecker(),
                 Defaults.getDefaultSpectrumComparator(),
                 Defaults.getSimilarityThreshold(),
@@ -106,14 +104,13 @@ public class EngineFactories {
         }
 
         /**
-            * make a copy of the clustering engine
-            *
-            * @return
-            */
-             public IIncrementalClusteringEngine getIncrementalClusteringEngine(float ws)
-           {
-               return new IncrementalClusteringEngine(similarityChecker, spectrumComparator,ws,similarityThreshold);
-           }
+         * make a copy of the clustering engine
+         *
+         * @return
+         */
+        public IIncrementalClusteringEngine getIncrementalClusteringEngine(float ws) {
+            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator, ws, similarityThreshold);
+        }
 
         /**
          * make a copy of the clustering engine
@@ -122,7 +119,7 @@ public class EngineFactories {
          */
         @Override
         public IIncrementalClusteringEngine buildInstance(Object... otherdata) {
-            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator,windowSize,similarityThreshold);
+            return new IncrementalClusteringEngine(similarityChecker, spectrumComparator, windowSize, similarityThreshold);
         }
     }
 

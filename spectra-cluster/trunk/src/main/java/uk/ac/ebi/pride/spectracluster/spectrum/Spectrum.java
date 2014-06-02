@@ -361,12 +361,12 @@ public class Spectrum implements ISpectrum {
 
         final Set<String> properties = getProperties().stringPropertyNames();
         final Set<String> properties2 = o.getProperties().stringPropertyNames();
-        if(properties.size() != properties2.size())
+        if (properties.size() != properties2.size())
             return false;
-         for (String s : properties) {
+        for (String s : properties) {
             String pi = getProperty(s);
             String p2 = getProperty(s);
-            if(!pi.equals(p2))
+            if (!pi.equals(p2))
                 return false;
         }
 

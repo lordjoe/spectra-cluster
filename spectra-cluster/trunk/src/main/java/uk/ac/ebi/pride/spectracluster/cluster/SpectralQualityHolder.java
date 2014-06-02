@@ -139,8 +139,8 @@ public class SpectralQualityHolder implements SpectrumHolderListener {
     /**
      * handle notification of removing spectra
      *
-     * @param holder !null holder
-     * @param removed  removed spectra
+     * @param holder  !null holder
+     * @param removed removed spectra
      */
     @Override
     public void onSpectraRemove(final ISpectrumHolder holder, final ISpectrum... removed) {

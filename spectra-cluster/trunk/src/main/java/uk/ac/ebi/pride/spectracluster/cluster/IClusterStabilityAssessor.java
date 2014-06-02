@@ -12,7 +12,6 @@ public interface IClusterStabilityAssessor {
      * if true the cluster is stable and will not allow removal
      *
      * @return
-     *
      */
     boolean isStable(ICluster cluster);
 

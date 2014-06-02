@@ -8,8 +8,8 @@ import java.util.Collection;
  * @author Steve Lewis
  * @author Rui Wang
  * @version $Id$
- *
- * todo: development
+ *          <p/>
+ *          todo: development
  */
 @Deprecated
 public interface IStableClusteringEngine extends IIncrementalClusteringEngine {

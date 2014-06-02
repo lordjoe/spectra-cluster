@@ -14,8 +14,9 @@ public interface IPeakFilter {
 
     /**
      * Filter a given list of peaks
+     *
      * @param peaks given list of peaks
-     * @return  a list of filtered peaks
+     * @return a list of filtered peaks
      */
     public List<IPeak> filter(List<IPeak> peaks);
 }

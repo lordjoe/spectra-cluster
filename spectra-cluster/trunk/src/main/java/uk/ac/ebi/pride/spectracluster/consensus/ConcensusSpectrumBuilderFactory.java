@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-
 /**
  * uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory
  * User: Steve
@@ -11,7 +9,8 @@ public interface ConcensusSpectrumBuilderFactory {
 
     /**
      * build a new instance of the cpectrum builder
-     * @return  !null instance
+     *
+     * @return !null instance
      */
     public IConsensusSpectrumBuilder getConsensusSpectrumBuilder();
 

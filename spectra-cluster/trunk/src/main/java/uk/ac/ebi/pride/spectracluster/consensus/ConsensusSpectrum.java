@@ -2,9 +2,13 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
+import uk.ac.ebi.pride.spectracluster.spectrum.Spectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
 import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
 
@@ -215,9 +219,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToRemove == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                            currentExistingPeak.getMz(),
-                            currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
-                            currentExistingPeak.getCount() - 1)
+                                    currentExistingPeak.getMz(),
+                                    currentExistingPeak.getIntensity() - peakToRemove.getIntensity(),
+                                    currentExistingPeak.getCount() - 1)
                     );
 
                     posAllPeaks = j;
@@ -339,9 +343,9 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
                 if (mzToAdd == currentExistingPeak.getMz()) {
                     allPeaks.set(j, new Peak(
-                            currentExistingPeak.getMz(),
-                            peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
-                            currentExistingPeak.getCount() + peakToAdd.getCount())
+                                    currentExistingPeak.getMz(),
+                                    peakToAdd.getIntensity() + currentExistingPeak.getIntensity(),
+                                    currentExistingPeak.getCount() + peakToAdd.getCount())
                     );
                     posAllPeaks = j;
                     wasAdded = true;

@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 /**
  * com.lordjoe.algorithms.LinearBinner
  * implementation of IBinner as a linear set of bins
+ *
  * @author Steve Lewis
  * @date 11/05/13
  */
@@ -32,16 +33,17 @@ public class LinearBinner implements IBinner {
 
     /**
      * cerate a binner
-     * @param maxValue maximim value
-     * @param minValue  minimum value
-     * @param binSize  size of bin
-     * @param overFlowBinned  if true outside range  is binned
-     * @param minBin minimum bin value - usually 0
+     *
+     * @param maxValue       maximim value
+     * @param minValue       minimum value
+     * @param binSize        size of bin
+     * @param overFlowBinned if true outside range  is binned
+     * @param minBin         minimum bin value - usually 0
      */
     public LinearBinner(double maxValue, double binSize, double minValue, boolean overFlowBinned, int minBin) {
-        if(maxValue <= minValue)
+        if (maxValue <= minValue)
             throw new IllegalArgumentException("bad bins");
-        if(binSize <= 0)
+        if (binSize <= 0)
             throw new IllegalArgumentException("bad bins");
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -51,13 +53,12 @@ public class LinearBinner implements IBinner {
         this.minBin = minBin;
 
 
-
         double del = maxValue - minValue;
         double nb = del / binSize;
 
         // when rounding a double to an integer add 0.5 to round up, because by default 2.99 turns into 2
 
-        numberBins = (int)(nb + 0.5);
+        numberBins = (int) (nb + 0.5);
     }
 
     /**
@@ -66,7 +67,7 @@ public class LinearBinner implements IBinner {
      *
      * @param value
      * @return either a valid bin number or -1 if  isOverflowBinned() is false and the
-     *         data is outside the range handled
+     * data is outside the range handled
      */
     @Override
     public int asBin(double value) {
@@ -87,7 +88,7 @@ public class LinearBinner implements IBinner {
         }
         double binSize = getBinSize();
         double val = value - minValue;
-        int bin = (int)(val / binSize);
+        int bin = (int) (val / binSize);
         return bin + minBin;
     }
 
@@ -96,12 +97,12 @@ public class LinearBinner implements IBinner {
      *
      * @param value
      * @return either a valid bin number or  null if  isOverflowBinned() is false and the
-     *         data is outside the range handled
+     * data is outside the range handled
      */
     @Override
     public String asBinString(final double value) {
         int bin = asBin(value);
-        if(bin == -1)
+        if (bin == -1)
             return null;
 
         return formatBin(bin);
@@ -110,15 +111,16 @@ public class LinearBinner implements IBinner {
 
     /**
      * turn a bin into a string
+     *
      * @param pBin
      * @return
      */
     protected String formatBin(final int pBin) {
-        if(pBin == -1)
+        if (pBin == -1)
             return null;
         double bnv = fromBin(pBin);
-        double minv = bnv -  getBinSize() / 2;
-        double maxv = bnv +  getBinSize() / 2;
+        double minv = bnv - getBinSize() / 2;
+        double maxv = bnv + getBinSize() / 2;
         StringBuilder sb = new StringBuilder();
         sb.append(formatBinValue(minv));
         sb.append("-");
@@ -126,8 +128,8 @@ public class LinearBinner implements IBinner {
         return sb.toString();
     }
 
-    protected String formatBinValue(double value)  {
-        return String.format("%10.3f",value).trim();
+    protected String formatBinValue(double value) {
+        return String.format("%10.3f", value).trim();
     }
 
     public double getBinSize() {
@@ -218,7 +220,7 @@ public class LinearBinner implements IBinner {
      */
     @Override
     public IBinner offSetHalf() {
-        return new LinearBinner(getMaxValue(),getBinSize(),getMinValue() - getBinSize() / 2,isOverflowBinned(),getMinBin());
+        return new LinearBinner(getMaxValue(), getBinSize(), getMinValue() - getBinSize() / 2, isOverflowBinned(), getMinBin());
     }
 
     /**

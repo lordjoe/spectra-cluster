@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusterCreateListener

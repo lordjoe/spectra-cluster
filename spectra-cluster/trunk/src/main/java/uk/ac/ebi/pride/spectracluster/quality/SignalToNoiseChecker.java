@@ -63,7 +63,7 @@ public class SignalToNoiseChecker implements IQualityScorer {
         double meanHigh = (totalIntensity - highestPeak) / (NUMBER_HIGH_PEAKS - 1);
 
         List<IPeak> peaks = new ArrayList<IPeak>(spectrum.getPeaks());
-        Collections.sort(peaks,  PeakIntensityComparator.INSTANCE);
+        Collections.sort(peaks, PeakIntensityComparator.INSTANCE);
 
         double median;
 
