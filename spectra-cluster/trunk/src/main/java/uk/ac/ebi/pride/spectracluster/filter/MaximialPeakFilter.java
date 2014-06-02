@@ -16,27 +16,39 @@ public class MaximialPeakFilter implements IPeakFilter {
 
     public static final int DEFAULT_MAX_PEAKS = 100;
 
-    public static final int FIRST_BIN_MAX = 9;
+    public static final int FIRST_BIN_MAX = 12;
 
     /**
      * filters to be applied to cut peaks unter
      */
     public static final IPeakFilter[] DECREASING_BINS = {
-        new BinnedHighestNPeakFilter(FIRST_BIN_MAX,BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE,BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-        new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 1,BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE,BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-        new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 2,BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE,BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-        new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 3,BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE,BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-        new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 4,BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE,BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-     } ;
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 1, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 2, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 3, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 4, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 7, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 6, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 4, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+    };
+
+    //============================================================
+    /**
+     * Statistice code - how are filters used
+     */
     public static final int[] FILTER_USE_COUNTS = new int[DECREASING_BINS.length + 1];
 
     public static final int[] SPECTRUM_SIZE_COUNTS = new int[200];
+
+    public int NumberOverMax;
+
+    //============================================================
 
     private final int maxPeaks;
 
     public MaximialPeakFilter(int maxPeaks) {
         this.maxPeaks = maxPeaks;
-      }
+    }
 
 
     /**
@@ -51,11 +63,11 @@ public class MaximialPeakFilter implements IPeakFilter {
         int filterUsed = 0;
 
         int startSize = peaks.size();
-        int startBin = Math.min(SPECTRUM_SIZE_COUNTS.length,startSize);
+        int startBin = Math.min(SPECTRUM_SIZE_COUNTS.length - 1, startSize / 10);
         SPECTRUM_SIZE_COUNTS[startBin]++; // count size distribution in bins of 10;
-        while(ret.size() > maxPeaks) {
+        while (ret.size() > maxPeaks) {
             ret = DECREASING_BINS[filterUsed++].filter(ret);
-            if(filterUsed >= DECREASING_BINS.length)
+            if (filterUsed >= DECREASING_BINS.length)
                 break;
         }
 

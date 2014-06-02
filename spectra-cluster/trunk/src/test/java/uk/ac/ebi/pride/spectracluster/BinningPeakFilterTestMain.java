@@ -35,7 +35,7 @@ public class BinningPeakFilterTestMain {
 
     private static void testClusterConcensusSpectrum(ICluster cluster) {
         final ISpectrum oldConcensusSpectrum = cluster.getConsensusSpectrum();
-        final IConsensusSpectrumBuilder builder = FilteredConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
+        final IConsensusSpectrumBuilder builder = ConsensusSpectrum.FACTORY.getConsensusSpectrumBuilder();
         for (ISpectrum spec : cluster.getClusteredSpectra()) {
             builder.addSpectra(spec);
         }
@@ -129,6 +129,11 @@ public class BinningPeakFilterTestMain {
                 processCGFFile(file);
             }
         }
-        System.out.println("Good " + numberOK + " off " + numberSlightlyOFF + " bad " + numberOFF + " very bad " + numberWayOFF);
+
+         final int[] filterUseCounts = MaximialPeakFilter.FILTER_USE_COUNTS;
+
+         final int[] sizeCounts = MaximialPeakFilter.SPECTRUM_SIZE_COUNTS;
+
+         System.out.println("Good " + numberOK + " off " + numberSlightlyOFF + " bad " + numberOFF + " very bad " + numberWayOFF);
      }
 }
