@@ -3,15 +3,15 @@ package uk.ac.ebi.pride.spectracluster.util;
 import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
 import uk.ac.ebi.pride.spectracluster.consensus.FilteredConsensusSpectrum;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.filter.*;
+import uk.ac.ebi.pride.spectracluster.engine.EngineFactories;
+import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
+import uk.ac.ebi.pride.spectracluster.filter.MaximialPeakFilter;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.Defaults
@@ -162,21 +162,11 @@ public class Defaults {
         Defaults.defaultPeakFilter = defaultPeakFilter;
     }
 
-    /**
-     * used to write parameters in to a data sink like a clustering file
-     *
-     * @param out output
-     */
-    public static void appendAnalysisParameters(@Nonnull Appendable out) {
-        try {
-            out.append("largeBinningRegion=").append(String.valueOf(Defaults.getLargeBinningRegion())).append("\n");
-            out.append("numberComparedPeaks=").append(String.valueOf(Defaults.getNumberComparedPeaks())).append("\n");
-            out.append("similarityMZRange=").append(NumberUtilities.formatDouble(Defaults.getSimilarityMZRange(), 3)).append("\n");
-            out.append("similarityThreshold=").append(NumberUtilities.formatDouble(Defaults.getSimilarityThreshold(), 3)).append("\n");
-            out.append("retainThreshold=").append(NumberUtilities.formatDouble(Defaults.getRetainThreshold(), 3)).append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public static IClusteringEngine getDefaultClusteringEngine() {
+        ISimilarityChecker similarityChecker = getDefaultSimilarityChecker();
+        final ClusterComparator spectrumComparator = getDefaultSpectrumComparator();
+        final double st = getSimilarityThreshold();
+        return EngineFactories.buildClusteringEngineFactory(similarityChecker, spectrumComparator, st).buildInstance();
 
-        }
     }
 }

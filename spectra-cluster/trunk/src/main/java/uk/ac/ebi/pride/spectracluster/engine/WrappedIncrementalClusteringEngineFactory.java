@@ -24,7 +24,7 @@ public class WrappedIncrementalClusteringEngineFactory {
             throw new IllegalArgumentException("WrappedClusteringEngine needs a Double as WindowSize"); //
         double ws = (Double) otherdata[0];
         float windowSize = (float) ws;
-        final IIncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngineFactory().getIncrementalClusteringEngine(windowSize);
+        final IIncrementalClusteringEngine incrementalClusteringEngine = EngineFactories.buildIncrementalClusteringEngineFactory(windowSize).buildInstance();
         return new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
     }
 }

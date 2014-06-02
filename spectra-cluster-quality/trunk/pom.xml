@@ -188,6 +188,7 @@
                         <exclude>**/IncrementalClusteringEngineTests.java</exclude>
                     </excludes>
                     <junitArtifactName>junit:junit</junitArtifactName>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
 

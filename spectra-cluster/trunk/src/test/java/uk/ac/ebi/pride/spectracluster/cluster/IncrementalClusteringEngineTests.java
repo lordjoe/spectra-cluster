@@ -3,12 +3,13 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import junit.framework.Assert;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.engine.*;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.spectracluster.util.comparator.DefaultClusterComparator;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.IDefaultingFactory;
 
 import java.util.*;
 
@@ -149,7 +150,8 @@ public class IncrementalClusteringEngineTests {
         IIncrementalClusteringEngine incrementalClusteringEngine = factory.buildInstance();
    //     final IncrementalClusteringEngine incrementalClusteringEngine = new IncrementalClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), new Double(1000), Defaults.getSimilarityThreshold());
         IClusteringEngine incrementalEngine = new WrappedIncrementalClusteringEngine(incrementalClusteringEngine);
-        ClusteringEngine oldClusteringEngine = new ClusteringEngine(new FrankEtAlDotProductOld(), new DefaultClusterComparator(), Defaults.getSimilarityThreshold());
+        final IDefaultingFactory<IClusteringEngine> iClusteringEngineIDefaultingFactory = EngineFactories.buildClusteringEngineFactory(new FrankEtAlDotProductOld(), Defaults.getDefaultSpectrumComparator(), Defaults.getSimilarityThreshold());
+        ClusteringEngine oldClusteringEngine = (ClusteringEngine)iClusteringEngineIDefaultingFactory.buildInstance();
 
         for (ISpectrum originalSpectrum : originalSpectra) {
             // only deal with one charge
@@ -160,7 +162,7 @@ public class IncrementalClusteringEngineTests {
             oldClusteringEngine.addClusters(spectralCluster);
         }
         //noinspection UnusedDeclaration,UnusedAssignment
-        ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+        ISimilarityChecker similarityChecker = Defaults.getDefaultSimilarityChecker();
 
         long start = System.currentTimeMillis();
         incrementalEngine.processClusters();

@@ -6,10 +6,10 @@ import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngineFactory;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.DotClusterClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.util.NumberUtilities;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -163,12 +163,16 @@ public class ClusteringEngineMain {
      */
     protected void appendClusteringHeaders(final PrintWriter pOut) {
         pOut.append("name=" + name + "\n");
-        final ISimilarityChecker defaultSimilarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+        final ISimilarityChecker defaultSimilarityChecker = Defaults.getDefaultSimilarityChecker();
         pOut.append("similarity_method=" + defaultSimilarityChecker.getClass().getSimpleName() + "\n");
         pOut.append("threshold=" + Defaults.getSimilarityThreshold() + "\n");
         pOut.append("fdr=" + "-1" + "\n"); // todo what is this?
-        pOut.append("description=" + description + "\n");
-        Defaults.appendAnalysisParameters(pOut);
+        pOut.append("description=").append(description).append("\n");
+        pOut.append("largeBinningRegion=").append(String.valueOf(Defaults.getLargeBinningRegion())).append("\n");
+        pOut.append("numberComparedPeaks=").append(String.valueOf(Defaults.getNumberComparedPeaks())).append("\n");
+        pOut.append("similarityMZRange=").append(NumberUtilities.formatDouble(Defaults.getSimilarityMZRange(), 3)).append("\n");
+        pOut.append("similarityThreshold=").append(NumberUtilities.formatDouble(Defaults.getSimilarityThreshold(), 3)).append("\n");
+        pOut.append("retainThreshold=").append(NumberUtilities.formatDouble(Defaults.getRetainThreshold(), 3)).append("\n");
         pOut.append("\n");
     }
 

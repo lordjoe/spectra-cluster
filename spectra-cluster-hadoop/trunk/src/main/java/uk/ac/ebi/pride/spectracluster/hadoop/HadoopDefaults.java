@@ -2,13 +2,8 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 
 import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.algorithms.SizedWideBinner;
-import com.lordjoe.utilities.Util;
 import org.systemsbiology.hadoop.IJobBuilderFactory;
-import org.systemsbiology.hadoop.IParameterHolder;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
 
 /**
  * @author Steve Lewis
@@ -122,36 +117,5 @@ public final class HadoopDefaults {
 
     public static String getOutputPath() {
         return gOutputPath;
-    }
-
-    /**
-     * this method and the one below
-     *
-     * @param application source of parameters
-     */
-    public static void configureAnalysisParameters(@Nonnull IParameterHolder application) {
-
-        setSameClusterMergeMZWindowSize(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.SameClustererMerger.SpectrumMergeWindow", DEFAULT_SAME_CLUSTER_MERGE_WINDOW));
-        setMajorPeakMZWindowSize(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.MajorPeakReducer.MajorPeakWindow", DEFAULT_MAJOR_PEAK_MZ_WINDOW));
-        setSpectrumMergeMZWindowSize(application.getDoubleParameter("uk.ac.ebi.pride.spectracluster.hadoop.SpectrumMergeReducer.SpectrumMergeWindow", DEFAULT_SPECTRUM_MERGE_WINDOW));
-
-        setOutputPath(application.getParameter("uk.ac.ebi.pride.spectracluster.hadoop.OutputPath", DEFAULT_OUTPUT_PATH));
-    }
-
-    /**
-     * used to write parameters in to a data sink like a clustering file
-     *
-     * @param out output
-     */
-    public static void appendAnalysisParameters(@Nonnull Appendable out) {
-        try {
-            out.append("sameClusterMergeMZWindowSize=").append(Util.formatDouble(getSameClusterMergeMZWindowSize(), 3)).append("\n");
-            out.append("majorPeakMZWindowSize=").append(Util.formatDouble(getMajorPeakMZWindowSize(), 3)).append("\n");
-            out.append("spectrumMergeMZWindowSize=").append(Util.formatDouble(getSpectrumMergeMZWindowSize(), 3)).append("\n");
-            out.append("outputPath=").append(getOutputPath()).append("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        }
     }
 }

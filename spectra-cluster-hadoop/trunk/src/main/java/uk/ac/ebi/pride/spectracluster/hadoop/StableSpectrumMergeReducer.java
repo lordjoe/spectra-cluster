@@ -6,7 +6,6 @@ import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
@@ -15,7 +14,6 @@ import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
 import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -176,7 +174,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 
         // if not at end make a new engine
         if (pMzKey != null) {
-            setEngine(new StableClusteringEngine(new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks()), Defaults.getSimilarityThreshold()));
+            setEngine(new StableClusteringEngine(Defaults.getDefaultSimilarityChecker(), Defaults.getSimilarityThreshold()));
             setMajorMZ(pMzKey.getPrecursorMZ());
             int bin = pMzKey.getBin();
             setCurrentBin(bin);

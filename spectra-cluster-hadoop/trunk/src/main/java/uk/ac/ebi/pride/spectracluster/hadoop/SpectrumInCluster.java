@@ -300,7 +300,7 @@ public class SpectrumInCluster implements Equivalent<SpectrumInCluster> {
     }
 
     protected double computeDistance() {
-        ISimilarityChecker similarityChecker = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
+        ISimilarityChecker similarityChecker = Defaults.getDefaultSimilarityChecker();
         ISpectrum spectrum1 = getSpectrum();
         ICluster cluster1 = getCluster();
         ISpectrum spectrum2 = cluster1.getConsensusSpectrum();
