@@ -45,7 +45,7 @@ public class FrankEtAlDotProduct implements ISimilarityChecker {
     public static final AlgorithmVersion DEFAULT_ALGORITHM = AlgorithmVersion.NAT_METH_2011;
 
     private double similarityMZRange;
-    private int numberOfPeaksToCompare;
+    private int numberOfPeaksToCompare;   // TODO JG: in my opinion this number should not be a parameter as it's an essential part of the implementation, additionally it's missleading since it mostly will be overwritten
 
     public FrankEtAlDotProduct(double similarityMZRange,
                                int numberOfPeaksToCompare) {
