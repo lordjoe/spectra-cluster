@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class ReliableIdentificationStatistics {
             return 0;
         }
         if (s instanceof ISpectrum) {
-            String peptide = ((ISpectrum) s).getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = ((ISpectrum) s).getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null) {
                 totalNoPeptide++;
                 return 0;

@@ -84,6 +84,8 @@ public class MaximialPeakFilter implements IPeakFilter {
         int filterUsed = 0;
 
         int startSize = peaks.size();
+        if(startSize > 500)
+            startSize = peaks.size(); // take a good look
         int startBin = Math.min(SPECTRUM_SIZE_COUNTS.length - 1, startSize / 10);
         SPECTRUM_SIZE_COUNTS[startBin]++; // count size distribution in bins of 10;
         while (ret.size() > maxPeaks) {

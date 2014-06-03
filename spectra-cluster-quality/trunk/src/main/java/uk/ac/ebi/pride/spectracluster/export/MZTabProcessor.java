@@ -27,6 +27,7 @@ public class MZTabProcessor {
     private Map<Integer, MSRunProcessor> idToProcessor = new HashMap<Integer, MSRunProcessor>();
     private Map<MsRun, File> msRunFiles = new HashMap<MsRun, File>();
     private final MZTabhandler tabHandler;
+    private String accession;
 
     public MZTabProcessor(Exporter exporter, File mzTabFile) {
         this.exporter = exporter;
@@ -34,6 +35,10 @@ public class MZTabProcessor {
         if(tabHandler.getMzTabs() == null)
             return;
         addTabHandler(tabHandler);
+    }
+
+    public String getAccession() {
+        return accession;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -112,9 +117,22 @@ public class MZTabProcessor {
     protected boolean processPSM(ISpectrum spectrum,MSRunProcessor processor, Appendable out) {
         final String id = spectrum.getId();
 
+        if(getAccession() != null)
+            spectrum.setProperty(KnownProperties.TAXONOMY_KEY,getAccession());
+
         PSM peptide = getPSM(id,processor);
-        if(peptide == null)
-            return false; // not written
+        if(peptide != null) {
+            final String sequence = peptide.getSequence();
+            spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,sequence);
+            String proteinAccession = peptide.getAccession();
+            if(accession != null)   {
+                final Protein protein = idToProtein.get(accession);
+                if(protein != null)  {
+                    final String database = protein.getDatabase();
+                    spectrum.setProperty(KnownProperties.PROTEIN_KEY,database + ":" + proteinAccession);
+                }
+            }
+          }
 
         final TypedFilterCollection filters = getExporter().getFilters();
         ISpectrum passed = (ISpectrum)filters.passes(spectrum);
@@ -127,11 +145,31 @@ public class MZTabProcessor {
 
     protected void addTabHandler(MZTabhandler tab) {
         final MZTabFile mzTabs = tab.getMzTabs();
-        buildMSRunFiles(tab);
+        setAccessionFromHeader(mzTabs);
+         buildMSRunFiles(tab);
         final Collection<PSM> psMs = mzTabs.getPSMs();
         handleProteins(mzTabs);
         handlePSMs(psMs);
 
+    }
+
+    private void setAccessionFromHeader(MZTabFile mzTabs) {
+        final Metadata metadata = mzTabs.getMetadata();
+        final SortedMap<Integer, Sample> sampleMap = metadata.getSampleMap();
+        if(sampleMap.size() == 1)  {
+            for (Integer index : sampleMap.keySet()) {
+             Sample s = sampleMap.get(index);
+                final List<Param> speciesList = s.getSpeciesList();
+                if(speciesList.size() == 1)  {
+                    Param specias = speciesList.get(0);
+                    accession = specias.getAccession();
+                }
+            }
+
+        }
+        else {
+            System.out.println("More than 1 sample");
+        }
     }
 
     protected void handlePSMs(Collection<PSM> psMs) {

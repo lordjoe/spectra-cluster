@@ -32,7 +32,7 @@ public class PSM_Holder {
             holder.add(added);
             idToPSMSpectrum.put(id, holder);
         }
-        String peptide = added.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        String peptide = added.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
 
         if (peptideToPSMSpectrum.containsKey(peptide)) {
             peptideToPSMSpectrum.get(peptide).add(added);

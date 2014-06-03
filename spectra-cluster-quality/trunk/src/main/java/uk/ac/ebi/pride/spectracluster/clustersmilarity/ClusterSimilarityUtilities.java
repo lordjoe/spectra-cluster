@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.*;
-import com.lordjoe.filters.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
@@ -265,7 +264,7 @@ public class ClusterSimilarityUtilities {
                     for (PSMSpectrum psm : psmSpectrums) {
                         psm.setPrecursorCharge(pp.getPrecursorCharge());
                         psm.setPrecursorMz(pp.getPrecursorMz());
-                        psm.setPeptide(pp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY));
+                        psm.setPeptide(pp.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY));
                         holder.add(psm);
                     }
                     for (PSMSpectrum psm : holder) {
@@ -338,7 +337,7 @@ public class ClusterSimilarityUtilities {
         //noinspection unchecked
         final Spectrum spectrum = new Spectrum(spectrumId, precursorCharge, precursorMz, Defaults.getDefaultQualityScorer(),
                 Arrays.asList(IPeak.EMPTY_ARRAY));
-        spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY, peptide);
+        spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, peptide);
         return spectrum;
     }
 
@@ -501,7 +500,7 @@ public class ClusterSimilarityUtilities {
 
 
     public static String getPeptideString(ISpectrum sp) {
-        String ret = sp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        String ret = sp.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
         if (ret == null)
             ret = "";
         return ret;
@@ -634,7 +633,7 @@ public class ClusterSimilarityUtilities {
 
 
     public static String getPeptide(ISpectrum spec) {
-        return spec.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        return spec.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
     }
 
     public static Map<String, List<ICluster>> mapByMostCommonPeptide(final Collection<ICluster> myClusters) {
@@ -763,7 +762,7 @@ public class ClusterSimilarityUtilities {
         Set<PSMSpectrum> spectra = psms.getAllSpectrums();
         for (IDecoyPeptideSpectrumMatch sm : spectra) {
             if (sm.isDecoy()) {
-                String peptide = sm.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+                String peptide = sm.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
                 if (!decoys.contains(peptide))
                     System.out.println("not listed decoy " + peptide);
             }

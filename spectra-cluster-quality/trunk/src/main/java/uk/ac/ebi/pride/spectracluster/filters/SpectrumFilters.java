@@ -31,6 +31,30 @@ public class SpectrumFilters {
 
 
     /**
+     * return true of a ISpectrum has a property for a given accession
+     *
+     * @param length max allowed length
+     * @return
+     */
+    public static ITypedFilter<ISpectrum> getAccessionFilter(final String accession) {
+        return new AbstractSpectrumTypedFilter() {
+            /**
+             * return 0 if it passes the filter otherwise return null
+             *
+             * @param testObject
+             * @return as above
+             */
+            @Override
+            public ISpectrum passes(@Nonnull ISpectrum testObject) {
+                if (accession.equals(testObject.getProperty(KnownProperties.TAXONOMY_KEY)))
+                    return testObject;
+                return null;
+            }
+        };
+    }
+
+
+    /**
      * return true of a ISpectrum a length greater than maxlength
      *
      * @param length max allowed length
@@ -71,7 +95,7 @@ public class SpectrumFilters {
             @Override
             public ISpectrum passes(@Nonnull ISpectrum testObject) {
                 ISpectrum ps = (ISpectrum) testObject;
-                if (ps.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY) != null)
+                if (ps.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY) != null)
                     return testObject; // passes
                 return null; // fails
 
@@ -148,6 +172,12 @@ public class SpectrumFilters {
             if (value != null) {
                 int length = Integer.parseInt(value);
                 setElementObject(getMinimumLengthFilter(length));
+                return;
+            }
+
+            value = attributes.getValue("accession");
+            if (value != null) {
+                   setElementObject(getAccessionFilter(value));
                 return;
             }
 

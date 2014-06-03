@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Write spectrum out as MGF peak list format
@@ -37,6 +37,8 @@ public class MGFSpectrumAppender implements ISpectrumAppender {
                 out.append("+");
             out.append("\n");
 
+            appendProperties(spectrum, out);
+
             appendPeaks(spectrum, out);
 
             out.append("END IONS");
@@ -46,17 +48,31 @@ public class MGFSpectrumAppender implements ISpectrumAppender {
         }
     }
 
+    protected void appendProperties(ISpectrum spectrum, Appendable out) {
+        Properties props = new Properties(spectrum.getProperties());
+        try {
+            for (String s : props.stringPropertyNames()) {
+                final String property = props.getProperty(s);
+                final String line = KnownProperties.toMGFLine(s, property);
+                out.append(line);
+                out.append("\n");
+            }
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+
     /**
      * override to add peptide later
      *
      * @param out
      * @throws IOException
      */
-    private void appendTitle(final ISpectrum spectrum, final Appendable out) throws IOException {
+    protected void appendTitle(final ISpectrum spectrum, final Appendable out) throws IOException {
         out.append("TITLE=id=").append(spectrum.getId());
-        final String peptide = spectrum.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
-        if (peptide != null && peptide.length() > 0)
-            out.append(",sequence=").append(peptide);
+//        final String peptide = spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
+//        if (peptide != null && peptide.length() > 0)
+//            out.append(",sequence=").append(peptide);
     }
 
     protected void appendPeaks(final ISpectrum spectrum, final Appendable out) throws IOException {
