@@ -3,11 +3,9 @@ package uk.ac.ebi.pride.spectracluster.psm_similarity;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ClusterPeptideFraction;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
 import uk.ac.ebi.pride.spectracluster.cluster.IDecoyDiscriminator;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
@@ -31,6 +29,7 @@ public class PSMSpectralCluster implements ICluster {
     private final List<String> peptides = new ArrayList<String>();
     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
+    private final Properties properties = new Properties();
 
     public PSMSpectralCluster() {
     }
@@ -44,7 +43,7 @@ public class PSMSpectralCluster implements ICluster {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             ISpectrum sc1 = (ISpectrum) iSpectrum;
-            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (peptide != null) {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
@@ -61,7 +60,7 @@ public class PSMSpectralCluster implements ICluster {
         if (spectral_peptides.size() == 0) {
             for (ISpectrum iSpectrum : clusteredSpectra) {
                 ISpectrum sc1 = (ISpectrum) iSpectrum;
-                String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+                String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
                 if (peptide != null)
                     spectral_peptides.add(peptide);
             }
@@ -89,7 +88,7 @@ public class PSMSpectralCluster implements ICluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             PSMSpectrum sc1 = (PSMSpectrum) iSpectrum;
-            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             boolean decoy = sc1.isDecoy();
             if (peptides.contains(";")) {
                 MultipleSpectraCount++;
@@ -418,4 +417,45 @@ public class PSMSpectralCluster implements ICluster {
     public void removeSpectrumHolderListener(SpectrumHolderListener removed) {
         throw new UnsupportedOperationException("Remove spectrum holder listener is not supported");
     }
+
+    /**
+      * return a property of null if none exists
+      * See ISpectrum for known property names
+      *
+      * @param key
+      * @return possible null value
+      */
+     @Override
+     public String getProperty(String key) {
+         return properties.getProperty(key);
+     }
+
+
+     /**
+      * @param key
+      * @param value
+      */
+     @Override
+     public void setProperty(String key, String value) {
+         if(key == null)
+             return;
+         if( value == null)   {
+             properties.remove(key);
+             return;
+         }
+
+         properties.setProperty(key, value);
+     }
+
+     /**
+      * Only for internal use in copy constructor
+      * Note this is not safe
+      * This is not really deprecated but it warns only for
+      * internal use
+      */
+     @Override
+     public Properties getProperties() {
+         return properties;
+     }
+
 }

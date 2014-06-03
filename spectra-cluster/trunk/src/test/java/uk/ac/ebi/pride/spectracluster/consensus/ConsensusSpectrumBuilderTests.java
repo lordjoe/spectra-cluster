@@ -2,8 +2,9 @@ package uk.ac.ebi.pride.spectracluster.consensus;
 
 import org.junit.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
+import uk.ac.ebi.pride.spectracluster.filter.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.List;
 
@@ -18,9 +19,15 @@ public class ConsensusSpectrumBuilderTests {
 
     @Test
     public void testConsensusSpectrum() throws Exception {
-        IConsensusSpectrumBuilder factory1 = new JohannesConsensusSpectrum();
-           ConcensusSpectrumBuilderFactory factoryX2 = ConsensusSpectrum.FACTORY;
-        IConsensusSpectrumBuilder factory2 = factoryX2.getConsensusSpectrumBuilder();
+
+        // do nothing to filter
+        Defaults.setDefaultPeakFilter(IPeakFilter.NULL_FILTER);
+
+
+        IConsensusSpectrumBuilder factory2 = new JohannesConsensusSpectrum();
+  //         ConcensusSpectrumBuilderFactory factoryX2 = ConsensusSpectrum.FACTORY;
+      //  IConsensusSpectrumBuilder factory2 = Defaults.getDefaultConsensusSpectrumBuilder();
+        IConsensusSpectrumBuilder nofilter = ConsensusSpectrum.buildFactory(IPeakFilter.NULL_FILTER).getConsensusSpectrumBuilder();
 
 
         List<ICluster> clusters = ClusteringTestUtilities.readSpectraClustersFromResource();
@@ -29,7 +36,7 @@ public class ConsensusSpectrumBuilderTests {
 
         //noinspection UnusedDeclaration,UnusedAssignment
         long start = System.currentTimeMillis();
-        List<ISpectrum> fromFactory1 = ClusteringTestUtilities.buildConsessusSpectra(clusters, factory1);
+        List<ISpectrum> fromFactory1 = ClusteringTestUtilities.buildConsessusSpectra(clusters, nofilter);
         //noinspection UnusedDeclaration,UnusedAssignment
         long end = System.currentTimeMillis();
         //noinspection UnusedDeclaration
@@ -47,7 +54,9 @@ public class ConsensusSpectrumBuilderTests {
             final ISpectrum oldSpec = fromFactory1.get(i);
             final ISpectrum newSpec = fromFactory2.get(i);
             boolean equivalent = ClusteringTestUtilities.areSpectraVeryClose(oldSpec, newSpec);
+            final double v = Defaults.getDefaultSimilarityChecker().assessSimilarity(newSpec, oldSpec);
             if (!equivalent) {
+
                 equivalent = ClusteringTestUtilities.areSpectraVeryClose(oldSpec, newSpec);// break here do debug failure
                 Assert.assertTrue(equivalent);
             }

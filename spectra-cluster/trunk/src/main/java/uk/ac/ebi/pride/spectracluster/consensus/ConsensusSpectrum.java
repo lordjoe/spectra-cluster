@@ -38,15 +38,18 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     public static final int SIZE_TO_ADD_EVERY_TIME = 100;   // if less then this add all peaks
     public static final float FRACTION_OF_LOWEST_PEAK_TOKEEP = 0.40F; // do not keep peaks this much smaller than what er currently keep
 
-    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
+    public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory(Defaults.getDefaultPeakFilter());
 
+    public static ConcensusSpectrumBuilderFactory buildFactory(IPeakFilter filter)   {
+        return new ConsensusSpectrumFactory(filter);
+    }
     /**
      * always use the factory to get an instance
      */
     private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
-        private final IPeakFilter filter = Defaults.getDefaultPeakFilter();
-        private ConsensusSpectrumFactory() {
-
+        private final IPeakFilter filter;
+        private ConsensusSpectrumFactory(IPeakFilter filter) {
+           this.filter = filter;
         }
 
         /**

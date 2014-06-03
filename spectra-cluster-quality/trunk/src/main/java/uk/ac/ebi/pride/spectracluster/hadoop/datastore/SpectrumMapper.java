@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
@@ -72,8 +71,8 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
         ret[index++] = p.getPrecursorCharge();
         ret[index++] = p.getPrecursorMz();
         String property;
-        ret[index++] = p.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
-        ret[index++] = p.getProperty(ISpectrum.ANNOTATION_KEY);
+        ret[index++] = p.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
+        ret[index++] = p.getProperty(KnownProperties.ANNOTATION_KEY);
          final List<IPeak> peaks = p.getPeaks();
         final String encodedPeaks = SpectrumUtilities.peaksToDataString(peaks);
         ret[index++] = encodedPeaks;
@@ -91,8 +90,8 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
                 ps.setString(1, p.getId());
                 ps.setInt(2, p.getPrecursorCharge());
                 ps.setDouble(3, p.getPrecursorMz());
-                ps.setString(4,p.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY));
-                 ps.setString(5,p.getProperty(ISpectrum.ANNOTATION_KEY));    // annotation
+                ps.setString(4,p.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY));
+                 ps.setString(5,p.getProperty(KnownProperties.ANNOTATION_KEY));    // annotation
                   final List<IPeak> peaks = p.getPeaks();
                 final String encodedPeaks = SpectrumUtilities.peaksToDataString(peaks);
                 ps.setString(6, encodedPeaks);    // peaks
@@ -117,8 +116,8 @@ public class SpectrumMapper implements ParameterizedRowMapper<ISpectrum> {
         List<IPeak> peaks = SpectrumUtilities.dataStringToPeaks(peaksStr);
 
         ISpectrum ret = new Spectrum(id,  precursor_charge, precursor_mz,  Defaults.getDefaultQualityScorer(), peaks);
-        ret.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
-        ret.setProperty(ISpectrum.ANNOTATION_KEY,annotation);
+        ret.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,peptide);
+        ret.setProperty(KnownProperties.ANNOTATION_KEY,annotation);
 
         return ret;
     }

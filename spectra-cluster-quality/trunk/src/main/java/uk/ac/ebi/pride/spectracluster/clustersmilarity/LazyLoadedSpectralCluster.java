@@ -2,9 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 import uk.ac.ebi.pride.spectracluster.util.comparator.ClusterComparator;
@@ -92,6 +90,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
     private final List<String> peptides = new ArrayList<String>();
     private final List<ClusterPeptideFraction> byPurity = new ArrayList<ClusterPeptideFraction>();
     private final Set<String> spectraIds = new HashSet<String>();
+    private final Properties properties = new Properties();
 
     public LazyLoadedSpectralCluster() {
     }
@@ -118,7 +117,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             ISpectrum sc1 = (ISpectrum) iSpectrum;
-            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (peptide != null) {
                 String[] peptides = peptide.split(";");
                 for (String s : peptides) {
@@ -160,7 +159,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
         for (ISpectrum iSpectrum : clusteredSpectra) {
             AllSpectraCount++;
             ISpectrum sc1 = (ISpectrum) iSpectrum;
-            String value = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String value = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (value == null)
                 continue;
             String[] peptides = value.split(";");
@@ -188,7 +187,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
         final List<String> spectral_peptides = new ArrayList<String>();
         for (ISpectrum iSpectrum : clusteredSpectra) {
             IDecoyPeptideSpectrumMatch sc1 = (IDecoyPeptideSpectrumMatch) iSpectrum;
-            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
@@ -218,7 +217,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
             AllSpectraCount++;
             IDecoyPeptideSpectrumMatch sc1 = (IDecoyPeptideSpectrumMatch) iSpectrum;
             boolean decoy = sc1.isDecoy();
-            String peptide = sc1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+            String peptide = sc1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
             if (peptide == null)
                 continue;
             spectral_peptides.add(peptide);
@@ -519,4 +518,45 @@ public class LazyLoadedSpectralCluster implements ICluster {
     public void removeSpectrumHolderListener(SpectrumHolderListener removed) {
         throw new UnsupportedOperationException("Remove spectrum holder listener is not supported");
     }
+
+    /**
+      * return a property of null if none exists
+      * See ISpectrum for known property names
+      *
+      * @param key
+      * @return possible null value
+      */
+     @Override
+     public String getProperty(String key) {
+         return properties.getProperty(key);
+     }
+
+
+     /**
+      * @param key
+      * @param value
+      */
+     @Override
+     public void setProperty(String key, String value) {
+         if(key == null)
+             return;
+         if( value == null)   {
+             properties.remove(key);
+             return;
+         }
+
+         properties.setProperty(key, value);
+     }
+
+     /**
+      * Only for internal use in copy constructor
+      * Note this is not safe
+      * This is not really deprecated but it warns only for
+      * internal use
+      */
+     @Override
+     public Properties getProperties() {
+         return properties;
+     }
+
 }

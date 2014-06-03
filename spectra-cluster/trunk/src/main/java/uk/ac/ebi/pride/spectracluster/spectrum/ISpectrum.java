@@ -16,11 +16,6 @@ import java.util.Properties;
  */
 public interface ISpectrum extends ISpectrumQuality, Equivalent<ISpectrum>, Comparable<ISpectrum> {
 
-    // Known properties keys
-    public static final String IDENTIFIED_PEPTIDE_KEY = "identifiedPeptide";
-
-    public static final String ANNOTATION_KEY = "annotation";
-
     /**
      * globally unique id
      *

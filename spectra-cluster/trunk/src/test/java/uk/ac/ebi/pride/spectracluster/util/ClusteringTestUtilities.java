@@ -239,7 +239,7 @@ public class ClusteringTestUtilities {
             }
         }
         if (numberMisMatchedPeaks == 0)
-            return true;  // probably will nopt happen
+            return true;  // probably will not happen
 
         final ISimilarityChecker checker = Defaults.getDefaultSimilarityChecker();
 

@@ -4,15 +4,11 @@ package uk.ac.ebi.pride.spectracluster.io;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
-import uk.ac.ebi.pride.spectracluster.spectrum.Spectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
@@ -336,8 +332,9 @@ public class ParserUtilities {
      */
     public static ISpectrum readFilteredMGFScan(LineNumberReader inp) {
         ISpectrum cls = readMGFScan(inp);
-        if(cls == null)
-            return cls;
+        if (cls == null)
+            return null;
+
         final List<IPeak> peaks = cls.getPeaks();
         final List<IPeak> filteredPeaks = Defaults.getDefaultPeakFilter().filter(peaks);
         cls = new Spectrum(cls, filteredPeaks);
@@ -362,6 +359,8 @@ public class ParserUtilities {
     public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
+
+        Properties props = new Properties();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String annotation = null;
         try {
@@ -437,6 +436,15 @@ public class ParserUtilities {
                         line = inp.readLine();
                         continue;
                     }
+                    if (line.startsWith("SEQ=")) {
+                        sequence = line.substring("SEQ=".length());
+                        if(sequence.length() > 0)
+                            props.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, sequence);
+                        line = inp.readLine();
+                        continue;
+                    }
+                    if(KnownProperties.addMGFProperties(props,line))
+                        continue;
 
                     boolean tagIsNotHandled = false;
                     // ignored for now
@@ -474,10 +482,16 @@ public class ParserUtilities {
                             holder
                     );
 
-                    if(peptide != null)
-                         spectrum.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY, peptide);
-                    if(peptide != null)
-                       spectrum.setProperty(ISpectrum.ANNOTATION_KEY, title);
+                    // add any properties we find
+                    for (String s : props.stringPropertyNames()) {
+                         spectrum.setProperty(s,props.getProperty(s));
+                    }
+                    props.clear();
+
+                    if (peptide != null)
+                        spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, peptide);
+                    if (peptide != null)
+                        spectrum.setProperty(KnownProperties.ANNOTATION_KEY, title);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
@@ -593,6 +607,8 @@ public class ParserUtilities {
         String[] items = line.split(",");
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String label = line.substring("TITLE=".length());
+        while (label.startsWith("id="))
+            label = label.substring("id=".length()); // drop starting id=
         String spectrumId = label;
         if (items.length > 1) {
             spectrumId = items[0].trim().substring("TITLE=id=".length());

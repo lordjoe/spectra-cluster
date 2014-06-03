@@ -26,15 +26,15 @@ public class DecoyPeptideSpectrumMatch extends Spectrum implements IDecoyPeptide
 
     public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge, float precursorMz, List<IPeak> peaks, String pAnnotation) {
         super(id,  precursorCharge, precursorMz, Defaults.getDefaultQualityScorer(), peaks);
-        setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
-        setProperty(ISpectrum.ANNOTATION_KEY,pAnnotation);
+        setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,peptide);
+        setProperty(KnownProperties.ANNOTATION_KEY,pAnnotation);
     }
 
     public DecoyPeptideSpectrumMatch(String id, String peptide, int precursorCharge,
                                      float precursorMz, List<IPeak> peaks, IQualityScorer qualityScorer, String pAnnotation) {
         super(id,  precursorCharge, precursorMz, qualityScorer, peaks);
-        setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
-        setProperty(ISpectrum.ANNOTATION_KEY,pAnnotation);
+        setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,peptide);
+        setProperty(KnownProperties.ANNOTATION_KEY,pAnnotation);
      }
 
     /**

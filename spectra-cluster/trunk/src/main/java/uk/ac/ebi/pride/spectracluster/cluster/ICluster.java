@@ -4,8 +4,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Rui Wang
@@ -82,4 +81,31 @@ public interface ICluster extends ISpectrumHolder,
      */
     @Nonnull
     public Set<String> getSpectralIds();
+
+    /**
+       * return a property of null if none exists
+       * look in ISpectrum for known keys
+       *
+       * @param key
+       * @return
+       */
+      public String getProperty(String key);
+
+      /**
+       * look in ISpectrum for known keys
+       *
+       * @param key
+       * @param value
+       */
+      public void setProperty(String key, String value);
+
+      /**
+       * Only for internal use in copy constructor
+       * Note this is not safe
+       * This is not really deprecated but it warns only for
+       * internal use
+       */
+      @Deprecated
+      public Properties getProperties();
+
 }

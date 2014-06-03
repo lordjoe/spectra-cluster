@@ -2,8 +2,6 @@ package uk.ac.ebi.pride.tools.pride_spectra_clustering.impl;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.consensus.ConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.tools.jmzreader.model.impl.ParamGroup;
@@ -77,8 +75,8 @@ public class Adapters {
                  Defaults.getDefaultQualityScorer(),
                 newPeaks);
 
-        ret.setProperty(ISpectrum.ANNOTATION_KEY,peptide);
-        ret.setProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY,peptide);
+        ret.setProperty(KnownProperties.ANNOTATION_KEY,peptide);
+        ret.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,peptide);
          return ret;
     }
 
@@ -169,7 +167,7 @@ public class Adapters {
                 (int) precursorCharge,
                 newPeaks);
 
-              ret.setPeptide(inp.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY));
+              ret.setPeptide(inp.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY));
          return ret;
     }
 

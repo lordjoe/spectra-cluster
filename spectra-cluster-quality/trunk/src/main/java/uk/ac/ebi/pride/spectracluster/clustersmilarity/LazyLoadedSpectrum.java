@@ -2,9 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
-import uk.ac.ebi.pride.spectracluster.spectrum.IDecoyPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.List;
 import java.util.Properties;
@@ -110,14 +108,14 @@ public class LazyLoadedSpectrum implements IDecoyPeptideSpectrumMatch {
         ISpectrum internalSpectrum1 = getInternalSpectrum();
         if (internalSpectrum1 == null)
             return null;
-        return internalSpectrum1.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        return internalSpectrum1.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
     }
 
     /**
      * return text in the id not peptide or id
      */
        public String getAnnotation() {
-        return getInternalSpectrum().getProperty(ISpectrum.ANNOTATION_KEY);
+        return getInternalSpectrum().getProperty(KnownProperties.ANNOTATION_KEY);
     }
 
     @Override

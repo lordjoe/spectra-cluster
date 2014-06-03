@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 import com.lordjoe.algorithms.CompareTo;
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
 import java.util.*;
@@ -71,7 +71,7 @@ public class ClusterPeptidePurity implements Comparable<ClusterPeptidePurity> {
         ICluster cluster1 = getCluster();
         List<ISpectrum> clusteredSpectra = cluster1.getClusteredSpectra();
         for (ISpectrum spc : clusteredSpectra) {
-                 String peptide =  spc.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+                 String peptide =  spc.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
                 peptides.add(peptide);
           }
         numberSpectra = peptides.size();

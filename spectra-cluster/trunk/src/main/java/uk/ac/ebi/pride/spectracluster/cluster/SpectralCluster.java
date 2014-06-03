@@ -25,6 +25,7 @@ public class SpectralCluster implements ICluster {
     private final SpectralQualityHolder qualityHolder;
     private final List<SpectrumHolderListener> spectrumHolderListeners = new CopyOnWriteArrayList<SpectrumHolderListener>();
     private final Set<String> spectraIds = new HashSet<String>();
+    private final Properties properties = new Properties();
 
     private final List<ISpectrum> clusteredSpectra = new ArrayList<ISpectrum>();
     private final IConsensusSpectrumBuilder consensusSpectrumBuilder;
@@ -233,6 +234,45 @@ public class SpectralCluster implements ICluster {
         }
     }
 
+    /**
+     * return a property of null if none exists
+     * See ISpectrum for known property names
+     *
+     * @param key
+     * @return possible null value
+     */
+    @Override
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+
+    /**
+     * @param key
+     * @param value
+     */
+    @Override
+    public void setProperty(String key, String value) {
+        if(key == null)
+            return;
+        if( value == null)   {
+            properties.remove(key);
+            return;
+        }
+
+        properties.setProperty(key, value);
+    }
+
+    /**
+     * Only for internal use in copy constructor
+     * Note this is not safe
+     * This is not really deprecated but it warns only for
+     * internal use
+     */
+    @Override
+    public Properties getProperties() {
+        return properties;
+    }
 
     /**
      * sort by mz - might be useful

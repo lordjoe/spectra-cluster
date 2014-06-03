@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class SimpleSpectrumRetriever implements IMutableSpectrumRetriever {
     }
 
     private void addSpectrumByPeptide(ISpectrum spectrum) {
-        final String peptidesProp = spectrum.getProperty(ISpectrum.IDENTIFIED_PEPTIDE_KEY);
+        final String peptidesProp = spectrum.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
         if(peptidesProp == null)
             return;
         String[] peptides = peptidesProp.split(";");
