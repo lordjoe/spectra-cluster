@@ -103,8 +103,7 @@ public class Spectrum implements ISpectrum {
     }
 
     /**
-     * who knows why Johannes does this but we can as well
-     * todo @rw: double check this wit Johannes
+     * Convert intensity to be used by dot product
      */
     protected double convertIntensity(IPeak p1) {
         double intensity = p1.getIntensity();
