@@ -28,9 +28,9 @@ public class MaximialPeakFilter implements IPeakFilter {
             new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 2, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
             new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 3, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
             new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 4, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 7, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 5, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
             new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 6, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
-            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 4, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
+            new BinnedHighestNPeakFilter(FIRST_BIN_MAX - 7, BinnedHighestNPeakFilter.DEFAULT_BIN_SIZE, BinnedHighestNPeakFilter.DEFAULT_BIN_OVERLAP),
     };
 
     //============================================================
