@@ -436,15 +436,10 @@ public class ParserUtilities {
                         line = inp.readLine();
                         continue;
                     }
-                    if (line.startsWith("SEQ=")) {
-                        sequence = line.substring("SEQ=".length());
-                        if(sequence.length() > 0)
-                            props.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, sequence);
+                    if (KnownProperties.addMGFProperties(props, line)) {
                         line = inp.readLine();
                         continue;
                     }
-                    if(KnownProperties.addMGFProperties(props,line))
-                        continue;
 
                     boolean tagIsNotHandled = false;
                     // ignored for now
@@ -484,7 +479,7 @@ public class ParserUtilities {
 
                     // add any properties we find
                     for (String s : props.stringPropertyNames()) {
-                         spectrum.setProperty(s,props.getProperty(s));
+                        spectrum.setProperty(s, props.getProperty(s));
                     }
                     props.clear();
 
@@ -699,7 +694,7 @@ public class ParserUtilities {
                 if (isMGF) {
                     spectrumAppender.appendSpectrum(sb, sc.getConsensusSpectrum());
                 } else {
-                    final CGFClusterAppender clusterAppender = new CGFClusterAppender(spectrumAppender);
+                    final CGFClusterAppender clusterAppender =  CGFClusterAppender.INSTANCE;
                     clusterAppender.appendCluster(sb, sc);
                 }
             }

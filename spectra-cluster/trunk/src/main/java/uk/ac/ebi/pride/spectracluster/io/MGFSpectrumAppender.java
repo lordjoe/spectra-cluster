@@ -49,10 +49,10 @@ public class MGFSpectrumAppender implements ISpectrumAppender {
     }
 
     protected void appendProperties(ISpectrum spectrum, Appendable out) {
-        Properties props = new Properties(spectrum.getProperties());
+        final Properties properties = spectrum.getProperties();
         try {
-            for (String s : props.stringPropertyNames()) {
-                final String property = props.getProperty(s);
+            for (String s : properties.stringPropertyNames()) {
+                final String property = properties.getProperty(s);
                 final String line = KnownProperties.toMGFLine(s, property);
                 out.append(line);
                 out.append("\n");

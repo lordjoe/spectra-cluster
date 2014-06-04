@@ -442,7 +442,7 @@ public class ParserTests {
         ICluster sc = scs[0];
 
         StringBuilder sb = new StringBuilder();
-        final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
+        final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
         clusterAppender.appendCluster(sb, sc);
         String sc2Str = sb.toString();
         is = new LineNumberReader(new StringReader(sc2Str));

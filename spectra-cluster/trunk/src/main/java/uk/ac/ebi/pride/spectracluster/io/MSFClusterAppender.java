@@ -10,6 +10,8 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 
 public class MSFClusterAppender implements IClusterAppender {
 
+    public static MSFClusterAppender INSTANCE = new MSFClusterAppender(MSFSpectrumAppender.INSTANCE);
+
     private final MSFSpectrumAppender spectrumAppender;
 
     public MSFClusterAppender(MSFSpectrumAppender spectrumAppender) {

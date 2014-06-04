@@ -13,6 +13,10 @@ import java.io.IOException;
  */
 public class MSFSpectrumAppender implements ISpectrumAppender {
 
+    public static MSFSpectrumAppender INSTANCE = new MSFSpectrumAppender();
+
+    private MSFSpectrumAppender() {}
+
     @Override
     public void appendSpectrum(Appendable out, ISpectrum spectrum, Object... otherData) {
         try {

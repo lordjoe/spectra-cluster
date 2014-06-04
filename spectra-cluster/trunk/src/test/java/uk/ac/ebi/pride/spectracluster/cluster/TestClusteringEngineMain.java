@@ -103,7 +103,7 @@ public class TestClusteringEngineMain {
         try {
             System.out.println(new File(outName).getCanonicalPath());
             out = new PrintWriter(new FileWriter(outName));
-            final CGFClusterAppender clusterAppender = new CGFClusterAppender( MGFSpectrumAppender.INSTANCE);
+            final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
             for (ICluster iPeptideSpectralCluster : pClusters1) {
                 clusterAppender.appendCluster(out, iPeptideSpectralCluster);
             }

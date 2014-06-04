@@ -91,7 +91,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         ClusterSizeFilter bigOnly = new ClusterSizeFilter(ClusterConsolidator.BIG_CLUSTER_SIZE); // only accept big custers
 
         // full cgf
-        appender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
+        appender = CGFClusterAppender.INSTANCE;
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
 
         // only big cgf
@@ -113,7 +113,7 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
 //        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.SPTEXT_CLUSTERING_INSTANCE));
 
         // only big .cluster
-        appender = new MSFClusterAppender(new MSFSpectrumAppender());
+        appender = MSFClusterAppender.INSTANCE;
         appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.MSP_CLUSTERING_INSTANCE));
 
