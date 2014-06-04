@@ -166,7 +166,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
             String keyStr = key.toString();
 
             StringBuilder sb = new StringBuilder();
-            final CGFClusterAppender clusterAppender = new CGFClusterAppender( MGFSpectrumAppender.INSTANCE);
+            final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
             clusterAppender.appendCluster(sb, cluster);
             String string = sb.toString();
 

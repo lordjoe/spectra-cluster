@@ -42,11 +42,14 @@ public class ClusterSimilarityUtilities {
     }
 
     public static List<String> getClusterPeptides(ICluster cluster) {
-        List<String> holder = new ArrayList<String>();
 
-        if (true)
-            throw new IllegalStateException("problem"); // ToDo change
-        return holder;
+        List<String> holder = new ArrayList<String>();
+        for (ISpectrum spc  : cluster.getClusteredSpectra()) {
+            String peptide = spc.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
+            if(peptide != null)
+                holder.add(peptide);
+        }
+          return holder;
     }
 
     public static Set<String> allSpectralIds(ICluster c1, ICluster c2) {

@@ -73,8 +73,8 @@ public class MZTabProcessor {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public Protein getProtein(String accession) {
-        return idToProtein.get(accession);
+    public Protein getProtein(String proteinAccession) {
+        return idToProtein.get(proteinAccession);
     }
 
     public int handleCorrespondingMGFs(Appendable out) {
@@ -125,8 +125,8 @@ public class MZTabProcessor {
             final String sequence = peptide.getSequence();
             spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY,sequence);
             String proteinAccession = peptide.getAccession();
-            if(accession != null)   {
-                final Protein protein = idToProtein.get(accession);
+            if(proteinAccession != null)   {
+                final Protein protein = idToProtein.get(proteinAccession);
                 if(protein != null)  {
                     final String database = protein.getDatabase();
                     spectrum.setProperty(KnownProperties.PROTEIN_KEY,database + ":" + proteinAccession);

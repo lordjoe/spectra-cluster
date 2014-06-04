@@ -113,7 +113,7 @@ public class ClusteringEngineMain {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new FileWriter(outName));
-            final CGFClusterAppender clusterAppender = new CGFClusterAppender(MGFSpectrumAppender.INSTANCE);
+            final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
             for (ICluster ICluster : pClusters1) {
                 clusterAppender.appendCluster(out, ICluster);
             }

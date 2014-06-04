@@ -15,21 +15,38 @@ import java.util.*;
  */
 public class Exporter {
 
+    private static String onlyExportedTaxonomy;
+
+    public static String getOnlyExportedTaxonomy() {
+        return onlyExportedTaxonomy;
+    }
+
+    public static void setOnlyExportedTaxonomy(String onlyExportedTaxonomy) {
+        if(onlyExportedTaxonomy== null){
+            Exporter.onlyExportedTaxonomy = null;
+            return;
+          }
+        if(onlyExportedTaxonomy.equals( Exporter.onlyExportedTaxonomy))
+            return;
+        if(Exporter.onlyExportedTaxonomy != null)   {
+            Exporter.onlyExportedTaxonomy = null;
+        }
+        else {
+            Exporter.onlyExportedTaxonomy = onlyExportedTaxonomy;
+        }
+    }
+
     /**
      * @param directory
      * @return given a project
      */
-    public static PrintWriter fromDirectory(File baseDirectory,File directory) {
-        try {
-           if(!baseDirectory.exists() && !baseDirectory.mkdirs())
+    public static File fromDirectory(File baseDirectory,File directory) {
+            if(!baseDirectory.exists() && !baseDirectory.mkdirs())
                throw new IllegalStateException("bad base directory");
             final String child = directory.getName() + ".mgf";
             File outFile = new File(baseDirectory, child);
-            return new PrintWriter(new FileWriter(outFile ));
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-    }
+            return outFile;
+       }
 
     private final TypedFilterCollection filters;
     private final File outputDirectory;
@@ -62,19 +79,33 @@ public class Exporter {
 
 
     public void exportDirectory() {
-        final PrintWriter out = fromDirectory(outputDirectory,activeDirectory);
+        final File outFile = fromDirectory(outputDirectory,activeDirectory);
         int numberWritten = 0;
+        PrintWriter out = null;
         try {
-            final List<File> mzTabFiles = MZTabhandler.getMZTabFiles(activeDirectory);
+              out =  new PrintWriter(new FileWriter(outFile ));
+              final List<File> mzTabFiles = MZTabhandler.getMZTabFiles(activeDirectory);
             if(mzTabFiles.size() == 0)
                 throw new IllegalStateException("Bad or Empty input directory " + activeDirectory.getAbsolutePath()); // ToDo change
             for (File mzTabFile : mzTabFiles) {
                 System.out.println(mzTabFile.getAbsolutePath());
                 MZTabProcessor processor = new MZTabProcessor(this, mzTabFile);
+                final String onlyExportedTaxonomy1 = getOnlyExportedTaxonomy();
+                final String accession = processor.getAccession();
+                if(onlyExportedTaxonomy1 != null) {
+                      if(!onlyExportedTaxonomy1.equals(accession))
+                        continue; // skip files wrong taxomoly
+                }
                 numberWritten += processor.handleCorrespondingMGFs(out);
               }
-        } finally {
+        }
+        catch(IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        finally {
             out.close();
+            if(numberWritten == 0)
+                outFile.delete();
 
         }
     }
@@ -101,7 +132,7 @@ public class Exporter {
             exp.exportDirectory();
 
         }
-        MaximialPeakFilter.showStatistics(System.out);
+     //   MaximialPeakFilter.showStatistics(System.out);
 
     }
 

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.filters;
 
 import com.lordjoe.filters.*;
 import org.xml.sax.*;
+import uk.ac.ebi.pride.spectracluster.export.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.annotation.*;
@@ -31,12 +32,12 @@ public class SpectrumFilters {
 
 
     /**
-     * return true of a ISpectrum has a property for a given accession
+     * return true of a ISpectrum has a property for a given taxonomy
      *
      * @param length max allowed length
      * @return
      */
-    public static ITypedFilter<ISpectrum> getAccessionFilter(final String accession) {
+    public static ITypedFilter<ISpectrum> getTaxonomyFilter(final String accession) {
         return new AbstractSpectrumTypedFilter() {
             /**
              * return 0 if it passes the filter otherwise return null
@@ -175,9 +176,10 @@ public class SpectrumFilters {
                 return;
             }
 
-            value = attributes.getValue("accession");
+            value = attributes.getValue("taxonomy");
             if (value != null) {
-                   setElementObject(getAccessionFilter(value));
+                Exporter.setOnlyExportedTaxonomy(value);
+                   setElementObject(getTaxonomyFilter(value));
                 return;
             }
 
