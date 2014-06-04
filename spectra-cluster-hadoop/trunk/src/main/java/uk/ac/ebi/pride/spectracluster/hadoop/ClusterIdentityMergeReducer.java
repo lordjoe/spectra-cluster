@@ -1,15 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import org.apache.hadoop.io.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import org.apache.hadoop.io.Text;
+import org.systemsbiology.hadoop.AbstractParameterizedReducer;
+import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
 import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.List;
 
 /**
