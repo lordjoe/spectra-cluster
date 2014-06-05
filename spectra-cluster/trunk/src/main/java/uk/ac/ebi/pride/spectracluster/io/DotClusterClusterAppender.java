@@ -99,7 +99,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
 
             double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
 
-            out.append("version=").append(Version.Version).append("\n");
+            out.append("version=").append(Version.version).append("\n");
             out.append("threshold=").append(String.valueOf(defaultSimilarityThreshold));
                 out.append("\n");
             out.append("fdr=0");
