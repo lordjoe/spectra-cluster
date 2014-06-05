@@ -58,7 +58,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.spectracluster</groupId>
             <artifactId>spectra-cluster</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -208,16 +208,47 @@
             </plugin>
 
             <!--jar-->
+            <!--jar-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <!--NOTE: you must have this version number, otherwise, the build will not be able to find Validator-->
                 <version>2.4</version>
                 <configuration>
                     <excludes>
                         <exclude>**/test</exclude>
                         <exclude>**/test/*.class</exclude>
                     </excludes>
+                    <archive>
+                        <manifest>
+                            <mainClass>uk.ac.ebi.pride.spectracluster.export.Exporter</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
                 </configuration>
+            </plugin>
+
+            <!--assembly to zip-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>${project.basedir}/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
