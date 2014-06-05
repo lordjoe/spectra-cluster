@@ -13,6 +13,7 @@ public class VersionTest {
     @Test
     public void testVersion()
     {
-        Assert.assertFalse("-1".equals(Version.version) );
+        final String version = Version.version;
+        Assert.assertFalse("This only works in a released and tagged version",Version.SNAPSHOT.equals(version));
     }
 }

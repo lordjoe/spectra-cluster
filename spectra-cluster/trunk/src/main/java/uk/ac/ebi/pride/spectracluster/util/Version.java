@@ -2,9 +2,6 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 
@@ -17,8 +14,8 @@ import java.util.Properties;
  */
 public class Version {
 
-    public static final String BAD_VERSION = "-1";
-    public static String version = BAD_VERSION;
+    public static final String SNAPSHOT = "1.0.1-SNAPSHOT";
+    public static String version = SNAPSHOT;
 
     static {
         // get the location of version property file
@@ -28,9 +25,12 @@ public class Version {
         final Properties versionProperties = new Properties();
         try {
             versionProperties.load(new FileInputStream(new File(versionPropertyFileUrl.toURI())));
-            version = versionProperties.getProperty("algorithm.version");
+            final String property = versionProperties.getProperty("algorithm.version");
+            if (!property.startsWith("$")) {
+                version = property;
+            }
         } catch (Exception e) {
-            version = BAD_VERSION;
+            version = SNAPSHOT;
         }
 
     }
