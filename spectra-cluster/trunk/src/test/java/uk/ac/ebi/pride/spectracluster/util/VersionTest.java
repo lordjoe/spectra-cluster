@@ -12,6 +12,6 @@ public class VersionTest {
     @Test
     public void testVersion()
     {
-        Assert.assertFalse("-1".equals(Version.Version) );
+        Assert.assertFalse("-1".equals(Version.version) );
     }
 }
