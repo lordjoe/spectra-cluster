@@ -53,9 +53,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/trunk/spectra-cluster/tags/spectra-cluster-1.0.0</connection>
-        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/trunk/spectra-cluster/tags/spectra-cluster-1.0.0</developerConnection>
-        <url>https://spectra-cluster.googlecode.com/svn/trunk/spectra-cluster/tags/spectra-cluster-1.0.0</url>
+        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</connection>
+        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</developerConnection>
+        <url>https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</url>
     </scm>
 
     <dependencies>
