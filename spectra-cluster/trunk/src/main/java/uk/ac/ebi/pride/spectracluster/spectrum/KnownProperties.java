@@ -30,6 +30,15 @@ public class KnownProperties {
 
     public static final String UNKNOWN_MGF_KEY = "USER12";
 
+    // ===========================
+    // Known cluster Properties
+    public static final String MOST_COMMON_PEPTIDE_KEY = "mostCommonPeptide";
+    // future uses
+    public static final String PEPTIDES_LIST_COMMA_DELIMITED = "peptidesListCommaDelimited";
+    public static final String PEPTIDE_PURITY_STRING = "peptidePurityString";
+
+
+    // =====================
     /**
      * this section related to tags in MGF files where
      * SEQ, USER00, USER01, USER02 .. User12 are allowed

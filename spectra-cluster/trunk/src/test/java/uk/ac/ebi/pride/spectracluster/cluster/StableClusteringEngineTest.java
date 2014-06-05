@@ -3,9 +3,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.spectracluster.engine.ClusteringEngineFactory;
-import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
 import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
@@ -29,7 +27,7 @@ public class StableClusteringEngineTest {
     @Before
     public void setUp() throws Exception {
         StableClusterUtilities.setStableClusterSize(STABLE_CLUSTER_SIZE);   // drop cluster size foe a small sample
-        IClusteringEngine ce = new ClusteringEngineFactory().getClusteringEngine();
+        IClusteringEngine ce = EngineFactories.DEFAULT_CLUSTERING_ENGINE_FACTORY.buildInstance();
         List<ICluster> originalSpectralClusters = new ArrayList<ICluster>(ClusteringTestUtilities.readSpectraClustersFromResource());
 
         for (ICluster sc : originalSpectralClusters) {

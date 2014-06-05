@@ -20,7 +20,7 @@ import java.util.*;
  * <p/>
  * todo: development
  */
-
+@Deprecated
 public class PeakMatchClusteringEngine implements IClusteringEngine {
     // Frank et al does 5 we do 1 more
     public static final int MAJOR_PEAK_NUMBER = 6;

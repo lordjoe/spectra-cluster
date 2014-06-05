@@ -36,6 +36,8 @@ public class ClusterComparator implements Comparator<ICluster> {
             return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
         }
 
+        // todo use getSpectralIds
+        // todo if that is done use in  SpectraslCluster
         int hash1 = o1.hashCode();
         int hash2 = o2.hashCode();
         if (hash1 != hash2)

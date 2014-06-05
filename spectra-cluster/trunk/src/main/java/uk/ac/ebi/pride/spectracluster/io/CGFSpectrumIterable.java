@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Iterator;
 
 /**
- * uk.ac.ebi.pride.spectracluster.spectrum.MGFSpectrumIterable
+ * uk.ac.ebi.pride.spectracluster.spectrum.CGFSpectrumIterable
  * class to read clusters from a CGF file one at a time
  * This allows clusters to be processed from a large file without
  * blowing memory limits

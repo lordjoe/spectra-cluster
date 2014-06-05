@@ -215,6 +215,7 @@ public class SpectralCluster implements ICluster {
      */
     @Override
     public boolean isRemoveSupported() {
+        // todo Johannes stable clusters do not support removal - do we????
         // return !isStable();
         return true;
     }
@@ -276,7 +277,7 @@ public class SpectralCluster implements ICluster {
 
     /**
      * sort by mz - might be useful
-     *
+     *   NOTE we cannot use ClusterComparator because we want to compare spectralIds
      * @param o
      * @return
      */
@@ -336,8 +337,7 @@ public class SpectralCluster implements ICluster {
         if (spc1.size() != spc2.size()) {
             return false;
         }
-        // TODO discuss how spectra are compared - why not compare the consensus spectra directly and enforce
-        // a high similarity there?
+        // NOTE for only one spectrum in the cluster you are really comparing the only spectrum
         if (spc1.size() <= 1) {
 
             final ISpectrum consensusSpectrum = getConsensusSpectrum();
@@ -345,24 +345,8 @@ public class SpectralCluster implements ICluster {
 
             return consensusSpectrum.equivalent(oConsensusSpectrum);
 
-//            List<IPeak> peaks = consensusSpectrum.getPeaks();
-//            List<IPeak> peaks1 = oConsensusSpectrum.getPeaks();
-//            if (peaks.size() != peaks1.size()) {
-//                return false;
-//            }
-//            for (int i = 0; i < peaks1.size(); i++) {
-//                IPeak pk0 = peaks.get(i);
-//                IPeak pk1 = peaks1.get(i);
-//                if (!pk0.equivalent(pk1))
-//                    return false;
-//            }
-//            return true; // just one spectrum so check peaks
         } else {
-            if (spc1.size() != spc2.size())
-                return false;
-
-
-            for (int i = 0; i < spc1.size(); i++) {
+             for (int i = 0; i < spc1.size(); i++) {
                 ISpectrum pk1 = spc1.get(i);
                 ISpectrum pk2 = spc2.get(i);
                 boolean test = !pk2.equivalent(pk1);

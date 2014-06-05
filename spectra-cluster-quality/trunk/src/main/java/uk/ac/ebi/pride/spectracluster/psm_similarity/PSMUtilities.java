@@ -153,6 +153,17 @@ public class PSMUtilities {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        } else if (file.getName().endsWith(".cgf")) {
+            try {
+                LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+
+               ICluster[] clusters = ParserUtilities.readSpectralCluster(lineNumberReader);
+                List<ICluster> clusters1 = Arrays.asList(clusters);
+                stc.addClusters(clusters1);
+                simpleClusterSet.addClusters(clusters1);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (false) {
@@ -259,7 +270,7 @@ public class PSMUtilities {
         List<IPeak> peaks = ClusterParserUtilities.buildPeaks(consensusMzLine, consensusIntensityLine);
         if (peaks == null)
             return null;
-        ISpectrum consensusSpectrum = new Spectrum(null,  0, cluster.getPrecursorMz(), Defaults.getDefaultQualityScorer(), peaks);
+        ISpectrum consensusSpectrum = new Spectrum(null, 0, cluster.getPrecursorMz(), Defaults.getDefaultQualityScorer(), peaks);
         cluster.setConsensusSpectrum(consensusSpectrum);
 
         return cluster;

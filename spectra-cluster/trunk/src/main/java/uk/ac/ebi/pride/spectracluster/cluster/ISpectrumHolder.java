@@ -14,7 +14,7 @@ public interface ISpectrumHolder {
     /**
      * Add a array of spectrum to cluster
      */
-    void addSpectra(ISpectrum... merged);
+    public void addSpectra(ISpectrum... merged);
 
 
     /**
@@ -22,12 +22,12 @@ public interface ISpectrumHolder {
      *
      * @return as above
      */
-    boolean isRemoveSupported();
+    public boolean isRemoveSupported();
 
     /**
      * Remove an array of spectrum from cluster
      */
-    void removeSpectra(ISpectrum... removed);
+    public void removeSpectra(ISpectrum... removed);
 
     /**
      * add a change listener
@@ -35,12 +35,12 @@ public interface ISpectrumHolder {
      *
      * @param added non-null change listener
      */
-    void addSpectrumHolderListener(SpectrumHolderListener added);
+    public void addSpectrumHolderListener(SpectrumHolderListener added);
 
     /**
      * remove a change listener
      *
      * @param removed non-null change listener
      */
-    void removeSpectrumHolderListener(SpectrumHolderListener removed);
+    public void removeSpectrumHolderListener(SpectrumHolderListener removed);
 }

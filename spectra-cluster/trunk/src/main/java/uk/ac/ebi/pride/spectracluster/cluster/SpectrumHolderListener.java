@@ -15,7 +15,7 @@ public interface SpectrumHolderListener {
      * @param holder !null holder
      * @param added  added spectra
      */
-    void onSpectraAdd(ISpectrumHolder holder, ISpectrum... added);
+    public void onSpectraAdd(ISpectrumHolder holder, ISpectrum... added);
 
     /**
      * handle notification of removing spectra
@@ -23,6 +23,6 @@ public interface SpectrumHolderListener {
      * @param holder  !null holder
      * @param removed removed spectra
      */
-    void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed);
+    public void onSpectraRemove(ISpectrumHolder holder, ISpectrum... removed);
 
 }

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.spectracluster.util;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.cluster.SpectralCluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -219,22 +219,26 @@ public final class ClusterUtilities {
      * @return as above
      */
     public static String mostCommonPeptides(ICluster cluster) {
+        String property = cluster.getProperty(KnownProperties.MOST_COMMON_PEPTIDE_KEY);
+        if(property != null)
+            return property;
+
         final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
         //noinspection UnnecessaryLocalVariable
         String petides = SpectrumUtilities.mostCommonPeptides(clusteredSpectra);
         return petides;
     }
 
-
-    public static String[] getMostCommonPeptides(ICluster cluster) {
-        final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
-        //noinspection UnnecessaryLocalVariable
-        final List<String> peptideList = SpectrumUtilities.getPeptideList(clusteredSpectra);
-        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
-        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
-
-        return stringsByOccurance;
-    }
+//         todo to we need this 4-jun-2014
+//    public static String[] getMostCommonPeptides(ICluster cluster) {
+//        final List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+//        //noinspection UnnecessaryLocalVariable
+//        final List<String> peptideList = SpectrumUtilities.getPeptideList(clusteredSpectra);
+//        //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
+//        final String[] stringsByOccurance = CountedString.getStringsByOccurance(peptideList);
+//
+//        return stringsByOccurance;
+//    }
 
 
     /**

@@ -58,6 +58,7 @@ public final class SpectrumUtilities {
      * @return as above
      */
     public static String mostCommonPeptides(List<ISpectrum> spectra) {
+
         final List<String> peptideList = getPeptideList(spectra);
         CountedString[] countedStrings = CountedString.getCountedStrings(peptideList);
         StringBuilder sb = new StringBuilder();
