@@ -38,7 +38,14 @@ public class Spectrum implements ISpectrum {
     // the number of peaks considered as "major" when the majorPeakMZ Set was filled the last time.
     private int currentMajorPeakCount = 0;
 
-
+    /**
+     *
+     * @param pId
+     * @param pPrecursorCharge
+     * @param pPrecursorMz
+     * @param qualityScorer // Usually this is Defaults.getDefaultQualityScorer()
+     * @param inpeaks
+     */
     public Spectrum(final String pId,
                     final int pPrecursorCharge,
                     final float pPrecursorMz,

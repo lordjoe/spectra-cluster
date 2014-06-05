@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
+import uk.ac.ebi.pride.spectracluster.util.*;
+
 /**
  * Cluster stability assessor based on the spectra count
  *
@@ -9,15 +11,13 @@ package uk.ac.ebi.pride.spectracluster.cluster;
  */
 public class CountBasedClusterStabilityAssessor implements IClusterStabilityAssessor {
 
-    public static final int DEFAULT_STABLE_CLUSTER_SIZE = 20;
-    public static final int DEFAULT_SEMI_STABLE_CLUSTER_SIZE = 10;
 
     private final int stableClusterSize;
     private final int semiStableClusterSize;
 
     public CountBasedClusterStabilityAssessor() {
-        this.stableClusterSize = DEFAULT_STABLE_CLUSTER_SIZE;
-        this.semiStableClusterSize = DEFAULT_SEMI_STABLE_CLUSTER_SIZE;
+        this.stableClusterSize = StableClusterUtilities.getStableClusterSize();
+        this.semiStableClusterSize = StableClusterUtilities.getSemiStableClusterSize();
     }
 
     public CountBasedClusterStabilityAssessor(int stableClusterSize, int semiStableClusterSize) {
@@ -32,15 +32,7 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
             return false; // Duh but saves other tests
         if (count >= stableClusterSize)
             return true;
-        // some tests for debugging
-        if (count < 5)
-            return false;
-        if (count < 10)
-            return false;
-        if (count < 15)
-            return false;
-
-        return false;
+          return false;
     }
 
     @Override
@@ -50,9 +42,6 @@ public class CountBasedClusterStabilityAssessor implements IClusterStabilityAsse
             return false; // Duh but saves other tests
         if (count >= semiStableClusterSize)
             return true;
-        // some tests for debugging
-        if (count < 5)
-            return false;
         return false;
     }
 }

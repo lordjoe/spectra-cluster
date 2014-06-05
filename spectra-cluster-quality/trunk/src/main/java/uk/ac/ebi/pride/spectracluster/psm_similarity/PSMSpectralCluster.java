@@ -18,7 +18,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class PSMSpectralCluster implements ICluster {
+public class PSMSpectralCluster implements IPepideHoldingCluster {
 
 
     private String id;
@@ -427,6 +427,9 @@ public class PSMSpectralCluster implements ICluster {
       */
      @Override
      public String getProperty(String key) {
+         if(KnownProperties.MOST_COMMON_PEPTIDE_KEY.equals(key))
+             return getMostCommonPeptide();
+
          return properties.getProperty(key);
      }
 

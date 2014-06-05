@@ -5,8 +5,7 @@ import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.PSMSpectrum;
-import uk.ac.ebi.pride.spectracluster.psm_similarity.PSM_Holder;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
@@ -24,11 +23,11 @@ import java.util.*;
  */
 public class ClusterSimilarityUtilities {
 
-
-    public static void getPeptidePurity(ICluster cluster) {
-        throw new UnsupportedOperationException("Fix This"); // ToDo
-    }
-
+//    Todo I dont think we need this
+//    public static void getPeptidePurity(ICluster cluster) {
+//        throw new UnsupportedOperationException("Fix This"); // ToDo
+//    }
+//
 
     public static CountedMap<String> getCountedMap(IClusterSet cl) {
         CountedMap<String> ret = new CountedMap<String>();
@@ -42,6 +41,11 @@ public class ClusterSimilarityUtilities {
     }
 
     public static List<String> getClusterPeptides(ICluster cluster) {
+        if (cluster instanceof IPepideHoldingCluster) {
+            IPepideHoldingCluster lazy = (IPepideHoldingCluster) cluster;
+            return lazy.getPeptides();
+         }
+
 
         List<String> holder = new ArrayList<String>();
         for (ISpectrum spc  : cluster.getClusteredSpectra()) {

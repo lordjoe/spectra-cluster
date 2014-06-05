@@ -239,11 +239,14 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
     }
 
     /**
+     *
      * @param args
      * @throws IOException
      */
     private static void handleClusteringFiles(String[] args) throws IOException {
-        PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
+
+     // not used
+    //    PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
 
         PSMComparisonMain mainClass = new PSMComparisonMain();
 
@@ -258,11 +261,13 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
             mainClass.clearDecoyUse();
             String arg = args[i];
             File originalFile = new File(arg);
-            IClusterSet cs = PSMUtilities.readClusterSet(originalFile, arg + "SemiStableNew.clustering");
+            IClusterSet cs = PSMUtilities.readClusterSet(originalFile, arg );
+            System.out.println("Original clusters");
             showClusterSizesAndCounts(arg, cs);
 
 
             cs = cs.dropClustersLessThanSize(4); // drop the riff raff
+            System.out.println("Cluser Size > 4");
             showClusterSizesAndCounts(arg, cs);
             cs.setName(arg);
             mainClass.addClustering(cs);
@@ -274,13 +279,15 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         mainClass.showFDRCharts(mainClass.getProperty("name"));
         mainClass.generateReports();
 
-        PSMUtilities.closeClusterSaver();
+     // not used
+    //    PSMUtilities.closeClusterSaver();
     }
 
     private static void handleCgfDirectories(String[] args) throws IOException {
         PSMUtilities.startClusterSaver(new PrintWriter(new FileWriter("BigRangeClusters.clustering")));
 
         PSMComparisonMain mainClass = new PSMComparisonMain();
+
 
         ElapsedTimer et = new ElapsedTimer();
 
@@ -316,6 +323,25 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         // PSMUtilities.closeClusterSaver();
     }
 
+    /**
+     * Main looks like
+     *  cptacComparison.properties Johannes.clustering cptacWithProperties.clustering
+     *  where the properties file says
+     *      SpectraFile=cptac_spectra.tsv
+     *      Decoys=decoy_sequences-cptac.csv
+     *      TSV is a tab delimited file with
+     *   id   Charge  MZ Peptide
+     * 4294	4	990.01	QAAAQPHTEIPEGTTAEEAGIGDTPSLEDEAAGHVTQAR
+     * 87900	4	990.04	QAAAQPHTEIPEGTTAEEAGIGDTPSLEDEAAGHVTQAR
+     * tsv is needed since we need to look things up from clusters
+     *
+     * What follows is a list of filte or directoroes -
+     * if it is a directory then all .clustering files are read (and maybe cgf as well)
+     * if a file that file is read
+     * The name is the file name (ToDo - can we change this)
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
             usage();
@@ -323,7 +349,7 @@ public class PSMComparisonMain implements IDecoyDiscriminator {
         }
 
         XYDataset ds = null; // Slewis - force the compiler to add
-        // why am I having issues loading jfreechart
+        // why am I having issues loading jfreechart  SLewis
         final Class<?> aClass = Class.forName("org.jfree.data.xy.XYDataset");
         // handleCgfDirectories(args);
         handleClusteringFiles(args);

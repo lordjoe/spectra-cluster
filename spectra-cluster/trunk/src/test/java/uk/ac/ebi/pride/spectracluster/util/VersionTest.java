@@ -9,6 +9,7 @@ import org.junit.*;
  * @date 05/06/2014
  */
 public class VersionTest {
+    // Test that version is NOT the default value
     @Test
     public void testVersion()
     {

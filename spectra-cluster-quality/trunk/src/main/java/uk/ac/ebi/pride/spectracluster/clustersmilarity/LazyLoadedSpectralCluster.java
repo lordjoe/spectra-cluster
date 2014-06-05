@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import com.lordjoe.algorithms.CountedString;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.psm_similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
@@ -18,7 +19,7 @@ import java.util.*;
  * @author Rui Wang
  * @version $Id$
  */
-public class LazyLoadedSpectralCluster implements ICluster {
+public class LazyLoadedSpectralCluster implements IPepideHoldingCluster {
 
     protected static class DataFromDatabase {
         private final String id;
@@ -294,11 +295,13 @@ public class LazyLoadedSpectralCluster implements ICluster {
         return precursorCharge;
     }
 
+    @Override
      public List<String> getPeptides() {
         guaranteeCachedRead();
         return new ArrayList<String>(peptides);
     }
 
+    @Override
      public String getMostCommonPeptide() {
         List<String> peptideStrings = getPeptides();
         if (!peptideStrings.isEmpty()) {
@@ -315,6 +318,7 @@ public class LazyLoadedSpectralCluster implements ICluster {
      */
     public
     @Nonnull
+    @Override
     List<ClusterPeptideFraction> getPeptidePurity(IDecoyDiscriminator dd) {
         if (byPurity.size() == 0) {
             if (dd == null)

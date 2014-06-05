@@ -3,9 +3,7 @@ package uk.ac.ebi.pride.spectracluster.io;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.SpectrumUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
 import java.io.IOException;
@@ -101,8 +99,9 @@ public class DotClusterClusterAppender implements IClusterAppender {
 
             double defaultSimilarityThreshold = Defaults.getSimilarityThreshold();
 
+            out.append("version=").append(Version.Version).append("\n");
             out.append("threshold=").append(String.valueOf(defaultSimilarityThreshold));
-            out.append("\n");
+                out.append("\n");
             out.append("fdr=0");
             out.append("\n");
             out.append("description=").append(name);

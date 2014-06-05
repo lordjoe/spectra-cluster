@@ -94,7 +94,7 @@ public class Exporter {
                 final String accession = processor.getAccession();
                 if(onlyExportedTaxonomy1 != null) {
                       if(!onlyExportedTaxonomy1.equals(accession))
-                        continue; // skip files wrong taxomoly
+                        continue; // skip files wrong taxomony
                 }
                 numberWritten += processor.handleCorrespondingMGFs(out);
               }

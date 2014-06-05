@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
+ * look in ClusterUtilities and ClusterSimilarityUtilities for older methods
  * @author Rui Wang
  * @version $Id$
  */
