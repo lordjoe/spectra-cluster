@@ -17,7 +17,8 @@ import java.util.Properties;
  */
 public class Version {
 
-    public static String version = "-1";
+    public static final String BAD_VERSION = "-1";
+    public static String version = BAD_VERSION;
 
     static {
         // get the location of version property file
@@ -27,32 +28,12 @@ public class Version {
         final Properties versionProperties = new Properties();
         try {
             versionProperties.load(new FileInputStream(new File(versionPropertyFileUrl.toURI())));
-        } catch (URISyntaxException e) {
-            throw new VersionException(e);
-        } catch (FileNotFoundException e) {
-            throw new VersionException(e);
-        } catch (IOException e) {
-            throw new VersionException(e);
+            version = versionProperties.getProperty("algorithm.version");
+        } catch (Exception e) {
+            version = BAD_VERSION;
         }
 
-        version = versionProperties.getProperty("algorithm.version");
     }
 
-    public static class VersionException extends RuntimeException {
-        public VersionException() {
-        }
-
-        public VersionException(String message) {
-            super(message);
-        }
-
-        public VersionException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public VersionException(Throwable cause) {
-            super(cause);
-        }
-    }
 
 }
