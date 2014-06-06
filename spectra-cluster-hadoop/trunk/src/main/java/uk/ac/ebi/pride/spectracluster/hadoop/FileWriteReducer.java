@@ -81,6 +81,10 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         return numberWritten;
     }
 
+    /**
+     * here is where file formats are selected
+     * @param context
+     */
     protected void buildWritersForKey(final Context context) {
         MZKey key = getCurrentKey();
         if (key == null)
@@ -95,27 +99,27 @@ public class FileWriteReducer extends Reducer<Text, Text, NullWritable, Text> {
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CGF_INSTANCE));
 
         // only big cgf
-        appender = new FilteredClusterAppender(appender, bigOnly);
-        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
+//        appender = new FilteredClusterAppender(appender, bigOnly);
+//        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CGF_INSTANCE));
 
         // full .cluster
         appender = new DotClusterClusterAppender();
 
         addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.CLUSTERING_INSTANCE));
 
-        // only big .cluster
-        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
-        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
+//        // only big .cluster
+//        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+//        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.BIG_CLUSTERING_INSTANCE));
 
              // full .cluster
 //        appender = SPTextClusterAppender.INSTANCE;
 //        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
 //        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.SPTEXT_CLUSTERING_INSTANCE));
 
-        // only big .cluster
-        appender = MSFClusterAppender.INSTANCE;
-        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
-        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.MSP_CLUSTERING_INSTANCE));
+//        // only big .cluster
+//        appender = MSFClusterAppender.INSTANCE;
+//        appender = new FilteredClusterAppender(appender, bigOnly);   // not only big ones
+//        addClusterCreateListener(new DotClusterPathListener(base, key, context, appender, PathFromMZGenerator.MSP_CLUSTERING_INSTANCE));
 
     }
 

@@ -26,7 +26,6 @@ import java.util.*;
  */
 public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJobRunner {
     // Frank et al does 5 we do 1 more
-    public static final int MAJOR_PEAK_NUMBER = 6;
 
     /**
      * maps ueing a ChargePeakMZKey key - use MajorPeakPartitioner to see all instances with a major peak
@@ -66,7 +65,7 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             MGFSpectrumAppender.INSTANCE.appendSpectrum(sb,match);
             String text = sb.toString();
 
-            for (int peakMz : match.asMajorPeakMZs(MAJOR_PEAK_NUMBER)) {
+            for (int peakMz : match.asMajorPeakMZs(Defaults.getMajorPeakCount())) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
 
                 //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning

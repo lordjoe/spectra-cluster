@@ -43,6 +43,18 @@ public class Defaults {
 
     private static int numberReclusteringPasses = DEFAULT_NUMBER_RECLUSTERING_PASSES;
 
+    private static final int DEFAULT_MAJOR_PEAKS = 6;
+
+    private static int majorPeakCount = DEFAULT_MAJOR_PEAKS;
+
+    public static int getMajorPeakCount() {
+        return majorPeakCount;
+    }
+
+    public static void setMajorPeakCount(int majorPeakCount) {
+        Defaults.majorPeakCount = majorPeakCount;
+    }
+
     public static double getSimilarityThreshold() {
         return similarityThreshold;
     }
