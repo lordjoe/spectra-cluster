@@ -132,7 +132,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param context  !null context
      * @param clusters !null list of clusters
      */
-    protected final void writeClusters(final Context context, final Collection<ICluster> clusters) throws IOException, InterruptedException {
+    protected void writeClusters(final Context context, final Collection<ICluster> clusters) throws IOException, InterruptedException {
         for (ICluster cluster : clusters) {
             writeCluster(context, cluster);
         }
@@ -144,7 +144,7 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
      * @param context !null context
      * @param cluster !null cluster
      */
-    protected final void writeCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
+    protected void writeCluster(final Context context, final ICluster cluster) throws IOException, InterruptedException {
         final List<ICluster> allClusters = ClusterUtilities.findNoneFittingSpectra(cluster, engine.getSimilarityChecker(),Defaults.getRetainThreshold());
         if (!allClusters.isEmpty()) {
             for (ICluster removedCluster : allClusters) {

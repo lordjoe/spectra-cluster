@@ -84,6 +84,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         clusterAppender.appendCluster(sb, cluster);
         String string = sb.toString();
 
+        // make sure this has a few lines of text
         if (string.length() > SpectraHadoopUtilities.MIMIMUM_CLUSTER_LENGTH) {
             writeKeyValue(key.toString(), string, context);
             incrementBinCounters(key, context); // how big are the bins - used in next job
