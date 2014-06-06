@@ -129,6 +129,7 @@ public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
 
         this.id = id;
         filter = BinnedHighestNPeakFilter.DEFAULT;
+        throw new UnsupportedOperationException("Fix This"); // ToDo
     }
 
 

@@ -478,7 +478,20 @@ public class ParserUtilities {
             "SCANS=",
             "IT_MODS=",
             "INSTRUMENT=",
-    };
+            "TAXONOMY=",
+              "USER00",
+            "USER01",
+            "USER02",
+            "USER03",
+            "USER04",
+            "USER05",
+            "USER06",
+            "USER08",
+            "USER09",
+            "USER10",
+            "USER11",
+            "USER12",
+     };
 
     /**
      * @param inp !null reader

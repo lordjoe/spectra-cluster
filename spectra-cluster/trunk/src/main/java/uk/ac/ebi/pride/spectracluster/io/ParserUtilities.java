@@ -267,13 +267,24 @@ public class ParserUtilities {
     public static final String[] NOT_HANDLED_MGF_TAGS = {
             "TOLU=",
             "TOL=",
-            "SEQ=",
+            "USER00",
+            "USER01",
+            "USER03",
+            "USER04",
+            "USER05",
+            "USER06",
+            "USER08",
+            "USER09",
+            "USER10",
+            "USER11",
+         //   "TAXONOMY=",
+          //      "SEQ=",
             "COMP=",
             "TAG=",
             "ETAG=",
             "SCANS=",
             "IT_MODS=",
-            "INSTRUMENT=",
+   //         "INSTRUMENT=",
     };
 
     /**
@@ -464,6 +475,10 @@ public class ParserUtilities {
                     String peptide = sequence;
                     //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
                     sequence = null;
+
+
+
+                    Collections.sort(holder);
 
                     // Filter peaks
                     holder = Defaults.getDefaultPeakFilter().filter(holder);

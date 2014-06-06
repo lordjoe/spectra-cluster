@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
+import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
@@ -45,22 +45,26 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
         ) throws IOException, InterruptedException {
 
             String label = key.toString();
-            String text = value.toString();
-            if (label == null || text == null)
+            String original_text = value.toString();
+            if (label == null || original_text == null)
                 return;
-            if (label.length() == 0 || text.length() == 0)
+            if (label.length() == 0 || original_text.length() == 0)
                 return;
             // ready to read test as one MGF
-            LineNumberReader rdr = new LineNumberReader((new StringReader(text)));
+            LineNumberReader rdr = new LineNumberReader((new StringReader(original_text)));
             final ISpectrum match = ParserUtilities.readMGFScan(rdr);
             if (match == null) {
-                System.err.println("No Match fount in text\n" + text);
+                System.err.println("No Match fount in text\n" + original_text);
                 return;
             }
             int precursorCharge = match.getPrecursorCharge();
             double precursorMZ = match.getPrecursorMz();
 
             incrementDaltonCounters((int) precursorMZ, context);
+
+            StringBuilder sb = new StringBuilder();
+            MGFSpectrumAppender.INSTANCE.appendSpectrum(sb,match);
+            String text = sb.toString();
 
             for (int peakMz : match.asMajorPeakMZs(MAJOR_PEAK_NUMBER)) {
                 ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
