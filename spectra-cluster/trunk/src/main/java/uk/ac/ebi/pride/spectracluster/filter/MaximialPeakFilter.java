@@ -17,7 +17,7 @@ public class MaximialPeakFilter implements IPeakFilter {
 
     public static final int DEFAULT_MAX_PEAKS = 128;
 
-    public static final int FIRST_BIN_MAX = 12;
+    public static final int FIRST_BIN_MAX = 12; // todo This might be raised to filter less aggressively slewis
 
     /**
      * filters to be applied to cut peaks unter
@@ -58,7 +58,7 @@ public class MaximialPeakFilter implements IPeakFilter {
 
             out.append("Total spectra " + total + "\n");
             out.append("Number unfiltered " + MaximialPeakFilter.NumberOverMax + "\n");
-           } catch (IOException e) {
+        } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -84,7 +84,7 @@ public class MaximialPeakFilter implements IPeakFilter {
         int filterUsed = 0;
 
         int startSize = peaks.size();
-        if(startSize > 500)
+        if (startSize > 500)
             startSize = peaks.size(); // take a good look
         int startBin = Math.min(SPECTRUM_SIZE_COUNTS.length - 1, startSize / 10);
         SPECTRUM_SIZE_COUNTS[startBin]++; // count size distribution in bins of 10;
@@ -93,6 +93,21 @@ public class MaximialPeakFilter implements IPeakFilter {
             if (filterUsed >= DECREASING_BINS.length) {
                 NumberOverMax++; // we ran out of filters to apply
                 break;
+            }
+        }
+        // why are we losing so many peaks - step through a nasty case
+        if (peaks.size() > maxPeaks && ret.size() < maxPeaks / 3) {
+            // huh???
+            filterUsed = 0;
+
+            List<IPeak> ret2 = peaks;
+            while (ret2.size() > maxPeaks) {
+                final IPeakFilter decreasingBin = DECREASING_BINS[filterUsed++];
+                ret2 = decreasingBin.filter(ret2);
+                 if (filterUsed >= DECREASING_BINS.length) {
+                    NumberOverMax++; // we ran out of filters to apply
+                    break;
+                }
             }
         }
 

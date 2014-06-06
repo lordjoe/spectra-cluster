@@ -49,6 +49,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
         private final IPeakFilter filter;
         private ConsensusSpectrumFactory(IPeakFilter filter) {
+            if(filter == null)
+                throw new IllegalArgumentException("Filter cannot be null"); // Use NullFilter if you want
            this.filter = filter;
         }
 
@@ -156,7 +158,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             // are loaded initially
             //List<IPeak> spectrumPeaks = spectrum.getHighestNPeaks(PeakUtilities.MAX_PEAKS_TO_KEEP).getPeaks();
             List<IPeak> spectrumPeaks = spectrum.getPeaks();
-            spectrumPeaks = getFilter().filter(spectrumPeaks); // maybe do some filtering
+            final IPeakFilter filter1 = getFilter();
+            spectrumPeaks = filter1.filter(spectrumPeaks); // maybe do some filtering
             addPeaks(spectrumPeaks);
 
             sumCharge += spectrum.getPrecursorCharge();

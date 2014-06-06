@@ -46,6 +46,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         if (engine == null)
             return; // very occasionally  we get null - not sure why
 
+        int numberClusters = 0;
         //noinspection LoopStatementThatDoesntLoop
         for (Text val : values) {
             String valStr = val.toString();
@@ -57,6 +58,8 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
                 continue; // not sure why this happens but nothing seems like the thing to do
             final ICluster cluster = ClusterUtilities.asCluster(match);
 
+            if(numberClusters++ > 4)
+                valStr = val.toString(); // break here
 
             final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
 

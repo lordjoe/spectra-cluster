@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
-import uk.ac.ebi.pride.spectracluster.consensus.ConcensusSpectrumBuilderFactory;
-import uk.ac.ebi.pride.spectracluster.consensus.FilteredConsensusSpectrum;
-import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.consensus.*;
 import uk.ac.ebi.pride.spectracluster.engine.EngineFactories;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
@@ -97,9 +95,24 @@ public class Defaults {
     private static IConsensusSpectrumBuilder defaultConsensusSpectrumBuilder = null;
 
     /**
+      * filter sees that we dont pass more then MaximialPeakFilter.DEFAULT_MAX_PEAKS peaks (100)
+      */
+   //  public static IPeakFilter defaultPeakFilter = IPeakFilter.NULL_FILTER; //   Take out for testing onlyu
+     public static IPeakFilter defaultPeakFilter = new MaximialPeakFilter(MaximialPeakFilter.DEFAULT_MAX_PEAKS);
+
+     public static IPeakFilter getDefaultPeakFilter() {
+         return defaultPeakFilter;
+     }
+
+     public static void setDefaultPeakFilter(IPeakFilter defaultPeakFilter) {
+         Defaults.defaultPeakFilter = defaultPeakFilter;
+     }
+
+
+    /**
      * filter to use a consensus spectrum
      */
-    private static ConcensusSpectrumBuilderFactory consensusFactory = FilteredConsensusSpectrum.FACTORY;
+    private static ConcensusSpectrumBuilderFactory consensusFactory =  ConsensusSpectrum.FACTORY;
 
     public static ConcensusSpectrumBuilderFactory getConsensusFactory() {
         return consensusFactory;
@@ -149,20 +162,7 @@ public class Defaults {
         defaultSpectrumComparator = dc;
     }
 
-    /**
-     * filter sees that we dont pass more then MaximialPeakFilter.DEFAULT_MAX_PEAKS peaks (100)
-     */
-    public static IPeakFilter defaultPeakFilter = new MaximialPeakFilter(MaximialPeakFilter.DEFAULT_MAX_PEAKS);
-
-    public static IPeakFilter getDefaultPeakFilter() {
-        return defaultPeakFilter;
-    }
-
-    public static void setDefaultPeakFilter(IPeakFilter defaultPeakFilter) {
-        Defaults.defaultPeakFilter = defaultPeakFilter;
-    }
-
-    public static IClusteringEngine getDefaultClusteringEngine() {
+     public static IClusteringEngine getDefaultClusteringEngine() {
         ISimilarityChecker similarityChecker = getDefaultSimilarityChecker();
         final ClusterComparator spectrumComparator = getDefaultSpectrumComparator();
         final double st = getSimilarityThreshold();

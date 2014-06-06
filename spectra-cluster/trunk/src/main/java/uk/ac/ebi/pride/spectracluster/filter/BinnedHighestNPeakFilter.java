@@ -84,8 +84,16 @@ public class BinnedHighestNPeakFilter implements IPeakFilter {
         double nextBinStartMZ = binBottom + binOverlap; // start of next bin
         double binEnd = binBottom + binSize; // end of this bin
         int index = startpeak;
+        IPeak test = null;
         for (; index < allpeaks.size(); index++) {
-            IPeak test = allpeaks.get(index);
+            IPeak newTest = allpeaks.get(index);
+            if(test != null)  {
+                if(test.getMz() > newTest.getMz())  {   // out of order
+                    if(Math.abs(test.getMz() - newTest.getMz()) > 1.2 * MZIntensityUtilities.SMALL_MZ_DIFFERENCE )
+                        throw new IllegalStateException("Peaks are NOT Sorted by MZ");
+                }
+            }
+            test = newTest;
             final float testMz = test.getMz();
             if (testMz < binBottom)
                 continue;

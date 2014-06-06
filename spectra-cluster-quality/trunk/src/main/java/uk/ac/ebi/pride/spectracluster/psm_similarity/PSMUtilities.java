@@ -129,13 +129,17 @@ public class PSMUtilities {
             File[] files = file.listFiles();
             if (files == null)
                 return null;
-            for (File file1 : files) {
+            for (int i = 0; i < files.length; i++) {
+                File file1 = files[i];
                 IClusterSet clusterSet = readClusterSet(file1, name);
                 if (simpleClusterSet.getHeader() == null)
                     simpleClusterSet.setHeader(clusterSet.getHeader());
 
                 simpleClusterSet.addClusters(clusterSet.getClusters());
+
             }
+            int clusters = simpleClusterSet.getClusterCount();
+            clusters = simpleClusterSet.getClusterCount(); // break here
         } else if (file.getName().endsWith(".clustering")) {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
@@ -157,7 +161,7 @@ public class PSMUtilities {
             try {
                 LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 
-               ICluster[] clusters = ParserUtilities.readSpectralCluster(lineNumberReader);
+                ICluster[] clusters = ParserUtilities.readSpectralCluster(lineNumberReader);
                 List<ICluster> clusters1 = Arrays.asList(clusters);
                 stc.addClusters(clusters1);
                 simpleClusterSet.addClusters(clusters1);
