@@ -1,22 +1,16 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import org.apache.hadoop.io.Text;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.Collection;
+import javax.annotation.*;
+import java.io.*;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.SpectrumMergeReducer.
@@ -148,8 +142,13 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         float precursorMz = cluster.getPrecursorMz();
         int bin = binner1.asBin(precursorMz);
         // you can merge clusters outside the current bin but not write them
-        if (bin != getCurrentBin())
+        if (bin != getCurrentBin()) {
+            // track when this happens
+            String offString = bin > getCurrentBin() ? "above" : "below";
+            Counter counter = context.getCounter("OutsideBin", offString);
+            counter.increment(1);
             return;
+        }
         ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
@@ -179,7 +178,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         boolean ret = true;
         // if not at end make a new engine
         if (pMzKey != null) {
-            setEngine(getFactory().getIncrementalClusteringEngine((float)getSpectrumMergeWindowSize()));
+            setEngine(getFactory().getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize()));
             setMajorPeak(pMzKey.getPrecursorMZ());
             ret = setCurrentBin(pMzKey.getBin());
             setCurrentCharge(pMzKey.getCharge());
@@ -225,7 +224,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      */
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     protected void writeParseParameters(final Context context) throws IOException {
-       throw new UnsupportedOperationException("Unimplemented June 2 This"); // ToDo
+        throw new UnsupportedOperationException("Unimplemented June 2 This"); // ToDo
 //        Configuration cfg = context.getConfiguration();
 //        HadoopTandemMain application = getApplication();
 //        TaskAttemptID tid = context.getTaskAttemptID();
