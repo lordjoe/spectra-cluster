@@ -20,7 +20,7 @@ public class AllPeaksDotProductTest {
     @Before
     public void setUp() {
         allPeaksDotProduct = new AllPeaksDotProduct(Defaults.getSimilarityMZRange());
-        frankEtAlDotProduct = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), 15);
+        frankEtAlDotProduct = new FrankEtAlDotProduct(Defaults.getSimilarityMZRange(), Defaults.getNumberComparedPeaks());
         testSpectra = ClusteringTestUtilities.readISpectraFromResource();
     }
 
