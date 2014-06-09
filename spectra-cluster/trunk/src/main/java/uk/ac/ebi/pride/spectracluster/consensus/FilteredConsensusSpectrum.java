@@ -33,7 +33,11 @@ import java.util.*;
  * NOTE This is Johannes code refactored so that critical methods take and return peak lists rather than
  * using an internal list - this allows steps to be individually rewritten and tested
  * Also internal methods are protected allowing tests to access them
+ *
+ * todo: development
+ *
  */
+@Deprecated
 public class FilteredConsensusSpectrum implements IConsensusSpectrumBuilder {
 
     public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory();
