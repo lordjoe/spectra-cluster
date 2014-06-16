@@ -4,7 +4,7 @@
 
     <groupId>uk.ac.ebi.pride.spectracluster</groupId>
     <artifactId>spectra-cluster</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -53,9 +53,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</connection>
-        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</developerConnection>
-        <url>https://spectra-cluster.googlecode.com/svn/spectra-cluster/trunk</url>
+        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/tags/spectra-cluster-1.0.2</connection>
+        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-cluster/tags/spectra-cluster-1.0.2</developerConnection>
+        <url>https://spectra-cluster.googlecode.com/svn/spectra-cluster/tags/spectra-cluster-1.0.2</url>
     </scm>
 
     <dependencies>
