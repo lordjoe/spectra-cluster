@@ -53,7 +53,7 @@ public class ConsensusSpectrumBuilderComparisonTests {
     @Test
     public void testSpectraFiltering() throws Exception {
         // filter the spectra first
-        IPeakFilter filter = new MaximialPeakFilter(100);
+        IPeakFilter filter = new MaximialPeakFilter(MaximialPeakFilter.DEFAULT_MAX_PEAKS);
 
         // load and filter the spectra
         List<ISpectrum> spectra= ClusteringTestUtilities.readISpectraFromResource(SMALL_CLUSTER_FILE);
