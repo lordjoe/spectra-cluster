@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.io;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.spectrum.KnownProperties;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.util.comparator.SpectrumIDComparator;
 
@@ -52,7 +53,16 @@ public class DotClusterClusterAppender implements IClusterAppender {
                 while (id1.startsWith("="))
                     id1 = id1.substring(1, id1.length()); // lots of ids start with == - is that a good thing
                 sb.append(id1);
-                sb.append("\ttrue\n");  // changed to look at output
+                sb.append("\ttrue");  // changed to look at output
+
+                // append peptide sequence as a extra column
+                String peptideSequence = spec.getProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY);
+                sb.append("\t");
+                if (peptideSequence != null) {
+                    sb.append(peptideSequence);
+                }
+                sb.append("\n");
+
                 String csq = sb.toString();
                 out.append(csq);
 
