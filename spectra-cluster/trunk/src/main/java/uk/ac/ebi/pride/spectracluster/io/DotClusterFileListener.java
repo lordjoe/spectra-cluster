@@ -80,14 +80,14 @@ public class DotClusterFileListener implements ClusterCreateListener {
      *
      * @param pF !null existing file or directory with cgf files
      */
-    public static void creatClusteringFromCGF(final File pF) {
+    public static void createClusteringFromCGF(final File pF) {
         if (!pF.exists())
             return;
         if (pF.isDirectory()) {
             File[] subfiles = pF.listFiles();
             if (subfiles != null) {
                 for (File subfile : subfiles) {
-                    creatClusteringFromCGF(subfile);
+                    createClusteringFromCGF(subfile);
                 }
             }
         } else {
@@ -128,7 +128,7 @@ public class DotClusterFileListener implements ClusterCreateListener {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             File f = new File(arg);
-            creatClusteringFromCGF(f);
+            createClusteringFromCGF(f);
         }
     }
 
