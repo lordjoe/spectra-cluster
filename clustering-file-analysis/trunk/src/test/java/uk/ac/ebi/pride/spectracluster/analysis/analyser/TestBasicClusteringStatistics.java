@@ -49,7 +49,8 @@ public class TestBasicClusteringStatistics {
                 "Minimum size: 1\n" +
                 "Maximum size: 202\n" +
                 "Minimum ratio: 0.046\n" +
-                "Maximum ratio: 1.000\n",
+                "Maximum ratio: 1.000\n" +
+                "Stable clusters: 217\n",
                simpleStat);
     }
 }

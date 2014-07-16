@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.spectracluster.analysis.analyser;
 import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
 import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
 import uk.ac.ebi.pride.spectracluster.analysis.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.analysis.util.ClusterUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
     int maxSize = 0;
     float minRatio = Float.MAX_VALUE;
     float maxRatio = 0;
+    int stableClusters = 0;
 
     @Override
     public String getFileEnding() {
@@ -55,20 +57,30 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
             minRatio = newCluster.getMaxRatio();
         if (maxRatio < newCluster.getMaxRatio())
             maxRatio = newCluster.getMaxRatio();
+
+        if (ClusterUtilities.isStableStable(newCluster))
+            stableClusters++;
     }
 
     @Override
     public String getAnalysisResultString() {
         return String.format("Number of clusters: %.0f (%d with 1 spec)\nAverage maximum ratio: %.3f\nAverage cluster size: %.3f\n" +
                         "Minimum size: %d\nMaximum size: %d\n" +
-                        "Minimum ratio: %.3f\nMaximum ratio: %.3f\n",
-                nClusters, nSingleClusters, averageRatio, averageClusterSize, minSize, maxSize, minRatio, maxRatio);
+                        "Minimum ratio: %.3f\nMaximum ratio: %.3f\n" +
+                        "Stable clusters: %d\n",
+                nClusters, nSingleClusters, averageRatio, averageClusterSize, minSize, maxSize, minRatio, maxRatio, stableClusters);
     }
 
     @Override
     public void reset() {
         nClusters = 0;
+        nSingleClusters = 0;
         averageRatio = 0;
         averageClusterSize = 0;
+        minSize = Integer.MAX_VALUE;
+        maxSize = 0;
+        minRatio = Float.MAX_VALUE;
+        maxRatio = 0;
+        stableClusters = 0;
     }
 }

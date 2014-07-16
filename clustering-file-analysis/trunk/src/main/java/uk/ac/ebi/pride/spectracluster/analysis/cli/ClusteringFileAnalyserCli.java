@@ -31,6 +31,9 @@ public class ClusteringFileAnalyserCli {
             CommandLine commandLine = parser.parse(CliOptions.getOptions(),
                     args);
 
+            // CUMULATIVE
+            boolean cumulativeAnalysis = commandLine.hasOption(CliOptions.OPTIONS.CUMULATIVE_ANALYSIS.getValue());
+
             // LIST ANALYSER
             if (commandLine.hasOption(CliOptions.OPTIONS.LIST_ANALYSERS.getValue())) {
                 listAnalyser();
@@ -65,9 +68,20 @@ public class ClusteringFileAnalyserCli {
                     analyser.add(AnalyserFactory.getAnalyser(a));
             }
 
+            // OUTPUT PATH
+            String outputPath = null;
+            if (commandLine.hasOption(CliOptions.OPTIONS.OUTPUT_PATH.getValue())) {
+                outputPath = commandLine.getOptionValue(CliOptions.OPTIONS.OUTPUT_PATH.getValue());
+            }
+
             // RUN THE ANALYSIS ON ALL PASSED FILES
-            for (String filename : commandLine.getArgs()) {
-                analyseFile(filename, analyser);
+            if (cumulativeAnalysis) {
+                analyseFilesCummulatively(commandLine.getArgs(), analyser, outputPath);
+            }
+            else {
+                for (String filename : commandLine.getArgs()) {
+                    analyseFile(filename, analyser, outputPath);
+                }
             }
 
 
@@ -77,32 +91,67 @@ public class ClusteringFileAnalyserCli {
         }
     }
 
-    private static void analyseFile(String filename, Set<IClusteringSourceAnalyser> analyser) {
-        System.out.println("Analysing '" + filename);
+    private static void analyseFilesCummulatively(String[] filenames, Set<IClusteringSourceAnalyser> analyser, String outputPath) throws Exception {
+        if (outputPath == null)
+            throw new Exception("output_path must be set.");
 
-        // add all analysers
-        Set<IClusterSourceListener> listener = new HashSet<IClusterSourceListener> (analyser);
+        File outputFilename = new File(outputPath);
 
-        // open the file
-        IClusterSourceReader reader = new ClusteringFileReader(new File(filename));
+        Set<IClusterSourceListener> listener = new HashSet<IClusterSourceListener>(analyser);
 
+        for (String filename : filenames) {
+            System.out.println("Processing " + filename);
+            IClusterSourceReader reader = new ClusteringFileReader(new File(filename));
+            reader.readClustersIteratively(listener);
+        }
+
+        // save the results
+        for (IClusteringSourceAnalyser theAnalyser : analyser) {
+            // get the result
+            String resultString = theAnalyser.getAnalysisResultString();
+
+            // write the result
+            FileWriter writer = new FileWriter(outputFilename + theAnalyser.getFileEnding());
+            writer.write(resultString);
+            writer.close();
+
+            System.out.println("  Result written to " + outputFilename + theAnalyser.getFileEnding());
+        }
+    }
+
+    private static void analyseFile(String filename, Set<IClusteringSourceAnalyser> analyser, String outputPath) {
         try {
+            System.out.println("Analysing '" + filename);
+            File fileToAnalyse = new File(filename);
+
+            String resultFilePath = filename;
+            if (outputPath != null && outputPath.length() > 0) {
+                File outputDirectory = new File(outputPath);
+                if (outputDirectory.isDirectory())
+                    resultFilePath = outputDirectory.getPath() + File.separator + fileToAnalyse.getName();
+                else
+                    throw new IllegalStateException(outputPath + " is not a directory.");
+            }
+
+            // add all analysers
+            Set<IClusterSourceListener> listener = new HashSet<IClusterSourceListener> (analyser);
+
+            // open the file
+            IClusterSourceReader reader = new ClusteringFileReader(fileToAnalyse);
+
             reader.readClustersIteratively(listener);
 
             // save the results
             for (IClusteringSourceAnalyser theAnalyser : analyser) {
-                // create the new filename
-                String resultFilePath = filename + theAnalyser.getFileEnding();
-
                 // get the result
                 String resultString = theAnalyser.getAnalysisResultString();
 
                 // write the result
-                FileWriter writer = new FileWriter(resultFilePath);
+                FileWriter writer = new FileWriter(resultFilePath + theAnalyser.getFileEnding());
                 writer.write(resultString);
                 writer.close();
 
-                System.out.println("  Result written to " + resultFilePath);
+                System.out.println("  Result written to " + resultFilePath + theAnalyser.getFileEnding());
             }
         } catch (Exception e) {
             e.printStackTrace();

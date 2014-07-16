@@ -45,4 +45,8 @@ public class ClusterUtilities {
 
         // TODO: write test
     }
+
+    public static boolean isStableStable(ICluster cluster) {
+        return cluster.getSpecCount() >= 10 && cluster.getMaxRatio() >= 0.7;
+    }
 }
