@@ -61,6 +61,12 @@ public class DotClusterClusterAppender implements IClusterAppender {
                 if (peptideSequence != null) {
                     sb.append(peptideSequence);
                 }
+
+                // append precursor m/z as an extra column
+                float precursorMz = spec.getPrecursorMz();
+                sb.append("\t");
+                sb.append(precursorMz);
+
                 sb.append("\n");
 
                 String csq = sb.toString();
