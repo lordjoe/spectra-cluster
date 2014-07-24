@@ -35,7 +35,6 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     private Set<String> writtenSpectra = new HashSet<String>();
     private Set<String> lastWrittenSpectra = new HashSet<String>();
 
-    private ClusteringEngineInstrumentation instrumentation;
 
 
 
@@ -48,20 +47,6 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
         super.setup(context);
         ConfigurableProperties.configureAnalysisParameters(getApplication());
     }
-
-    /**
-       * added to look at errors
-       * @return
-       */
-      public ClusteringEngineInstrumentation getInstrumentation() {
-          return instrumentation;
-      }
-
-      public void setInstrumentation(final ClusteringEngineInstrumentation pInstrumentation) {
-          instrumentation = pInstrumentation;
-      }
-
-
 
 
 

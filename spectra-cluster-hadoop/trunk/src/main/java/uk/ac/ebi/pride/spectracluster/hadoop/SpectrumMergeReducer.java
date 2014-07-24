@@ -21,7 +21,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
     private double spectrumMergeWindowSize = HadoopDefaults.getSpectrumMergeMZWindowSize();  // this was not initialized!! 7/22/14 SL
 
-     private final Set<String> writtenSpectralIDSThisBin = new HashSet<String>();
+    private final Set<String> writtenSpectralIDSThisBin = new HashSet<String>();
     private final Set<String> seenSpectrumSpectralIDSThisBin = new HashSet<String>();
 
     @SuppressWarnings("UnusedDeclaration")
@@ -88,8 +88,8 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
                     // remember spectrum ids seen added 22/7
                     // todo SL hope this does not cause memory issues
                     List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
-                    if(clusteredSpectra.size() == 1) {
-                        if(seenSpectrumSpectralIDSThisBin.contains(clusteredSpectra.get(0).getId()))
+                    if (clusteredSpectra.size() == 1) {
+                        if (seenSpectrumSpectralIDSThisBin.contains(clusteredSpectra.get(0).getId()))
                             continue; // ignore single clusters where we have seen the spectrum
                     }
                     for (ISpectrum spc : clusteredSpectra) {
@@ -101,8 +101,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
-                    }
-                    else
+                    } else
                         numberNoremove++;
 
                 }
@@ -138,46 +137,43 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 //    }
 
     /**
-     *
      * @param context
      * @param cluster
      * @return true if we still want to write
      */
-      protected boolean trackDuplicates(@Nonnull final Context context, @Nonnull final ICluster cluster) {
+    protected boolean trackDuplicates(@Nonnull final Context context, @Nonnull final ICluster cluster) {
 
-          /**
-           * this entire section is here to track duplicates and stop writing single spectra when
-           * they are already clustered
-           */
-          int clusteredSpectraCount = cluster.getClusteredSpectraCount();
-          if (clusteredSpectraCount == 0)
-              return false; // empty don't bother
-          List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
-          if (clusteredSpectraCount == 1) {
-              ISpectrum onlySpectrum = clusteredSpectra.get(0);
-              if (writtenSpectralIDSThisBin.contains(onlySpectrum.getId())) {
-                  Counter counter = context.getCounter("Duplicates", "attempt_single");
-                  counter.increment(1);
-                  return false; // already written
-              }
-          }
-          else {
-              for (ISpectrum spc : clusteredSpectra) {
-                  Counter counter = context.getCounter("Duplicates", "add_spectrum");
-                  counter.increment(1);
+        /**
+         * this entire section is here to track duplicates and stop writing single spectra when
+         * they are already clustered
+         */
+        int clusteredSpectraCount = cluster.getClusteredSpectraCount();
+        if (clusteredSpectraCount == 0)
+            return false; // empty don't bother
+        List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        if (clusteredSpectraCount == 1) {
+            ISpectrum onlySpectrum = clusteredSpectra.get(0);
+            if (writtenSpectralIDSThisBin.contains(onlySpectrum.getId())) {
+                Counter counter = context.getCounter("Duplicates", "attempt_single");
+                counter.increment(1);
+                return false; // already written
+            }
+        } else {
+            for (ISpectrum spc : clusteredSpectra) {
+                Counter counter = context.getCounter("Duplicates", "add_spectrum");
+                counter.increment(1);
 
-                  String id = spc.getId();
-                  if (!writtenSpectralIDSThisBin.contains(id)) {
-                      writtenSpectralIDSThisBin.add(id); // track when written
-                  }
-                  else {
-                      counter = context.getCounter("Duplicates", "add_duplicate");
-                      counter.increment(1);
-                  }
-              }
-          }
-          return true; // go process
-      }
+                String id = spc.getId();
+                if (!writtenSpectralIDSThisBin.contains(id)) {
+                    writtenSpectralIDSThisBin.add(id); // track when written
+                } else {
+                    counter = context.getCounter("Duplicates", "add_duplicate");
+                    counter.increment(1);
+                }
+            }
+        }
+        return true; // go process
+    }
 
     /**
      * this version of writeCluster does all the real work
@@ -191,7 +187,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         /**
          * is a duplicate  so ignore   added SL 22/7
          */
-        if(!trackDuplicates(context,cluster))
+        if (!trackDuplicates(context, cluster))
             return;
 
 //        if (isInterestingCluster(cluster))
@@ -226,11 +222,11 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      *
      * @param pEngine
      */
-    @Override public void setEngine(final IIncrementalClusteringEngine pEngine) {
+    @Override
+    public void setEngine(final IIncrementalClusteringEngine pEngine) {
         super.setEngine(pEngine);
         writtenSpectralIDSThisBin.clear(); // reset ids
         seenSpectrumSpectralIDSThisBin.clear(); // reset  seen ids
-         setInstrumentation(new ClusteringEngineInstrumentation(pEngine));
     }
 
     /**
