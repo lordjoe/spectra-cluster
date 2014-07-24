@@ -122,7 +122,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     /**
-     * return a list of clusters whose mz is too low to mrege with the current cluster
+     * return a list of clusters whose mz is too low to merge with the current cluster
      * these are dropped and will be handled as never modifies this pass
      *
      * @param precursorMz new Mz
@@ -347,7 +347,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
 
 
     /**
-     * used to expose internals for overridig classes only
+     * used to expose internals for overriding classes only
      *
      * @return
      */
@@ -356,7 +356,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     /**
-     * used to expose internals for overridig classes only
+     * used to expose internals for overriding classes only
      *
      * @return
      */
@@ -376,7 +376,7 @@ public class IncrementalClusteringEngine implements IIncrementalClusteringEngine
     }
 
     /**
-     * used to expose internals for overridig classes only
+     * used to expose internals for overridimg classes only
      *
      * @return
      */
