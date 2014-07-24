@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 public interface ClusterCreateListener {
 
     /**
-     * initialize reading - if reading happens once - sayt from
+     * initialize reading - if reading happens once - say from
      * one file all this may happen in the constructor
      */
     public void onClusterStarted(Object... otherData);
