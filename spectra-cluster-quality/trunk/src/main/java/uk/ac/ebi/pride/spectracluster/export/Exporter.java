@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.export;
 
 import com.lordjoe.filters.*;
-import uk.ac.ebi.pride.spectracluster.filter.*;
-import uk.ac.ebi.pride.spectracluster.retrievers.*;
 import uk.ac.ebi.pride.spectracluster.filters.*;
+import uk.ac.ebi.pride.spectracluster.retrievers.*;
 
 import java.io.*;
 import java.util.*;
@@ -119,6 +118,19 @@ public class Exporter {
     /**
      * usage outputDirectory filterFile directoryToProcess
      * @param args
+     */
+    /*
+    Uses a filter file like
+       <Filters>
+           <FileFilter extension="mgf"/>
+           <!-- will not run without spectrum class
+          <Filter applicableType="uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum" charge="2" />
+          -->
+           <SpectrumFilter identified="true"/>
+           <SpectrumFilter minimumLength="100"/>
+           <SpectrumFilter withPrecursors="true"/>
+
+       </Filters>
      */
     public static void main(String[] args) {
         int index = 0;

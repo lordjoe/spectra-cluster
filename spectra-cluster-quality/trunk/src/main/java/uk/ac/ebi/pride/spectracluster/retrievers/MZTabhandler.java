@@ -31,8 +31,9 @@ public class MZTabhandler {
             // maybe info means do not report
             // specify  LOTS_OF_ERRORS since the constructor containing level has a bug
             // todo Does this work SLewis
-             MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream(), MZTabErrorType.Level.Info);
-            mzTabs = parser.getMZTabFile();
+            MZTabFileParser parser = new MZTabFileParser(inp, System.out, MZTabErrorType.Level.Info,LOTS_OF_ERRORS);
+       //     MZTabFileParser parser = new MZTabFileParser(inp, new NullOutputStream(), MZTabErrorType.Level.Info);
+             mzTabs = parser.getMZTabFile();
             if (mzTabs == null)
                 return;
             final Collection<PSM> psMs = mzTabs.getPSMs();
