@@ -77,6 +77,7 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
 
     }
 
+
     @Override
     public boolean equals(final Object o) {
         if(o == null)

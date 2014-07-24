@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import javax.annotation.*;
 import java.io.*;
@@ -19,7 +20,8 @@ import java.util.*;
 public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
     private double spectrumMergeWindowSize;
-
+    private final Set<String> writtenSpectralIDSThisBin = new HashSet<String>();
+    private final Set<String> seenSpectrumSpectralIDSThisBin = new HashSet<String>();
 
     @SuppressWarnings("UnusedDeclaration")
     public double getMajorMZ() {
@@ -82,12 +84,24 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 //                        ClusterSimilarityUtilities.testAddToClusters(cluster, clusters); // break here
 //                    }
 
+                    // remember spectrum ids seen added 22/7
+                    // todo SL hope this does not cause memory issues
+                    List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+                    if(clusteredSpectra.size() == 1) {
+                        if(seenSpectrumSpectralIDSThisBin.contains(clusteredSpectra.get(0).getId()))
+                            continue; // ignore single clusters where we have seen the spectrum
+                    }
+                    for (ISpectrum spc : clusteredSpectra) {
+                        seenSpectrumSpectralIDSThisBin.add(spc.getId());
+                    }
+
 
                     final Collection<ICluster> removedClusters = engine.addClusterIncremental(cluster);
                     if (!removedClusters.isEmpty()) {
                         writeClusters(context, removedClusters);
                         numberRemove++;
-                    } else
+                    }
+                    else
                         numberNoremove++;
 
                 }
@@ -122,6 +136,47 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 //        return false;
 //    }
 
+    /**
+     *
+     * @param context
+     * @param cluster
+     * @return true if we still want to write
+     */
+      protected boolean trackDuplicates(@Nonnull final Context context, @Nonnull final ICluster cluster) {
+
+          /**
+           * this entire section is here to track duplicates and stop writing single spectra when
+           * they are already clustered
+           */
+          int clusteredSpectraCount = cluster.getClusteredSpectraCount();
+          if (clusteredSpectraCount == 0)
+              return false; // empty don't bother
+          List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+          if (clusteredSpectraCount == 1) {
+              ISpectrum onlySpectrum = clusteredSpectra.get(0);
+              if (writtenSpectralIDSThisBin.contains(onlySpectrum.getId())) {
+                  Counter counter = context.getCounter("Duplicates", "attempt_single");
+                  counter.increment(1);
+                  return false; // already written
+              }
+          }
+          else {
+              for (ISpectrum spc : clusteredSpectra) {
+                  Counter counter = context.getCounter("Duplicates", "add_spectrum");
+                  counter.increment(1);
+
+                  String id = spc.getId();
+                  if (!writtenSpectralIDSThisBin.contains(id)) {
+                      writtenSpectralIDSThisBin.add(id); // track when written
+                  }
+                  else {
+                      counter = context.getCounter("Duplicates", "add_duplicate");
+                      counter.increment(1);
+                  }
+              }
+          }
+          return true; // go process
+      }
 
     /**
      * this version of writeCluster does all the real work
@@ -132,8 +187,11 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      * @throws InterruptedException
      */
     protected void writeOneVettedCluster(@Nonnull final Context context, @Nonnull final ICluster cluster) throws IOException, InterruptedException {
-        if (cluster.getClusteredSpectraCount() == 0)
-            return; // empty dont bother
+        /**
+         * is a duplicate  so ignore   added SL 22/7
+         */
+        if(!trackDuplicates(context,cluster))
+            return;
 
 //        if (isInterestingCluster(cluster))
 //            System.out.println(cluster.toString());
@@ -162,6 +220,17 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         }
     }
 
+    /**
+     * switching to a new engine add code for resting instrumentation
+     *
+     * @param pEngine
+     */
+    @Override public void setEngine(final IIncrementalClusteringEngine pEngine) {
+        super.setEngine(pEngine);
+        writtenSpectralIDSThisBin.clear(); // reset ids
+        seenSpectrumSpectralIDSThisBin.clear(); // reset  seen ids
+         setInstrumentation(new ClusteringEngineInstrumentation(pEngine));
+    }
 
     /**
      * make a new engine because  either we are in a new peak or at the end (pMZKey == null

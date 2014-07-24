@@ -4,8 +4,7 @@ import com.lordjoe.algorithms.IWideBinner;
 import com.lordjoe.utilities.ElapsedTimer;
 import org.systemsbiology.hadoop.AbstractParameterizedReducer;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.engine.IIncrementalClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.IncrementalClusteringEngineFactory;
+import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -36,6 +35,10 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
     private Set<String> writtenSpectra = new HashSet<String>();
     private Set<String> lastWrittenSpectra = new HashSet<String>();
 
+    private ClusteringEngineInstrumentation instrumentation;
+
+
+
     protected AbstractClusteringEngineReducer() {
     }
 
@@ -45,6 +48,21 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
         super.setup(context);
         ConfigurableProperties.configureAnalysisParameters(getApplication());
     }
+
+    /**
+       * added to look at errors
+       * @return
+       */
+      public ClusteringEngineInstrumentation getInstrumentation() {
+          return instrumentation;
+      }
+
+      public void setInstrumentation(final ClusteringEngineInstrumentation pInstrumentation) {
+          instrumentation = pInstrumentation;
+      }
+
+
+
 
 
     /**
@@ -95,12 +113,12 @@ public abstract class AbstractClusteringEngineReducer extends AbstractParameteri
         binner = pBinner;
     }
 
-    public final void setEngine(final IIncrementalClusteringEngine pEngine) {
+    public void setEngine(final IIncrementalClusteringEngine pEngine) {
         engine = pEngine;
         lastWrittenSpectra.clear(); // forget
         lastWrittenSpectra.addAll(writtenSpectra); // keep one set
         writtenSpectra.clear(); // ready for next set
-    }
+     }
 
     public final double getMajorPeak() {
         return majorPeak;
