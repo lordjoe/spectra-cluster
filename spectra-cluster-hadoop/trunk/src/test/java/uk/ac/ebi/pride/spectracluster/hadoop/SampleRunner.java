@@ -3,10 +3,13 @@ package uk.ac.ebi.pride.spectracluster.hadoop;
 import com.lordjoe.algorithms.*;
 import com.lordjoe.utilities.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.clustersmilarity.*;
 import uk.ac.ebi.pride.spectracluster.engine.*;
 import uk.ac.ebi.pride.spectracluster.io.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.similarity.*;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -17,14 +20,17 @@ import java.util.*;
  * Date: 7/23/2014
  */
 public class SampleRunner {
-    private double spectrumMergeWindowSize; // todo huh???
+
+
+    private double spectrumMergeWindowSize = HadoopDefaults.getSpectrumMergeMZWindowSize();
 
     private final Map<String, List<ICluster>> keysToClusters = new HashMap<String, List<ICluster>>();
     private final List<ICluster> inputClusters = new ArrayList<ICluster>();
     private final List<ICluster> foundClusters = new ArrayList<ICluster>();
     private final CountedMap<String> inputCounts = new CountedMap<String>();
     private final CountedMap<String> outputCounts = new CountedMap<String>();
-    private final Set<String>  highDuplicates = new HashSet<String>();
+    private final Set<String> highDuplicates = new HashSet<String>();
+    private final Set<String> seenHighDuplicates = new HashSet<String>();
 
     protected int currentCharge;
     private int currentBin;
@@ -40,11 +46,34 @@ public class SampleRunner {
         highDuplicates.addAll(itemsMoreThanN);
     }
 
-    public int totalMapped()
-    {
+    /**
+     * true if the cluster has a highly duplucated spectrum - we want to look at these cases
+     * SL
+     *
+     * @param cluster
+     * @return
+     */
+    public ISpectrum getHighReplication(ICluster cluster) {
+        List<ISpectrum> clusteredSpectra = cluster.getClusteredSpectra();
+        for (ISpectrum spc : clusteredSpectra) {
+            String id = spc.getId();
+            if (highDuplicates.contains(id)) {
+                if (seenHighDuplicates.contains(id)) {
+           //         System.out.println(id);
+                    return spc;
+                }
+                else {
+                    seenHighDuplicates.add(id);
+                }
+            }
+        }
+        return null;
+    }
+
+    public int totalMapped() {
         int ret = 0;
         for (String s : keysToClusters.keySet()) {
-           ret += keysToClusters.get(s).size();
+            ret += keysToClusters.get(s).size();
         }
         return ret;
     }
@@ -89,36 +118,121 @@ public class SampleRunner {
             key = new ChargeBinMZKey(s);
             if (key.getPartitionHash() != currentPartition) {
                 for (ICluster iCluster : engine.getClusters()) {
-                    saveCluster(key,iCluster);
+                    saveCluster(key, iCluster);
                 }
                 engine = factory.getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize());
+
                 currentPartition = key.getPartitionHash();
                 System.out.println("new Engine " + key);
             }
             reduceBin(key, engine);
         }
         for (ICluster iCluster : engine.getClusters()) {
-            saveCluster(key,iCluster);
+            saveCluster(key, iCluster);
         }
     }
 
     protected void reduceBin(ChargeBinMZKey key, IIncrementalClusteringEngine engine) {
         List<ICluster> clusters = keysToClusters.get(key.toString());
-        reduceBin(engine,key, clusters);
+        reduceBin(engine, key, clusters);
     }
 
     protected void reduceBin(IIncrementalClusteringEngine engine, ChargeBinMZKey key, List<ICluster> clusters) {
+        int highReplication = 0;
         for (ICluster cluster : clusters) {
+            ISpectrum duplicateSpc = getHighReplication(cluster);
+            if (duplicateSpc != null)
+                examineHighReplication(duplicateSpc, cluster, engine);
             Collection<ICluster> toSaveClusters = engine.addClusterIncremental(cluster);
             for (ICluster toSaveCluster : toSaveClusters) {
-                saveCluster(key,toSaveCluster);
+//                duplicateSpc = getHighReplication(toSaveCluster);
+//                if (duplicateSpc != null)
+//                    System.out.println("Write High Duplicate " + duplicateSpc.getId());
+                saveCluster(key, toSaveCluster);
             }
         }
     }
 
-    protected void saveCluster( ChargeBinMZKey key,final ICluster pToSaveCluster) {
+    /**
+     * walk tests on clusters with overlap
+     *
+     * @param pDuplicateSpc
+     * @param pCluster
+     * @param engine
+     */
+    protected boolean examineHighReplication(final ISpectrum pDuplicateSpc, final ICluster pCluster, final IIncrementalClusteringEngine engine) {
+        List<ICluster> holder = new ArrayList<ICluster>();
+        for (ICluster clstr : engine.getClusters()) {
+            Set<String> spectralIds = clstr.getSpectralIds();
+            if (spectralIds.contains(pCluster.getId()))
+                holder.add(clstr);
+        }
+        ISimilarityChecker cker = engine.getSimilarityChecker();
+        ISpectrum consensusSpectrum = pCluster.getConsensusSpectrum();
+        Set<String> spectralIds = pCluster.getSpectralIds();
+        double highestSimilarityScore = 0;
+        ICluster bestmatch = null;
+        for (ICluster testCluster : holder) {
+            ISpectrum consensusSpectrum1 = testCluster.getConsensusSpectrum();
+
+            double similarityScore = cker.assessSimilarity(consensusSpectrum, consensusSpectrum1);
+            if (similarityScore > highestSimilarityScore) {
+                highestSimilarityScore = similarityScore;
+                bestmatch = testCluster;
+            }
+            Set<String> spectraOverlap = IncrementalClusteringEngine.getSpectraOverlap(spectralIds, testCluster);
+            Set<String> spectraOverlap2 = ClusterSimilarityUtilities.getSpectraOverlap(spectralIds, testCluster);
+            double score = ClusterUtilities.clusterFullyContainsScore(pCluster, testCluster);
+        }
+        boolean ret = handlePotentialOverlap(pCluster, bestmatch, highestSimilarityScore);
+        return ret;
+    }
+
+
+    /**
+     * if there are overlapping spectra among the current cluster and the best match
+     * then  firure out what is best
+     *
+     * @param cluster1
+     * @param cluster2
+     * @return
+     */
+    //  @Deprecated // TODO JG Reevaluate the usage of this function   Emulates removed function SL
+    protected boolean handlePotentialOverlap(final ICluster cluster1, final ICluster cluster2, double highestSimilarityScore) {
+        if (highestSimilarityScore < IncrementalClusteringEngine.MINIMUM_SIMILARITY_SCORE_FOR_OVERLAP)
+            return false;     // we did nothing
+        Set<String> ids = cluster1.getSpectralIds();
+        Set<String> best = cluster2.getSpectralIds();
+        Set<String> spectraOverlap = IncrementalClusteringEngine.getSpectraOverlap(ids, cluster2);
+        int numberOverlap = spectraOverlap.size();
+        if (numberOverlap == 0)
+            return false; // no overlap
+        int minClusterSize = Math.min(best.size(), ids.size());
+
+        // of a lot of overlap then force a merge
+        if (numberOverlap >= minClusterSize / 2) {  // enough overlap then merge
+            //       mergeIntoCluster(cluster1, cluster2);
+            return true;
+        }
+        // allow a bonus for overlap
+        double similarityThreshold = Defaults.getSimilarityThreshold();
+        if (highestSimilarityScore + IncrementalClusteringEngine.BONUS_PER_OVERLAP > similarityThreshold) {
+            //        mergeIntoCluster(cluster1, cluster2);
+            return true;
+
+        }
+
+
+        // force overlappping spectra into the best cluster
+        //      return assignOverlapsToBestCluster(cluster1, cluster2, spectraOverlap);
+
+        return false;
+    }
+
+
+    protected void saveCluster(ChargeBinMZKey key, final ICluster pToSaveCluster) {
         int bin = binner.asBin(pToSaveCluster.getPrecursorMz());
-        if(key.getBin() != bin)
+        if (key.getBin() != bin)
             return;
         foundClusters.add(pToSaveCluster);
         addCluster(pToSaveCluster, outputCounts);
@@ -195,6 +309,7 @@ public class SampleRunner {
 
     /**
      * little piece of code to sample every nth cluster in a cgf file
+     *
      * @param args
      * @param every
      * @throws IOException
@@ -205,17 +320,18 @@ public class SampleRunner {
             // try sequences
             ICluster arg = args[i];
             CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
-              arg = args[i + 1];
-             CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
-              arg = args[i + 2];
-             CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
-         }
+            arg = args[i + 1];
+            CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
+            arg = args[i + 2];
+            CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
+        }
         pw.close();
     }
 
 
     /**
      * little piece of code to sample every the first nth
+     *
      * @param args
      * @param every
      * @throws IOException
@@ -226,13 +342,14 @@ public class SampleRunner {
             // try sequences
             ICluster arg = args[i];
             CGFClusterAppender.INSTANCE.appendCluster(pw, arg);
-          }
+        }
         pw.close();
     }
 
 
     /**
      * remerge clusters - this should cause things to get better
+     *
      * @param runner
      * @return
      */
@@ -247,8 +364,8 @@ public class SampleRunner {
         ElapsedTimer timer = new ElapsedTimer();
         ICluster[] clusters = ParserUtilities.readSpectralCluster(new File(args[0]));
         // Save a small sample for development
-       // writeClusters(clusters,8);
-        writeFirstClusters(clusters,5);
+        // writeClusters(clusters,8);
+        // writeFirstClusters(clusters, 5);
 
         SampleRunner runner = new SampleRunner(Arrays.asList(clusters));
         timer.showElapsed("read cgf");

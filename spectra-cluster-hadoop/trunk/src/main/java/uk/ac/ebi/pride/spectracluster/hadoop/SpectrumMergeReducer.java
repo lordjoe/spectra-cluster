@@ -19,8 +19,9 @@ import java.util.*;
  */
 public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
-    private double spectrumMergeWindowSize;
-    private final Set<String> writtenSpectralIDSThisBin = new HashSet<String>();
+    private double spectrumMergeWindowSize = HadoopDefaults.getSpectrumMergeMZWindowSize();  // this was not initialized!! 7/22/14 SL
+
+     private final Set<String> writtenSpectralIDSThisBin = new HashSet<String>();
     private final Set<String> seenSpectrumSpectralIDSThisBin = new HashSet<String>();
 
     @SuppressWarnings("UnusedDeclaration")
