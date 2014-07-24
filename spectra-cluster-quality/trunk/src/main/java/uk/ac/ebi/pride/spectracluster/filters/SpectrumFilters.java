@@ -178,9 +178,10 @@ public class SpectrumFilters {
 
             value = attributes.getValue("taxonomy");
             if (value != null) {
-                Exporter.setOnlyExportedTaxonomy(value);
-                   setElementObject(getTaxonomyFilter(value));
-                return;
+                throw new UnsupportedOperationException("Fix This"); // ToDo
+//                Exporter.setOnlyExportedTaxonomy(value);
+//                   setElementObject(getTaxonomyFilter(value));
+//                return;
             }
 
             StringBuilder sb = new StringBuilder();
