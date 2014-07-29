@@ -57,7 +57,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < clusters.length; i++) {
             ICluster cluster = clusters[i];
-            int precursorCharge = cluster.getPrecursorCharge();
+            int precursorCharge = cluster.getPrecursorChargeX();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);
             //noinspection ForLoopReplaceableByForEach

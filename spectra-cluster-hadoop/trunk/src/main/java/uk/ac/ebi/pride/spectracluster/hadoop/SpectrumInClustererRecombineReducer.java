@@ -82,7 +82,7 @@ public class SpectrumInClustererRecombineReducer extends AbstractParameterizedRe
         if (cluster.getClusteredSpectraCount() == 0)
             return; // empty dont bother
 
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
+        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorChargeX(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;

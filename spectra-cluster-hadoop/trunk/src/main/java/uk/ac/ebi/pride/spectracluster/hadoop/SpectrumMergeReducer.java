@@ -204,7 +204,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             counter.increment(1);
             return;
         }
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
+        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorChargeX(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;

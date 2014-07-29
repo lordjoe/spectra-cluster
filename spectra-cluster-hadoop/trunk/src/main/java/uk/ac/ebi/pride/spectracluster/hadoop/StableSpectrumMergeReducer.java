@@ -1,28 +1,17 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import org.apache.hadoop.io.Text;
-import org.systemsbiology.hadoop.ISetableParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
-import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import org.systemsbiology.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.engine.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Merge spectra with unstable clusters
@@ -140,7 +129,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         // you can merge clusters outside the current bin but not write them
         if (bin != getCurrentBin())
             return;
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
+        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorChargeX(), precursorMz);
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;

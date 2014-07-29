@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.keys;
 
 
 import uk.ac.ebi.pride.spectracluster.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.StableChargeBinMZKey
@@ -54,18 +55,34 @@ public class StableChargeBinMZKey implements Comparable<StableChargeBinMZKey> {
     public StableChargeBinMZKey(String str) {
         final String[] split = str.split(":");
         int index = 0;
+        if (Defaults.isChargeIgnoredInClustering()) {
+            String key1 = split[index++];
+            bin = Integer.parseInt(key1);
+            String key2 = split[index++];
+            group = Integer.parseInt(key2);
 
-        charge = Integer.parseInt(split[index++]);
-        String key1 = split[index++];
-        bin = Integer.parseInt(key1);
-        String key2 = split[index++];
-        group = Integer.parseInt(key2);
-
-        String prefix = split[index++];
+            String prefix = split[index++];
             // todo - check for proper
 
-        String key3 = split[index++];
-        precursorMZ = SpectraHadoopUtilities.keyToMZ(key3);
+            String key3 = split[index++];
+            precursorMZ = SpectraHadoopUtilities.keyToMZ(key3);
+            charge = Integer.parseInt(split[index++]);
+
+        }
+        else {
+            charge = Integer.parseInt(split[index++]);
+            String key1 = split[index++];
+            bin = Integer.parseInt(key1);
+            String key2 = split[index++];
+            group = Integer.parseInt(key2);
+
+            String prefix = split[index++];
+            // todo - check for proper
+
+            String key3 = split[index++];
+            precursorMZ = SpectraHadoopUtilities.keyToMZ(key3);
+
+        }
         asString = null;    // force string regeneration
     }
 
@@ -120,26 +137,51 @@ public class StableChargeBinMZKey implements Comparable<StableChargeBinMZKey> {
     public String toString() {
         if (asString == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%02d", getCharge()));
-            sb.append(":");
-            sb.append(String.format("%06d", getBin()));
-            sb.append(":");
-            sb.append(String.format("%06d", getGroup()));
+            if (Defaults.isChargeIgnoredInClustering()) {
+                sb.append(String.format("%06d", getBin()));
+                sb.append(":");
+                sb.append(String.format("%06d", getGroup()));
 
-            // only include charge and bin
-            String part = sb.toString();
-            partitionHash = part.hashCode();
+                // only include charge and bin
+                String part = sb.toString();
+                partitionHash = part.hashCode();
 
-            sb = new StringBuilder();
-            sb.append(part);
-            sb.append(":");
+                sb = new StringBuilder();
+                sb.append(part);
+                sb.append(":");
 
-            sb.append(getSortPrefix());
-            // ok after partition sort first by prefix then by mz
+                sb.append(getSortPrefix());
+                // ok after partition sort first by prefix then by mz
 
-            sb.append(":");
-            double precursorMZ1 = getPrecursorMZ();
-            sb.append(SpectraHadoopUtilities.mzToKey(precursorMZ1));
+                sb.append(":");
+                double precursorMZ1 = getPrecursorMZ();
+                sb.append(SpectraHadoopUtilities.mzToKey(precursorMZ1));
+                sb.append(":");
+                sb.append(String.format("%02d", getCharge()));
+            }
+            else {
+                sb.append(String.format("%02d", getCharge()));
+                sb.append(":");
+                sb.append(String.format("%06d", getBin()));
+                sb.append(":");
+                sb.append(String.format("%06d", getGroup()));
+
+                // only include charge and bin
+                String part = sb.toString();
+                partitionHash = part.hashCode();
+
+                sb = new StringBuilder();
+                sb.append(part);
+                sb.append(":");
+
+                sb.append(getSortPrefix());
+                // ok after partition sort first by prefix then by mz
+
+                sb.append(":");
+                double precursorMZ1 = getPrecursorMZ();
+                sb.append(SpectraHadoopUtilities.mzToKey(precursorMZ1));
+
+            }
 
             asString = sb.toString();
         }

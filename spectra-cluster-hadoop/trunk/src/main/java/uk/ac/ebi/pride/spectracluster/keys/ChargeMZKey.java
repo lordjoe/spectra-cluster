@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * Date: 8/13/13
  * key object using charge,mz
  */
-public class ChargeMZKey  implements Comparable<ChargeMZKey> {
+public class ChargeMZKey implements Comparable<ChargeMZKey> {
 
     private final int charge;
     private final double precursorMZ;
@@ -19,13 +19,20 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
         charge = pCharge;
         precursorMZ = pPrecursorMZ;
         asString = null;    // force string regeneration
-     }
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public ChargeMZKey(String str) {
         final String[] split = str.split(":");
-        charge = Integer.parseInt(split[0]);
-        precursorMZ = SpectraHadoopUtilities.keyToMZ(split[1]);
+        if (Defaults.isChargeIgnoredInClustering()) {
+            charge = Integer.parseInt(split[1]);
+            precursorMZ = SpectraHadoopUtilities.keyToMZ(split[0]);
+        }
+        else {
+            charge = Integer.parseInt(split[0]);
+            precursorMZ = SpectraHadoopUtilities.keyToMZ(split[1]);
+
+        }
         asString = null;    // force string regeneration
     }
 
@@ -42,11 +49,21 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
     public String toString() {
         if (asString == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%02d", getCharge()));
-            sb.append(":");
-            double precursorMZ1 = getPrecursorMZ();
-            String str = SpectraHadoopUtilities.mzToKey(precursorMZ1);
-            sb.append(str);
+            if (Defaults.isChargeIgnoredInClustering()) {
+                double precursorMZ1 = getPrecursorMZ();
+                String str = SpectraHadoopUtilities.mzToKey(precursorMZ1);
+                sb.append(str);
+                sb.append(":");
+                sb.append(String.format("%02d", getCharge()));
+            }
+            else {
+                sb.append(String.format("%02d", getCharge()));
+                sb.append(":");
+                double precursorMZ1 = getPrecursorMZ();
+                String str = SpectraHadoopUtilities.mzToKey(precursorMZ1);
+                sb.append(str);
+
+            }
 
             asString = sb.toString();
         }
@@ -57,7 +74,7 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
     @Override
     public boolean equals(final Object o) {
         //noinspection SimplifiableIfStatement
-        if(getClass() != o.getClass())
+        if (getClass() != o.getClass())
             return false;
         return toString().equals(o.toString());
     }
@@ -69,6 +86,7 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
 
     /**
      * sort by string works
+     *
      * @param o
      * @return
      */
@@ -80,12 +98,15 @@ public class ChargeMZKey  implements Comparable<ChargeMZKey> {
 
     /**
      * here is an int that a partitioner would use
+     *
      * @return
      */
     @SuppressWarnings("UnusedDeclaration")
     public int getPartitionHash() {
-        int ret = getCharge() * 10000;
-        ret += (int)(getPrecursorMZ() * MZIntensityUtilities.MZ_RESOLUTION + 0.5);
+        int ret = 0;
+        if (!Defaults.isChargeIgnoredInClustering())
+            ret =  getCharge() * 10000;
+        ret += (int) (getPrecursorMZ() * MZIntensityUtilities.MZ_RESOLUTION + 0.5);
         return ret;
     }
 

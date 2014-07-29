@@ -1,24 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import com.lordjoe.algorithms.SizedWideBinner;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counter;
-import org.systemsbiology.hadoop.AbstractParameterizedMapper;
-import org.systemsbiology.hadoop.ISetableParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -129,7 +120,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         IWideBinner binner = BINNER;
 
         //noinspection ForLoopReplaceableByForEach
-        int precursorCharge = cluster.getPrecursorCharge();
+        int precursorCharge = cluster.getPrecursorChargeX();
         double precursorMZ = cluster.getPrecursorMz();
         boolean stable = clusterStabilityAssessor.isStable(cluster);
         int numberSpectra = cluster.getClusteredSpectraCount();
