@@ -34,7 +34,7 @@ public class CGFClusterAppender implements IClusterAppender {
         try {
             out.append("BEGIN CLUSTER");
             out.append(" Id=").append(cluster.getId());
-            out.append(" Charge=").append(String.valueOf(cluster.getPrecursorCharge()));
+            out.append(" Charge=").append(String.valueOf(cluster.getPrecursorChargeX()));
 
             out.append("\n");
 
