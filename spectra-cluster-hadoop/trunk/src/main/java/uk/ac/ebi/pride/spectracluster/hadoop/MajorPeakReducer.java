@@ -77,7 +77,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
      * @throws InterruptedException
      */
     protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ICluster cluster) throws IOException, InterruptedException {
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
+        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorChargeX(), cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;

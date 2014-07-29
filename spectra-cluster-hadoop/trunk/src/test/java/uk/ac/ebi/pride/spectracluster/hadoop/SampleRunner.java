@@ -32,7 +32,6 @@ public class SampleRunner {
     private final Set<String> highDuplicates = new HashSet<String>();
     private final Set<String> seenHighDuplicates = new HashSet<String>();
 
-    protected int currentCharge;
     private int currentBin;
 
     private IWideBinner binner = HadoopDefaults.DEFAULT_WIDE_MZ_BINNER;
@@ -59,10 +58,9 @@ public class SampleRunner {
             String id = spc.getId();
             if (highDuplicates.contains(id)) {
                 if (seenHighDuplicates.contains(id)) {
-           //         System.out.println(id);
+                    //         System.out.println(id);
                     return spc;
-                }
-                else {
+                } else {
                     seenHighDuplicates.add(id);
                 }
             }
@@ -76,14 +74,6 @@ public class SampleRunner {
             ret += keysToClusters.get(s).size();
         }
         return ret;
-    }
-
-    public int getCurrentCharge() {
-        return currentCharge;
-    }
-
-    public void setCurrentCharge(final int pCurrentCharge) {
-        currentCharge = pCurrentCharge;
     }
 
     public int getCurrentBin() {
@@ -108,23 +98,26 @@ public class SampleRunner {
 
 
         ChargeBinMZKey key = new ChargeBinMZKey(keys[0]);
-        setCurrentCharge(key.getCharge());
         setCurrentBin(key.getBin());
         int currentPartition = key.getPartitionHash();
         IIncrementalClusteringEngine engine = factory.getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize());
+        reduceBin(key, engine);
         System.out.println("new Engine " + key);
-        for (int i = 0; i < keys.length; i++) {
+        for (int i = 1; i < keys.length; i++) {
             String s = keys[i];
             key = new ChargeBinMZKey(s);
-            if (key.getPartitionHash() != currentPartition) {
+
+            int partitionHash = key.getPartitionHash();
+            if (partitionHash != currentPartition) {
                 for (ICluster iCluster : engine.getClusters()) {
                     saveCluster(key, iCluster);
                 }
                 engine = factory.getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize());
 
-                currentPartition = key.getPartitionHash();
+                currentPartition = partitionHash;
                 System.out.println("new Engine " + key);
             }
+            setCurrentBin(key.getBin());
             reduceBin(key, engine);
         }
         for (ICluster iCluster : engine.getClusters()) {
@@ -133,16 +126,21 @@ public class SampleRunner {
     }
 
     protected void reduceBin(ChargeBinMZKey key, IIncrementalClusteringEngine engine) {
-        List<ICluster> clusters = keysToClusters.get(key.toString());
+        String key1 = key.toString();
+        List<ICluster> clusters = keysToClusters.get(key1);
         reduceBin(engine, key, clusters);
     }
 
     protected void reduceBin(IIncrementalClusteringEngine engine, ChargeBinMZKey key, List<ICluster> clusters) {
         int highReplication = 0;
         for (ICluster cluster : clusters) {
+
+            // debugging step
             ISpectrum duplicateSpc = getHighReplication(cluster);
-            if (duplicateSpc != null)
+             if (duplicateSpc != null)
                 examineHighReplication(duplicateSpc, cluster, engine);
+
+
             Collection<ICluster> toSaveClusters = engine.addClusterIncremental(cluster);
             for (ICluster toSaveCluster : toSaveClusters) {
 //                duplicateSpc = getHighReplication(toSaveCluster);
@@ -231,8 +229,10 @@ public class SampleRunner {
 
 
     protected void saveCluster(ChargeBinMZKey key, final ICluster pToSaveCluster) {
-        int bin = binner.asBin(pToSaveCluster.getPrecursorMz());
-        if (key.getBin() != bin)
+        final float precursorMz = pToSaveCluster.getPrecursorMz();
+        int bin = binner.asBin(precursorMz);
+        final int bin1 = key.getBin();
+        if (bin1 != bin)
             return;
         foundClusters.add(pToSaveCluster);
         addCluster(pToSaveCluster, outputCounts);
@@ -285,7 +285,7 @@ public class SampleRunner {
          */
         for (ICluster cluster : clusters) {
             addCluster(cluster, inputCounts);
-            int precursorCharge = cluster.getPrecursorCharge();
+            int precursorCharge = cluster.getPrecursorChargeX();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);
             //noinspection ForLoopReplaceableByForEach
@@ -293,10 +293,21 @@ public class SampleRunner {
                 int bin = bins[j];
                 ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
                 String keyStr = mzKey.toString();
+                // all this  is really a unit test
+                ChargeBinMZKey mzKey2 = new ChargeBinMZKey(keyStr);
+                String keyStr2 = mzKey2.toString();
+                ChargeBinMZKey mzKey3 = new ChargeBinMZKey(keyStr2);
+                String keyStr3 = mzKey3.toString();
+                if (!keyStr.equals(keyStr2)) {
+                    keyStr = mzKey.toString();
+                    mzKey2 = new ChargeBinMZKey(keyStr);
+                    keyStr2 = mzKey.toString();
+                    throw new UnsupportedOperationException("Debug This"); // ToDo
+                }
+
                 if (keysToClusters.containsKey(keyStr)) {
                     keysToClusters.get(keyStr).add(cluster);
-                }
-                else {
+                } else {
                     List<ICluster> list = new ArrayList<ICluster>();
                     list.add(cluster);
                     keysToClusters.put(keyStr, list);
@@ -354,7 +365,8 @@ public class SampleRunner {
      * @return
      */
     public static SampleRunner reanalyze(SampleRunner runner) {
-        SampleRunner runner2 = new SampleRunner(runner.foundClusters);
+        final List<ICluster> foundClusters1 = runner.foundClusters;
+        SampleRunner runner2 = new SampleRunner(foundClusters1);
         runner2.analyze();
         runner2.reportCounts(System.out);
         return runner2;
