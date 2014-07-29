@@ -79,6 +79,16 @@ public class Defaults {
         Defaults.similarityThreshold = similarityThreshold;
     }
 
+    private static boolean chargeIgnoredInClustering = true;
+
+    public static boolean isChargeIgnoredInClustering() {
+        return chargeIgnoredInClustering;
+    }
+
+    public static void setChargeIgnoredInClustering(final boolean pChargeIgnoredInClustering) {
+        chargeIgnoredInClustering = pChargeIgnoredInClustering;
+    }
+
     public static void setLargeBinningRegion(int largeBinningRegion) {
         Defaults.largeBinningRegion = largeBinningRegion;
     }

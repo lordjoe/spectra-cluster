@@ -2,8 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.CompareTo;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -146,7 +145,7 @@ public class SpectralCluster implements ICluster {
     }
 
     @Override
-    public int getPrecursorCharge() {
+    public int getPrecursorChargeX() {
         ISpectrum consensusSpectrum1 = getConsensusSpectrum();
         if (consensusSpectrum1 == null)
             return 0;
@@ -289,10 +288,13 @@ public class SpectralCluster implements ICluster {
             int ret = CompareTo.compare(getPrecursorMz(), o.getPrecursorMz());
             if (ret != 0)
                 return ret;
-            if (getPrecursorCharge() != o.getPrecursorCharge()) {
-                return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
+            if(!Defaults.isChargeIgnoredInClustering())   {
+                if (getPrecursorChargeX() != o.getPrecursorChargeX()) {
+                     return getPrecursorChargeX() < o.getPrecursorChargeX() ? -1 : 1;
+                 }
+
             }
-            if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
+              if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
                 return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
             }
 
@@ -323,8 +325,11 @@ public class SpectralCluster implements ICluster {
     public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
-        if (getPrecursorCharge() != o.getPrecursorCharge())
-            return false;
+        if(!Defaults.isChargeIgnoredInClustering())   {
+            if (getPrecursorChargeX() != o.getPrecursorChargeX())
+              return false;
+
+        }
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
         if (abs > MZIntensityUtilities.SMALL_MZ_DIFFERENCE) {
@@ -361,7 +366,7 @@ public class SpectralCluster implements ICluster {
     public String toString() {
         double precursorMZ = getPrecursorMz();
         String text =
-                "charge= " + getPrecursorCharge() + "," +
+                "charge= " + getPrecursorChargeX() + "," +
                         "mz= " + String.format("%10.3f", precursorMZ).trim() + "," +
                         "count= " + clusteredSpectra.size() +
                         ", spectrum = ";

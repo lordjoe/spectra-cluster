@@ -75,7 +75,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected float averagePrecursorIntens;
     protected float sumPrecursorIntens;
     protected float lowestConcensusPeak;
-    protected int averageCharge;
+    protected double averageChargeFloat;
     protected int sumCharge;
     protected ISpectrum consensusSpectrum;
     protected final List<SpectrumHolderListener> listeners = new ArrayList<SpectrumHolderListener>();
@@ -398,18 +398,18 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
     protected void update() {
         if (nSpectra > 0) {
             averagePrecursorMz = sumPrecursorMz / nSpectra;
-            averageCharge = sumCharge / nSpectra;
+            averageChargeFloat = (float)sumCharge / (float)nSpectra;
             averagePrecursorIntens = sumPrecursorIntens / nSpectra;
         } else {
             averagePrecursorMz = 0;
-            averageCharge = 0;
+            averageChargeFloat = 0;
             averagePrecursorIntens = 0;
         }
 
 
         if (allPeaks.size() < 1) {
             List<IPeak> empty = new ArrayList<IPeak>();
-            consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), Collections.EMPTY_LIST);
+            consensusSpectrum = new Spectrum(id, 1, averagePrecursorMz, Defaults.getDefaultQualityScorer(), Collections.EMPTY_LIST);
             setIsDirty(false);
             return;
         }
@@ -430,6 +430,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         lowestConcensusPeak = minimumConsensusPeak;
 
         // create the ConsensusSpectrum object
+        int averageCharge = (int)(averageChargeFloat + 0.5);
         consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), consensusPeaks);
 
         setIsDirty(false);
