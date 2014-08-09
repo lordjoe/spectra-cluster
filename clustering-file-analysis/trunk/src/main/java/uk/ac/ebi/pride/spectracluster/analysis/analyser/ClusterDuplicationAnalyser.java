@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.analysis.analyser;
 
-import uk.ac.ebi.pride.spectracluster.analysis.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumReference;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,14 +92,14 @@ public class ClusterDuplicationAnalyser implements IClusteringSourceAnalyser {
 
     @Override
     public void onNewClusterRead(ICluster newCluster) {
-        List<String> clusterSpecIds = newCluster.getSpectraIds();
+        for (ISpectrumReference specRef : newCluster.getSpectrumReferences()) {
+            String id = specRef.getSpectrumId();
 
-        for (String sequence : clusterSpecIds) {
-            if (!specIdCounts.containsKey(sequence)) {
-                specIdCounts.put(sequence, 0);
+            if (!specIdCounts.containsKey(id)) {
+                specIdCounts.put(id, 0);
             }
 
-            specIdCounts.put(sequence, specIdCounts.get(sequence) + 1);
+            specIdCounts.put(id, specIdCounts.get(id) + 1);
         }
     }
 }
