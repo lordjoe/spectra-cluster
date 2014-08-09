@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.analysis.analyser;
 
-import uk.ac.ebi.pride.spectracluster.analysis.objects.ICluster;
 import uk.ac.ebi.pride.spectracluster.analysis.util.ClusterUtilities;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
 
 /**
  * Created by jg on 14.07.14.
@@ -18,7 +18,7 @@ public class ClusterParameterExtractor implements IClusteringSourceAnalyser {
     public final char DELIMINATOR = '\t';
     public final String TABLE_HEADER=
             "precusor_mz" + DELIMINATOR + "precursor_intensity" + DELIMINATOR + "size" + DELIMINATOR +
-                    "max_ratio" + DELIMINATOR + "max_il_ratio" + "\n";
+                    "max_ratio" + DELIMINATOR + "max_il_ratio" + DELIMINATOR + "precursor_mz_range" + "\n";
 
 
     @Override
@@ -45,12 +45,13 @@ public class ClusterParameterExtractor implements IClusteringSourceAnalyser {
     public void onNewClusterRead(ICluster newCluster) {
         // add the string representing the cluster to the result buffer
         resultStringBuffer.append(String.format(
-                "%.3f%c%.3f%c%d%c%.3f%c%.3f\n",
+                "%.3f%c%.3f%c%d%c%.3f%c%.3f%c%.3f\n",
                 newCluster.getAvPrecursorMz(), DELIMINATOR,
                 newCluster.getAvPrecursorIntens(), DELIMINATOR,
                 newCluster.getSpecCount(), DELIMINATOR,
                 newCluster.getMaxRatio(), DELIMINATOR,
-                ClusterUtilities.getClusterILAgnosticMaxRatio(newCluster)
+                ClusterUtilities.getClusterILAgnosticMaxRatio(newCluster), DELIMINATOR,
+                newCluster.getSpectrumPrecursorMzRange()
         ));
     }
 }

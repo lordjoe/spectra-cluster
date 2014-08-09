@@ -1,12 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.analysis.analyser;
 
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
-import uk.ac.ebi.pride.spectracluster.analysis.objects.ICluster;
 import uk.ac.ebi.pride.spectracluster.analysis.util.ClusterUtilities;
-
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
 
 /**
  * Created by jg on 12.07.14.

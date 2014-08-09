@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.analysis.analyser;
 
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
 
 /**
  * Created by jg on 12.07.14.

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.analysis.util;
 
-import uk.ac.ebi.pride.spectracluster.analysis.objects.ICluster;
-import uk.ac.ebi.pride.spectracluster.analysis.objects.SequenceCount;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.SequenceCount;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,9 +4,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.analysis.TestUtilities;
-import uk.ac.ebi.pride.spectracluster.analysis.io.ClusteringFileReader;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceReader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ public class ClusterParameterExtractorTest {
 
         String[] lines = resultString.split("\n");
 
-        Assert.assertEquals(4020, lines.length);
-        Assert.assertEquals("305.000\t1.000\t2\t1.000\t1.000", lines[1]);
-        Assert.assertEquals("305.002\t1.000\t6\t0.333\t0.333", lines[11]);
+        Assert.assertEquals(961, lines.length);
+        Assert.assertEquals("305.000\t1.000\t2\t1.000\t1.000\t0.000", lines[1]);
+        Assert.assertEquals("305.010\t1.000\t1\t1.000\t1.000\t0.000", lines[11]);
     }
 }

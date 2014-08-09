@@ -4,9 +4,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.analysis.TestUtilities;
-import uk.ac.ebi.pride.spectracluster.analysis.io.ClusteringFileReader;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceReader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,13 +41,12 @@ public class ClusterDuplicationAnalyserTest {
         String result = analyzer.getAnalysisResultString();
 
         Assert.assertEquals("count\tfrequency\n" +
-                "1\t888\n" +
-                "2\t785\n" +
-                "3\t1159\n" +
-                "4\t924\n" +
-                "5\t1638\n" +
-                "6\t1956\n", result);
+                "1\t5990\n" +
+                "2\t872\n" +
+                "3\t302\n" +
+                "4\t63\n" +
+                "5\t7\n", result);
 
-        Assert.assertEquals(5, (int) analyzer.getSpecIdCounts().get("PXD000637;PRIDE_Exp_Complete_Ac_33209.xml;spectrum=1410"));
+        Assert.assertEquals(1, (int) analyzer.getSpecIdCounts().get("PXD000637;PRIDE_Exp_Complete_Ac_33209.xml;spectrum=1410"));
     }
 }

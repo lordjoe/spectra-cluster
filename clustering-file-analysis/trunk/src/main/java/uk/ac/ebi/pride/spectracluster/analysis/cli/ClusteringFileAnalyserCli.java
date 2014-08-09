@@ -6,15 +6,13 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.AnalyserFactory;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.IClusteringSourceAnalyser;
-import uk.ac.ebi.pride.spectracluster.analysis.io.ClusteringFileReader;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceReader;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

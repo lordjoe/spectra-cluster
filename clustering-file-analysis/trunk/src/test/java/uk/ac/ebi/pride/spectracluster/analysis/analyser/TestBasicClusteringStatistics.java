@@ -4,13 +4,11 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.analysis.TestUtilities;
-import uk.ac.ebi.pride.spectracluster.analysis.io.ClusteringFileReader;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.analysis.io.IClusterSourceReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceReader;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,14 +41,14 @@ public class TestBasicClusteringStatistics {
         String simpleStat = basicStat.getAnalysisResultString();
 
         Assert.assertEquals(
-                "Number of clusters: 4019 (619 with 1 spec)\n" +
-                "Average maximum ratio: 0.756\n" +
-                "Average cluster size: 8.572\n" +
-                "Minimum size: 1\n" +
-                "Maximum size: 202\n" +
-                "Minimum ratio: 0.046\n" +
-                "Maximum ratio: 1.000\n" +
-                "Stable clusters: 217\n",
+                "Number of clusters: 960 (256 with 1 spec)\n" +
+                        "Average maximum ratio: 0.760\n" +
+                        "Average cluster size: 12.173\n" +
+                        "Minimum size: 1\n" +
+                        "Maximum size: 397\n" +
+                        "Minimum ratio: 0.050\n" +
+                        "Maximum ratio: 1.000\n" +
+                        "Stable clusters: 56\n",
                simpleStat);
     }
 }
