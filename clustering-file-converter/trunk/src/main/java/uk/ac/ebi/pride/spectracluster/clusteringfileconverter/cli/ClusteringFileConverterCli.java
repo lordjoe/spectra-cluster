@@ -50,6 +50,7 @@ public class ClusteringFileConverterCli {
             if (!commandLine.hasOption(CliOptions.OPTIONS.OUTPUT_PATH.getValue()))
                 throw new Exception("Missing required parameter " + CliOptions.OPTIONS.OUTPUT_PATH.getValue());
             String outputPath = commandLine.getOptionValue(CliOptions.OPTIONS.OUTPUT_PATH.getValue());
+            System.out.println("Outputpath = " + outputPath);
 
             String[] formats = commandLine.getOptionValues(CliOptions.OPTIONS.FORMAT.getValue());
 
@@ -63,6 +64,8 @@ public class ClusteringFileConverterCli {
     }
 
     private static void convertCluteringFile(String inputFilename, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String[] formats) throws Exception {
+        System.out.println("Converting " + inputFilename + "\n");
+
         File outputPath = new File(outputPathString);
 
         // get all converters
@@ -75,7 +78,7 @@ public class ClusteringFileConverterCli {
             converter.setMinRatio(minRatio);
             converter.setMaxRatio(maxRatio);
 
-            converter.setOutputPath(outputPath.getPath() + converter.getFiletypeExtension());
+            converter.setOutputPath(outputPath.getPath() + "." + converter.getFiletypeExtension());
 
             converters.add(converter);
         }
@@ -90,6 +93,10 @@ public class ClusteringFileConverterCli {
         // close all files
         for (IClusterConverter c : converters) {
             c.close();
+        }
+
+        for (IClusterConverter c : converters) {
+            System.out.println("Result written to " + c.getOuputPath());
         }
     }
 
