@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfileconverter.converters;
 
+import uk.ac.ebi.pride.spectracluster.clusteringfileconverter.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumReference;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.SequenceCount;
 
 import java.io.BufferedWriter;
@@ -43,14 +43,15 @@ public class ClusterMspConverter implements IClusterConverter {
         mspString.append("Num peaks: ").append(cluster.getConsensusMzValues().size()).append("\n");
 
         for (int i = 0; i < cluster.getConsensusMzValues().size(); i++) {
-            mspString.append(cluster.getConsensusMzValues().get(i) + " " + cluster.getConsensusIntensValues().get(i) + "\n");
+            mspString.append(cluster.getConsensusMzValues().get(i)).append(" ").append(cluster.getConsensusIntensValues().get(i)).append("\n");
         }
 
         return mspString.toString();
     }
 
     private String generateComments(ICluster cluster) {
-        StringBuilder commentString = new StringBuilder("Spec=Consensus");
+        StringBuilder commentString = new StringBuilder();
+        commentString.append("Spec=Consensus");
         commentString.append(" Mods=NA"); // TODO: add modifications
         commentString.append(" Parent=").append(cluster.getAvPrecursorMz());
         commentString.append(" Nreps=").append(cluster.getSpecCount());
@@ -72,17 +73,7 @@ public class ClusterMspConverter implements IClusterConverter {
             }
         }
 
-        // calculate the average charge
-        int sumCharge = 0;
-
-        for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
-            sumCharge += specRef.getCharge();
-        }
-
-        float avCharge = (float) sumCharge / (float) cluster.getSpectrumReferences().size();
-        int avChargeRounded = (int) (avCharge + 0.5);
-
-        return String.format("%s/%d", maxSeqence, avChargeRounded);
+        return String.format("%s/%d", maxSeqence, ClusterUtilities.calculateClusterCharge(cluster));
     }
 
     @Override

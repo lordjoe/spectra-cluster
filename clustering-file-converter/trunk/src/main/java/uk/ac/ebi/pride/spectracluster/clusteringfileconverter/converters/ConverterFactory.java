@@ -7,7 +7,8 @@ public class ConverterFactory {
     private ConverterFactory() {}
 
     public enum CONVERTER {
-        MSP_CONVERTER("msp");
+        MSP_CONVERTER("msp"),
+        MGF_CONVERTER("mgf");
 
         private String name;
         private CONVERTER(String name) {
@@ -51,6 +52,8 @@ public class ConverterFactory {
         switch(converter) {
             case MSP_CONVERTER:
                 return new ClusterMspConverter();
+            case MGF_CONVERTER:
+                return new ClusterMgfConverter();
             default:
                 throw new IllegalStateException("Unsupported converter type passed.");
         }
