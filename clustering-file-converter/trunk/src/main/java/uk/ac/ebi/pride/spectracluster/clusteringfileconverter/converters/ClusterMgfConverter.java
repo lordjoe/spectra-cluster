@@ -33,7 +33,7 @@ public class ClusterMgfConverter implements IClusterConverter {
 
     @Override
     public String getFileHeader() {
-        return "COM=Converted spectral library\n";
+        return "";
     }
 
     @Override
@@ -129,6 +129,7 @@ public class ClusterMgfConverter implements IClusterConverter {
                 writer.write(getFileHeader());
             }
 
+            clusterCounter++;
             writer.write(convertCluster(newCluster));
             writer.write("\n");
         }

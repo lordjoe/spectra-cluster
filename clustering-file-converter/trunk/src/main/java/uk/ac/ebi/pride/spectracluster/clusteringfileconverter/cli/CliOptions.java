@@ -39,11 +39,13 @@ public class CliOptions {
                 .withDescription("limits the minimum RATIO a cluster may have to be included.")
                 .withArgName("RATIO")
                 .withType(Float.class)
+                .hasArg()
                 .create(OPTIONS.MIN_RATIO.getValue());
         options.addOption(minRatio);
 
         Option maxRatio = OptionBuilder
                 .withDescription("limits the maximum RATIO a cluster may have to be included.")
+                .hasArg()
                 .withArgName("RATIO")
                 .withType(Float.class)
                 .create(OPTIONS.MAX_RATIO.getValue());
@@ -51,6 +53,7 @@ public class CliOptions {
 
         Option minSize = OptionBuilder
                 .withDescription("limits the minimum SIZE a cluster may have to be included.")
+                .hasArg()
                 .withArgName("SIZE")
                 .withType(Integer.class)
                 .create(OPTIONS.MIN_SIZE.getValue());
@@ -58,6 +61,7 @@ public class CliOptions {
 
         Option maxSize = OptionBuilder
                 .withDescription("limits the maximum SIZE a cluster may have to be included.")
+                .hasArg()
                 .withArgName("SIZE")
                 .withType(Integer.class)
                 .create(OPTIONS.MAX_SIZE.getValue());
@@ -65,12 +69,14 @@ public class CliOptions {
 
         Option format = OptionBuilder
                 .withDescription("defines a file format of the output. Multiple formats may be specified simultaneously.")
+                .hasArg()
                 .withArgName("FORMAT")
                 .create(OPTIONS.FORMAT.getValue());
         options.addOption(format);
 
         Option outputPath = OptionBuilder
                 .withDescription("path to the output file. For each format the format specific extension will be appended to this path")
+                .hasArg()
                 .create(OPTIONS.OUTPUT_PATH.getValue());
         options.addOption(outputPath);
 
