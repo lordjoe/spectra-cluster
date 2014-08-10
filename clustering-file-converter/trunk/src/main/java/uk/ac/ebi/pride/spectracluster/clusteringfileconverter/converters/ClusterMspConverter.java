@@ -10,18 +10,8 @@ import java.io.FileWriter;
 /**
  * Created by jg on 01.08.14.
  */
-public class ClusterMspConverter implements IClusterConverter {
+public class ClusterMspConverter extends AbstractClusterConverter {
     public static String FILE_EXTENSION = "msp";
-    private String outputPath;
-    private BufferedWriter writer;
-
-    private int minSize = 0;
-    private int maxSize = Integer.MAX_VALUE;
-    private float minRatio = 0;
-    private float maxRatio = 1;
-
-    public ClusterMspConverter() {
-    }
 
     @Override
     public String getFileHeader() {
@@ -77,89 +67,12 @@ public class ClusterMspConverter implements IClusterConverter {
     }
 
     @Override
-    public void setOutputPath(String outputPath) {
-        this.outputPath = outputPath;
-    }
-
-    @Override
-    public String getOuputPath() {
-        return outputPath;
-    }
-
-    @Override
     public void onNewClusterRead(ICluster newCluster) {
-        if (outputPath == null)
-            throw new IllegalStateException("OutputPath must be set before any clusters can be written.");
-
-        if (newCluster.getSpecCount() < minSize)
-            return;
-        if (newCluster.getSpecCount() > maxSize)
-            return;
-        if (newCluster.getMaxRatio() < minRatio)
-            return;
-        if (newCluster.getMaxRatio() > maxRatio)
+        if (!shouldClusterBeExported(newCluster))
             return;
 
         String mspString = convertCluster(newCluster);
 
-        try {
-            if (writer == null) {
-                writer = new BufferedWriter(new FileWriter(outputPath));
-            }
-
-            writer.write(mspString);
-            writer.write("\n");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void close() throws Exception {
-        if (writer != null) {
-            writer.close();
-            writer = null;
-        }
-    }
-
-    @Override
-    public void setMinSize(int minSize) {
-        this.minSize = minSize;
-    }
-
-    @Override
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    @Override
-    public void setMinRatio(float minRatio) {
-        this.minRatio = minRatio;
-    }
-
-    @Override
-    public void setMaxRatio(float maxRatio) {
-        this.maxRatio = maxRatio;
-    }
-
-    @Override
-    public int getMinSize() {
-        return minSize;
-    }
-
-    @Override
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public float getMinRatio() {
-        return minRatio;
-    }
-
-    @Override
-    public float getMaxRatio() {
-        return maxRatio;
+        writeStringToFile(mspString + "\n", getFileHeader());
     }
 }

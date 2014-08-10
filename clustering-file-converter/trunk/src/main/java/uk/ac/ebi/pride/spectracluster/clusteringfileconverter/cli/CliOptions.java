@@ -13,6 +13,7 @@ public class CliOptions {
         MIN_RATIO("min_ratio"),
         MIN_SIZE("min_size"),
         MAX_SIZE("max_size"),
+        COMBINE("combine"),
         FORMAT("format"),
         OUTPUT_PATH("output_path");
 
@@ -73,6 +74,11 @@ public class CliOptions {
                 .withArgName("FORMAT")
                 .create(OPTIONS.FORMAT.getValue());
         options.addOption(format);
+
+        Option combine = OptionBuilder
+                .withDescription("if set all passed .clustering files will be combined in a single output file.")
+                .create(OPTIONS.COMBINE.getValue());
+        options.addOption(combine);
 
         Option outputPath = OptionBuilder
                 .withDescription("path to the output file. For each format the format specific extension will be appended to this path")

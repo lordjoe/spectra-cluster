@@ -9,27 +9,9 @@ import java.io.FileWriter;
 /**
  * Created by jg on 09.08.14.
  */
-public class ClusterMgfConverter implements IClusterConverter {
+public class ClusterMgfConverter extends AbstractClusterConverter {
     public static String FILE_EXTENSION = "mgf";
-    private String outputPath;
-    private BufferedWriter writer;
-
-    private int minSize = 0;
-    private int maxSize = Integer.MAX_VALUE;
-    private float minRatio = 0;
-    private float maxRatio = 1;
-
     private int clusterCounter = 0;
-
-    @Override
-    public void setOutputPath(String outputPath) {
-        this.outputPath = outputPath;
-    }
-
-    @Override
-    public String getOuputPath() {
-        return outputPath;
-    }
 
     @Override
     public String getFileHeader() {
@@ -55,7 +37,7 @@ public class ClusterMgfConverter implements IClusterConverter {
             stringBuilder.append(cluster.getConsensusMzValues().get(i)).append(" ").append(cluster.getConsensusIntensValues().get(i)).append("\n");
         }
 
-        stringBuilder.append("END IONS\n");
+        stringBuilder.append("END IONS\n\n");
 
         return stringBuilder.toString();
     }
@@ -65,76 +47,17 @@ public class ClusterMgfConverter implements IClusterConverter {
         if (writer != null) {
             writer.close();
             writer = null;
-            clusterCounter = 0;
+            if (!append)
+                clusterCounter = 0;
         }
-    }
-
-    @Override
-    public void setMinSize(int minSize) {
-        this.minSize = minSize;
-    }
-
-    @Override
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    @Override
-    public void setMinRatio(float minRatio) {
-        this.minRatio = minRatio;
-    }
-
-    @Override
-    public void setMaxRatio(float maxRatio) {
-        this.maxRatio = maxRatio;
-    }
-
-    @Override
-    public int getMinSize() {
-        return minSize;
-    }
-
-    @Override
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public float getMinRatio() {
-        return minRatio;
-    }
-
-    @Override
-    public float getMaxRatio() {
-        return maxRatio;
     }
 
     @Override
     public void onNewClusterRead(ICluster newCluster) {
-        if (outputPath == null)
-            throw new IllegalStateException("OutputPath must be set before clusters can be written.");
-
-        if (newCluster.getSpecCount() < minSize)
-            return;
-        if (newCluster.getSpecCount() > maxSize)
-            return;
-        if (newCluster.getMaxRatio() < minRatio)
-            return;
-        if (newCluster.getMaxRatio() > maxRatio)
+        if (!shouldClusterBeExported(newCluster))
             return;
 
-        try {
-            if (writer == null) {
-                writer = new BufferedWriter(new FileWriter(outputPath));
-                writer.write(getFileHeader());
-            }
-
-            clusterCounter++;
-            writer.write(convertCluster(newCluster));
-            writer.write("\n");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        writeStringToFile(convertCluster(newCluster), getFileHeader());
+        clusterCounter++;
     }
 }
