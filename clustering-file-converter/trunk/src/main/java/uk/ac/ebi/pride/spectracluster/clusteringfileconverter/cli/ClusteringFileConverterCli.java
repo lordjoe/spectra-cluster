@@ -47,9 +47,7 @@ public class ClusteringFileConverterCli {
                     commandLine.getOptionValue(CliOptions.OPTIONS.MAX_RATIO.getValue(), "1")
             );
 
-            boolean combineResults = Boolean.parseBoolean(
-                    commandLine.getOptionValue(CliOptions.OPTIONS.COMBINE.getValue(), "0")
-            );
+            boolean combineResults = commandLine.hasOption(CliOptions.OPTIONS.COMBINE.getValue());
 
             if (!commandLine.hasOption(CliOptions.OPTIONS.OUTPUT_PATH.getValue()))
                 throw new Exception("Missing required parameter " + CliOptions.OPTIONS.OUTPUT_PATH.getValue());
