@@ -47,6 +47,10 @@ public class ClusteringFileConverterCli {
                     commandLine.getOptionValue(CliOptions.OPTIONS.MAX_RATIO.getValue(), "1")
             );
 
+            boolean combineResults = Boolean.parseBoolean(
+                    commandLine.getOptionValue(CliOptions.OPTIONS.COMBINE.getValue(), "0")
+            );
+
             if (!commandLine.hasOption(CliOptions.OPTIONS.OUTPUT_PATH.getValue()))
                 throw new Exception("Missing required parameter " + CliOptions.OPTIONS.OUTPUT_PATH.getValue());
             String outputPath = commandLine.getOptionValue(CliOptions.OPTIONS.OUTPUT_PATH.getValue());
@@ -54,12 +58,58 @@ public class ClusteringFileConverterCli {
 
             String[] formats = commandLine.getOptionValues(CliOptions.OPTIONS.FORMAT.getValue());
 
-            for (String inputFilename : commandLine.getArgs()) {
-                convertCluteringFile(inputFilename, outputPath, minSize, maxSize, minRatio, maxRatio, formats);
+            // process the files
+            if (combineResults) {
+                convertClusteringFilesCombined(commandLine.getArgs(), outputPath, minSize, maxSize, minRatio, maxRatio, formats);
+            }
+            else {
+                // process each file separately
+                for (String inputFilename : commandLine.getArgs()) {
+                    convertCluteringFile(inputFilename, outputPath, minSize, maxSize, minRatio, maxRatio, formats);
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void convertClusteringFilesCombined(String[] inputFilenames, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String[] formats) throws Exception{
+        File outputPath = new File(outputPathString);
+
+        // get all converters
+        List<IClusterConverter> converters = new ArrayList<IClusterConverter>(formats.length);
+        for (String format : formats) {
+            IClusterConverter converter = ConverterFactory.getConverter(format);
+
+            converter.setMinSize(minSize);
+            converter.setMaxSize(maxSize);
+            converter.setMinRatio(minRatio);
+            converter.setMaxRatio(maxRatio);
+
+            converter.setOutputPath(outputPath.getPath() + "." + converter.getFiletypeExtension());
+            converter.setAppend(true);
+
+            converters.add(converter);
+        }
+
+        //  create the list of listeners
+        List<IClusterSourceListener> listeners = new ArrayList<IClusterSourceListener>(converters);
+
+        // process all files
+        for (String inputFilename : inputFilenames) {
+            System.out.println("Processing " + inputFilename);
+            IClusterSourceReader reader = new ClusteringFileReader(new File(inputFilename));
+            reader.readClustersIteratively(listeners);
+        }
+
+        // close all converters
+        for (IClusterConverter c : converters) {
+            c.close();
+        }
+
+        for (IClusterConverter c : converters) {
+            System.out.println("Result written to " + c.getOuputPath());
         }
     }
 
