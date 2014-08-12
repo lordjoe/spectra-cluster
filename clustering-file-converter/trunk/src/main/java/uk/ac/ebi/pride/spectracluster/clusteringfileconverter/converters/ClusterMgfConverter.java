@@ -27,7 +27,7 @@ public class ClusterMgfConverter extends AbstractClusterConverter {
     public String convertCluster(ICluster cluster) {
         StringBuilder stringBuilder = new StringBuilder("BEGIN IONS\n");
 
-        stringBuilder.append(String.format("TITLE=consensus spectrum %d\n", clusterCounter));
+        stringBuilder.append(String.format("TITLE=%s (consensus spectrum %d)\n", cluster.getMaxSequence(), clusterCounter));
         int charge = ClusterUtilities.calculateClusterCharge(cluster);
         stringBuilder.append(String.format("PEPMASS=%.3f\n", cluster.getAvPrecursorMz()));
         stringBuilder.append(String.format("CHARGE=%d%c\n", Math.abs(charge), (charge > 0 ? '+' : '-')));
