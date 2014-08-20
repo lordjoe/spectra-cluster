@@ -164,7 +164,7 @@ public class PSMSpectralCluster implements IPepideHoldingCluster {
     }
 
     @Override
-    public int getPrecursorCharge() {
+    public int getPrecursorChargeX() {
         return precursorCharge;
     }
 
@@ -332,7 +332,7 @@ public class PSMSpectralCluster implements IPepideHoldingCluster {
     public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
-        if (getPrecursorCharge() != o.getPrecursorCharge())
+        if (getPrecursorChargeX() != o.getPrecursorChargeX())
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);

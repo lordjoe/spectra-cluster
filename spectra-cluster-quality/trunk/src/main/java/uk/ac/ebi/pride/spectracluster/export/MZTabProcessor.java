@@ -14,7 +14,7 @@ package uk.ac.ebi.pride.spectracluster.export;
 //import java.util.*;
 //
 ///**
-// * uk.ac.ebi.pride.spectracluster.export.MSRunProcessor
+// * uk.ac.ebi.pride.spectracluster.export.MZTabProcessor
 // *
 // * @author Steve Lewis
 // * @date 22/05/2014

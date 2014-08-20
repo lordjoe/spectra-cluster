@@ -57,7 +57,7 @@ public class ClusterDataStore implements IMutableClusterDataStore {
         params.addValue("clusterId", clusterToStore.getId());
 
         // precursor charge
-        params.addValue("precursorCharge", clusterToStore.getPrecursorCharge());
+        params.addValue("precursorCharge", clusterToStore.getPrecursorChargeX());
 
         // precursor m/z
         params.addValue("precursorMz", clusterToStore.getPrecursorMz());
