@@ -55,7 +55,7 @@ public class LazyLoadedSpectralCluster implements IPepideHoldingCluster {
             return peptide;
         }
 
-        public int getPrecursorCharge() {
+        public int getPrecursorChargeX() {
             return precursorCharge;
         }
     }
@@ -101,7 +101,7 @@ public class LazyLoadedSpectralCluster implements IPepideHoldingCluster {
             guaranteeCachedData();
             DataFromDatabase dbf = cachedData.get(getId());
             if (dbf != null) {
-                setPrecursorCharge(dbf.getPrecursorCharge());
+                setPrecursorCharge(dbf.getPrecursorChargeX());
                 setPrecursorMz(dbf.getPrecursorMz());
                 addPeptide(dbf.getPeptide());
             }
@@ -290,7 +290,7 @@ public class LazyLoadedSpectralCluster implements IPepideHoldingCluster {
     }
 
     @Override
-    public int getPrecursorCharge() {
+    public int getPrecursorChargeX() {
         guaranteeCachedRead();
         return precursorCharge;
     }
@@ -437,7 +437,7 @@ public class LazyLoadedSpectralCluster implements IPepideHoldingCluster {
     public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
-        if (getPrecursorCharge() != o.getPrecursorCharge())
+        if (getPrecursorChargeX() != o.getPrecursorChargeX())
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);
