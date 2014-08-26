@@ -371,8 +371,9 @@ public class ParserUtilities {
     public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
+         String protein = null;
 
-        Properties props = new Properties();
+       Properties props = new Properties();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String annotation = null;
         try {
@@ -448,7 +449,11 @@ public class ParserUtilities {
                         line = inp.readLine();
                         continue;
                     }
-                    if (KnownProperties.addMGFProperties(props, line)) {
+                    if (line.startsWith("USER02=")) {
+                        protein = line.substring("USER02=".length());
+                             continue;
+                       }
+                     if (KnownProperties.addMGFProperties(props, line)) {
                         line = inp.readLine();
                         continue;
                     }
@@ -503,6 +508,8 @@ public class ParserUtilities {
                         spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, peptide);
                     if (peptide != null)
                         spectrum.setProperty(KnownProperties.ANNOTATION_KEY, title);
+                    if (protein != null)
+                           spectrum.setProperty(KnownProperties.PROTEIN_KEY, title);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
