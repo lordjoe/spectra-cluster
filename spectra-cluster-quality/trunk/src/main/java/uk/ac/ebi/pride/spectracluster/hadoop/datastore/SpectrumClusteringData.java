@@ -1,9 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.hadoop.datastore;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.engine.PeakMatchClusteringEngine;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.util.*;
+import java.util.Comparator;
 
 /**
  * uk.ac.ebi.pride.spectracluster.spectrum.SpectrumClusteringData

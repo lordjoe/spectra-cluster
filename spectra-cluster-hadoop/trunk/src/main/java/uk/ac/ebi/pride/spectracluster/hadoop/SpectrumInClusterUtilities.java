@@ -143,7 +143,7 @@ public final class SpectrumInClusterUtilities {
         List<IPeak> peaks = buildPeaks(consensusMzLine, consensusIntensityLine);
         if (peaks == null)
             return null;
-        ISpectrum consensusSpectrum = new Spectrum(null,  cluster.getPrecursorChargeX(),  cluster.getPrecursorMz(),Defaults.getDefaultQualityScorer(), peaks);
+        ISpectrum consensusSpectrum = new Spectrum(null,  cluster.getPrecursorCharge(),  cluster.getPrecursorMz(),Defaults.getDefaultQualityScorer(), peaks);
         cluster.setConsensusSpectrum(consensusSpectrum);
 
         return cluster;

@@ -41,7 +41,7 @@ public interface ICluster extends ISpectrumHolder,
      *
      * @return
      */
-    public int getPrecursorChargeX();
+    public int getPrecursorCharge();
 
     /**
      * Get consensus spectrum

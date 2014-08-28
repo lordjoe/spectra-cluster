@@ -129,7 +129,7 @@ public class InMemoryDatastore implements IMutableClusterDataStore, IMutableSpec
         Collections.sort(ret);  // sort by mz
         List<ICluster> holder = new ArrayList<ICluster>();
         for (ICluster sc : ret) {
-            if (charge != 0 && charge != sc.getPrecursorChargeX())
+            if (charge != 0 && charge != sc.getPrecursorCharge())
                 continue;
             float mz = sc.getPrecursorMz();
             if (mz < minMz || ((minMz == mazMz) && mz > mazMz) || (mz >= mazMz))
