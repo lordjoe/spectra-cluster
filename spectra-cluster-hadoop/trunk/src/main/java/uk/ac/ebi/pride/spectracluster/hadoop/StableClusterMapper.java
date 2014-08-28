@@ -7,14 +7,13 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.systemsbiology.hadoop.AbstractParameterizedMapper;
 import org.systemsbiology.hadoop.ISetableParameterHolder;
 import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.BinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.StableBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.UnStableBinMZKey;
 import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-import uk.ac.ebi.pride.spectracluster.util.StableClusterUtilities;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -84,7 +83,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
         int numberSpectraWithMZ = DaltonBinSize.getNumberSpectraWithMZ((int) mz, context.getConfiguration());
         int ng = getNumberGroups(numberSpectraWithMZ);
         for (int i = 0; i < ng; i++) {
-            StableChargeBinMZKey key = new StableChargeBinMZKey(charge, bin, i, mz);
+            StableBinMZKey key = new StableBinMZKey(bin, i, mz);
             holder.add(key.toString());
 
         }
@@ -155,7 +154,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
                 else
                     akey = keys[RND.nextInt(keys.length)];
 
-                UnStableChargeBinMZKey uKey = new UnStableChargeBinMZKey(akey);
+                UnStableBinMZKey uKey = new UnStableBinMZKey(akey);
                 akey = uKey.toString();
 
                 writeKeyValue(akey, value, context);
@@ -170,7 +169,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
 
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
-    public void countHashValues(ChargeBinMZKey mzKey, Context context) {
+    public void countHashValues(BinMZKey mzKey, Context context) {
         //       incrementPartitionCounters(mzKey, context);    //the reducer handle
         //      incrementDaltonCounters((int)mzKey.getPrecursorMZ(),context);
     }
@@ -181,7 +180,7 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
+    public void incrementPartitionCounters(BinMZKey mzKey, Context context) {
         int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));

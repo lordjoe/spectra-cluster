@@ -9,11 +9,10 @@ import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
 import uk.ac.ebi.pride.spectracluster.engine.IStableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.engine.StableClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.io.CGFClusterAppender;
-import uk.ac.ebi.pride.spectracluster.io.MGFSpectrumAppender;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.ChargeMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.StableChargeBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.UnStableChargeBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.MZKey;
+import uk.ac.ebi.pride.spectracluster.keys.StableBinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.UnStableBinMZKey;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 import uk.ac.ebi.pride.spectracluster.util.Defaults;
@@ -58,16 +57,15 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
 
         String keyStr = key.toString();
         //    System.err.println(keyStr);
-        StableChargeBinMZKey realKey;
-        if (keyStr.contains(StableChargeBinMZKey.SORT_PREFIX))
-            realKey = new StableChargeBinMZKey(keyStr);
+        StableBinMZKey realKey;
+        if (keyStr.contains(StableBinMZKey.SORT_PREFIX))
+            realKey = new StableBinMZKey(keyStr);
         else {
-            realKey = new UnStableChargeBinMZKey(keyStr);
+            realKey = new UnStableBinMZKey(keyStr);
         }
 
         // we only need to change engines for different charges
-        if (realKey.getCharge() != getCurrentCharge() ||
-                realKey.getBin() != getCurrentBin() ||
+        if (realKey.getBin() != getCurrentBin() ||
                 realKey.getGroup() != getCurrentGroup() ||
                 getEngine() == null) {
             updateEngine(context, realKey);
@@ -140,7 +138,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
         // you can merge clusters outside the current bin but not write them
         if (bin != getCurrentBin())
             return;
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
+        MZKey key = new MZKey(precursorMz);
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
@@ -165,7 +163,7 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
      * @param context !null context
      */
     protected <T> boolean updateEngine(final Context context, T key) throws IOException, InterruptedException {
-        final StableChargeBinMZKey pMzKey = (StableChargeBinMZKey) key;
+        final StableBinMZKey pMzKey = (StableBinMZKey) key;
         if (getEngine() != null) {
             Collection<ICluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
@@ -178,8 +176,6 @@ public class StableSpectrumMergeReducer extends AbstractClusteringEngineReducer 
             setMajorMZ(pMzKey.getPrecursorMZ());
             int bin = pMzKey.getBin();
             setCurrentBin(bin);
-            int charge = pMzKey.getCharge();
-            setCurrentCharge(charge);
             int group = pMzKey.getGroup();
             setCurrentGroup(group);
         }

@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.spectracluster.keys.*;
  * User: Steve
  * Date: 8/14/13
  */
-public class StableChargeBinKeyPartitioner extends AbstractBinnedAPrioriPartitioner {
+public class StableBinKeyPartitioner extends AbstractBinnedAPrioriPartitioner {
 
 
     @Override
@@ -23,11 +23,11 @@ public class StableChargeBinKeyPartitioner extends AbstractBinnedAPrioriPartitio
         // send all special keys to reducer 0
         if(AbstractParameterizedReducer.isKeySpecial(key))
             return 0;
-        StableChargeBinMZKey realKey;
-        if(key.contains(StableChargeBinMZKey.SORT_PREFIX))
-            realKey = new StableChargeBinMZKey(key);
+        StableBinMZKey realKey;
+        if(key.contains(StableBinMZKey.SORT_PREFIX))
+            realKey = new StableBinMZKey(key);
         else {
-            realKey = new UnStableChargeBinMZKey(key);
+            realKey = new UnStableBinMZKey(key);
         }
         if(getPrepartitioning(numberReducers) != null)   {
               int preBin = getPrepartitioning(numberReducers).getBin(realKey.getPrecursorMZ());

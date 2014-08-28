@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.spectracluster.keys;
 
 
 import uk.ac.ebi.pride.spectracluster.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ChargeMZKey
@@ -63,6 +64,16 @@ public class MZKey implements Comparable<MZKey> {
     @Override
     public int hashCode() {
         return toString().hashCode();
+    }
+
+    /**
+     * here is an int that a partitioner would use
+     * @return
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    public int getPartitionHash() {
+        int ret = (int)(getPrecursorMZ() * MZIntensityUtilities.MZ_RESOLUTION + 0.5);
+        return ret;
     }
 
 

@@ -59,18 +59,20 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             int precursorCharge = match.getPrecursorCharge();
             double precursorMZ = match.getPrecursorMz();
 
-            incrementDaltonCounters((int) precursorMZ, context);
+            if (precursorMZ < MZIntensityUtilities.HIGHEST_USABLE_MZ) {
+                incrementDaltonCounters((int) precursorMZ, context);
 
-            StringBuilder sb = new StringBuilder();
-            MGFSpectrumAppender.INSTANCE.appendSpectrum(sb,match);
-            String text = sb.toString();
+                StringBuilder sb = new StringBuilder();
+                MGFSpectrumAppender.INSTANCE.appendSpectrum(sb, match);
+                String text = sb.toString();
 
-            for (int peakMz : match.asMajorPeakMZs(Defaults.getMajorPeakCount())) {
-                ChargePeakMZKey mzKey = new ChargePeakMZKey(precursorCharge, peakMz, precursorMZ);
+                for (int peakMz : match.asMajorPeakMZs(Defaults.getMajorPeakCount())) {
+                    PeakMZKey mzKey = new PeakMZKey(peakMz, precursorMZ);
 
-                //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
-                final String keyStr = mzKey.toString();
-                writeKeyValue(keyStr, text, context);
+                    //     SpectraHadoopUtilities.incrementPartitionCounter(context,mzKey);   // debug partitioning
+                    final String keyStr = mzKey.toString();
+                    writeKeyValue(keyStr, text, context);
+                }
             }
 
         }

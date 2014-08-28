@@ -12,14 +12,16 @@ import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.tools.pride_spectra_clustering.impl.Adapters;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities
@@ -198,7 +200,7 @@ public class ClusteringTestUtilities {
 
     @SuppressWarnings("UnusedDeclaration")
     public static final int MAX_PEAK_MISMATCHES = 3;
-    public static final int NUMBER_HIGH_MATCHES = 6;
+    public static final int NUMBER_HIGH_MATCHES = 5;
     public static final double FORGIVEN_MZ_DIFFERENCE = 0.2;
     public static final double FORGIVEN_INTENSITY_RATIO = 0.1;
     public static final double FORGIVEN_INTENSITY_DIFFERENCE = 200;

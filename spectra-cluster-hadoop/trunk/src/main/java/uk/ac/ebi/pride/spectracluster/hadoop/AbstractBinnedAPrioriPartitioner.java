@@ -11,16 +11,16 @@ import uk.ac.ebi.pride.spectracluster.keys.*;
  * Date: 4/24/2014
  */
 public abstract class AbstractBinnedAPrioriPartitioner extends Partitioner<Text, Text> {
-    protected static APrioriBinning<StableChargeBinMZKey> prepartitioning;
+    protected static APrioriBinning<StableBinMZKey> prepartitioning;
     private static IWideBinner binner;
 
-    public static APrioriBinning<StableChargeBinMZKey> getPrepartitioning(int numberReducers) {
+    public static APrioriBinning<StableBinMZKey> getPrepartitioning(int numberReducers) {
         if (prepartitioning == null || prepartitioning.getNumberBins() == numberReducers)
             setPrepartitioning(new APrioriBinning(numberReducers,getBinner()));
         return prepartitioning;
     }
 
-    public static void setPrepartitioning(final APrioriBinning<StableChargeBinMZKey> pPrepartitioning) {
+    public static void setPrepartitioning(final APrioriBinning<StableBinMZKey> pPrepartitioning) {
         prepartitioning = pPrepartitioning;
     }
 

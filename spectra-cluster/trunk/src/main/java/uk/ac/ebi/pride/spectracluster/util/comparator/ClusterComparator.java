@@ -29,9 +29,7 @@ public class ClusterComparator implements Comparator<ICluster> {
         if (ret != 0) {
             return ret;
         }
-        if (o1.getPrecursorCharge() != o2.getPrecursorCharge()) {
-            return o1.getPrecursorCharge() < o2.getPrecursorCharge() ? -1 : 1;
-        }
+
         if (o1.getClusteredSpectraCount() != o2.getClusteredSpectraCount()) {
             return o1.getClusteredSpectraCount() < o2.getClusteredSpectraCount() ? -1 : 1;
         }

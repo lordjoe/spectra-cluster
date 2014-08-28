@@ -66,10 +66,10 @@ public class SpectraClustererMergerOffset extends ConfiguredJobRunner implements
             job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
             //job.setMapperClass(SpecialChargeMZNarrowBinMapper.class);    //  ToDo put back
-            job.setMapperClass(ChargeMZNarrowBinMapper.class);
+            job.setMapperClass(MZNarrowBinMapper.class);
             job.setReducerClass(SpectrumMergeReducer.class);
             //  job.setReducerClass(ClusterConsolidator.FileWriteReducer.class);
-            job.setPartitionerClass(ChargeBinPartitioner.class);
+            job.setPartitionerClass(BinPartitioner.class);
 
 
             // We always do this

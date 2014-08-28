@@ -1,15 +1,20 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import com.lordjoe.utilities.*;
-import org.apache.hadoop.conf.*;
-import org.apache.hadoop.io.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import com.lordjoe.algorithms.IWideBinner;
+import com.lordjoe.utilities.FileUtilities;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
+import org.systemsbiology.hadoop.HadoopUtilities;
+import uk.ac.ebi.pride.spectracluster.keys.BinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.MZKey;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.PartitioningTests
@@ -109,30 +114,29 @@ public class PartitioningTests {
         if (!f.exists() || !f.isFile())
             throw new IllegalArgumentException("File does not exits " + args[0]);
         String[] lines = FileUtilities.readInLines(f);
-        List<ChargeBinMZKey> holder = new ArrayList<ChargeBinMZKey>();
+        List<BinMZKey> holder = new ArrayList<BinMZKey>();
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            ChargeMZKey k1 = new ChargeMZKey(line);
-            int charge = k1.getCharge();
+            MZKey k1 = new MZKey(line);
             double mz = k1.getPrecursorMZ();
             int[] bins = binner.asBins(mz);
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-                holder.add(new ChargeBinMZKey(charge, bin, mz));
+                holder.add(new BinMZKey(bin, mz));
             }
         }
-        ChargeBinMZKey[] keys = holder.toArray(new ChargeBinMZKey[holder.size()]);
+        BinMZKey[] keys = holder.toArray(new BinMZKey[holder.size()]);
         examinePartitions(keys);
 
     }
 
 
-    protected static void examinePartitions(ChargeBinMZKey[] keys) {
+    protected static void examinePartitions(BinMZKey[] keys) {
         int numberReducers = HadoopUtilities.DEFAULT_TEST_NUMBER_REDUCERS;
         int[] partitions = new int[numberReducers];
         for (int i = 0; i < keys.length; i++) {
-            ChargeBinMZKey key = keys[i];
+            BinMZKey key = keys[i];
             int hash = key.getPartitionHash();
             int partition = hash % numberReducers;
             partitions[partition]++;

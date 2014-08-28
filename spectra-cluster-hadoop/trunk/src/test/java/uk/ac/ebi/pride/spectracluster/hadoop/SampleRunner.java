@@ -107,15 +107,14 @@ public class SampleRunner {
         System.out.println("Number bins " + keys.length);
 
 
-        ChargeBinMZKey key = new ChargeBinMZKey(keys[0]);
-        setCurrentCharge(key.getCharge());
+        BinMZKey key = new BinMZKey(keys[0]);
         setCurrentBin(key.getBin());
         int currentPartition = key.getPartitionHash();
         IIncrementalClusteringEngine engine = factory.getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize());
         System.out.println("new Engine " + key);
         for (int i = 0; i < keys.length; i++) {
             String s = keys[i];
-            key = new ChargeBinMZKey(s);
+            key = new BinMZKey(s);
             if (key.getPartitionHash() != currentPartition) {
                 for (ICluster iCluster : engine.getClusters()) {
                     saveCluster(key, iCluster);
@@ -132,12 +131,12 @@ public class SampleRunner {
         }
     }
 
-    protected void reduceBin(ChargeBinMZKey key, IIncrementalClusteringEngine engine) {
+    protected void reduceBin(BinMZKey key, IIncrementalClusteringEngine engine) {
         List<ICluster> clusters = keysToClusters.get(key.toString());
         reduceBin(engine, key, clusters);
     }
 
-    protected void reduceBin(IIncrementalClusteringEngine engine, ChargeBinMZKey key, List<ICluster> clusters) {
+    protected void reduceBin(IIncrementalClusteringEngine engine, BinMZKey key, List<ICluster> clusters) {
         int highReplication = 0;
         for (ICluster cluster : clusters) {
             ISpectrum duplicateSpc = getHighReplication(cluster);
@@ -230,7 +229,7 @@ public class SampleRunner {
     }
 
 
-    protected void saveCluster(ChargeBinMZKey key, final ICluster pToSaveCluster) {
+    protected void saveCluster(BinMZKey key, final ICluster pToSaveCluster) {
         int bin = binner.asBin(pToSaveCluster.getPrecursorMz());
         if (key.getBin() != bin)
             return;
@@ -291,7 +290,7 @@ public class SampleRunner {
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+                BinMZKey mzKey = new BinMZKey(bin, precursorMZ);
                 String keyStr = mzKey.toString();
                 if (keysToClusters.containsKey(keyStr)) {
                     keysToClusters.get(keyStr).add(cluster);

@@ -120,7 +120,7 @@ public class SpectraHadoopUtilities {
      * @param mzKey   !null key
      */
     @SuppressWarnings("UnusedDeclaration")
-    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargePeakMZKey mzKey) {
+    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, PeakMZKey mzKey) {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now
@@ -134,7 +134,7 @@ public class SpectraHadoopUtilities {
      * @param context !null context
      * @param mzKey   !null key
      */
-    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, ChargeBinMZKey mzKey) {
+    public static void incrementPartitionCounter(Mapper<? extends Writable, Text, Text, Text>.Context context, BinMZKey mzKey) {
         //noinspection ConstantIfStatement
         if (true)
             return;  // not now

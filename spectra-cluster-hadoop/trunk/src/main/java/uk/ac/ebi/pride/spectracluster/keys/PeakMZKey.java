@@ -10,35 +10,28 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class ChargePeakMZKey implements  Comparable<ChargePeakMZKey>{
+public class PeakMZKey implements  Comparable<PeakMZKey>{
 
-    private final int charge;
     private final double peakMZ;
     private final double precursorMZ;
     private String asString;
     private int partitionHash;
 
     @SuppressWarnings("UnusedDeclaration")
-    public ChargePeakMZKey(final int pCharge, final double pPeakMZ, final double pPrecursorMZ) {
-        charge = pCharge;
+    public PeakMZKey(final double pPeakMZ, final double pPrecursorMZ) {
         peakMZ = pPeakMZ;
         precursorMZ = pPrecursorMZ;
         asString = null;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public ChargePeakMZKey(String str) {
+    public PeakMZKey(String str) {
         final String[] split = str.split(":");
-        charge = Integer.parseInt(split[0]);
-        String key1 = split[1];
+        String key1 = split[0];
         peakMZ = SpectraHadoopUtilities.keyToMZ(key1);
-        String key2 = split[2];
+        String key2 = split[1];
         precursorMZ = SpectraHadoopUtilities.keyToMZ(key2);
         asString = null;    // force string regeneration
-    }
-
-    public int getCharge() {
-        return charge;
     }
 
     /**
@@ -61,8 +54,6 @@ public class ChargePeakMZKey implements  Comparable<ChargePeakMZKey>{
     public String toString() {
         if (asString == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%02d", getCharge()));
-             sb.append(":");
             sb.append(SpectraHadoopUtilities.mzToKey(getPeakMZ()));
             sb.append(":");
             partitionHash = sb.toString().hashCode();
@@ -94,7 +85,7 @@ public class ChargePeakMZKey implements  Comparable<ChargePeakMZKey>{
      * @return
      */
     @Override
-    public int compareTo(final ChargePeakMZKey o) {
+    public int compareTo(final PeakMZKey o) {
         return toString().compareTo(o.toString());
     }
 
