@@ -512,7 +512,7 @@ public class ParserUtilities {
                     if (peptide != null)
                         spectrum.setProperty(KnownProperties.ANNOTATION_KEY, title);
                     if (protein != null)
-                        spectrum.setProperty(KnownProperties.PROTEIN_KEY, title);
+                        spectrum.setProperty(KnownProperties.PROTEIN_KEY, protein);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
