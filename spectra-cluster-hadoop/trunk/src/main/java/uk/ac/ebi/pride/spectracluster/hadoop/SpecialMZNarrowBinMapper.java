@@ -1,15 +1,18 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.*;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapreduce.*;
-import org.systemsbiology.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
+import com.lordjoe.algorithms.IWideBinner;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
+import org.systemsbiology.hadoop.AbstractParameterizedMapper;
+import org.systemsbiology.hadoop.HadoopUtilities;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
 import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.keys.BinMZKey;
+import uk.ac.ebi.pride.spectracluster.keys.MZKey;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.TextIdentityMapper
@@ -18,7 +21,7 @@ import java.io.*;
  * Date: 8/14/13
  */
 @SuppressWarnings("UnusedDeclaration")
-public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
+public class SpecialMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
     private IWideBinner mapBinner;
      @Override
@@ -59,7 +62,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+                BinMZKey mzKey = new BinMZKey(bin, precursorMZ);
 
 
                 MZKey mzkey = new MZKey(cluster.getPrecursorMz());
@@ -83,12 +86,12 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
 
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
-    public void countHashValues(ChargeBinMZKey mzKey, Context context) {
+    public void countHashValues(BinMZKey mzKey, Context context) {
         //      incrementPartitionCounters(mzKey, context);    //the reducer handle
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
+    public void incrementPartitionCounters(BinMZKey mzKey, Context context) {
         //noinspection ConstantIfStatement
         if (true)
             return;

@@ -289,9 +289,7 @@ public class SpectralCluster implements ICluster {
             int ret = CompareTo.compare(getPrecursorMz(), o.getPrecursorMz());
             if (ret != 0)
                 return ret;
-            if (getPrecursorCharge() != o.getPrecursorCharge()) {
-                return getPrecursorCharge() < o.getPrecursorCharge() ? -1 : 1;
-            }
+
             if (o.getClusteredSpectraCount() != getClusteredSpectraCount()) {
                 return getClusteredSpectraCount() < o.getClusteredSpectraCount() ? -1 : 1;
             }

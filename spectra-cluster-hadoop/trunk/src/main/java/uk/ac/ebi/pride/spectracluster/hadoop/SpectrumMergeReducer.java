@@ -49,15 +49,14 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
 
         String keyStr = key.toString();
         //    System.err.println(keyStr);
-        ChargeBinMZKey mzKey = new ChargeBinMZKey(keyStr);
+        BinMZKey mzKey = new BinMZKey(keyStr);
         if (mzKey.getBin() < 0) {
             System.err.println("Bad bin " + keyStr);
             return;
         }
 
         // we only need to change engines for different charges
-        if (mzKey.getCharge() != getCurrentCharge() ||
-                mzKey.getBin() != getCurrentBin() ||
+        if (mzKey.getBin() != getCurrentBin() ||
                 getEngine() == null) {
             boolean usedata = updateEngine(context, mzKey);
             if (!usedata)
@@ -204,7 +203,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             counter.increment(1);
             return;
         }
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
+        MZKey key = new MZKey(precursorMz);
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
@@ -235,7 +234,7 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
      * @param context !null context
      */
     protected <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException {
-        ChargeBinMZKey pMzKey = (ChargeBinMZKey) key;
+        BinMZKey pMzKey = (BinMZKey) key;
         if (getEngine() != null) {
             final Collection<ICluster> clusters = getEngine().getClusters();
             writeClusters(context, clusters);
@@ -247,7 +246,6 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
             setEngine(getFactory().getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize()));
             setMajorPeak(pMzKey.getPrecursorMZ());
             ret = setCurrentBin(pMzKey.getBin());
-            setCurrentCharge(pMzKey.getCharge());
         }
         return ret;
     }

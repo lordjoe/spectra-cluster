@@ -17,7 +17,7 @@ import java.io.*;
  * User: Steve
  * Date: 8/14/13
  */
-public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
+public class MZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
 
     private IWideBinner mapBinner;
@@ -57,13 +57,12 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < clusters.length; i++) {
             ICluster cluster = clusters[i];
-            int precursorCharge = cluster.getPrecursorCharge();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);
             //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < bins.length; j++) {
                 int bin = bins[j];
-                ChargeBinMZKey mzKey = new ChargeBinMZKey(precursorCharge, bin, precursorMZ);
+                BinMZKey mzKey = new BinMZKey(bin, precursorMZ);
 
                 SpectraHadoopUtilities.incrementPartitionCounter(context, mzKey);   // debug to make sure partitioning is balanced
 
@@ -82,7 +81,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
 
     // for debugging add a partitioning counter
     @SuppressWarnings("UnusedDeclaration")
-    public void countHashValues(ChargeBinMZKey mzKey, Context context) {
+    public void countHashValues(BinMZKey mzKey, Context context) {
         //       incrementPartitionCounters(mzKey, context);    //the reducer handle
         //      incrementDaltonCounters((int)mzKey.getPrecursorMZ(),context);
     }
@@ -94,7 +93,7 @@ public class ChargeMZNarrowBinMapper extends AbstractParameterizedMapper<Text> {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void incrementPartitionCounters(ChargeBinMZKey mzKey, Context context) {
+    public void incrementPartitionCounters(BinMZKey mzKey, Context context) {
         int partition = mzKey.getPartitionHash() % NUMBER_REDUCERS;
 
         Counter counter = context.getCounter("Partitioning", "Partition" + String.format("%03d", partition));

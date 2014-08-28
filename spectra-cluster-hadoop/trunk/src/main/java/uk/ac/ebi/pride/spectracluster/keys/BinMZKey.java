@@ -11,33 +11,26 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
+public class BinMZKey implements Comparable<BinMZKey> {
 
-    private final int charge;
     private final int bin;
     private final double precursorMZ;
     private String asString;
     private int partitionHash;
 
-      public ChargeBinMZKey(final int pCharge, final int pBin, final double pPrecursorMZ) {
-        charge = pCharge;
+      public BinMZKey(final int pBin, final double pPrecursorMZ) {
         bin = pBin;
         precursorMZ = pPrecursorMZ;
         asString = null;
     }
 
-     public ChargeBinMZKey(String str) {
+     public BinMZKey(String str) {
         final String[] split = str.split(":");
-        charge = Integer.parseInt(split[0]);
-        String key1 = split[1];
+        String key1 = split[0];
         bin = Integer.parseInt(key1);
-        String key2 = split[2];
+        String key2 = split[1];
         precursorMZ = SpectraHadoopUtilities.keyToMZ(key2);
         asString = null;    // force string regeneration
-    }
-
-    public int getCharge() {
-        return charge;
     }
 
     /**
@@ -62,8 +55,6 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
     public String toString() {
         if (asString == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%02d", getCharge()));
-            sb.append(":");
             sb.append(String.format("%06d", getBin()));
             // only include charge and bin
             partitionHash = sb.toString().hashCode();
@@ -101,7 +92,7 @@ public class ChargeBinMZKey implements Comparable<ChargeBinMZKey> {
      * @return
      */
     @Override
-    public int compareTo(final ChargeBinMZKey o) {
+    public int compareTo(final BinMZKey o) {
         return toString().compareTo(o.toString());
     }
 

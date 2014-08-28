@@ -1,12 +1,13 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
-import org.junit.*;
-import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
-import uk.ac.ebi.pride.tools.pride_spectra_clustering.normalizer.impl.*;
+import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
 
-import java.io.*;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 
 /**
  * uk.ac.ebi.pride.spectracluster.io.ClusterIOTests
@@ -15,8 +16,6 @@ import java.io.*;
  * @date 04/06/2014
  */
 public class ClusterIOTests {
-    public static ClusterIOTests[] EMPTY_ARRAY = {};
-    public static Class THIS_CLASS = ClusterIOTests.class;
 
     @Test
     public void testSpectrumAppender() {
@@ -40,17 +39,15 @@ public class ClusterIOTests {
         final String actual = bldr.toString();
         rdr = new LineNumberReader(new StringReader(actual));
         final ICluster spc2 = ParserUtilities.readSpectralCluster(rdr)[0];
-        ;
         Assert.assertTrue(spc.equivalent(spc2));
     }
-
 
     @Test
     public void testClusterSpectra() {
         LineNumberReader rdr = new LineNumberReader(new StringReader(TEST_CLUSTER));
         final ICluster cluster = ParserUtilities.readSpectralCluster(rdr)[0];
         String s = ClusterUtilities.mostCommonPeptides(cluster);
-        Assert.assertEquals("", s);
+        Assert.assertEquals("MLQQGSSSR:1,MSANISETTAM:1,SAKAQNPMR:1,STKAQNPMR:1", s);
     }
 
     public static final String TEST_SPECTRUM =

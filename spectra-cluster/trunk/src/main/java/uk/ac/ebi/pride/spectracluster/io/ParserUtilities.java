@@ -451,6 +451,7 @@ public class ParserUtilities {
                     }
                     if (line.startsWith("USER02=")) {
                         protein = line.substring("USER02=".length());
+                        line = inp.readLine();
                              continue;
                        }
                      if (KnownProperties.addMGFProperties(props, line)) {

@@ -35,10 +35,10 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
                              Context context) throws IOException, InterruptedException {
 
         String keyStr = key.toString();
-        ChargePeakMZKey mzKey = new ChargePeakMZKey(keyStr);
+        PeakMZKey mzKey = new PeakMZKey(keyStr);
 
         // if we are in a different bin - different charge or peak
-        if (mzKey.getCharge() != getCurrentCharge() || mzKey.getPeakMZ() != getMajorPeak()) {
+        if (mzKey.getPeakMZ() != getMajorPeak()) {
             updateEngine(context, mzKey);
         }
 
@@ -77,7 +77,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
      * @throws InterruptedException
      */
     protected void writeOneVettedCluster(@Nonnull final Context context,@Nonnull  final ICluster cluster) throws IOException, InterruptedException {
-        ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), cluster.getPrecursorMz());
+        MZKey key = new MZKey(cluster.getPrecursorMz());
 
         StringBuilder sb = new StringBuilder();
         final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
@@ -91,7 +91,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
         }
     }
 
-    protected void incrementBinCounters(ChargeMZKey mzKey, Context context) {
+    protected void incrementBinCounters(MZKey mzKey, Context context) {
          IWideBinner binner = HadoopDefaults.DEFAULT_WIDE_MZ_BINNER;
          int[] bins = binner.asBins(mzKey.getPrecursorMZ());
          //noinspection ForLoopReplaceableByForEach
@@ -107,7 +107,7 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
 
     protected <T> boolean updateEngine(final Context context, final T key) throws IOException, InterruptedException
       {
-          ChargePeakMZKey pMzKey = (ChargePeakMZKey)key;
+          PeakMZKey pMzKey = (PeakMZKey)key;
 
           if (getEngine() != null) {
               final Collection<ICluster> clusters = getEngine().getClusters();
@@ -118,7 +118,6 @@ public class MajorPeakReducer extends AbstractClusteringEngineReducer {
           if (pMzKey != null) {
               setEngine(getFactory().getIncrementalClusteringEngine( (float)getMajorPeakWindowSize()));
               setMajorPeak(pMzKey.getPeakMZ());
-              setCurrentCharge(pMzKey.getCharge());
           }
          return true;
      }
