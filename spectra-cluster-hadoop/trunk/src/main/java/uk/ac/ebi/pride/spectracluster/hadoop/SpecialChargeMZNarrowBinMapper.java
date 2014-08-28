@@ -5,8 +5,9 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
 import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
 
@@ -52,7 +53,7 @@ public class SpecialChargeMZNarrowBinMapper extends AbstractParameterizedMapper<
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < clusters.length; i++) {
             ICluster cluster = clusters[i];
-            int precursorCharge = cluster.getPrecursorChargeX();
+            int precursorCharge = cluster.getPrecursorCharge();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);
             //noinspection ForLoopReplaceableByForEach

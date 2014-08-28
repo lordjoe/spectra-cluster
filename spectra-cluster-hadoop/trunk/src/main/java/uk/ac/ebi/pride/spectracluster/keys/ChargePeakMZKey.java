@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.spectracluster.keys;
 
 
 import uk.ac.ebi.pride.spectracluster.hadoop.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.hadoop.ChargePeakMZKey
@@ -11,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.util.*;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
+public class ChargePeakMZKey implements  Comparable<ChargePeakMZKey>{
 
     private final int charge;
     private final double peakMZ;
@@ -30,22 +29,11 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
     @SuppressWarnings("UnusedDeclaration")
     public ChargePeakMZKey(String str) {
         final String[] split = str.split(":");
-        if (Defaults.isChargeIgnoredInClustering()) {
-            charge = Integer.parseInt(split[2]);
-            String key1 = split[0];
-            peakMZ = SpectraHadoopUtilities.keyToMZ(key1);
-            String key2 = split[1];
-            precursorMZ = SpectraHadoopUtilities.keyToMZ(key2);
-
-        }
-        else {
-            charge = Integer.parseInt(split[0]);
-            String key1 = split[1];
-            peakMZ = SpectraHadoopUtilities.keyToMZ(key1);
-            String key2 = split[2];
-            precursorMZ = SpectraHadoopUtilities.keyToMZ(key2);
-
-        }
+        charge = Integer.parseInt(split[0]);
+        String key1 = split[1];
+        peakMZ = SpectraHadoopUtilities.keyToMZ(key1);
+        String key2 = split[2];
+        precursorMZ = SpectraHadoopUtilities.keyToMZ(key2);
         asString = null;    // force string regeneration
     }
 
@@ -55,7 +43,6 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
 
     /**
      * MZ_RESOLUTION * peakMZ
-     *
      * @return
      */
     public double getPeakMZ() {
@@ -63,10 +50,9 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
     }
 
     /**
-     * MZ_RESOLUTION * getPrecursorMZ
-     *
-     * @return
-     */
+      * MZ_RESOLUTION * getPrecursorMZ
+      * @return
+      */
     public double getPrecursorMZ() {
         return precursorMZ;
     }
@@ -74,25 +60,14 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
     @Override
     public String toString() {
         if (asString == null) {
-
             StringBuilder sb = new StringBuilder();
-            if (Defaults.isChargeIgnoredInClustering()) {
-                sb.append(SpectraHadoopUtilities.mzToKey(getPeakMZ()));
-                partitionHash = sb.toString().hashCode();
-                sb.append(":");
-                sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
-                sb.append(":");
-                sb.append(String.format("%02d", getCharge()));
-             }
-            else {
-                sb.append(String.format("%02d", getCharge()));
-                sb.append(":");
-                sb.append(SpectraHadoopUtilities.mzToKey(getPeakMZ()));
-                sb.append(":");
-                partitionHash = sb.toString().hashCode();
-                sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
+            sb.append(String.format("%02d", getCharge()));
+             sb.append(":");
+            sb.append(SpectraHadoopUtilities.mzToKey(getPeakMZ()));
+            sb.append(":");
+            partitionHash = sb.toString().hashCode();
+            sb.append(SpectraHadoopUtilities.mzToKey(getPrecursorMZ()));
 
-            }
             asString = sb.toString();
         }
         return asString;
@@ -101,9 +76,9 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
 
     @Override
     public boolean equals(final Object o) {
-        //noinspection SimplifiableIfStatement
-        if (getClass() != o.getClass())
-            return false;
+         //noinspection SimplifiableIfStatement
+        if(getClass() != o.getClass())
+             return false;
         return toString().equals(o.toString());
     }
 
@@ -115,7 +90,6 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
 
     /**
      * sort by string works
-     *
      * @param o
      * @return
      */
@@ -126,7 +100,6 @@ public class ChargePeakMZKey implements Comparable<ChargePeakMZKey> {
 
     /**
      * here is an int that a partitioner would use
-     *
      * @return
      */
     public int getPartitionHash() {

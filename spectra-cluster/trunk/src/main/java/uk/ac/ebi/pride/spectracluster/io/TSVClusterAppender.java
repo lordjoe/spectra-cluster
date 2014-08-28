@@ -22,7 +22,7 @@ public class TSVClusterAppender implements IClusterAppender {
             out.append(mz);
             out.append("\t");
 
-            out.append(Integer.toString(cluster.getPrecursorChargeX()));
+            out.append(Integer.toString(cluster.getPrecursorCharge()));
             out.append("\t");
         } catch (IOException e) {
             throw new AppenderException(e);

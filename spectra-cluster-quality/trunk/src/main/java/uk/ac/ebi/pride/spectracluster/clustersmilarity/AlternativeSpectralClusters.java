@@ -1,12 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.clustersmilarity;
 
 import uk.ac.ebi.pride.spectracluster.cluster.*;
-import uk.ac.ebi.pride.spectracluster.consensus.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.*;
-import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
+import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
+import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
+import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
 
+import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -183,7 +186,7 @@ public class AlternativeSpectralClusters implements ICluster {
     }
 
     @Override
-    public int getPrecursorChargeX() {
+    public int getPrecursorCharge() {
         guaranteeClean();
         return getConsensusSpectrum().getPrecursorCharge();
     }
@@ -338,7 +341,7 @@ public class AlternativeSpectralClusters implements ICluster {
     public boolean equivalent(ICluster o) {
         if (o == this)
             return true;
-        if (getPrecursorChargeX() != o.getPrecursorChargeX())
+        if (getPrecursorCharge() != o.getPrecursorCharge())
             return false;
         double del = o.getPrecursorMz() - getPrecursorMz();
         double abs = Math.abs(del);

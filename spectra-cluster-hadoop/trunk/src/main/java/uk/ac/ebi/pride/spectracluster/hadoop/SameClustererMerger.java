@@ -162,7 +162,7 @@ public class SameClustererMerger extends ConfiguredJobRunner implements IJobRunn
                 return; // empty dont bother
 
             float precursorMz = cluster.getPrecursorMz();
-            ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorChargeX(), precursorMz);
+            ChargeMZKey key = new ChargeMZKey(cluster.getPrecursorCharge(), precursorMz);
             String keyStr = key.toString();
 
             StringBuilder sb = new StringBuilder();
