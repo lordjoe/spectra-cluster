@@ -67,6 +67,11 @@ public class DotClusterClusterAppender implements IClusterAppender {
                 sb.append("\t");
                 sb.append(precursorMz);
 
+                // append precursor charge as an extra column
+                int precursorCharge = spec.getPrecursorCharge();
+                sb.append("\t");
+                sb.append(precursorCharge);
+
                 sb.append("\n");
 
                 String csq = sb.toString();
