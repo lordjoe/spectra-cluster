@@ -8,7 +8,10 @@ import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * uk.ac.ebi.pride.spectracluster.util.ParserUtilities
@@ -278,14 +281,14 @@ public class ParserUtilities {
             "USER09",
             "USER10",
             "USER11",
-         //   "TAXONOMY=",
-          //      "SEQ=",
+            //   "TAXONOMY=",
+            //      "SEQ=",
             "COMP=",
             "TAG=",
             "ETAG=",
             "SCANS=",
             "IT_MODS=",
-   //         "INSTRUMENT=",
+            //         "INSTRUMENT=",
     };
 
     /**
@@ -371,9 +374,9 @@ public class ParserUtilities {
     public static ISpectrum readMGFScan(LineNumberReader inp, String line) {
         String titleLine = null;
         String sequence = null;
-         String protein = null;
+        String protein = null;
 
-       Properties props = new Properties();
+        Properties props = new Properties();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
         String annotation = null;
         try {
@@ -452,9 +455,9 @@ public class ParserUtilities {
                     if (line.startsWith("USER02=")) {
                         protein = line.substring("USER02=".length());
                         line = inp.readLine();
-                             continue;
-                       }
-                     if (KnownProperties.addMGFProperties(props, line)) {
+                        continue;
+                    }
+                    if (KnownProperties.addMGFProperties(props, line)) {
                         line = inp.readLine();
                         continue;
                     }
@@ -484,7 +487,6 @@ public class ParserUtilities {
                     sequence = null;
 
 
-
                     Collections.sort(holder);
 
                     // Filter peaks
@@ -510,7 +512,7 @@ public class ParserUtilities {
                     if (peptide != null)
                         spectrum.setProperty(KnownProperties.ANNOTATION_KEY, title);
                     if (protein != null)
-                           spectrum.setProperty(KnownProperties.PROTEIN_KEY, title);
+                        spectrum.setProperty(KnownProperties.PROTEIN_KEY, title);
                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
@@ -718,7 +720,7 @@ public class ParserUtilities {
                 if (isMGF) {
                     spectrumAppender.appendSpectrum(sb, sc.getConsensusSpectrum());
                 } else {
-                    final CGFClusterAppender clusterAppender =  CGFClusterAppender.INSTANCE;
+                    final CGFClusterAppender clusterAppender = CGFClusterAppender.INSTANCE;
                     clusterAppender.appendCluster(sb, sc);
                 }
             }
