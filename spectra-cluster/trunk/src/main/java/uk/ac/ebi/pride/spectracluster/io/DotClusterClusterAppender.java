@@ -45,6 +45,7 @@ public class DotClusterClusterAppender implements IClusterAppender {
             out.append("consensus_intens=").append(SpectrumUtilities.buildIntensityString(cluster.getConsensusSpectrum()));
             out.append("\n");
 
+            ISimilarityChecker defaultSimilarityChecker = Defaults.getDefaultSimilarityChecker();
             Collections.sort(clusteredSpectra1, SpectrumIDComparator.INSTANCE);   // sort by id
             for (ISpectrum spec : clusteredSpectra1) {
                 StringBuilder sb = new StringBuilder();
@@ -71,6 +72,11 @@ public class DotClusterClusterAppender implements IClusterAppender {
                 int precursorCharge = spec.getPrecursorCharge();
                 sb.append("\t");
                 sb.append(precursorCharge);
+
+                // append similarity score between consensus spectrum and spectrum
+                double similarity = defaultSimilarityChecker.assessSimilarity(cluster.getConsensusSpectrum(), spec);
+                sb.append("\t");
+                sb.append(similarity);
 
                 sb.append("\n");
 
