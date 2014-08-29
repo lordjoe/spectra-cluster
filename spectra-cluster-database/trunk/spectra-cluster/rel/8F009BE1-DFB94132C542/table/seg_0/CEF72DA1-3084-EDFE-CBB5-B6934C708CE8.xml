@@ -13,7 +13,9 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT027</logicalDatatype>
+<autoIncrementColumn>true</autoIncrementColumn>
 <autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementSequenceName>psm_pk_sequence</autoIncrementSequenceName>
 </Column>
 <Column name="spectrum_fk" id="3DE787EC-24B0-361C-A440-D5EA25314A36">
 <createdBy>rwang</createdBy>
@@ -70,16 +72,6 @@
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
 <dataTypeSize>250 CHAR</dataTypeSize>
-<autoIncrementCycle>false</autoIncrementCycle>
-</Column>
-<Column name="charge" id="5B584BE3-5797-3824-BD9B-376F80234AB2">
-<createdBy>rwang</createdBy>
-<createdTime>2014-07-28 15:31:57 UTC</createdTime>
-<ownerDesignName>spectra-cluster</ownerDesignName>
-<nullsAllowed>true</nullsAllowed>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT042</logicalDatatype>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="search_engine_scores" id="3E7E4980-A17B-5076-8946-55B65C77F7BC">
@@ -191,6 +183,17 @@
 <dataTypeScale>4</dataTypeScale>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="quantification_label" id="BB2AD0CD-96CD-ECD5-9F2B-9F050A189FD0">
+<createdBy>rwang</createdBy>
+<createdTime>2014-08-29 10:18:12 UTC</createdTime>
+<ownerDesignName>spectra-cluster</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 CHAR</dataTypeSize>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="E45D7407-BA29-B00F-1C98-14B65E86D470" name="peptide_PK">
@@ -204,7 +207,7 @@
 <colUsage columnID="17E8AC49-BF2A-2A6B-AB53-61F6C906EC34"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="F0062D4E-8C4B-07C6-FE8B-1559E2EF742D" name="psm__UN">
+<ind_PK_UK id="F0062D4E-8C4B-07C6-FE8B-1559E2EF742D" name="psm_UN">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-29 13:35:20 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
@@ -214,7 +217,7 @@
 <colUsage columnID="A3D6549E-9E7F-9F8A-847E-FCAB7F436C9B"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="BAB3C040-8EDB-1DF9-FC6B-B024623B9731" name="psm_sequence__IDX">
+<ind_PK_UK id="BAB3C040-8EDB-1DF9-FC6B-B024623B9731" name="psm_sequence_IDX">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 10:42:57 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
@@ -223,7 +226,7 @@
 <colUsage columnID="FD10A661-F9DA-2E79-0050-71B97B3B3635"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="C6A41BDC-0D9C-C4B7-289E-CE8248C8CCB0" name="psm_spectrum__IDX">
+<ind_PK_UK id="C6A41BDC-0D9C-C4B7-289E-CE8248C8CCB0" name="psm_spectrum_IDX">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 10:43:55 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
@@ -232,7 +235,7 @@
 <colUsage columnID="3DE787EC-24B0-361C-A440-D5EA25314A36"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="4687FB4A-92EE-8738-DBCA-8E48CDA537B1" name="psm_assay__IDX">
+<ind_PK_UK id="4687FB4A-92EE-8738-DBCA-8E48CDA537B1" name="psm_assay_IDX">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 10:44:24 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
