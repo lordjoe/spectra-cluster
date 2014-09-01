@@ -466,7 +466,8 @@ public class ParserUtilities {
                     // ignored for now
                     //noinspection ForLoopReplaceableByForEach
                     for (int i = 0; i < NOT_HANDLED_MGF_TAGS.length; i++) {
-                        if (line.startsWith(NOT_HANDLED_MGF_TAGS[i])) {
+                        String notHandledMgfTag = NOT_HANDLED_MGF_TAGS[i];
+                        if (line.startsWith(notHandledMgfTag)) {
                             tagIsNotHandled = true;
                             line = inp.readLine();
                             break;

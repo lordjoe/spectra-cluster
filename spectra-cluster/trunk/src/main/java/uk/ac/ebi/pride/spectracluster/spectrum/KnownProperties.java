@@ -89,18 +89,28 @@ public class KnownProperties {
      * @return   true if successfully handled
      */
     public static boolean addMGFProperties(Properties props,String line) {
-        String[] items = line.split("=");
-        switch (items.length) {
-            case 0:
-            case 1:
-                return false; // not handled
-            case 2:
-                return handleKnownProperty(props,items[0], items[1]);
-             case 3:
-                 return  handleUnknownProperty(props,items[0], items[1], items[2]);
-               default:
-               return false;  // not handled
+        if(line.contains("="))  {
+            int index = line.indexOf("=") ;
+            String key = line.substring(0,index);
+            String value = line.substring(index + 1,line.length());
+            return handleKnownProperty(props,key, value);
         }
+        else {
+            return false;
+        }
+           // Old code changes 1-Sep-2014 SLewis
+//        String[] items = line.split("=");
+//        switch (items.length) {
+//            case 0:
+//            case 1:
+//                return false; // not handled
+//            case 2:
+//                return handleKnownProperty(props,items[0], items[1]);
+//             case 3:
+//                 return  handleUnknownProperty(props,items[0], items[1], items[2]);
+//               default:
+//               return false;  // not handled
+//        }
 
 
     }
