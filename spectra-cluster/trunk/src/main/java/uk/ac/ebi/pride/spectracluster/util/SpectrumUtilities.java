@@ -2,9 +2,8 @@ package uk.ac.ebi.pride.spectracluster.util;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Utility methods for Spectrum
@@ -15,6 +14,16 @@ import java.util.List;
 public final class SpectrumUtilities {
 
     private SpectrumUtilities() {
+    }
+
+    /**
+     * I am having issues with cannot be cast to java.io.Serializable
+     * @param test  non-null test object
+     */
+    public static void guaranteeSerializable(final Object test)
+    {
+        Serializable ser = (Serializable)test;
+        int hsh = ser.hashCode(); // force this not to be optimized out
     }
 
     /**

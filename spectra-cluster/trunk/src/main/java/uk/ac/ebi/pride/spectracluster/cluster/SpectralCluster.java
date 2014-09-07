@@ -2,8 +2,7 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.consensus.IConsensusSpectrumBuilder;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.CompareTo;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -44,6 +43,7 @@ public class SpectralCluster implements ICluster {
         addSpectrumHolderListener(this.consensusSpectrumBuilder);
         this.qualityHolder = new SpectralQualityHolder();
         addSpectrumHolderListener(qualityHolder);
+        SpectrumUtilities.guaranteeSerializable(this);   // todo remove
     }
 
     /**
@@ -73,6 +73,7 @@ public class SpectralCluster implements ICluster {
     public final void addSpectrumHolderListener(SpectrumHolderListener added) {
         if (!spectrumHolderListeners.contains(added))
             spectrumHolderListeners.add(added);
+        SpectrumUtilities.guaranteeSerializable(this);   // todo remove
     }
 
     /**
@@ -176,6 +177,10 @@ public class SpectralCluster implements ICluster {
 
     @Override
     public ISpectrum getConsensusSpectrum() {
+        //  todo I think in a cluster with one spectrum we do not need to build a
+        //   consensus spectrum
+        if(clusteredSpectra.size() == 1)
+            return clusteredSpectra.get(0);
         return consensusSpectrumBuilder.getConsensusSpectrum();
     }
 
@@ -205,6 +210,7 @@ public class SpectralCluster implements ICluster {
             if (spectrumAdded)
                 notifySpectrumHolderListeners(true, added.toArray(new ISpectrum[added.size()]));   // tell other interested parties  true says this is an add
         }
+        SpectrumUtilities.guaranteeSerializable(this);   // todo remove
     }
 
 

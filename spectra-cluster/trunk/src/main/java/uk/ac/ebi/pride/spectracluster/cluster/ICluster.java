@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 import uk.ac.ebi.pride.spectracluster.util.Equivalent;
 
 import javax.annotation.Nonnull;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -13,7 +14,7 @@ import java.util.*;
  */
 public interface ICluster extends ISpectrumHolder,
         Equivalent<ICluster>,
-        Comparable<ICluster> {
+        Comparable<ICluster>, Serializable {
 
     /**
      * Get cluster id
