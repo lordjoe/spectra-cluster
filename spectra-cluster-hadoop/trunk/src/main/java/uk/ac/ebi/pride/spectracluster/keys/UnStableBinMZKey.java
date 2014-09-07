@@ -10,7 +10,7 @@ package uk.ac.ebi.pride.spectracluster.keys;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class UnStableBinMZKey extends StableBinMZKey implements Comparable<StableBinMZKey> {
+public class UnStableBinMZKey extends StableBinMZKey implements Comparable<StableBinMZKey>,IKeyable {
 
     public static final String SORT_PREFIX = "|"; // ascii decimal guaranteed to sort EARLY
 

@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
  * Date: 8/13/13
  * key object using  mz
  */
-public class MZKey implements Comparable<MZKey> {
+public class MZKey implements Comparable<MZKey>,IKeyable {
 
     private final double precursorMZ;
     private final int asInt;

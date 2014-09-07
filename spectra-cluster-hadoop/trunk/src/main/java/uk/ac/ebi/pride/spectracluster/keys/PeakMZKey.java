@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class PeakMZKey implements  Comparable<PeakMZKey>{
+public class PeakMZKey implements  Comparable<PeakMZKey>,IKeyable{
 
     private final double peakMZ;
     private final double precursorMZ;

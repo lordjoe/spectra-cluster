@@ -284,7 +284,7 @@ public class SampleRunner {
          */
         for (ICluster cluster : clusters) {
             addCluster(cluster, inputCounts);
-            int precursorCharge = cluster.getPrecursorCharge();
+        //    int precursorCharge = cluster.getPrecursorCharge();
             double precursorMZ = cluster.getPrecursorMz();
             int[] bins = binner.asBins(precursorMZ);
             //noinspection ForLoopReplaceableByForEach

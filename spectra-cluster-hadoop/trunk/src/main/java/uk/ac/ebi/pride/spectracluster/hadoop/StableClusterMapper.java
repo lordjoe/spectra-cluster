@@ -1,23 +1,15 @@
 package uk.ac.ebi.pride.spectracluster.hadoop;
 
-import com.lordjoe.algorithms.IWideBinner;
-import com.lordjoe.algorithms.SizedWideBinner;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counter;
-import org.systemsbiology.hadoop.AbstractParameterizedMapper;
-import org.systemsbiology.hadoop.ISetableParameterHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.CountBasedClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.cluster.ICluster;
-import uk.ac.ebi.pride.spectracluster.cluster.IClusterStabilityAssessor;
-import uk.ac.ebi.pride.spectracluster.io.ParserUtilities;
-import uk.ac.ebi.pride.spectracluster.keys.BinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.StableBinMZKey;
-import uk.ac.ebi.pride.spectracluster.keys.UnStableBinMZKey;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
+import com.lordjoe.algorithms.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.systemsbiology.hadoop.*;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
+import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.keys.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -127,41 +119,42 @@ public class StableClusterMapper extends AbstractParameterizedMapper<Text> {
     protected void handleCluster(ICluster cluster, String value, Context context) {
         IWideBinner binner = BINNER;
 
-        //noinspection ForLoopReplaceableByForEach
-        int precursorCharge = cluster.getPrecursorCharge();
-        double precursorMZ = cluster.getPrecursorMz();
-        boolean stable = clusterStabilityAssessor.isStable(cluster);
-        int numberSpectra = cluster.getClusteredSpectraCount();
-
-        int[] bins = binner.asBins(precursorMZ);
-        //noinspection ForLoopReplaceableByForEach
-        for (int j = 0; j < bins.length; j++) {
-            int bin = bins[j];
-            String[] keys = getBinKeys(bin, precursorCharge, precursorMZ, context);
-            if (stable) {
-                //noinspection ForLoopReplaceableByForEach
-                for (int k = 0; k < keys.length; k++) {
-                    String akey = keys[k];
-                    writeKeyValue(akey, value, context);
-
-                }
-
-            } else {
-                // choose a random key for unstable clusters
-                String akey;
-                if (keys.length == 1)
-                    akey = keys[0];
-                else
-                    akey = keys[RND.nextInt(keys.length)];
-
-                UnStableBinMZKey uKey = new UnStableBinMZKey(akey);
-                akey = uKey.toString();
-
-                writeKeyValue(akey, value, context);
-            }
-
-
-          }
+        throw new UnsupportedOperationException("Fix This"); // ToDo
+//        //noinspection ForLoopReplaceableByForEach
+//        int precursorCharge = cluster.getPrecursorCharge();
+//        double precursorMZ = cluster.getPrecursorMz();
+//        boolean stable = clusterStabilityAssessor.isStable(cluster);
+//        int numberSpectra = cluster.getClusteredSpectraCount();
+//
+//        int[] bins = binner.asBins(precursorMZ);
+//        //noinspection ForLoopReplaceableByForEach
+//        for (int j = 0; j < bins.length; j++) {
+//            int bin = bins[j];
+//            String[] keys = getBinKeys(bin, precursorCharge, precursorMZ, context);
+//            if (stable) {
+//                //noinspection ForLoopReplaceableByForEach
+//                for (int k = 0; k < keys.length; k++) {
+//                    String akey = keys[k];
+//                    writeKeyValue(akey, value, context);
+//
+//                }
+//
+//            } else {
+//                // choose a random key for unstable clusters
+//                String akey;
+//                if (keys.length == 1)
+//                    akey = keys[0];
+//                else
+//                    akey = keys[RND.nextInt(keys.length)];
+//
+//                UnStableBinMZKey uKey = new UnStableBinMZKey(akey);
+//                akey = uKey.toString();
+//
+//                writeKeyValue(akey, value, context);
+//            }
+//
+//
+//          }
     }
 
 
