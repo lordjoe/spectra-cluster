@@ -1,11 +1,9 @@
 package uk.ac.ebi.pride.spectracluster.cluster;
 
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.comparator.QualitySpectrumComparator;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.SpectralQualityHolder
@@ -14,7 +12,7 @@ import java.util.List;
  * User: Steve
  * Date: 7/10/13
  */
-public class SpectralQualityHolder implements SpectrumHolderListener {
+public class SpectralQualityHolder implements SpectrumHolderListener  {
 
     // only highest quality spectra used for concensus
     public static final int NUMBER_SPECTRA_FOR_CONSENSUS = 20;

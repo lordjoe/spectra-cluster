@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.util;
 
+import java.io.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.util.IAlgorithm
  * many interfaces are algorithms suhc as clusteringenging, concensusspectrum ...
@@ -7,7 +9,7 @@ package uk.ac.ebi.pride.spectracluster.util;
  * User: Steve
  * Date: 7/17/13
  */
-public interface IAlgorithm {
+public interface IAlgorithm extends Serializable {
 
     /**
      * return a name which should not change

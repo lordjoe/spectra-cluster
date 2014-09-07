@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
+import uk.ac.ebi.pride.spectracluster.quality.*;
+
+import java.io.*;
 
 /**
  * Spectrum quality interface
@@ -8,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
  * @author Rui Wang
  * @version $Id$
  */
-public interface ISpectrumQuality {
+public interface ISpectrumQuality extends Serializable {
 
     /**
      * Get the quality measure of a spectrum

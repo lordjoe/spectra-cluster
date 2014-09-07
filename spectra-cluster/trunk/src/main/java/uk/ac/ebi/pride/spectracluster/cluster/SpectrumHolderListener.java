@@ -2,12 +2,14 @@ package uk.ac.ebi.pride.spectracluster.cluster;
 
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
 
+import java.io.*;
+
 /**
  * uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener
  * User: Steve
  * Date: 7/10/13
  */
-public interface SpectrumHolderListener {
+public interface SpectrumHolderListener extends Serializable {
 
     /**
      * handle notification of adding spectra

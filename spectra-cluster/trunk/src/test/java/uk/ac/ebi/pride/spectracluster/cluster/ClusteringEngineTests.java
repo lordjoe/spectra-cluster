@@ -7,9 +7,7 @@ import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProductOld;
 import uk.ac.ebi.pride.spectracluster.similarity.ISimilarityChecker;
 import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.util.ClusterUtilities;
-import uk.ac.ebi.pride.spectracluster.util.ClusteringTestUtilities;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
+import uk.ac.ebi.pride.spectracluster.util.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +19,19 @@ import java.util.List;
 public class ClusteringEngineTests {
 
     private static final boolean TEST_KNOWN_TO_FAIL = true; // todo take out when things work
+
+    /**
+     * expected to fail when a cluster cannot be serialized
+     * @throws Exception
+     */
+    @Test
+    public void testSerialization() throws Exception {
+
+        List<ICluster> originalSpectralClusters = ClusteringTestUtilities.readSpectraClustersFromResource();
+        for (ICluster originalSpectralCluster : originalSpectralClusters) {
+            SpectrumUtilities.guaranteeSerializable(originalSpectralCluster);
+        }
+    }
 
 
     @Test

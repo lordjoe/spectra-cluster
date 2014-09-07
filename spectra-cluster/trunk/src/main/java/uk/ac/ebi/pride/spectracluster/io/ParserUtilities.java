@@ -301,7 +301,7 @@ public class ParserUtilities {
         while (spectrum != null) {
             holder.add(spectrum);
             spectrum = readMGFScan(inp);
-        }
+         }
         ISpectrum[] ret = new ISpectrum[holder.size()];
         holder.toArray(ret);
         return ret;
@@ -331,8 +331,8 @@ public class ParserUtilities {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < scans.length; i++) {
             ISpectrum scan = scans[i];
-            final ICluster e = ClusterUtilities.asCluster(scan);
-            holder.add(e);
+             final ICluster e = ClusterUtilities.asCluster(scan);
+              holder.add(e);
         }
 
         return holder;
@@ -383,10 +383,11 @@ public class ParserUtilities {
             if (line == null)
                 line = inp.readLine();
 
-            double massToChargeCalledPpMass = 0;
+             double massToChargeCalledPpMass = 0;
             int dcharge = 1;
             String title = null;
             while (line != null) {
+                line = line.trim();
 
                 if ("".equals(line)) {
                     line = inp.readLine();
