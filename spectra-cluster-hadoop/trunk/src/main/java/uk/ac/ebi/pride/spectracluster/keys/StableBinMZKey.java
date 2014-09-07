@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.spectracluster.hadoop.*;
  * Date: 8/13/13
  * key object using charge,mz,peak
  */
-public class StableBinMZKey implements Comparable<StableBinMZKey> {
+public class StableBinMZKey implements Comparable<StableBinMZKey>,IKeyable {
 
 
     /**
