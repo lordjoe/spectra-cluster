@@ -245,7 +245,11 @@ public class SpectrumMergeReducer extends AbstractClusteringEngineReducer {
         if (pMzKey != null) {
             setEngine(getFactory().getIncrementalClusteringEngine((float) getSpectrumMergeWindowSize()));
             setMajorPeak(pMzKey.getPrecursorMZ());
-            ret = setCurrentBin(pMzKey.getBin());
+            try {
+                ret = setCurrentBin(pMzKey.getBin());
+            } catch (IllegalArgumentException e) {
+                return false; // todo do better SLewis very large bins - say 8250 can be ignores
+            }
         }
         return ret;
     }

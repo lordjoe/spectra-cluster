@@ -25,9 +25,13 @@ public class BinPartitioner extends   AbstractBinnedAPrioriPartitioner {
         BinMZKey realKey = new BinMZKey(key);
 
         if(getPrepartitioning(numberReducers) != null)   {
-            int preBin = getPrepartitioning(numberReducers).getBin(realKey.getPrecursorMZ());
-            if(preBin > -1)
-                return preBin;
+            try {
+                int preBin = getPrepartitioning(numberReducers).getBin(realKey.getPrecursorMZ());
+                if(preBin > -1)
+                    return preBin;
+            } catch (IllegalArgumentException e) {  // todo  fix large bins throw exceptions
+                // fix
+            }
         }
         int hash = realKey.getPartitionHash();
         return hash % numberReducers;
