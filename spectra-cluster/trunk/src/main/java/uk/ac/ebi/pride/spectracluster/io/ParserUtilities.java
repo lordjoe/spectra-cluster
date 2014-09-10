@@ -272,9 +272,7 @@ public class ParserUtilities {
             "TOL=",
             "USER00",
             "USER01",
-            "USER02",
-            "USER03",
-            "USER04",
+               "USER04",
             "USER05",
             "USER06",
             "USER08",
@@ -375,6 +373,7 @@ public class ParserUtilities {
         String titleLine = null;
         String sequence = null;
         String protein = null;
+        String modifications = null;
 
         Properties props = new Properties();
         //noinspection UnnecessaryLocalVariable,UnusedDeclaration,UnusedAssignment
@@ -458,7 +457,12 @@ public class ParserUtilities {
                         line = inp.readLine();
                         continue;
                     }
-                    if (KnownProperties.addMGFProperties(props, line)) {
+                    if (line.startsWith("USER03=")) {
+                          modifications = line.substring("USER03=".length());
+                          line = inp.readLine();
+                          continue;
+                      }
+                     if (KnownProperties.addMGFProperties(props, line)) {
                         line = inp.readLine();
                         continue;
                     }
@@ -515,7 +519,9 @@ public class ParserUtilities {
                         spectrum.setProperty(KnownProperties.ANNOTATION_KEY, title);
                     if (protein != null)
                         spectrum.setProperty(KnownProperties.PROTEIN_KEY, protein);
-                    if (titleLine != null)
+                    if (modifications != null)
+                          spectrum.setProperty(KnownProperties.MODIFICATION_KEY, modifications);
+                     if (titleLine != null)
                         handleTitleLine(spectrum, titleLine);
                     return spectrum;
                 } else {
