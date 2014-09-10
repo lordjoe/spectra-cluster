@@ -20,12 +20,14 @@ public class KnownProperties {
     public static final String ANNOTATION_KEY = "annotation";
     public static final String TAXONOMY_KEY = "accession";
     public static final String PROTEIN_KEY = "protein"; // database: protein
+    public static final String MODIFICATION_KEY = "modification"; // database: protein
     public static final String INSTRUMENT_KEY = "instrument";
 
     public static final String IDENTIFIED_PEPTIDE_MGF_KEY = "SEQ";
     public static final String ANNOTATION_MGF_KEY = "USER00";
     public static final String TAXONOMY_MGF_KEY = "TAXONOMY";
     public static final String PROTEIN_MGF_KEY = "USER02";
+    public static final String MODIFICATION_MGF_KEY = "USER03";
     public static final String INSTRUMENT_MGF_KEY = "INSTRUMENT";
 
     public static final String UNKNOWN_MGF_KEY = "USER12";
@@ -51,13 +53,15 @@ public class KnownProperties {
         INTERNAL_KEY_TO_MGF_KEY.put(ANNOTATION_KEY, ANNOTATION_MGF_KEY);
         INTERNAL_KEY_TO_MGF_KEY.put(TAXONOMY_KEY, TAXONOMY_MGF_KEY);
         INTERNAL_KEY_TO_MGF_KEY.put(PROTEIN_KEY, PROTEIN_MGF_KEY);
-        INTERNAL_KEY_TO_MGF_KEY.put(INSTRUMENT_KEY, INSTRUMENT_MGF_KEY);
+        INTERNAL_KEY_TO_MGF_KEY.put(MODIFICATION_KEY, MODIFICATION_MGF_KEY);
+         INTERNAL_KEY_TO_MGF_KEY.put(INSTRUMENT_KEY, INSTRUMENT_MGF_KEY);
 
         INTERNAL_MGF_KEY_TO_KEY.put(IDENTIFIED_PEPTIDE_MGF_KEY, IDENTIFIED_PEPTIDE_KEY);
         INTERNAL_MGF_KEY_TO_KEY.put(ANNOTATION_MGF_KEY, ANNOTATION_KEY);
         INTERNAL_MGF_KEY_TO_KEY.put(TAXONOMY_MGF_KEY, TAXONOMY_KEY);
         INTERNAL_MGF_KEY_TO_KEY.put(PROTEIN_MGF_KEY, PROTEIN_KEY);
-        INTERNAL_MGF_KEY_TO_KEY.put(INSTRUMENT_MGF_KEY, INSTRUMENT_KEY);
+        INTERNAL_MGF_KEY_TO_KEY.put(MODIFICATION_MGF_KEY, MODIFICATION_KEY);
+         INTERNAL_MGF_KEY_TO_KEY.put(INSTRUMENT_MGF_KEY, INSTRUMENT_KEY);
 
 
     }

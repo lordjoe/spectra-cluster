@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.io;
 
 import org.junit.*;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
 
 import java.io.*;
 
@@ -11,7 +12,61 @@ import java.io.*;
  */
 public class ParserUtilitiesTests {
 
-    public static final String BAD_MGF =
+
+    public static ISpectrum parseFromString(String s)
+    {
+        InputStream is = new StringBufferInputStream(s);
+           LineNumberReader rdr = new LineNumberReader(new InputStreamReader(is));
+         return   ParserUtilities.readMGFScan(rdr);
+       }
+
+
+    /**
+     * test that modifications are preserved and that spectra with and without modifications are
+     * notr equivalent
+     * @throws Exception
+     */
+    @Test
+      public void testParseModifications() throws Exception {
+        ISpectrum is1 = parseFromString(SUSPECT_MGF);
+        ISpectrum is2 = parseFromString(SUSPECT_MGF_NO_MODIFICATIONS);
+
+         Assert.assertFalse(is1.equivalent(is2));
+
+        StringBuilder sb1 = new StringBuilder();
+        MGFSpectrumAppender.INSTANCE.appendSpectrum(sb1,is1);
+
+        ISpectrum is1b = parseFromString(sb1.toString());
+        Assert.assertTrue(is1.equivalent(is1b));
+
+        StringBuilder sb2 = new StringBuilder();
+        MGFSpectrumAppender.INSTANCE.appendSpectrum(sb2,is2);
+
+        ISpectrum is2b = parseFromString(sb2.toString());
+        Assert.assertTrue(is2.equivalent(is2b));
+
+        Assert.assertFalse(is1b.equivalent(is2b));
+    }
+
+
+    @Test
+     public void testParseMGF() throws Exception {
+         InputStream is = new StringBufferInputStream(TEST_MGF);
+         ParserUtilities.guaranteeMGFParse(is);
+     }
+     @Test
+       public void testParseMGF2() throws Exception {
+           InputStream is = new StringBufferInputStream(TEST_MGF2);
+           ParserUtilities.guaranteeMGFParse(is);
+       }
+
+     @Test
+        public void testParseBadMGF() throws Exception {
+            InputStream is = new StringBufferInputStream(SUSPECT_MGF);
+            ParserUtilities.guaranteeMGFParse(is);
+        }
+
+    public static final String SUSPECT_MGF =
             "BEGIN IONS\n" +
                     "TITLE=id=PRD000721;PRIDE_Exp_Complete_Ac_25054.xml;spectrum=3327\n" +
                     "PEPMASS=806.5599975585938\n" +
@@ -19,6 +74,7 @@ public class ParserUtilitiesTests {
                     "SEQ=PWGSNMSPGYKK\n" +
                     "TAXONOMY=4577\n" +
                     "USER02=Uniprot_Z_mays_20091203.fasta:tr|Q8W233|Q8W233_MAIZE Putative non-LTR retroelement reverse transcriptase OS=Zea...\n" +
+                    "USER03=0-MOD:01485,3-MOD:00597,8-MOD:01485\n" +
                     "270.222\t81.647\n" +
                     "271.376\t2.658\n" +
                     "276.380\t126.565\n" +
@@ -147,6 +203,142 @@ public class ParserUtilitiesTests {
                     "1527.070\t2.249\n" +
                     "1535.635\t7.123\n" +
                     "END IONS\n"  ;
+    public static final String SUSPECT_MGF_NO_MODIFICATIONS =
+             "BEGIN IONS\n" +
+                     "TITLE=id=PRD000721;PRIDE_Exp_Complete_Ac_25054.xml;spectrum=3327\n" +
+                     "PEPMASS=806.5599975585938\n" +
+                     "CHARGE=2.0+\n" +
+                     "SEQ=PWGSNMSPGYKK\n" +
+                     "TAXONOMY=4577\n" +
+                     "USER02=Uniprot_Z_mays_20091203.fasta:tr|Q8W233|Q8W233_MAIZE Putative non-LTR retroelement reverse transcriptase OS=Zea...\n" +
+                       "270.222\t81.647\n" +
+                     "271.376\t2.658\n" +
+                     "276.380\t126.565\n" +
+                     "288.300\t2.650\n" +
+                     "297.406\t2.189\n" +
+                     "315.485\t3.442\n" +
+                     "338.065\t3.701\n" +
+                     "340.392\t5.777\n" +
+                     "344.349\t5.972\n" +
+                     "347.390\t2.921\n" +
+                     "367.714\t16.358\n" +
+                     "368.377\t269.412\n" +
+                     "369.273\t7.164\n" +
+                     "371.345\t6.866\n" +
+                     "381.106\t9.078\n" +
+                     "385.506\t7.015\n" +
+                     "407.446\t78.580\n" +
+                     "444.254\t6.099\n" +
+                     "449.272\t5.970\n" +
+                     "456.526\t7.388\n" +
+                     "472.401\t6.427\n" +
+                     "476.480\t11.346\n" +
+                     "494.415\t47.837\n" +
+                     "495.711\t4.665\n" +
+                     "508.420\t24.963\n" +
+                     "533.369\t19.231\n" +
+                     "536.391\t97.431\n" +
+                     "545.647\t5.000\n" +
+                     "551.516\t297.841\n" +
+                     "552.640\t32.445\n" +
+                     "580.247\t12.377\n" +
+                     "588.893\t7.604\n" +
+                     "593.694\t17.603\n" +
+                     "605.449\t28.910\n" +
+                     "613.721\t15.579\n" +
+                     "622.439\t19.808\n" +
+                     "646.578\t16.929\n" +
+                     "650.433\t406.160\n" +
+                     "651.505\t35.539\n" +
+                     "664.535\t109.579\n" +
+                     "665.668\t31.355\n" +
+                     "668.384\t21.712\n" +
+                     "675.439\t36.984\n" +
+                     "690.615\t53.418\n" +
+                     "719.492\t302.637\n" +
+                     "737.514\t153.434\n" +
+                     "747.969\t179.756\n" +
+                     "748.812\t135.512\n" +
+                     "757.032\t1537.782\n" +
+                     "757.685\t438.119\n" +
+                     "785.982\t176.494\n" +
+                     "786.583\t206.950\n" +
+                     "787.880\t346.109\n" +
+                     "788.638\t336.621\n" +
+                     "796.551\t163.576\n" +
+                     "797.280\t3123.757\n" +
+                     "834.439\t20.859\n" +
+                     "837.717\t9.602\n" +
+                     "856.840\t20.095\n" +
+                     "860.421\t5.827\n" +
+                     "874.608\t543.156\n" +
+                     "875.730\t81.318\n" +
+                     "883.756\t6.311\n" +
+                     "886.775\t5.512\n" +
+                     "908.430\t53.745\n" +
+                     "916.861\t12.637\n" +
+                     "943.637\t32.341\n" +
+                     "947.516\t74.997\n" +
+                     "948.634\t14.798\n" +
+                     "957.613\t13.367\n" +
+                     "961.667\t541.138\n" +
+                     "962.794\t59.117\n" +
+                     "973.384\t12.810\n" +
+                     "1005.923\t13.909\n" +
+                     "1007.071\t14.220\n" +
+                     "1042.551\t26.378\n" +
+                     "1043.673\t23.978\n" +
+                     "1060.549\t205.228\n" +
+                     "1061.641\t35.655\n" +
+                     "1075.597\t176.973\n" +
+                     "1076.608\t46.161\n" +
+                     "1079.601\t32.292\n" +
+                     "1099.805\t22.093\n" +
+                     "1100.702\t9.189\n" +
+                     "1117.655\t62.401\n" +
+                     "1129.723\t8.718\n" +
+                     "1135.467\t29.766\n" +
+                     "1136.488\t16.163\n" +
+                     "1152.582\t17.997\n" +
+                     "1186.556\t82.321\n" +
+                     "1187.746\t32.007\n" +
+                     "1226.007\t82.099\n" +
+                     "1226.796\t70.536\n" +
+                     "1227.732\t23.476\n" +
+                     "1243.087\t53.343\n" +
+                     "1243.696\t1049.556\n" +
+                     "1244.766\t212.963\n" +
+                     "1289.553\t12.359\n" +
+                     "1299.560\t34.880\n" +
+                     "1300.360\t16.197\n" +
+                     "1312.984\t15.836\n" +
+                     "1316.834\t24.426\n" +
+                     "1317.516\t246.686\n" +
+                     "1318.591\t53.960\n" +
+                     "1335.413\t43.380\n" +
+                     "1336.669\t15.500\n" +
+                     "1379.921\t33.762\n" +
+                     "1391.673\t37.608\n" +
+                     "1392.825\t43.916\n" +
+                     "1393.826\t12.053\n" +
+                     "1409.739\t353.534\n" +
+                     "1410.774\t132.056\n" +
+                     "1419.731\t11.787\n" +
+                     "1433.603\t7.309\n" +
+                     "1450.782\t28.246\n" +
+                     "1464.941\t12.322\n" +
+                     "1465.817\t14.035\n" +
+                     "1489.696\t117.182\n" +
+                     "1490.830\t112.269\n" +
+                     "1491.854\t21.734\n" +
+                     "1504.582\t3.445\n" +
+                     "1507.828\t934.417\n" +
+                     "1508.848\t252.948\n" +
+                     "1509.924\t4.484\n" +
+                     "1517.645\t3.185\n" +
+                     "1527.070\t2.249\n" +
+                     "1535.635\t7.123\n" +
+                     "END IONS\n"  ;
 
     public static final String TEST_MGF =
             "BEGIN IONS\n" +
@@ -371,20 +563,5 @@ public class ParserUtilitiesTests {
                      "792.216\t10.130\n" +
                      "906.256\t9.114\n" +
                      "END IONS\n";
-    @Test
-    public void testParseMGF() throws Exception {
-        InputStream is = new StringBufferInputStream(TEST_MGF);
-        ParserUtilities.guaranteeMGFParse(is);
-    }
-    @Test
-      public void testParseMGF2() throws Exception {
-          InputStream is = new StringBufferInputStream(TEST_MGF2);
-          ParserUtilities.guaranteeMGFParse(is);
-      }
 
-    @Test
-       public void testParseBadMGF() throws Exception {
-           InputStream is = new StringBufferInputStream(BAD_MGF);
-           ParserUtilities.guaranteeMGFParse(is);
-       }
    }
