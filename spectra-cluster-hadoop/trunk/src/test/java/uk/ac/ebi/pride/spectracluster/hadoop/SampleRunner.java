@@ -361,12 +361,20 @@ public class SampleRunner {
 
     public static void main(String[] args) throws Exception {
         ElapsedTimer timer = new ElapsedTimer();
-        ICluster[] clusters = ParserUtilities.readSpectralCluster(new File(args[0]));
+        final String fileName = args[0];
+        ICluster[] clusters = ParserUtilities.readSpectralCluster(new File(fileName));
         // Save a small sample for development
         // writeClusters(clusters,8);
         // writeFirstClusters(clusters, 5);
 
-        SampleRunner runner = new SampleRunner(Arrays.asList(clusters));
+        final List<ICluster> initialClusters = Arrays.asList(clusters);
+        List<IClusterSet> clusterSets = new ArrayList<IClusterSet>();
+
+        SimpleClusterSet sc = new SimpleClusterSet(initialClusters);
+        sc.setName(fileName);
+        clusterSets.add(sc);
+
+        SampleRunner runner = new SampleRunner(initialClusters);
         timer.showElapsed("read cgf");
         timer.reset();
         runner.analyze();
@@ -376,6 +384,11 @@ public class SampleRunner {
         for (int i = 0; i < 3; i++) {
             System.out.println("===========================");
             timer.reset();
+
+            sc = new SimpleClusterSet(runner.foundClusters);
+            sc.setName(fileName);
+            clusterSets.add(sc);
+
             runner = reanalyze(runner);
             timer.showElapsed("analyzed");
         }
