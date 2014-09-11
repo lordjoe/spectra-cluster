@@ -1,17 +1,10 @@
 package uk.ac.ebi.pride.spectracluster.consensus;
 
-import uk.ac.ebi.pride.spectracluster.cluster.ISpectrumHolder;
-import uk.ac.ebi.pride.spectracluster.cluster.SpectrumHolderListener;
+import uk.ac.ebi.pride.spectracluster.cluster.*;
 import uk.ac.ebi.pride.spectracluster.filter.*;
-import uk.ac.ebi.pride.spectracluster.spectrum.IPeak;
-import uk.ac.ebi.pride.spectracluster.spectrum.ISpectrum;
-import uk.ac.ebi.pride.spectracluster.spectrum.Peak;
-import uk.ac.ebi.pride.spectracluster.spectrum.Spectrum;
-import uk.ac.ebi.pride.spectracluster.util.Defaults;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-import uk.ac.ebi.pride.spectracluster.util.PeakUtilities;
-import uk.ac.ebi.pride.spectracluster.util.comparator.PeakIntensityComparator;
-import uk.ac.ebi.pride.spectracluster.util.comparator.PeakMzComparator;
+import uk.ac.ebi.pride.spectracluster.spectrum.*;
+import uk.ac.ebi.pride.spectracluster.util.*;
+import uk.ac.ebi.pride.spectracluster.util.comparator.*;
 
 import java.util.*;
 
@@ -40,18 +33,20 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
     public static final ConcensusSpectrumBuilderFactory FACTORY = new ConsensusSpectrumFactory(Defaults.getDefaultPeakFilter());
 
-    public static ConcensusSpectrumBuilderFactory buildFactory(IPeakFilter filter)   {
+    public static ConcensusSpectrumBuilderFactory buildFactory(IPeakFilter filter) {
         return new ConsensusSpectrumFactory(filter);
     }
+
     /**
      * always use the factory to get an instance
      */
     private static class ConsensusSpectrumFactory implements ConcensusSpectrumBuilderFactory {
         private final IPeakFilter filter;
+
         private ConsensusSpectrumFactory(IPeakFilter filter) {
-            if(filter == null)
+            if (filter == null)
                 throw new IllegalArgumentException("Filter cannot be null"); // Use NullFilter if you want
-           this.filter = filter;
+            this.filter = filter;
         }
 
         /**
@@ -122,16 +117,16 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
      * private to force use of the factory
      */
     private ConsensusSpectrum(IPeakFilter filter) {
-        this(filter,null);
+        this(filter, null);
     }
 
     /**
      * private to force use of the factory
      */
-    private ConsensusSpectrum(IPeakFilter filter,String id) {
+    private ConsensusSpectrum(IPeakFilter filter, String id) {
         this.filter = filter;
         this.id = id;
-      }
+    }
 
 
     /**
@@ -276,14 +271,18 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             return;
         }
         storeHeldPeaks(peaksToAdd);
-        if (nSpectra < 10 * SIZE_TO_ADD_EVERY_TIME) {
+        if (nSpectra < (10 * SIZE_TO_ADD_EVERY_TIME)) {
             if (nSpectra % SIZE_TO_ADD_EVERY_TIME == 0) {
                 addHeldPeaks();
             }
             return;
         }
-        if (nSpectra % 4 * SIZE_TO_ADD_EVERY_TIME == 0) {
-            addHeldPeaks();
+        else {
+            // for larger clusters add less frequently - when size a factor of 400
+            if (nSpectra % (4 * SIZE_TO_ADD_EVERY_TIME) == 0) {
+               addHeldPeaks();
+           }
+
         }
 
     }
@@ -305,7 +304,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
         for (IPeak iPeak : peaksToAdd) {
             if (iPeak.getIntensity() > minimumKeptPeak) {
                 heldPeaks.add(iPeak);
-            } else {
+            }
+            else {
                 skipped++;
             }
         }
@@ -400,7 +400,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             averagePrecursorMz = sumPrecursorMz / nSpectra;
             averageCharge = sumCharge / nSpectra;
             averagePrecursorIntens = sumPrecursorIntens / nSpectra;
-        } else {
+        }
+        else {
             averagePrecursorMz = 0;
             averageCharge = 0;
             averagePrecursorIntens = 0;
@@ -408,7 +409,7 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
 
 
         if (allPeaks.size() < 1) {
-            List<IPeak> empty = new ArrayList<IPeak>();
+            //noinspection unchecked
             consensusSpectrum = new Spectrum(id, averageCharge, averagePrecursorMz, Defaults.getDefaultQualityScorer(), Collections.EMPTY_LIST);
             setIsDirty(false);
             return;
@@ -481,7 +482,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
             for (int i = lowerBound; i < inp.size(); i++) {
                 if (inp.get(i).getMz() <= endMz) {
                     peakBuffer.add(inp.get(i));
-                } else {
+                }
+                else {
                     lowerBound = i;
                     break;
                 }
@@ -572,7 +574,8 @@ public class ConsensusSpectrum implements IConsensusSpectrumBuilder {
                     IPeak newPeak = new Peak((float) weightedMz, (float) intensity, count);
 
                     currentPeak = newPeak;
-                } else {
+                }
+                else {
                     // by adding the peak in the else clause, peaks that were merged are not included in the new Peak
                     // list and are thereby removed from the consensusPeaks
                     newPeakList.add(currentPeak);
