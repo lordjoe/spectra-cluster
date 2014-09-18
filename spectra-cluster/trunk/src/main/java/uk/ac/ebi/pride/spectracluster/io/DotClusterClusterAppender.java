@@ -73,6 +73,20 @@ public class DotClusterClusterAppender implements IClusterAppender {
                 sb.append("\t");
                 sb.append(precursorCharge);
 
+                // append species
+                String species = spec.getProperty(KnownProperties.TAXONOMY_KEY);
+                sb.append("\t");
+                if (species != null) {
+                    sb.append(species);
+                }
+
+                // append modifications
+                String modifications = spec.getProperty(KnownProperties.MODIFICATION_KEY);
+                sb.append("\t");
+                if (modifications != null) {
+                    sb.append(modifications);
+                }
+
                 // append similarity score between consensus spectrum and spectrum
                 double similarity = defaultSimilarityChecker.assessSimilarity(cluster.getConsensusSpectrum(), spec);
                 sb.append("\t");
