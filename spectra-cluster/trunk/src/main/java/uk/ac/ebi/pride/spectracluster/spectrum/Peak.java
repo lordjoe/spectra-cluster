@@ -1,8 +1,5 @@
 package uk.ac.ebi.pride.spectracluster.spectrum;
 
-import uk.ac.ebi.pride.spectracluster.util.CompareTo;
-import uk.ac.ebi.pride.spectracluster.util.MZIntensityUtilities;
-
 /**
  * @author Steve Lewis
  * @author Rui Wang
@@ -43,20 +40,37 @@ public class Peak implements IPeak {
         return intensity;
     }
 
-
     public int getCount() {
         return count;
     }
 
-
     @Override
     public int compareTo(IPeak o) {
-        if (Math.abs(getMz() - o.getMz()) > MZIntensityUtilities.SMALL_MZ_DIFFERENCE)
-            return CompareTo.compare(getMz(), o.getMz());
-        if (Math.abs(getIntensity() - o.getIntensity()) > MZIntensityUtilities.SMALL_INTENSITY_DIFFERENCE)
-            return Double.compare(getIntensity(), o.getIntensity());
-        return 0;
+        float mz = getMz();
+        float omz = o.getMz();
+
+        int ret =  Float.compare(mz, omz);
+        if(ret != 0) return ret;
+
+        float intent = getIntensity();
+        float ointent = o.getIntensity();
+
+        ret = Float.compare(intent, ointent);
+        if(ret != 0) return ret;
+        // test count or return 0
+        return 0; // same
+
     }
+
+//    This compareTo method can cause exceptions in sorting in Java 7, due to a change in sorting related algorithm
+//    @Override
+//    public int compareTo(IPeak o) {
+//        if (Math.abs(getMz() - o.getMz()) > MZIntensityUtilities.SMALL_MZ_DIFFERENCE)
+//            return CompareTo.compare(getMz(), o.getMz());
+//        if (Math.abs(getIntensity() - o.getIntensity()) > MZIntensityUtilities.SMALL_INTENSITY_DIFFERENCE)
+//            return Double.compare(getIntensity(), o.getIntensity());
+//        return 0;
+//    }
 
     /**
      * like equals but weaker - says other is equivalent to this
