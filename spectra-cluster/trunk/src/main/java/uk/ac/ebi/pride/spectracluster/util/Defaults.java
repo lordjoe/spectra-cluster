@@ -5,6 +5,8 @@ import uk.ac.ebi.pride.spectracluster.engine.EngineFactories;
 import uk.ac.ebi.pride.spectracluster.engine.IClusteringEngine;
 import uk.ac.ebi.pride.spectracluster.filter.IPeakFilter;
 import uk.ac.ebi.pride.spectracluster.filter.MaximialPeakFilter;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
+import uk.ac.ebi.pride.spectracluster.normalizer.TotalIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.quality.IQualityScorer;
 import uk.ac.ebi.pride.spectracluster.quality.SignalToNoiseChecker;
 import uk.ac.ebi.pride.spectracluster.similarity.FrankEtAlDotProduct;
@@ -180,5 +182,18 @@ public class Defaults {
         final double st = getSimilarityThreshold();
         return EngineFactories.buildClusteringEngineFactory(similarityChecker, spectrumComparator, st).buildInstance();
 
+    }
+
+    /**
+     * Default intensity normalizer
+     */
+    private static IIntensityNormalizer defaultIntensityNormalizer = TotalIntensityNormalizer.DEFAULT;
+
+    public static IIntensityNormalizer getDefaultIntensityNormalizer() {
+        return defaultIntensityNormalizer;
+    }
+
+    public static void setDefaultIntensityNormalizer(IIntensityNormalizer defaultIntensityNormalizer) {
+        Defaults.defaultIntensityNormalizer = defaultIntensityNormalizer;
     }
 }
