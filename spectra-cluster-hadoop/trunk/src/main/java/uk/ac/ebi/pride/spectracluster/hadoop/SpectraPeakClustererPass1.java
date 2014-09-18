@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 import org.apache.hadoop.util.*;
 import org.systemsbiology.hadoop.*;
 import uk.ac.ebi.pride.spectracluster.io.*;
+import uk.ac.ebi.pride.spectracluster.normalizer.IIntensityNormalizer;
 import uk.ac.ebi.pride.spectracluster.spectrum.*;
 import uk.ac.ebi.pride.spectracluster.util.*;
 import uk.ac.ebi.pride.spectracluster.keys.*;
@@ -69,8 +70,13 @@ public class SpectraPeakClustererPass1 extends ConfiguredJobRunner implements IJ
             if (precursorMZ < MZIntensityUtilities.HIGHEST_USABLE_MZ) {
                 incrementDaltonCounters((int) precursorMZ, context);
 
+                // normalise all spectrum
+                IIntensityNormalizer intensityNormalizer = Defaults.getDefaultIntensityNormalizer();
+                List<IPeak> normailizedPeaks = intensityNormalizer.normalizePeaks(match.getPeaks());
+                ISpectrum normalizedSpectrum = new Spectrum(match, normailizedPeaks);
+
                 StringBuilder sb = new StringBuilder();
-                MGFSpectrumAppender.INSTANCE.appendSpectrum(sb, match);
+                MGFSpectrumAppender.INSTANCE.appendSpectrum(sb, normalizedSpectrum);
                 String text = sb.toString();
 
                 for (int peakMz : match.asMajorPeakMZs(Defaults.getMajorPeakCount())) {
