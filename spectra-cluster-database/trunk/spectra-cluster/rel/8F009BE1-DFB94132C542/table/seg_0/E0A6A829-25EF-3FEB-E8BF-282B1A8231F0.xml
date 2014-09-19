@@ -28,6 +28,19 @@
 <dataTypeSize>500 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
+<Column name="assay_fk" id="0DB1EB76-6B40-3E93-33A7-64001A206A35">
+<createdBy>rwang</createdBy>
+<createdTime>2014-09-18 15:14:50 UTC</createdTime>
+<ownerDesignName>spectra-cluster</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT027</logicalDatatype>
+<delegate>A6FFD1B6-1BD0-F5D4-A783-1829668AD5B6</delegate>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="5245EB7B-1474-D155-A71A-FF3FF2CCD45F" referredColumn="A6FFD1B6-1BD0-F5D4-A783-1829668AD5B6"/>
+</associations>
+</Column>
 <Column name="precursor_mz" id="1EF2B913-55AF-A886-C075-063E37366DE2">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-28 15:22:22 UTC</createdTime>
@@ -48,7 +61,7 @@
 <logicalDatatype>LOGDT042</logicalDatatype>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
-<Column name="identified" id="C207967D-749A-662F-C0BC-77F203FACE6C">
+<Column name="is_identified" id="C207967D-749A-662F-C0BC-77F203FACE6C">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-28 15:22:47 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
@@ -98,6 +111,16 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="1EF2B913-55AF-A886-C075-063E37366DE2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2B5FDB96-F7D4-FCDA-42B6-C1C94B9C1255" name="spectrum_assay_FK">
+<createdBy>rwang</createdBy>
+<createdTime>2014-09-18 15:15:23 UTC</createdTime>
+<ownerDesignName>spectra-cluster</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0DB1EB76-6B40-3E93-33A7-64001A206A35"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>

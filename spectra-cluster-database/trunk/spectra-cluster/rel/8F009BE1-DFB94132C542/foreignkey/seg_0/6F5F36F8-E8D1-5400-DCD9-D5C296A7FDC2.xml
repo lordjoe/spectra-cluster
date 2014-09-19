@@ -4,7 +4,7 @@
 <createdTime>2014-07-28 15:25:48 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
 <containerWithKeyObject>5DFCFD5B-7644-35CB-67C6-6FA22C8BD0A4</containerWithKeyObject>
-<deleteRule>NO ACTION</deleteRule>
+<deleteRule>CASCADE</deleteRule>
 <localFKIndex>4FC52D37-9D43-BED9-A4C3-53B8DC3296BD</localFKIndex>
 <keyObject>449D825A-9B67-2C03-B29A-6BCC2B38F215</keyObject>
 <mandatory>true</mandatory>
