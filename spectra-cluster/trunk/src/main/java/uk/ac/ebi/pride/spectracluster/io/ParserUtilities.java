@@ -373,6 +373,7 @@ public class ParserUtilities {
         String titleLine = null;
         String sequence = null;
         String protein = null;
+        String species = null;
         String modifications = null;
 
         Properties props = new Properties();
@@ -452,6 +453,13 @@ public class ParserUtilities {
                         line = inp.readLine();
                         continue;
                     }
+
+                    if (line.startsWith("TAXONOMY=")) {
+                        species = line.substring("TAXONOMY=".length());
+                        line = inp.readLine();
+                        continue;
+                    }
+
                     if (line.startsWith("USER02=")) {
                         protein = line.substring("USER02=".length());
                         line = inp.readLine();
@@ -513,6 +521,8 @@ public class ParserUtilities {
                     }
                     props.clear();
 
+                    if (species != null)
+                        spectrum.setProperty(KnownProperties.TAXONOMY_KEY, species);
                     if (peptide != null)
                         spectrum.setProperty(KnownProperties.IDENTIFIED_PEPTIDE_KEY, peptide);
                     if (peptide != null)
