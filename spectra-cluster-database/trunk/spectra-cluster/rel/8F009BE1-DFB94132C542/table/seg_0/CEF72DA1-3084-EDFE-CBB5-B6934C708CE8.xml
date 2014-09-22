@@ -14,6 +14,7 @@
 <use>1</use>
 <logicalDatatype>LOGDT027</logicalDatatype>
 <autoIncrementColumn>true</autoIncrementColumn>
+<autoIncrementIncrementBy>1000</autoIncrementIncrementBy>
 <autoIncrementCycle>false</autoIncrementCycle>
 <autoIncrementSequenceName>psm_pk_sequence</autoIncrementSequenceName>
 </Column>
@@ -66,6 +67,17 @@
 <Column name="modifications" id="A2A72E9B-7829-B333-D51D-B9C4B1089DD0">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-28 15:31:43 UTC</createdTime>
+<ownerDesignName>spectra-cluster</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>250 CHAR</dataTypeSize>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="search_engine" id="A5FE552F-0D4A-3575-32E2-DA98D589B613">
+<createdBy>rwang</createdBy>
+<createdTime>2014-09-22 10:30:45 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
 <nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
