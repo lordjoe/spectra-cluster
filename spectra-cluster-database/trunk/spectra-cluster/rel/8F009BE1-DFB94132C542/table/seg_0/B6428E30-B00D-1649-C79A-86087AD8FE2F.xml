@@ -63,10 +63,11 @@
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 10:11:42 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="multi_species" id="917F38CC-0866-ADD6-ED19-DB498CB3E8C2">
@@ -83,10 +84,11 @@
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 10:12:10 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="disease" id="A4166582-A666-AC43-9F1E-AAA49A16F72C">
@@ -97,7 +99,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="tissue" id="FCBC3E90-EE5E-0378-2851-E629611E3398">
@@ -108,7 +110,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="search_engine" id="6E945C36-B87D-8EC7-AFEF-D4C57942F6E0">
@@ -119,7 +121,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="instrument" id="0CEA3978-C529-6F36-87B8-6411FEF5BE4F">
@@ -130,7 +132,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="instrument_type" id="519E6E39-76EB-940B-C298-91E5E0036EB7">
@@ -141,7 +143,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>100 CHAR</dataTypeSize>
+<dataTypeSize>250 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="biomedical" id="C3AD9FDC-BE71-FC35-E65E-11FDB62813AD">
