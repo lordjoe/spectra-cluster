@@ -72,7 +72,7 @@
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
 <logicalDatatype>LOGDT024</logicalDatatype>
-<dataTypeSize>1000 CHAR</dataTypeSize>
+<dataTypeSize>2000 CHAR</dataTypeSize>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="search_engine" id="A5FE552F-0D4A-3575-32E2-DA98D589B613">
