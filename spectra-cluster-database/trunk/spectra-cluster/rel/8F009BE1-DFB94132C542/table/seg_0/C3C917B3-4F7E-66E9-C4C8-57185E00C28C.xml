@@ -14,7 +14,6 @@
 <use>1</use>
 <logicalDatatype>LOGDT027</logicalDatatype>
 <autoIncrementColumn>true</autoIncrementColumn>
-<autoIncrementIncrementBy>1000</autoIncrementIncrementBy>
 <autoIncrementCycle>false</autoIncrementCycle>
 <autoIncrementSequenceName>cluster_pk_sequence</autoIncrementSequenceName>
 </Column>
