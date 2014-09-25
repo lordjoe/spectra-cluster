@@ -45,7 +45,7 @@
 <ownerDesignName>spectra-cluster</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT033</logicalDatatype>
+<logicalDatatype>LOGDT040</logicalDatatype>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="consensus_spectrum_intensity" id="5429AB5A-5806-4E26-5392-F9457B20FA99">
@@ -54,7 +54,7 @@
 <ownerDesignName>spectra-cluster</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
-<logicalDatatype>LOGDT033</logicalDatatype>
+<logicalDatatype>LOGDT040</logicalDatatype>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
 <Column name="number_of_spectra" id="EE69FCE0-4D4E-DE78-418C-46672E32473A">
