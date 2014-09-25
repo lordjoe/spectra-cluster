@@ -9,16 +9,28 @@ import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
 public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
     public static String FILE_ENDING = ".basic_statistics.txt";
     public static String DESCRIPTION = "Generates basic statistics about a .clustering file like # clusters.";
+    public static final float LARGE_PRECURSOR_MZ_RANGE = 1.5F;
 
-    float nClusters = 0;
-    int nSingleClusters = 0;
-    float averageRatio = 0;
-    float averageClusterSize = 0;
-    int minSize = Integer.MAX_VALUE;
-    int maxSize = 0;
-    float minRatio = Float.MAX_VALUE;
-    float maxRatio = 0;
-    int stableClusters = 0;
+    private float nClusters = 0;
+    private int nSingleClusters = 0;
+    private float averageRatio = 0;
+    private float averageClusterSize = 0;
+    private int minSize = Integer.MAX_VALUE;
+    private int maxSize = 0;
+    private float minRatio = Float.MAX_VALUE;
+    private float maxRatio = 0;
+    private int stableClusters = 0;
+    private float maxPrecursorMzRange = 0F;
+    /**
+     * Number of clusters with a large precursor m/z range
+     */
+    private int nLargePrecursorMzRange = 0;
+    /**
+     * used to calculate the average precursor m/z range
+     * after the run.
+     */
+    private float totalPrecursorMzRange = 0F;
+
 
     @Override
     public String getFileEnding() {
@@ -39,7 +51,7 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
         if (maxSize < newCluster.getSpecCount())
             maxSize = newCluster.getSpecCount();
 
-        // ignore clusters with only 1 spectrum for any other paramter
+        // ignore clusters with only 1 spectrum for any other parameter
         if (newCluster.getSpecCount() < 2) {
             nSingleClusters++;
             return;
@@ -47,6 +59,11 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
 
         averageRatio = averageRatio / nClusters * (nClusters - 1) + newCluster.getMaxRatio() / nClusters;
         averageClusterSize = averageClusterSize / nClusters * (nClusters - 1) + newCluster.getSpecCount() / nClusters;
+        totalPrecursorMzRange += newCluster.getSpectrumPrecursorMzRange();
+        if (maxPrecursorMzRange < newCluster.getSpectrumPrecursorMzRange())
+            maxPrecursorMzRange = newCluster.getSpectrumPrecursorMzRange();
+        if (newCluster.getSpectrumPrecursorMzRange() >= LARGE_PRECURSOR_MZ_RANGE)
+            nLargePrecursorMzRange++;
 
         if (minRatio > newCluster.getMaxRatio())
             minRatio = newCluster.getMaxRatio();
@@ -59,11 +76,18 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
 
     @Override
     public String getAnalysisResultString() {
-        return String.format("Number of clusters: %.0f (%d with 1 spec)\nAverage maximum ratio: %.3f\nAverage cluster size: %.3f\n" +
+        return String.format("Number of clusters: %.0f (%d with 1 spec)\n" +
+                        "Average maximum ratio: %.3f\n" +
+                        "Average cluster size: %.3f\n" +
                         "Minimum size: %d\nMaximum size: %d\n" +
                         "Minimum ratio: %.3f\nMaximum ratio: %.3f\n" +
-                        "Stable clusters: %d\n",
-                nClusters, nSingleClusters, averageRatio, averageClusterSize, minSize, maxSize, minRatio, maxRatio, stableClusters);
+                        "Stable clusters: %d\n" +
+                        "Average precursor m/z range: %.2f\n" +
+                        "Max. precursor m/z range: %.2f\n" +
+                        "Clusters with precursor m/z range > %.1f: %d\n",
+                nClusters, nSingleClusters, averageRatio, averageClusterSize, minSize, maxSize,
+                minRatio, maxRatio, stableClusters, totalPrecursorMzRange / (nClusters - nSingleClusters),
+                maxPrecursorMzRange, LARGE_PRECURSOR_MZ_RANGE, nLargePrecursorMzRange);
     }
 
     @Override
@@ -77,5 +101,8 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
         minRatio = Float.MAX_VALUE;
         maxRatio = 0;
         stableClusters = 0;
+        totalPrecursorMzRange = 0;
+        maxPrecursorMzRange = 0;
+        nLargePrecursorMzRange = 0;
     }
 }

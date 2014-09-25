@@ -48,7 +48,10 @@ public class TestBasicClusteringStatistics {
                         "Maximum size: 397\n" +
                         "Minimum ratio: 0.050\n" +
                         "Maximum ratio: 1.000\n" +
-                        "Stable clusters: 56\n",
+                        "Stable clusters: 56\n" +
+                        "Average precursor m/z range: 0.19\n" +
+                        "Max. precursor m/z range: 2.98\n" +
+                        "Clusters with precursor m/z range > 1.5: 20\n",
                simpleStat);
     }
 }
