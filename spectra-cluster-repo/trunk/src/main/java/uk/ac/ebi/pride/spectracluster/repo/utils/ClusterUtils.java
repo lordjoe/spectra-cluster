@@ -1,7 +1,7 @@
-package uk.ac.ebi.pride.tools.cluster.utils;
+package uk.ac.ebi.pride.spectracluster.repo.utils;
 
-import uk.ac.ebi.pride.tools.cluster.model.ClusterSummary;
-import uk.ac.ebi.pride.tools.cluster.model.ClusteredPSMSummary;
+import uk.ac.ebi.pride.spectracluster.repo.model.ClusterSummary;
+import uk.ac.ebi.pride.spectracluster.repo.model.ClusteredPSMSummary;
 
 import java.util.*;
 
