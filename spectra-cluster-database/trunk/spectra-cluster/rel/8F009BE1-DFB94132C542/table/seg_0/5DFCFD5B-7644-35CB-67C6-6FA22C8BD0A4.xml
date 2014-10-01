@@ -56,7 +56,7 @@
 <colUsage columnID="FEDF5F78-E8CA-75BF-0578-3ED81842BC6A"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="16EE396A-C953-E3E7-EED4-1AED6E0E06A8" name="cluster_has_spec_IDX">
+<ind_PK_UK id="16EE396A-C953-E3E7-EED4-1AED6E0E06A8" name="spec_has_cluster_IDX">
 <createdBy>rwang</createdBy>
 <createdTime>2014-07-30 12:19:03 UTC</createdTime>
 <ownerDesignName>spectra-cluster</ownerDesignName>
@@ -74,6 +74,17 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="19B5FA6D-8E28-38E9-6265-5C041728B95B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="6F339E37-B001-4653-F349-B4C2D30835AE" name="cluster_has_spec_IDX">
+<createdBy>rwang</createdBy>
+<createdTime>2014-10-01 09:07:05 UTC</createdTime>
+<ownerDesignName>spectra-cluster</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="4254E9F1-CD15-3DF4-D1B4-71A788F880E4"/>
+<colUsage columnID="FEDF5F78-E8CA-75BF-0578-3ED81842BC6A"/>
 </indexColumnUsage>
 </ind_PK_UK>
 <ind_PK_UK id="4FC52D37-9D43-BED9-A4C3-53B8DC3296BD" name="cluster_to_spectrum_cluster_FK">
