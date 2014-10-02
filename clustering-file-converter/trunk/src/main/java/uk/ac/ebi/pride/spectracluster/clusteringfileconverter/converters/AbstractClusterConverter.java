@@ -118,7 +118,7 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
 
         if (species != null && species.length() > 0) {
             for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
-                if (specRef.getSpecies().equals(species))  {
+                if (species.equals(specRef.getSpecies()))  {
                     containsSpecies = true;
                     break;
                 }
