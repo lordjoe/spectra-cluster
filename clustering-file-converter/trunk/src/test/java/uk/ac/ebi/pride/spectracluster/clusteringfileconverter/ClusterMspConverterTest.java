@@ -86,7 +86,7 @@ public class ClusterMspConverterTest {
 
     @Test
     public void testExternalFileConversion() throws Exception {
-        File externalFile = new File("/tmp/ClusteringBin0421.clustering");
+        File externalFile = new File("/tmp/ClusteringBin0300.clustering");
 
         if (!externalFile.exists()  || !externalFile.isFile())
             return;

@@ -169,7 +169,7 @@ public class ClusterMspConverter extends AbstractClusterConverter {
         // get the PSM for the most common sequence, use the one with most modifications annotated
         String mostCommonSequence = cluster.getMaxSequence();
         IPeptideSpectrumMatch psm = null;
-        int maxModNum = 0;
+        int maxModNum = Integer.MIN_VALUE;
 
         for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
             for (IPeptideSpectrumMatch currentPsm : specRef.getPSMs()) {
