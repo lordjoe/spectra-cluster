@@ -124,6 +124,10 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
                 }
             }
         }
+        else {
+            // disable the species test in case no species was set
+            containsSpecies = true;
+        }
 
         if (!containsSpecies)
             return false;
