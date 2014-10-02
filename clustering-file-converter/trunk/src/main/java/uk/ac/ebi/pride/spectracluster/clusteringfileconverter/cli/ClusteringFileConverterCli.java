@@ -47,6 +47,8 @@ public class ClusteringFileConverterCli {
                     commandLine.getOptionValue(CliOptions.OPTIONS.MAX_RATIO.getValue(), "1")
             );
 
+            String species = commandLine.getOptionValue(CliOptions.OPTIONS.SPECIES.getValue(), null);
+
             boolean combineResults = commandLine.hasOption(CliOptions.OPTIONS.COMBINE.getValue());
 
             if (!commandLine.hasOption(CliOptions.OPTIONS.OUTPUT_PATH.getValue()))
@@ -58,12 +60,12 @@ public class ClusteringFileConverterCli {
 
             // process the files
             if (combineResults) {
-                convertClusteringFilesCombined(commandLine.getArgs(), outputPath, minSize, maxSize, minRatio, maxRatio, formats);
+                convertClusteringFilesCombined(commandLine.getArgs(), outputPath, minSize, maxSize, minRatio, maxRatio, species, formats);
             }
             else {
                 // process each file separately
                 for (String inputFilename : commandLine.getArgs()) {
-                    convertCluteringFile(inputFilename, outputPath, minSize, maxSize, minRatio, maxRatio, formats);
+                    convertCluteringFile(inputFilename, outputPath, minSize, maxSize, minRatio, maxRatio, species, formats);
                 }
             }
 
@@ -72,7 +74,7 @@ public class ClusteringFileConverterCli {
         }
     }
 
-    private static void convertClusteringFilesCombined(String[] inputFilenames, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String[] formats) throws Exception{
+    private static void convertClusteringFilesCombined(String[] inputFilenames, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String species, String[] formats) throws Exception{
         File outputPath = new File(outputPathString);
 
         // get all converters
@@ -84,6 +86,7 @@ public class ClusteringFileConverterCli {
             converter.setMaxSize(maxSize);
             converter.setMinRatio(minRatio);
             converter.setMaxRatio(maxRatio);
+            converter.setSpecies(species);
 
             converter.setOutputPath(outputPath.getPath() + "." + converter.getFiletypeExtension());
             converter.setAppend(true);
@@ -111,7 +114,7 @@ public class ClusteringFileConverterCli {
         }
     }
 
-    private static void convertCluteringFile(String inputFilename, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String[] formats) throws Exception {
+    private static void convertCluteringFile(String inputFilename, String outputPathString, int minSize, int maxSize, float minRatio, float maxRatio, String species, String[] formats) throws Exception {
         System.out.println("Converting " + inputFilename + "\n");
 
         File outputPath = new File(outputPathString);
@@ -125,6 +128,7 @@ public class ClusteringFileConverterCli {
             converter.setMaxSize(maxSize);
             converter.setMinRatio(minRatio);
             converter.setMaxRatio(maxRatio);
+            converter.setSpecies(species);
 
             converter.setOutputPath(outputPath.getPath() + "." + converter.getFiletypeExtension());
 

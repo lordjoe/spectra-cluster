@@ -60,6 +60,8 @@ public interface IClusterConverter extends IClusterSourceListener {
     public void setMaxSize(int maxSize);
     public void setMinRatio(float minRatio);
     public void setMaxRatio(float maxRatio);
+    public void setSpecies(String taxonomyId);
+    public String getSpecies();
 
     public int getMinSize();
     public int getMaxSize();
