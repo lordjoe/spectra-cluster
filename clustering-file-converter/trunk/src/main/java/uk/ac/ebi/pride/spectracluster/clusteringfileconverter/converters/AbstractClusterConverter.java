@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfileconverter.converters;
 
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.IPeptideSpectrumMatch;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumReference;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +20,7 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
     protected int maxSize = Integer.MAX_VALUE;
     protected float minRatio = 0;
     protected float maxRatio = 1;
+    protected String species = null;
 
     @Override
     public void setOutputPath(String outputPath) {
@@ -96,7 +99,7 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
 
     /**
      * Checks whether the cluster should be exported based
-     * on the set minSize, maxSize, minRatio, and maxRatio.
+     * on the set minSize, maxSize, minRatio, maxRatio, and taxonomyId.
      * @param cluster
      * @return
      */
@@ -108,6 +111,21 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
         if (cluster.getMaxRatio() < minRatio)
             return false;
         if (cluster.getMaxRatio() > maxRatio)
+            return false;
+
+        // check if the taxonomy needs to be taken into consideration
+        boolean containsSpecies = false;
+
+        if (species != null && species.length() > 0) {
+            for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
+                if (specRef.getSpecies().equals(species))  {
+                    containsSpecies = true;
+                    break;
+                }
+            }
+        }
+
+        if (!containsSpecies)
             return false;
 
         return true;
@@ -142,5 +160,15 @@ public abstract class AbstractClusterConverter implements IClusterConverter {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    @Override
+    public String getSpecies() {
+        return species;
     }
 }

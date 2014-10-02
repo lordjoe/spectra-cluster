@@ -13,6 +13,7 @@ public class CliOptions {
         MIN_RATIO("min_ratio"),
         MIN_SIZE("min_size"),
         MAX_SIZE("max_size"),
+        SPECIES("species"),
         COMBINE("combine"),
         FORMAT("format"),
         OUTPUT_PATH("output_path");
@@ -67,6 +68,14 @@ public class CliOptions {
                 .withType(Integer.class)
                 .create(OPTIONS.MAX_SIZE.getValue());
         options.addOption(maxSize);
+
+        Option species = OptionBuilder
+                .withDescription("only exports cluster that contain at least on spectrum from the specified species.")
+                .hasArg()
+                .withArgName("TAXONOMY ID")
+                .withType(Integer.class)
+                .create(OPTIONS.SPECIES.getValue());
+        options.addOption(species);
 
         Option format = OptionBuilder
                 .withDescription("defines a file format of the output. Multiple formats may be specified simultaneously.")
