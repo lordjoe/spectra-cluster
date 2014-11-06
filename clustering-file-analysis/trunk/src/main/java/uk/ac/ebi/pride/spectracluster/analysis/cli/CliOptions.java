@@ -13,6 +13,12 @@ public class CliOptions {
         ALL_ANALYSERS("all_analysers"),
         OUTPUT_PATH("output_path"),
         CUMULATIVE_ANALYSIS("cumulative_analysis"),
+        MIN_SIZE("min_size"),
+        MAX_SIZE("max_size"),
+        MIN_RATIO("min_ratio"),
+        MAX_RATIO("max_ratio"),
+        MIN_PRECURSOR("min_precursor"),
+        MAX_PRECURSOR("max_precurosr"),
         HELP("help");
 
 		private String value;
@@ -50,6 +56,42 @@ public class CliOptions {
                 .withDescription("enables all available analysers.")
                 .create(OPTIONS.ALL_ANALYSERS.getValue());
         options.addOption(allAnalysers);
+
+        Option minSize = OptionBuilder
+                .withDescription("minimum cluster size.")
+                .hasArg()
+                .create(OPTIONS.MIN_SIZE.getValue());
+        options.addOption(minSize);
+
+        Option maxSize = OptionBuilder
+                .withDescription("maximum cluster size.")
+                .hasArg()
+                .create(OPTIONS.MAX_SIZE.getValue());
+        options.addOption(maxSize);
+
+        Option minRatio = OptionBuilder
+                .withDescription("minimum ratio a cluster may have to still be processed.")
+                .hasArg()
+                .create(OPTIONS.MIN_RATIO.getValue());
+        options.addOption(minRatio);
+
+        Option maxRatio = OptionBuilder
+                .withDescription("maximum ratio a cluster may have to still be processed.")
+                .hasArg()
+                .create(OPTIONS.MAX_RATIO.getValue());
+        options.addOption(maxRatio);
+
+        Option minPrecursor = OptionBuilder
+                .withDescription("minimum (average) precursor m/z a cluster may have to be processed.")
+                .hasArg()
+                .create(OPTIONS.MIN_PRECURSOR.getValue());
+        options.addOption(minPrecursor);
+
+        Option maxPrecursor = OptionBuilder
+                .withDescription("maximum (average) precursor m/z a cluster may have to be processed.")
+                .hasArg()
+                .create(OPTIONS.MIN_PRECURSOR.getValue());
+        options.addOption(maxPrecursor);
 
         Option outputPath = OptionBuilder
                 .hasArg()

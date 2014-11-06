@@ -32,13 +32,13 @@ public class AnalyserFactory {
         }
     }
 
-    public static IClusteringSourceAnalyser getAnalyserForString(String name) {
+    public static AbstractClusteringSourceAnalyser getAnalyserForString(String name) {
         ANALYSERS analyser = ANALYSERS.getAnalyserForString(name);
 
         return getAnalyser(analyser);
     }
 
-    public static IClusteringSourceAnalyser getAnalyser(ANALYSERS analyser) {
+    public static AbstractClusteringSourceAnalyser getAnalyser(ANALYSERS analyser) {
         switch (analyser) {
             case BASIC_CLUSTERING_STATISTICS:
                 return new BasicClusteringStatistics();

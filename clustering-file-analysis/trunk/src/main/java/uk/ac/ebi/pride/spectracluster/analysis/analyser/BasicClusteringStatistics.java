@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
 /**
  * Created by jg on 12.07.14.
  */
-public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
+public class BasicClusteringStatistics extends AbstractClusteringSourceAnalyser {
     public static String FILE_ENDING = ".basic_statistics.txt";
     public static String DESCRIPTION = "Generates basic statistics about a .clustering file like # clusters.";
     public static final float LARGE_PRECURSOR_MZ_RANGE = 1.5F;
@@ -44,6 +44,9 @@ public class BasicClusteringStatistics implements IClusteringSourceAnalyser {
 
     @Override
     public void onNewClusterRead(ICluster newCluster) {
+        if (ignoreCluster(newCluster))
+            return;
+
         nClusters++;
 
         if (minSize > newCluster.getSpecCount())
