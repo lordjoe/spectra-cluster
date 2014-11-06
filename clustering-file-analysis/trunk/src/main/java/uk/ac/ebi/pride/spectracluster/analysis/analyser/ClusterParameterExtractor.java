@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
  * max ratio, precursor_mz, precursor_intens) and returns
  * them as a tab-delimited table.
  */
-public class ClusterParameterExtractor implements IClusteringSourceAnalyser {
+public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser {
     public static String FILE_ENDING = ".cluster_parameters.tsv";
     public static String DESCRIPTION = "Extracts the basic properties of every cluster in the file and returns them in a TAB delimited table.";
 
@@ -43,6 +43,9 @@ public class ClusterParameterExtractor implements IClusteringSourceAnalyser {
 
     @Override
     public void onNewClusterRead(ICluster newCluster) {
+        if (ignoreCluster(newCluster))
+            return;
+
         // add the string representing the cluster to the result buffer
         resultStringBuffer.append(String.format(
                 "%.3f%c%.3f%c%d%c%.3f%c%.3f%c%.3f\n",

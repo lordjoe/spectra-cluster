@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * Analysis in how many cluster a spectrum was observed in.
  */
-public class ClusterDuplicationAnalyser implements IClusteringSourceAnalyser {
+public class ClusterDuplicationAnalyser extends AbstractClusteringSourceAnalyser {
     public static String FILE_ENDING = ".duplication_analysis.tsv";
     public static String DESCRIPTION = "Counts in how many clusters a certain spectrum was found.";
 
@@ -92,6 +92,9 @@ public class ClusterDuplicationAnalyser implements IClusteringSourceAnalyser {
 
     @Override
     public void onNewClusterRead(ICluster newCluster) {
+        if (ignoreCluster(newCluster))
+            return;
+
         for (ISpectrumReference specRef : newCluster.getSpectrumReferences()) {
             String id = specRef.getSpectrumId();
 

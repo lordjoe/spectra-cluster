@@ -4,6 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
+import uk.ac.ebi.pride.spectracluster.analysis.analyser.AbstractClusteringSourceAnalyser;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.AnalyserFactory;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.IClusteringSourceAnalyser;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
@@ -29,6 +30,30 @@ public class ClusteringFileAnalyserCli {
             CommandLine commandLine = parser.parse(CliOptions.getOptions(),
                     args);
 
+            int minSize = Integer.MIN_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MIN_SIZE.getValue()))
+                minSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_SIZE.getValue()));
+
+            int maxSize = Integer.MAX_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MAX_SIZE.getValue()))
+                maxSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_SIZE.getValue()));
+
+            float minRatio = Float.MIN_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MIN_RATIO.getValue()))
+                minRatio = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_RATIO.getValue()));
+
+            float maxRatio = Float.MAX_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MAX_RATIO.getValue()))
+                maxRatio = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_RATIO.getValue()));
+
+            float minPrecursor = Float.MIN_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MIN_PRECURSOR.getValue()))
+                minPrecursor = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_PRECURSOR.getValue()));
+
+            float maxPrecursor = Float.MAX_VALUE;
+            if (commandLine.hasOption(CliOptions.OPTIONS.MAX_PRECURSOR.getValue()))
+                maxPrecursor = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_PRECURSOR.getValue()));
+
             // CUMULATIVE
             boolean cumulativeAnalysis = commandLine.hasOption(CliOptions.OPTIONS.CUMULATIVE_ANALYSIS.getValue());
 
@@ -50,11 +75,20 @@ public class ClusteringFileAnalyserCli {
                 String[] analyserNames = commandLine.getOptionValues(CliOptions.OPTIONS.ANALYSER.getValue());
 
                 for (String analyserName : analyserNames) {
-                    IClusteringSourceAnalyser theAnalyser = AnalyserFactory.getAnalyserForString(analyserName);
+                    AbstractClusteringSourceAnalyser theAnalyser = AnalyserFactory.getAnalyserForString(analyserName);
                     if (theAnalyser == null) {
                         System.out.println("Unknown analyser '" + analyserName + "' - ignored.");
                     }
                     else {
+                        theAnalyser.setMinClusterSize(minSize);
+                        theAnalyser.setMaxClusterSize(maxSize);
+
+                        theAnalyser.setMinClusterRatio(minRatio);
+                        theAnalyser.setMaxClusterRatio(maxRatio);
+
+                        theAnalyser.setMinPrecursorMz(minPrecursor);
+                        theAnalyser.setMaxPrecursorMz(maxPrecursor);
+
                         analyser.add(theAnalyser);
                     }
                 }
@@ -62,8 +96,19 @@ public class ClusteringFileAnalyserCli {
 
             // ALL ANALYSERS
             if (commandLine.hasOption(CliOptions.OPTIONS.ALL_ANALYSERS.getValue())) {
-                for (AnalyserFactory.ANALYSERS a : AnalyserFactory.ANALYSERS.values())
-                    analyser.add(AnalyserFactory.getAnalyser(a));
+                for (AnalyserFactory.ANALYSERS a : AnalyserFactory.ANALYSERS.values()) {
+                    AbstractClusteringSourceAnalyser theAnalyser = AnalyserFactory.getAnalyser(a);
+                    theAnalyser.setMinClusterSize(minSize);
+                    theAnalyser.setMaxClusterSize(maxSize);
+
+                    theAnalyser.setMinClusterRatio(minRatio);
+                    theAnalyser.setMaxClusterRatio(maxRatio);
+
+                    theAnalyser.setMinPrecursorMz(minPrecursor);
+                    theAnalyser.setMaxPrecursorMz(maxPrecursor);
+
+                    analyser.add(theAnalyser);
+                }
             }
 
             // OUTPUT PATH
@@ -81,9 +126,6 @@ public class ClusteringFileAnalyserCli {
                     analyseFile(filename, analyser, outputPath);
                 }
             }
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
