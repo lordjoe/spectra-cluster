@@ -64,23 +64,23 @@ abstract public class AbstractClusteringSourceAnalyser implements IClusteringSou
 
     protected boolean ignoreCluster(ICluster cluster) {
         if (cluster.getSpecCount() > maxClusterSize)
-            return false;
+            return true;
 
         if (cluster.getSpecCount() < minClusterSize)
-            return false;
+            return true;
 
         if (cluster.getAvPrecursorMz() > maxPrecursorMz)
-            return false;
+            return true;
 
         if (cluster.getAvPrecursorMz() < minPrecursorMz)
-            return false;
+            return true;
 
         if (cluster.getMaxRatio() > maxClusterRatio)
-            return false;
+            return true;
 
         if (cluster.getMaxRatio() < minClusterRatio)
-            return false;
+            return true;
 
-        return true;
+        return false;
     }
 }
