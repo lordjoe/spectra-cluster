@@ -4,6 +4,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.core.SolrTemplate;
+import uk.ac.ebi.pride.spectracluster.spectra.util.SearchUtils;
 import uk.ac.ebi.pride.spectrumindex.search.model.Spectrum;
 import uk.ac.ebi.pride.spectrumindex.search.service.SpectrumSearchService;
 import uk.ac.ebi.pride.spectrumindex.search.service.repository.SolrSpectrumRepository;
@@ -16,10 +17,12 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * Class to retrieve spectrum from PRIDE Archive
+ *
  * @author Rui Wang
  * @version $Id$
  */
-public class ArchiveSpectraRetriever {
+public class ArchiveSpectraRetriever implements ISpectraRetriever {
 
     private final SpectrumSearchService spectrumSearchService;
 
@@ -39,22 +42,62 @@ public class ArchiveSpectraRetriever {
         spectrumSearchService = new SpectrumSearchService(solrSpectrumRepository);
     }
 
+    /**
+     * Get spectra belong to a given assay
+     *
+     * @param assayAccession assay accession
+     * @param pageable       pagination settings
+     * @return paged spectra
+     */
+    @Override
     public Page<Spectrum> findByAssayAccession(String assayAccession, Pageable pageable) {
         return spectrumSearchService.findByAssayAccession(assayAccession, pageable);
     }
 
+    /**
+     * Get spectra belong to a given collection of project accessions
+     *
+     * @param projectAccessions a collection of project accessions
+     * @param pageable          pagination configuration
+     * @return paged spectra
+     */
+    @Override
     public Page<Spectrum> findByProjectAccession(Collection<String> projectAccessions, Pageable pageable) {
         return spectrumSearchService.findByProjectAccession(projectAccessions, pageable);
     }
 
+    /**
+     * Get a list of spectra using a given spectrum id
+     *
+     * @param id spectrum id
+     * @return a list of spectrum
+     */
+    @Override
     public List<Spectrum> findById(String id) {
-        return spectrumSearchService.findById(id);
+        String queryID = SearchUtils.escapeQueryChars(id);
+        return spectrumSearchService.findById(queryID);
     }
 
+    /**
+     * Get spectra belong to a given project
+     *
+     * @param projectAccession project accession
+     * @param pageable         pagination configuration
+     * @return paged spectra
+     */
+    @Override
     public Page<Spectrum> findByProjectAccession(String projectAccession, Pageable pageable) {
         return spectrumSearchService.findByProjectAccession(projectAccession, pageable);
     }
 
+    /**
+     * Get spectra belong to a given collection of assays
+     *
+     * @param assayAccessions a collection of assay accessions
+     * @param pageable        pagination configuration
+     * @return paged spectra
+     */
+    @Override
     public Page<Spectrum> findByAssayAccession(Collection<String> assayAccessions, Pageable pageable) {
         return spectrumSearchService.findByAssayAccession(assayAccessions, pageable);
     }
