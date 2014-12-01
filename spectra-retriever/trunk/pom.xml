@@ -9,7 +9,7 @@
 
 
     <properties>
-        <spectrum-index-search.version>0.1.1-SNAPSHOT</spectrum-index-search.version>
+        <spectrum-index-search.version>0.1.1</spectrum-index-search.version>
         <junit.version>3.8.1</junit.version>
     </properties>
 
