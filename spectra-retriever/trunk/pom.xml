@@ -3,7 +3,7 @@
     <groupId>uk.ac.ebi.pride.spectracluster</groupId>
     <artifactId>spectra-retriever</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>spectra-retriever</name>
 
 
@@ -27,9 +27,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-retriever/tags/spectra-retriever-1.0.0</connection>
-        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-retriever/tags/spectra-retriever-1.0.0</developerConnection>
-        <url>https://spectra-cluster.googlecode.com/svn/spectra-retriever/tags/spectra-retriever-1.0.0</url>
+        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-retriever/trunk</connection>
+        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/spectra-retriever/trunk</developerConnection>
+        <url>https://spectra-cluster.googlecode.com/svn/spectra-retriever/trunk</url>
     </scm>
 
     <dependencies>
