@@ -24,9 +24,23 @@ import java.util.Properties;
  */
 public class ArchiveSpectraRetriever implements ISpectraRetriever {
 
-    private final SpectrumSearchService spectrumSearchService;
+    private SpectrumSearchService spectrumSearchService;
 
     public ArchiveSpectraRetriever() {
+        Properties properties = readConfigurations();
+
+        initSpectrumSearchService(properties);
+    }
+
+    private void initSpectrumSearchService(Properties properties) {
+        String solrUrl = (String) properties.get("pride.solr.server.spectrum.core.url");
+        HttpSolrServer httpSolrServer = new HttpSolrServer(solrUrl);
+        SolrSpectrumRepositoryFactory solrSpectrumRepositoryFactory = new SolrSpectrumRepositoryFactory(new SolrTemplate(httpSolrServer));
+        SolrSpectrumRepository solrSpectrumRepository = solrSpectrumRepositoryFactory.create();
+        spectrumSearchService = new SpectrumSearchService(solrSpectrumRepository);
+    }
+
+    private Properties readConfigurations() {
         InputStream inputStream = ArchiveSpectraRetriever.class.getClassLoader().getResourceAsStream("solr.properties");
         Properties properties = new Properties();
         try {
@@ -34,12 +48,7 @@ public class ArchiveSpectraRetriever implements ISpectraRetriever {
         } catch (IOException ioe) {
             throw new IllegalStateException("Failed to load solr properties");
         }
-
-        String solrUrl = (String) properties.get("pride.solr.server.spectrum.core.url");
-        HttpSolrServer httpSolrServer = new HttpSolrServer(solrUrl);
-        SolrSpectrumRepositoryFactory solrSpectrumRepositoryFactory = new SolrSpectrumRepositoryFactory(new SolrTemplate(httpSolrServer));
-        SolrSpectrumRepository solrSpectrumRepository = solrSpectrumRepositoryFactory.create();
-        spectrumSearchService = new SpectrumSearchService(solrSpectrumRepository);
+        return properties;
     }
 
     /**
