@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.spectracluster</groupId>
     <artifactId>spectra-retriever</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>spectra-retriever</name>
 
 
@@ -79,8 +79,6 @@
                     </includes>
                     <excludes>
                         <exclude>**/Abstract*.java</exclude>
-                        <!-- skipped due to original tests were not working before the code review -->
-                        <exclude>**/IncrementalClusteringEngineTests.java</exclude>
                     </excludes>
                     <junitArtifactName>junit:junit</junitArtifactName>
                     <skipTests>true</skipTests>
