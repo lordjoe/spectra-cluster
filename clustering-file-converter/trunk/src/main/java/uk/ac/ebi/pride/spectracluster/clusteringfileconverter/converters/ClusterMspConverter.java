@@ -140,9 +140,32 @@ public class ClusterMspConverter extends AbstractClusterConverter {
         mspString.append("Name: ").append(generateClusterName(cluster)).append("\n");
         mspString.append("Comment: ").append(generateComments(cluster)).append("\n");
 
-        mspString.append("Num peaks: ").append(cluster.getConsensusMzValues().size()).append("\n");
+        // count the peaks ignoring any peaks with 0 m/z or intensity
+        int nPeaks = 0;
+        for (int i = 0; i < cluster.getConsensusMzValues().size(); i++) {
+            // ignore peaks with 0 m/z and 0 intensity
+            if (cluster.getConsensusMzValues().get(i) == 0) {
+                System.out.println("Warning: Cluster " + cluster.getId() + " contains empty peak (m/z).");
+                continue;
+            }
+
+            if (cluster.getConsensusIntensValues().get(i) == 0) {
+                System.out.println("Warning: Cluster " + cluster.getId() + " contains empty peak (intensity).");
+                continue;
+            }
+
+            nPeaks++;
+        }
+
+        mspString.append("Num peaks: ").append(nPeaks).append("\n");
 
         for (int i = 0; i < cluster.getConsensusMzValues().size(); i++) {
+            // ignore peaks with 0 m/z and 0 intensity
+            if (cluster.getConsensusMzValues().get(i) == 0)
+                continue;
+            if (cluster.getConsensusIntensValues().get(i) == 0)
+                continue;
+
             mspString.append(cluster.getConsensusMzValues().get(i)).append(" ").append(cluster.getConsensusIntensValues().get(i)).append("\n");
         }
 
