@@ -27,13 +27,23 @@ public class ClusterMgfConverter extends AbstractClusterConverter {
     public String convertCluster(ICluster cluster) {
         StringBuilder stringBuilder = new StringBuilder("BEGIN IONS\n");
 
-        stringBuilder.append(String.format("TITLE=%s (consensus spectrum %d)\n", cluster.getMaxSequence(), clusterCounter));
+        stringBuilder.append(String.format("TITLE=%s\n", (cluster.getId() != null) ? cluster.getId() : cluster.getMaxSequence(), clusterCounter));
         int charge = ClusterUtilities.calculateClusterCharge(cluster);
         stringBuilder.append(String.format("PEPMASS=%.3f\n", cluster.getAvPrecursorMz()));
         stringBuilder.append(String.format("CHARGE=%d%c\n", Math.abs(charge), (charge > 0 ? '+' : '-')));
 
         // add the peak list
         for (int i = 0; i < cluster.getConsensusMzValues().size(); i++) {
+            // ignore peaks with 0 m/z and 0 intensity
+            if (cluster.getConsensusMzValues().get(i) == 0) {
+                System.out.println("Warning: Cluster " + cluster.getId() + " contains empty peak (m/z).");
+                continue;
+            }
+            if (cluster.getConsensusIntensValues().get(i) == 0) {
+                System.out.println("Warning: Cluster " + cluster.getId() + " contains empty peak (intensity).");
+                continue;
+            }
+
             stringBuilder.append(cluster.getConsensusMzValues().get(i)).append(" ").append(cluster.getConsensusIntensValues().get(i)).append("\n");
         }
 
