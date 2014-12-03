@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.spectracluster.clusteringfileclusterfetcher.cluster_fetch
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.IPeptideSpectrumMatch;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumReference;
 import uk.ac.ebi.pride.spectracluster.spectra.ArchiveSpectraRetriever;
 import uk.ac.ebi.pride.spectrumindex.search.model.Spectrum;
@@ -61,7 +62,7 @@ public class ClusteringFileClusterFetcherCli {
 
                     // write the spectra to a file
                     String outputFilePath = outputPath + cluster.getId() + ".mgf";
-                    writeSpectraToFile(spectra, outputFilePath);
+                    writeSpectraToFile(spectra, outputFilePath, cluster);
                     System.out.println("    Spectra written to " + outputFilePath);
                 }
             }
@@ -71,7 +72,7 @@ public class ClusteringFileClusterFetcherCli {
         }
     }
 
-    private static void writeSpectraToFile(List<Spectrum> spectra, String outputFilePath) throws Exception {
+    private static void writeSpectraToFile(List<Spectrum> spectra, String outputFilePath, ICluster cluster) throws Exception {
         FileWriter fw = new FileWriter(outputFilePath);
 
         for (Spectrum s : spectra) {
@@ -82,9 +83,19 @@ public class ClusteringFileClusterFetcherCli {
                 throw new Exception("Spectrum " + s.getId() + " contains a different number of m/z and intensity values.");
             }
 
+            // get the spectrum's sequence
+            String sequence = null;
+
+            for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
+                if (specRef.getSpectrumId().equals(s.getId())) {
+                    for (IPeptideSpectrumMatch psm : specRef.getPSMs()) {
+                        sequence = (sequence != null ? sequence + "," : "") + psm.getSequence();
+                    }
+                }
+            }
 
             fw.write("BEGIN IONS\n");
-            fw.write("TITLE=" + s.getId() + "\n");
+            fw.write("TITLE=" + s.getId() + (sequence != null ? "|" + sequence : "") + "\n");
             fw.write("PEPMASS=" + s.getPrecursorMz() + "\n");
             fw.write("CHARGE=" + s.getPrecursorCharge() + "\n");
             // write the peaks
@@ -102,7 +113,13 @@ public class ClusteringFileClusterFetcherCli {
         List<Spectrum> spectra = new ArrayList<Spectrum>();
 
         for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
-            spectra.addAll(spectraRetriever.findById(specRef.getSpectrumId()));
+            List<Spectrum> spectrum = spectraRetriever.findById(specRef.getSpectrumId());
+
+            if (spectrum.size() < 1) {
+                System.out.println("Error: Failed to retrieve spectrum " + specRef.getSpectrumId());
+            }
+
+            spectra.addAll(spectrum);
         }
 
         return spectra;
