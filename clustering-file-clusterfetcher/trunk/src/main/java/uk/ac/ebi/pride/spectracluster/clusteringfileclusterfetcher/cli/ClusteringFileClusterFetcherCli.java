@@ -4,17 +4,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import uk.ac.ebi.pride.spectracluster.clusteringfileclusterfetcher.cluster_fetcher.ClusterFetcher;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ICluster;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.IPeptideSpectrumMatch;
-import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumReference;
-import uk.ac.ebi.pride.spectracluster.spectra.ArchiveSpectraRetriever;
-import uk.ac.ebi.pride.spectrumindex.search.model.Spectrum;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * Created by jg on 02.12.14.
@@ -34,153 +23,45 @@ public class ClusteringFileClusterFetcherCli {
 
             String clusterListPath = commandLine.getOptionValue(CliOptions.OPTIONS.CLUSTER_FILE.getValue(), "");
 
-            if (clusterListPath.equals("")) {
-                throw new Exception("Missing required parameter '" + CliOptions.OPTIONS.CLUSTER_FILE.getValue() + "'");
-            }
-
             String outputPath = commandLine.getOptionValue(CliOptions.OPTIONS.OUTPUT_PATH.getValue(), "");
             if (outputPath.equals("")) {
-                throw new Exception("Missing required paramter '" + CliOptions.OPTIONS.OUTPUT_PATH.getValue() + "'");
+                throw new Exception("Missing required parameter '" + CliOptions.OPTIONS.OUTPUT_PATH.getValue() + "'");
             }
 
+            boolean useOnlyFileFetcher = commandLine.hasOption(CliOptions.OPTIONS.DISABLE_SPECTRA_RETRIEVER.getValue());
+            boolean ignoreIncompleteClusters = commandLine.hasOption(CliOptions.OPTIONS.IGNORE_INCOMPLETE_CLUSTER.getValue());
 
-            Map<String, Set<String>> clusterIdsPerFile = processClusterList(clusterListPath);
-            ArchiveSpectraRetriever spectraRetriever = new ArchiveSpectraRetriever();
+            int minSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_SIZE.getValue(), "0"));
+            int maxSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_SIZE.getValue(), new Integer(Integer.MAX_VALUE).toString()));
 
-            for (String clusterFilePath : clusterIdsPerFile.keySet()) {
-                // get the cluters from the file
-                System.out.println("Processing clusters from " + clusterFilePath + "...");
-                List<ICluster> extractedClusters = extractClustersFromFile(clusterFilePath, clusterIdsPerFile.get(clusterFilePath));
+            float minRatio = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_RATIO.getValue(), "0"));
+            float maxRatio = Float.parseFloat(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_RATIO.getValue(), new Float(Float.MAX_VALUE).toString()));
 
-                System.out.println("  Extracted " + extractedClusters.size() + "clusters.");
+            IClusterProcessor clusterProcessor;
 
-                // get the spectra for each cluster
-                for (ICluster cluster : extractedClusters) {
-                    System.out.print("  Fetching spectra for cluster " + cluster.getId() + "...");
-                    List<Spectrum> spectra = fetchSpectraForCluster(cluster, spectraRetriever);
-                    System.out.println("OK.");
-
-                    // write the spectra to a file
-                    String outputFilePath = outputPath + cluster.getId() + ".mgf";
-                    writeSpectraToFile(spectra, outputFilePath, cluster);
-                    System.out.println("    Spectra written to " + outputFilePath);
-                }
+            if (clusterListPath != "") {
+                clusterProcessor = new ClusterFilelistProcessor(clusterListPath);
             }
+            else {
+                clusterProcessor = new ClusteringFilesProcessor(commandLine.getArgs(), minSize, maxSize, minRatio, maxRatio);
+            }
+
+            clusterProcessor.setOutputPath(outputPath);
+            clusterProcessor.setDisableSpectraFetcher(useOnlyFileFetcher);
+            clusterProcessor.setIgnoreIncompleteClusters(ignoreIncompleteClusters);
+
+            clusterProcessor.processClusters();
         }
         catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void writeSpectraToFile(List<Spectrum> spectra, String outputFilePath, ICluster cluster) throws Exception {
-        FileWriter fw = new FileWriter(outputFilePath);
 
-        for (Spectrum s : spectra) {
-            double[] mzValues = s.getPeaksMz();
-            double[] intensityValues = s.getPeaksIntensities();
 
-            if (mzValues.length != intensityValues.length) {
-                throw new Exception("Spectrum " + s.getId() + " contains a different number of m/z and intensity values.");
-            }
 
-            // get the spectrum's sequence
-            String sequence = null;
 
-            for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
-                if (specRef.getSpectrumId().equals(s.getId())) {
-                    for (IPeptideSpectrumMatch psm : specRef.getPSMs()) {
-                        sequence = (sequence != null ? sequence + "," : "") + psm.getSequence();
-                    }
-                }
-            }
 
-            fw.write("BEGIN IONS\n");
-            fw.write("TITLE=" + s.getId() + (sequence != null ? "|" + sequence : "") + "\n");
-            fw.write("PEPMASS=" + s.getPrecursorMz() + "\n");
-            fw.write("CHARGE=" + s.getPrecursorCharge() + "\n");
-            // write the peaks
-            for (int i = 0; i < mzValues.length; i++) {
-                fw.write(mzValues[i] + " " + intensityValues[i] + "\n");
-            }
-
-            fw.write("END IONS\n");
-        }
-
-        fw.close();
-    }
-
-    private static List<Spectrum> fetchSpectraForCluster(ICluster cluster, ArchiveSpectraRetriever spectraRetriever) {
-        List<Spectrum> spectra = new ArrayList<Spectrum>();
-
-        for (ISpectrumReference specRef : cluster.getSpectrumReferences()) {
-            List<Spectrum> spectrum = spectraRetriever.findById(specRef.getSpectrumId());
-
-            if (spectrum.size() < 1) {
-                System.out.println("Error: Failed to retrieve spectrum " + specRef.getSpectrumId());
-            }
-
-            spectra.addAll(spectrum);
-        }
-
-        return spectra;
-    }
-
-    private static List<ICluster> extractClustersFromFile(String clusterFilePath, Collection<String> clusterIds) throws Exception {
-        // extract the clusters from the file using a ClusterFetcher
-        ClusteringFileReader fileReader = new ClusteringFileReader(new File(clusterFilePath));
-        ClusterFetcher clusterFetcher = new ClusterFetcher(clusterIds);
-
-        List<IClusterSourceListener> listeners = new ArrayList<IClusterSourceListener>();
-        listeners.add(clusterFetcher);
-
-        // read the file iteratively to avoid performance problems
-        fileReader.readClustersIteratively(listeners);
-
-        List<ICluster> extractedClusters = clusterFetcher.getExtractedClusters();
-
-        return extractedClusters;
-    }
-
-    /**
-     * Reads the file containing the list of clusters to extract from the .clustering files.
-     * @param clusterListPath
-     * @return
-     */
-    private static Map<String, Set<String>> processClusterList(String clusterListPath) throws Exception {
-        File clusteringListFile = new File(clusterListPath);
-
-        if (!clusteringListFile.exists() || !clusteringListFile.canRead()) {
-            throw new Exception("Cannot find " + clusterListPath);
-        }
-
-        BufferedReader br = new BufferedReader(new FileReader(clusteringListFile));
-
-        Map<String, Set<String>> clusterIdsPerFile = new HashMap<String, Set<String>>();
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-
-            // ignore empty lines
-            if (line.length() < 1)
-                continue;
-
-            String[] fields = line.split("\t");
-            if (fields.length < 2)
-                throw new Exception("Illegal line encountered in " + clusterListPath + ": " + line);
-
-            String filename = fields[0];
-            String clusterId = fields[1];
-
-            if (!clusterIdsPerFile.containsKey(filename)) {
-                clusterIdsPerFile.put(filename, new HashSet<String>());
-            }
-
-            clusterIdsPerFile.get(filename).add(clusterId);
-        }
-
-        return clusterIdsPerFile;
-    }
 
     private static void printHelp() {
         HelpFormatter formatter = new HelpFormatter();

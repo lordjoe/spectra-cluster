@@ -59,6 +59,18 @@
             <artifactId>spectra-retriever</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.pride.tools</groupId>
+            <artifactId>jmzreader</artifactId>
+            <version>1.2.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.pride.tools</groupId>
+            <artifactId>pride-wrapper</artifactId>
+            <version>1.2.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -140,7 +152,7 @@
                 <version>2.2.1</version>
                 <configuration>
                     <!--<finalName>${artifactId}-${version}-${profile.name}</finalName>-->
-                    <finalName>${artifactId}-${version}-uk.ac.ebi.pride.spectracluster.clusteringfileclusterfetcher.cli</finalName>
+                    <finalName>${artifactId}-${version}</finalName>
                     <descriptors>
                         <descriptor>src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
