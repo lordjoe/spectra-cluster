@@ -70,7 +70,7 @@ public class MgfSpectrumWriter implements ISpectrumWriter {
 
         // process all PSMs (unfortunately, there can be multiple PSMs per spectrum)
         for (IPeptideSpectrumMatch psm : spectrumReference.getPSMs()) {
-            spectrumTitle += (spectrumTitle.length() > 0 ? ";" : "") + psm.getSequence();
+            spectrumTitle += (spectrumTitle.endsWith("|") ? "" : ";") + psm.getSequence();
 
             // add the PSMs
             if (psm.getModifications().size() > 0) {
