@@ -24,9 +24,10 @@ public class ClusterFilelistProcessor implements IClusterProcessor {
     private boolean disableSpectraFetcher = false;
     private String outputPath = ".";
     private boolean ignoreIncompleteClusters = true;
+    private boolean ignoreExisting = false;
 
-    public ClusterFilelistProcessor(String clusterFilePath) {
-        this.clusterListPath = clusterFilePath;
+    public ClusterFilelistProcessor(String clusterListPath) {
+        this.clusterListPath = clusterListPath;
     }
 
     @Override
@@ -48,6 +49,14 @@ public class ClusterFilelistProcessor implements IClusterProcessor {
 
             // get the spectra for each cluster
             for (ICluster cluster : extractedClusters) {
+                String outputFilePath = outputPath + cluster.getId() + ".mgf";
+
+                if (ignoreExisting) {
+                    File outputFile = new File(outputFilePath);
+                    if (outputFile.exists())
+                        continue;
+                }
+
                 System.out.print("  Fetching spectra for cluster " + cluster.getId() + " ...");
                 List<Spectrum> spectra = null;
                 try {
@@ -64,7 +73,6 @@ public class ClusterFilelistProcessor implements IClusterProcessor {
                 System.out.println("OK.");
 
                 // write the spectra to a file
-                String outputFilePath = outputPath + cluster.getId() + ".mgf";
                 spectrumWriter.writeClusterSpectra(spectra, outputFilePath, cluster);
                 System.out.println("    Spectra written to " + outputFilePath);
             }
@@ -184,5 +192,15 @@ public class ClusterFilelistProcessor implements IClusterProcessor {
     @Override
     public boolean isIgnoreIncompleteClusters() {
         return ignoreIncompleteClusters;
+    }
+
+    @Override
+    public void setIgnoreExisting(boolean ignoreExisting) {
+        this.ignoreExisting = ignoreExisting;
+    }
+
+    @Override
+    public boolean isIgnoreExisting() {
+        return ignoreExisting;
     }
 }

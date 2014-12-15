@@ -12,10 +12,12 @@ public class CliOptions {
         CLUSTER_FILE("cluster_file"),
         DISABLE_SPECTRA_RETRIEVER("disable_spectra_retriever"),
         IGNORE_INCOMPLETE_CLUSTER("ignore_incomplete_cluster"),
+        IGNORE_EXISSTING("ignore_existing"),
         MIN_SIZE("min_size"),
         MAX_SIZE("max_size"),
         MIN_RATIO("min_ratio"),
         MAX_RATIO("max_ratio"),
+        CLUTER_ID_FILE("cluster_id_file"),
         OUTPUT_PATH("output_path");
 
 		private String value;
@@ -54,6 +56,11 @@ public class CliOptions {
                 .create(OPTIONS.IGNORE_INCOMPLETE_CLUSTER.getValue());
         options.addOption(ignoreIncompleteClusters);
 
+        Option ignoreExisting = OptionBuilder
+                .withDescription("if set existing files will not be overwritten and the respective cluster ignored")
+                .create(OPTIONS.IGNORE_EXISSTING.getValue());
+        options.addOption(ignoreExisting);
+
         Option disableSpectraRetriever = OptionBuilder
                 .withDescription("disables the use of the spectra-retriever. All spectra will be read from file.")
                 .create(OPTIONS.DISABLE_SPECTRA_RETRIEVER.getValue());
@@ -86,6 +93,13 @@ public class CliOptions {
                 .withArgName("RATIO")
                 .create(OPTIONS.MAX_RATIO.getValue());
         options.addOption(maxRatio);
+
+        Option clusterIdFile = OptionBuilder
+                .withDescription("if supplied only clusters where the id is provided in the defined file (one id per line) are exported.")
+                .hasArg()
+                .withArgName("FILENAME")
+                .create(OPTIONS.CLUTER_ID_FILE.getValue());
+        options.addOption(clusterIdFile);
 
 		Option help = OptionBuilder
                 .withDescription("print this help.")

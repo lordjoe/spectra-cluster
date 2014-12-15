@@ -14,4 +14,7 @@ public interface IClusterProcessor {
 
     public void setIgnoreIncompleteClusters(boolean ignoreIncompleteCluster);
     public boolean isIgnoreIncompleteClusters();
+
+    public void setIgnoreExisting(boolean ignoreExisting);
+    public boolean isIgnoreExisting();
 }
