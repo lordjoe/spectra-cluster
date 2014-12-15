@@ -10,9 +10,13 @@ import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.ISpectrumRefe
 import uk.ac.ebi.pride.spectracluster.spectra.ArchiveSpectraRetriever;
 import uk.ac.ebi.pride.spectrumindex.search.model.Spectrum;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by jg on 07.12.14.
@@ -23,27 +27,36 @@ public class ClusteringFilesProcessor implements IClusterProcessor, IClusterSour
     private final int maxSize;
     private final float minRatio;
     private final float maxRatio;
+    private final String clusterIdFilePath;
 
     private boolean disableSpectraFetcher = false;
     private String outputPath = ".";
     private boolean ignoreIncompleteClusters = true;
+    private boolean ignoreExisting = false;
 
     private ArchiveSpectraRetriever spectraRetriever = new ArchiveSpectraRetriever();
     private SpectrumFileFetcher spectrumFileFetcher;
     private ISpectrumWriter spectrumWriter = new MgfSpectrumWriter();
 
-    public ClusteringFilesProcessor(String[] clusteringFilenames, int minSize, int maxSize, float minRatio, float maxRatio) {
+    Set<String> clusterIds = new HashSet<String>();
+
+    public ClusteringFilesProcessor(String[] clusteringFilenames, int minSize, int maxSize, float minRatio, float maxRatio, String clusterIdFilePath) {
         this.clusteringFilenames = clusteringFilenames;
         this.minSize = minSize;
         this.maxSize = maxSize;
         this.minRatio = minRatio;
         this.maxRatio = maxRatio;
+        this.clusterIdFilePath = clusterIdFilePath;
     }
 
     @Override
     public void processClusters() throws Exception {
         if (spectrumFileFetcher == null) {
             spectrumFileFetcher = new SpectrumFileFetcher();
+        }
+
+        if (clusterIdFilePath != null) {
+            loadClusterIdsFromFile(clusterIdFilePath);
         }
 
         for (String clusteringFilename : clusteringFilenames) {
@@ -56,6 +69,24 @@ public class ClusteringFilesProcessor implements IClusterProcessor, IClusterSour
         }
     }
 
+    private void loadClusterIdsFromFile(String clusterIdFilePath) throws Exception {
+        File clusterIdFile = new File(clusterIdFilePath);
+
+        if (!clusterIdFile.exists() || !clusterIdFile.canRead()) {
+            throw new Exception("Cannot read from " + clusterIdFilePath);
+        }
+
+        clusterIds.clear();
+
+        BufferedReader br = new BufferedReader(new FileReader(clusterIdFile));
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            clusterIds.add(line.trim());
+        }
+        br.close();
+    }
+
     @Override
     public void onNewClusterRead(ICluster newCluster) {
         if (newCluster.getSpecCount() < minSize)
@@ -66,6 +97,17 @@ public class ClusteringFilesProcessor implements IClusterProcessor, IClusterSour
             return;
         if (newCluster.getMaxRatio() > maxRatio)
             return;
+        // if cluster ids were provided only export these
+        if (clusterIds.size() > 0 && !clusterIds.contains(newCluster.getId()))
+            return;
+
+        // ignore the cluster if the option is set
+        String outputFilePath = outputPath + newCluster.getId() + ".mgf";
+        if (ignoreExisting) {
+            File outputFile = new File(outputFilePath);
+            if (outputFile.exists())
+                return;
+        }
 
         try {
             System.out.print("  Fetching spectra for cluster " + newCluster.getId() + " ...");
@@ -73,7 +115,6 @@ public class ClusteringFilesProcessor implements IClusterProcessor, IClusterSour
             System.out.println("OK.");
 
             // write the spectra to a file
-            String outputFilePath = outputPath + newCluster.getId() + ".mgf";
             spectrumWriter.writeClusterSpectra(spectra, outputFilePath, newCluster);
             System.out.println("    Spectra written to " + outputFilePath);
         } catch (Exception e) {
@@ -137,5 +178,15 @@ public class ClusteringFilesProcessor implements IClusterProcessor, IClusterSour
     @Override
     public boolean isIgnoreIncompleteClusters() {
         return ignoreIncompleteClusters;
+    }
+
+    @Override
+    public void setIgnoreExisting(boolean ignoreExisting) {
+        this.ignoreExisting = ignoreExisting;
+    }
+
+    @Override
+    public boolean isIgnoreExisting() {
+        return ignoreExisting;
     }
 }

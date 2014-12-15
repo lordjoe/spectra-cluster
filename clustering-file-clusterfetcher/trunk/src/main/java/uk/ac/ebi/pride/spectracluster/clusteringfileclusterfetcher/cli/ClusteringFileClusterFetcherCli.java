@@ -28,8 +28,11 @@ public class ClusteringFileClusterFetcherCli {
                 throw new Exception("Missing required parameter '" + CliOptions.OPTIONS.OUTPUT_PATH.getValue() + "'");
             }
 
+            String clusterIdFilePath = commandLine.getOptionValue(CliOptions.OPTIONS.CLUTER_ID_FILE.getValue());
+
             boolean useOnlyFileFetcher = commandLine.hasOption(CliOptions.OPTIONS.DISABLE_SPECTRA_RETRIEVER.getValue());
             boolean ignoreIncompleteClusters = commandLine.hasOption(CliOptions.OPTIONS.IGNORE_INCOMPLETE_CLUSTER.getValue());
+            boolean ignoreExisting = commandLine.hasOption(CliOptions.OPTIONS.IGNORE_EXISSTING.getValue());
 
             int minSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MIN_SIZE.getValue(), "0"));
             int maxSize = Integer.parseInt(commandLine.getOptionValue(CliOptions.OPTIONS.MAX_SIZE.getValue(), new Integer(Integer.MAX_VALUE).toString()));
@@ -43,12 +46,13 @@ public class ClusteringFileClusterFetcherCli {
                 clusterProcessor = new ClusterFilelistProcessor(clusterListPath);
             }
             else {
-                clusterProcessor = new ClusteringFilesProcessor(commandLine.getArgs(), minSize, maxSize, minRatio, maxRatio);
+                clusterProcessor = new ClusteringFilesProcessor(commandLine.getArgs(), minSize, maxSize, minRatio, maxRatio, clusterIdFilePath);
             }
 
             clusterProcessor.setOutputPath(outputPath);
             clusterProcessor.setDisableSpectraFetcher(useOnlyFileFetcher);
             clusterProcessor.setIgnoreIncompleteClusters(ignoreIncompleteClusters);
+            clusterProcessor.setIgnoreExisting(ignoreExisting);
 
             clusterProcessor.processClusters();
         }
