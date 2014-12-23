@@ -25,7 +25,8 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
                     "max_ratio" + DELIMINATOR +
                     "max_il_ratio" + DELIMINATOR +
                     "precursor_mz_range" + DELIMINATOR +
-                    "sequences" + DELIMINATOR + "\n";
+                    "sequences" + DELIMINATOR +
+                    "species" + "\n";
 
 
     @Override
@@ -62,9 +63,18 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
             sequenceString.append(sequenceCount.getSequence() + ":" + sequenceCount.getCount());
         }
 
+        // get the species
+        StringBuilder speciesString = new StringBuilder();
+        for (String species : newCluster.getSpecies()) {
+            if (speciesString.length() > 0) {
+                speciesString.append(",");
+            }
+            speciesString.append(species);
+        }
+
         // add the string representing the cluster to the result buffer
         resultStringBuffer.append(String.format(
-                "%s%c%.3f%c%.3f%c%d%c%.3f%c%.3f%c%.3f%c%s\n",
+                "%s%c%.3f%c%.3f%c%d%c%.3f%c%.3f%c%.3f%c%s%c%s\n",
                 newCluster.getId(), DELIMINATOR,
                 newCluster.getAvPrecursorMz(), DELIMINATOR,
                 newCluster.getAvPrecursorIntens(), DELIMINATOR,
@@ -72,7 +82,8 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
                 newCluster.getMaxRatio(), DELIMINATOR,
                 ClusterUtilities.getClusterILAgnosticMaxRatio(newCluster), DELIMINATOR,
                 newCluster.getSpectrumPrecursorMzRange(), DELIMINATOR,
-                sequenceString.toString()
+                sequenceString.toString(), DELIMINATOR,
+                speciesString
         ));
     }
 }
