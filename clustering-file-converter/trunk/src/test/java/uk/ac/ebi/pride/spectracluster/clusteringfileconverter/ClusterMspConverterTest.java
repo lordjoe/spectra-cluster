@@ -34,6 +34,7 @@ public class ClusterMspConverterTest {
         String mspCluster10 = converter.convertCluster(clusters.get(10));
 
         Assert.assertEquals("Name: KNYGK/0\n" +
+                "MW: 305.01\n" +
                 "Comment: Spec=Consensus Mods=0 Parent=305.01 Nreps=1 Naa=5 MaxRatio=1.0 PrecursorMzRange=0.0\n" +
                 "Num peaks: 33\n" +
                 "93.084 210.05\n" +

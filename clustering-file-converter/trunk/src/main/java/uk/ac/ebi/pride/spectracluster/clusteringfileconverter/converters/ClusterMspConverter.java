@@ -138,7 +138,9 @@ public class ClusterMspConverter extends AbstractClusterConverter {
         StringBuilder mspString = new StringBuilder();
 
         mspString.append("Name: ").append(generateClusterName(cluster)).append("\n");
+        mspString.append("MW: ").append(cluster.getAvPrecursorMz()).append("\n");
         mspString.append("Comment: ").append(generateComments(cluster)).append("\n");
+
 
         // count the peaks ignoring any peaks with 0 m/z or intensity
         int nPeaks = 0;
