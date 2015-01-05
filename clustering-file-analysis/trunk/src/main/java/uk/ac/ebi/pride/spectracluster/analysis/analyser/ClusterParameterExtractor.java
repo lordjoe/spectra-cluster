@@ -15,17 +15,25 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
     public static String FILE_ENDING = ".cluster_parameters.tsv";
     public static String DESCRIPTION = "Extracts the basic properties of every cluster in the file and returns them in a TAB delimited table.";
 
+    private ClusterUtilities clusterUtilities = new ClusterUtilities();
+
     StringBuffer resultStringBuffer = new StringBuffer();
     public final char DELIMINATOR = '\t';
     public final String TABLE_HEADER=
                     "id" + DELIMINATOR +
-                    "precusor_mz" + DELIMINATOR +
+                    "precursor_mz" + DELIMINATOR +
                     "precursor_intensity" + DELIMINATOR +
                     "size" + DELIMINATOR +
                     "max_ratio" + DELIMINATOR +
                     "max_il_ratio" + DELIMINATOR +
                     "precursor_mz_range" + DELIMINATOR +
                     "sequences" + DELIMINATOR +
+                    "max_sequence" + DELIMINATOR +
+                    "max_sequence_count" + DELIMINATOR +
+                    "second_max_sequence" + DELIMINATOR +
+                    "second_max_sequence_count" + DELIMINATOR +
+                    "project_count" + DELIMINATOR +
+                    "assay_count" + DELIMINATOR +
                     "species" + "\n";
 
 
@@ -54,18 +62,23 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
         if (ignoreCluster(newCluster))
             return;
 
+        clusterUtilities.processCluster(newCluster);
+
         // build the sequence string
         StringBuilder sequenceString = new StringBuilder();
-        for (SequenceCount sequenceCount : newCluster.getSequenceCounts()) {
+        for (String sequence : clusterUtilities.getSequenceCounts().keySet()) {
             if (sequenceString.length() > 0)
                 sequenceString.append(",");
 
-            sequenceString.append(sequenceCount.getSequence() + ":" + sequenceCount.getCount());
+            sequenceString.append(sequence + ":" + clusterUtilities.getSequenceCounts().get(sequence));
         }
 
         // get the species
         StringBuilder speciesString = new StringBuilder();
-        for (String species : newCluster.getSpecies()) {
+        for (String species : clusterUtilities.getSpecies()) {
+            if (species == null)
+                continue;
+
             if (speciesString.length() > 0) {
                 speciesString.append(",");
             }
@@ -73,17 +86,22 @@ public class ClusterParameterExtractor extends AbstractClusteringSourceAnalyser 
         }
 
         // add the string representing the cluster to the result buffer
-        resultStringBuffer.append(String.format(
-                "%s%c%.3f%c%.3f%c%d%c%.3f%c%.3f%c%.3f%c%s%c%s\n",
-                newCluster.getId(), DELIMINATOR,
-                newCluster.getAvPrecursorMz(), DELIMINATOR,
-                newCluster.getAvPrecursorIntens(), DELIMINATOR,
-                newCluster.getSpecCount(), DELIMINATOR,
-                newCluster.getMaxRatio(), DELIMINATOR,
-                ClusterUtilities.getClusterILAgnosticMaxRatio(newCluster), DELIMINATOR,
-                newCluster.getSpectrumPrecursorMzRange(), DELIMINATOR,
-                sequenceString.toString(), DELIMINATOR,
-                speciesString
-        ));
+        resultStringBuffer.append(
+                newCluster.getId() + DELIMINATOR +
+                String.format("%.3f", newCluster.getAvPrecursorMz()) + DELIMINATOR +
+                String.format("%.3f", newCluster.getAvPrecursorIntens()) + DELIMINATOR +
+                newCluster.getSpecCount() + DELIMINATOR +
+                String.format("%.3f", newCluster.getMaxRatio()) + DELIMINATOR +
+                String.format("%.3f", clusterUtilities.getMaxILAngosticRatio()) + DELIMINATOR +
+                String.format("%.3f", clusterUtilities.getMzRange()) + DELIMINATOR +
+                sequenceString.toString() + DELIMINATOR +
+                clusterUtilities.getMaxSequence() + DELIMINATOR +
+                clusterUtilities.getMaxSequenceCount() + DELIMINATOR +
+                clusterUtilities.getSecondMaxSequence() + DELIMINATOR +
+                clusterUtilities.getSecondMaxSequenceCount() + DELIMINATOR +
+                clusterUtilities.getnProjects() + DELIMINATOR +
+                clusterUtilities.getnAssays() + DELIMINATOR +
+                speciesString.toString() + "\n"
+        );
     }
 }
