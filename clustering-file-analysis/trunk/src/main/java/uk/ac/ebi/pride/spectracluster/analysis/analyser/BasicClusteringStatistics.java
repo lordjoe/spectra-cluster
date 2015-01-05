@@ -73,7 +73,9 @@ public class BasicClusteringStatistics extends AbstractClusteringSourceAnalyser 
         if (maxRatio < newCluster.getMaxRatio())
             maxRatio = newCluster.getMaxRatio();
 
-        if (ClusterUtilities.isStableStable(newCluster))
+        ClusterUtilities clusterUtilities = new ClusterUtilities(newCluster);
+
+        if (clusterUtilities.isStable())
             stableClusters++;
     }
 

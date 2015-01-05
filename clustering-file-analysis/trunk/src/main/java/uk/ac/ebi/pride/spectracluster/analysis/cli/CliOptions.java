@@ -19,6 +19,7 @@ public class CliOptions {
         MAX_RATIO("max_ratio"),
         MIN_PRECURSOR("min_precursor"),
         MAX_PRECURSOR("max_precurosr"),
+        EXTRACT_SPECTA("extract_spectra"),
         HELP("help");
 
 		private String value;
@@ -104,6 +105,13 @@ public class CliOptions {
                 .withDescription("List all available analysers.")
                 .create(OPTIONS.LIST_ANALYSERS.getValue());
         options.addOption(listAnalysers);
+
+        Option extractSpectra = OptionBuilder
+                .withDescription("extract the spectra from the clusters and write them to the specified directory")
+                .withArgName("directory")
+                .hasArg()
+                .create(OPTIONS.EXTRACT_SPECTA.getValue());
+        options.addOption(extractSpectra);
 
 		Option help = OptionBuilder
                 .withDescription("print this help.")

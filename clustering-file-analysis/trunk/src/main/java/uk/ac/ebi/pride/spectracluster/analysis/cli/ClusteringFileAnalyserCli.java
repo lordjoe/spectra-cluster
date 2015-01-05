@@ -7,6 +7,7 @@ import org.apache.commons.cli.HelpFormatter;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.AbstractClusteringSourceAnalyser;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.AnalyserFactory;
 import uk.ac.ebi.pride.spectracluster.analysis.analyser.IClusteringSourceAnalyser;
+import uk.ac.ebi.pride.spectracluster.analysis.util.SpectrumExtractor;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceListener;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.IClusterSourceReader;
@@ -63,6 +64,9 @@ public class ClusteringFileAnalyserCli {
                 return;
             }
 
+            // EXTRACT SPECTRA PATH
+            String extractSpectraPath = commandLine.getOptionValue(CliOptions.OPTIONS.EXTRACT_SPECTA.getValue());
+
             // HELP
             if (commandLine.hasOption(CliOptions.OPTIONS.HELP.getValue()) || args.length < 1) {
                 printHelp();
@@ -70,7 +74,7 @@ public class ClusteringFileAnalyserCli {
             }
 
             // ANALYSER
-            Set<IClusteringSourceAnalyser> analyser = new HashSet<IClusteringSourceAnalyser>();
+            Set<AbstractClusteringSourceAnalyser> analyser = new HashSet<AbstractClusteringSourceAnalyser>();
             if (commandLine.hasOption(CliOptions.OPTIONS.ANALYSER.getValue())) {
                 String[] analyserNames = commandLine.getOptionValues(CliOptions.OPTIONS.ANALYSER.getValue());
 
@@ -80,15 +84,6 @@ public class ClusteringFileAnalyserCli {
                         System.out.println("Unknown analyser '" + analyserName + "' - ignored.");
                     }
                     else {
-                        theAnalyser.setMinClusterSize(minSize);
-                        theAnalyser.setMaxClusterSize(maxSize);
-
-                        theAnalyser.setMinClusterRatio(minRatio);
-                        theAnalyser.setMaxClusterRatio(maxRatio);
-
-                        theAnalyser.setMinPrecursorMz(minPrecursor);
-                        theAnalyser.setMaxPrecursorMz(maxPrecursor);
-
                         analyser.add(theAnalyser);
                     }
                 }
@@ -98,17 +93,27 @@ public class ClusteringFileAnalyserCli {
             if (commandLine.hasOption(CliOptions.OPTIONS.ALL_ANALYSERS.getValue())) {
                 for (AnalyserFactory.ANALYSERS a : AnalyserFactory.ANALYSERS.values()) {
                     AbstractClusteringSourceAnalyser theAnalyser = AnalyserFactory.getAnalyser(a);
-                    theAnalyser.setMinClusterSize(minSize);
-                    theAnalyser.setMaxClusterSize(maxSize);
-
-                    theAnalyser.setMinClusterRatio(minRatio);
-                    theAnalyser.setMaxClusterRatio(maxRatio);
-
-                    theAnalyser.setMinPrecursorMz(minPrecursor);
-                    theAnalyser.setMaxPrecursorMz(maxPrecursor);
-
                     analyser.add(theAnalyser);
                 }
+            }
+
+            // EXTRACT SPECTRA
+            if (extractSpectraPath != null) {
+                SpectrumExtractor spectrumExtractor = new SpectrumExtractor(extractSpectraPath);
+                analyser.add(spectrumExtractor);
+                System.out.println("Extracting spectra to " + extractSpectraPath);
+            }
+
+            // SET THE FILTERING OPTIONS
+            for (AbstractClusteringSourceAnalyser theAnalyser : analyser) {
+                theAnalyser.setMinClusterSize(minSize);
+                theAnalyser.setMaxClusterSize(maxSize);
+
+                theAnalyser.setMinClusterRatio(minRatio);
+                theAnalyser.setMaxClusterRatio(maxRatio);
+
+                theAnalyser.setMinPrecursorMz(minPrecursor);
+                theAnalyser.setMaxPrecursorMz(maxPrecursor);
             }
 
             // OUTPUT PATH
@@ -131,7 +136,7 @@ public class ClusteringFileAnalyserCli {
         }
     }
 
-    private static void analyseFilesCummulatively(String[] filenames, Set<IClusteringSourceAnalyser> analyser, String outputPath) throws Exception {
+    private static void analyseFilesCummulatively(String[] filenames, Set<AbstractClusteringSourceAnalyser> analyser, String outputPath) throws Exception {
         if (outputPath == null)
             throw new Exception("output_path must be set.");
 
@@ -150,6 +155,9 @@ public class ClusteringFileAnalyserCli {
             // get the result
             String resultString = theAnalyser.getAnalysisResultString();
 
+            if (resultString == null)
+                continue;
+
             // write the result
             FileWriter writer = new FileWriter(outputFilename + theAnalyser.getFileEnding());
             writer.write(resultString);
@@ -159,7 +167,7 @@ public class ClusteringFileAnalyserCli {
         }
     }
 
-    private static void analyseFile(String filename, Set<IClusteringSourceAnalyser> analyser, String outputPath) {
+    private static void analyseFile(String filename, Set<AbstractClusteringSourceAnalyser> analyser, String outputPath) {
         try {
             System.out.println("Analysing '" + filename);
             File fileToAnalyse = new File(filename);
@@ -185,6 +193,9 @@ public class ClusteringFileAnalyserCli {
             for (IClusteringSourceAnalyser theAnalyser : analyser) {
                 // get the result
                 String resultString = theAnalyser.getAnalysisResultString();
+
+                if (resultString == null)
+                    continue;
 
                 // write the result
                 FileWriter writer = new FileWriter(resultFilePath + theAnalyser.getFileEnding());
