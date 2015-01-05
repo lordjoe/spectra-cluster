@@ -77,7 +77,7 @@ public class SpectrumExtractor extends AbstractClusteringSourceAnalyser {
 
                 // write the spectrum
                 writer.write("BEGIN IONS\n");
-                writer.write("TITLE=" + specRef.getSpectrumId() + "\n");
+                writer.write("TITLE=id=" + specRef.getSpectrumId() + ",sequence=" + specRef.getMostCommonPSM().getSequence() + ",taxid=" + specRef.getSpecies() + "\n");
                 writer.write("PEPMASS=" + String.format("%.4f", specRef.getPrecursorMz()) + "\n");
                 writer.write("CHARGE=" + specRef.getCharge() + "\n");
 
