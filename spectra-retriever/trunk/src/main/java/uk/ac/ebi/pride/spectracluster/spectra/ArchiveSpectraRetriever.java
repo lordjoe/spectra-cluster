@@ -115,6 +115,7 @@ public class ArchiveSpectraRetriever implements ISpectraRetriever {
         ArchiveSpectraRetriever archiveSpectraRetriever = new ArchiveSpectraRetriever();
 
         List<Spectrum> spectra = archiveSpectraRetriever.findById("PRD000165;PRIDE_Exp_Complete_Ac_10291.xml;spectrum=2001");
+        double[] peaksIntensities = spectra.get(0).getPeaksIntensities();
         System.out.println(spectra.get(0).getNumPeaks());
     }
 }
