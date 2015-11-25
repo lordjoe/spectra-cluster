@@ -1,0 +1,1 @@
+This project has Java code for clustering MS/MS spectra in a scalable manner supporting local implementations as well as Hadoop for large data sets
